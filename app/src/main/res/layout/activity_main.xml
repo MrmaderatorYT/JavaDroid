@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawerLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/idea_bg">
+
+    <!-- ══════════════ MAIN CONTENT ══════════════ -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!-- ── TOOLBAR ── -->
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:background="@color/idea_toolbar"
+            android:elevation="0dp"
+            app:contentInsetStart="0dp"
+            app:contentInsetStartWithNavigation="0dp">
+
+            <TextView
+                android:id="@+id/toolbarTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/app_name"
+                android:textColor="@color/idea_text"
+                android:textSize="13sp"
+                android:fontFamily="sans-serif" />
+
+        </androidx.appcompat.widget.Toolbar>
+
+        <!-- ── FILE TABS BAR ── -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:orientation="horizontal"
+            android:background="@color/idea_toolbar">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/tabsRecycler"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:scrollbars="none" />
+
+            <!-- New tab button -->
+            <TextView
+                android:id="@+id/btnNewTab"
+                android:layout_width="36dp"
+                android:layout_height="match_parent"
+                android:text="+"
+                android:textColor="@color/idea_text_dim"
+                android:textSize="18sp"
+                android:gravity="center"
+                android:background="?attr/selectableItemBackground" />
+
+        </LinearLayout>
+
+        <!-- Active tab accent line -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/idea_tab_border" />
+
+        <!-- ── FIND & REPLACE BAR (hidden by default) ── -->
+        <LinearLayout
+            android:id="@+id/findBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#252527"
+            android:visibility="gone">
+
+            <!-- Find row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:orientation="horizontal"
+                android:paddingStart="8dp"
+                android:paddingEnd="4dp"
+                android:gravity="center_vertical">
+
+                <EditText
+                    android:id="@+id/etFind"
+                    android:layout_width="0dp"
+                    android:layout_height="28dp"
+                    android:layout_weight="1"
+                    android:hint="@string/find_hint"
+                    android:textColorHint="#555555"
+                    android:textColor="@color/idea_text"
+                    android:textSize="12sp"
+                    android:background="#2B2B2B"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:singleLine="true"
+                    android:imeOptions="actionSearch"
+                    android:inputType="text" />
+
+                <TextView
+                    android:id="@+id/btnFindPrev"
+                    android:layout_width="32dp"
+                    android:layout_height="28dp"
+                    android:text="↑"
+                    android:textColor="@color/idea_text"
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:layout_marginStart="4dp"
+                    android:background="?attr/selectableItemBackground" />
+
+                <TextView
+                    android:id="@+id/btnFindNext"
+                    android:layout_width="32dp"
+                    android:layout_height="28dp"
+                    android:text="↓"
+                    android:textColor="@color/idea_text"
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:background="?attr/selectableItemBackground" />
+
+                <TextView
+                    android:id="@+id/btnFindClose"
+                    android:layout_width="32dp"
+                    android:layout_height="28dp"
+                    android:text="✕"
+                    android:textColor="@color/idea_text_dim"
+                    android:textSize="12sp"
+                    android:gravity="center"
+                    android:layout_marginStart="4dp"
+                    android:background="?attr/selectableItemBackground" />
+
+            </LinearLayout>
+
+            <!-- Replace row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:orientation="horizontal"
+                android:paddingStart="8dp"
+                android:paddingEnd="4dp"
+                android:gravity="center_vertical">
+
+                <EditText
+                    android:id="@+id/etReplace"
+                    android:layout_width="0dp"
+                    android:layout_height="28dp"
+                    android:layout_weight="1"
+                    android:hint="@string/replace_hint"
+                    android:textColorHint="#555555"
+                    android:textColor="@color/idea_text"
+                    android:textSize="12sp"
+                    android:background="#2B2B2B"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:singleLine="true"
+                    android:inputType="text" />
+
+                <TextView
+                    android:id="@+id/btnReplace"
+                    android:layout_width="wrap_content"
+                    android:layout_height="28dp"
+                    android:text="@string/replace"
+                    android:textColor="@color/idea_accent"
+                    android:textSize="11sp"
+                    android:gravity="center"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:layout_marginStart="4dp"
+                    android:background="?attr/selectableItemBackground" />
+
+                <TextView
+                    android:id="@+id/btnReplaceAll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="28dp"
+                    android:text="@string/replace_all"
+                    android:textColor="@color/idea_accent"
+                    android:textSize="11sp"
+                    android:gravity="center"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:background="?attr/selectableItemBackground" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/idea_separator" />
+
+        </LinearLayout>
+
+        <!-- ── CODE EDITOR ── -->
+        <io.github.rosemoe.sora.widget.CodeEditor
+            android:id="@+id/editor"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="3" />
+
+        <!-- Editor / Console divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/idea_separator" />
+
+        <!-- ── BOTTOM PANEL TABS (scrollable so Bytecode stays reachable on narrow screens) ── -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="28dp"
+            android:orientation="horizontal"
+            android:background="@color/idea_toolbar">
+
+            <HorizontalScrollView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:fillViewport="false"
+                android:scrollbars="none"
+                android:fadeScrollbars="false">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:id="@+id/tabRun"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:gravity="center_vertical"
+                        android:text="@string/tab_run"
+                        android:textColor="@color/idea_run_green"
+                        android:textSize="11sp"
+                        android:background="@color/idea_tab_active"
+                        android:clickable="true"
+                        android:focusable="true" />
+
+                    <TextView
+                        android:id="@+id/tabProblems"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:gravity="center_vertical"
+                        android:text="@string/tab_problems"
+                        android:textColor="@color/idea_text_dim"
+                        android:textSize="11sp"
+                        android:background="@color/idea_toolbar"
+                        android:clickable="true"
+                        android:focusable="true" />
+
+                    <TextView
+                        android:id="@+id/tabBytecode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:gravity="center_vertical"
+                        android:text="@string/tab_bytecode"
+                        android:textColor="@color/idea_text_dim"
+                        android:textSize="11sp"
+                        android:background="@color/idea_toolbar"
+                        android:clickable="true"
+                        android:focusable="true" />
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <TextView
+                android:id="@+id/btnClearConsole"
+                android:layout_width="36dp"
+                android:layout_height="match_parent"
+                android:text="⊘"
+                android:textColor="@color/idea_text_dim"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:background="?attr/selectableItemBackground" />
+
+        </LinearLayout>
+
+        <!-- ── RUN / PROBLEMS CONTENT ── -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <ScrollView
+                android:id="@+id/consoleScroll"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/idea_console_bg"
+                android:fillViewport="true">
+
+                <TextView
+                    android:id="@+id/consoleOutput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:textColor="@color/idea_console_text"
+                    android:fontFamily="monospace"
+                    android:textSize="12sp"
+                    android:lineSpacingMultiplier="1.2"
+                    android:textIsSelectable="true" />
+
+            </ScrollView>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/problemsRecycler"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/idea_console_bg"
+                android:visibility="gone"
+                android:scrollbars="vertical" />
+
+            <ScrollView
+                android:id="@+id/bytecodeOuterScroll"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/idea_console_bg"
+                android:visibility="gone"
+                android:fillViewport="true"
+                android:scrollbars="vertical">
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scrollbars="horizontal"
+                    android:fillViewport="true">
+
+                    <TextView
+                        android:id="@+id/bytecodeOutput"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="8dp"
+                        android:textColor="@color/idea_console_text"
+                        android:fontFamily="monospace"
+                        android:textSize="11sp"
+                        android:lineSpacingMultiplier="1.15"
+                        android:textIsSelectable="true" />
+                </HorizontalScrollView>
+            </ScrollView>
+
+        </FrameLayout>
+
+        <!-- ── STATUS BAR ── -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="22dp"
+            android:orientation="horizontal"
+            android:background="@color/idea_statusbar"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/statusLineCol"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                tools:text="Ln 1, Col 1"
+                android:textColor="@color/idea_statusbar_text"
+                android:textSize="10sp" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="12dp"
+                android:background="@color/idea_separator"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:id="@+id/statusFileName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="@color/idea_text_dim"
+                android:textSize="10sp" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/status_encoding"
+                android:textColor="@color/idea_statusbar_text"
+                android:textSize="10sp"
+                android:paddingEnd="10dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/status_language_java"
+                android:textColor="@color/idea_statusbar_text"
+                android:textSize="10sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- ══════════════ FILE MANAGER DRAWER ══════════════ -->
+    <include
+        layout="@layout/drawer_file_manager"
+        android:layout_width="260dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start" />
+
+</androidx.drawerlayout.widget.DrawerLayout>

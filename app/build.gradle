@@ -1,0 +1,73 @@
+plugins {
+    id 'com.android.application'
+}
+
+def keystorePropertiesFile = rootProject.file('keystore.properties')
+def keystoreProperties = new Properties()
+if (keystorePropertiesFile.exists()) {
+    keystorePropertiesFile.withInputStream { keystoreProperties.load(it) }
+}
+
+android {
+    namespace 'com.ccs.javadroid'
+    compileSdk 35
+
+    defaultConfig {
+        // Unique ID for Google Play (change if you use your own domain)
+        applicationId 'com.ccs.javadroid'
+        minSdk 26
+        targetSdk 35
+        versionCode 1
+        versionName '1.1.0'
+    }
+
+    signingConfigs {
+        release {
+            if (keystorePropertiesFile.exists()) {
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+                storeFile rootProject.file(keystoreProperties['storeFile'])
+                storePassword keystoreProperties['storePassword']
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            if (keystorePropertiesFile.exists()) {
+                signingConfig signingConfigs.release
+            }
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    packaging {
+        jniLibs {
+            useLegacyPackaging true
+        }
+    }
+}
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.11.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+
+    implementation 'io.github.Rosemoe.sora-editor:editor:0.23.6'
+    implementation 'io.github.Rosemoe.sora-editor:language-java:0.23.6'
+
+    implementation 'org.eclipse.jdt:ecj:3.22.0'
+    implementation 'com.android.tools:r8:8.2.33'
+
+    implementation 'androidx.documentfile:documentfile:1.0.1'
+
+    // JVM bytecode disassembly (javap-style text, like Recaf)
+    implementation 'org.ow2.asm:asm:9.6'
+    implementation 'org.ow2.asm:asm-util:9.6'
+}

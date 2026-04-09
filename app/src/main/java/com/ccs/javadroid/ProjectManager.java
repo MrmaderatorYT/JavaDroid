@@ -1,0 +1,83 @@
+package com.ccs.javadroid;
+
+import android.content.Context;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+
+public class ProjectManager {
+
+    private File projectRoot;
+
+    public ProjectManager(Context context) {
+        projectRoot = new File(context.getFilesDir(), "project");
+        projectRoot.mkdirs();
+    }
+
+    public void setProjectRoot(File root) {
+        if (root != null) {
+            projectRoot = root;
+            projectRoot.mkdirs();
+        }
+    }
+
+    public File getProjectDir() {
+        return projectRoot;
+    }
+
+    public boolean isMavenProject() {
+        return new File(projectRoot, "pom.xml").exists();
+    }
+
+    public List<File> getJavaFiles() {
+        return ProjectScanner.listJavaSources(projectRoot);
+    }
+
+    public List<File> getProjectTreeFiles() {
+        return ProjectScanner.listTreeFiles(projectRoot);
+    }
+
+    public File createFile(String name, String template) throws IOException {
+        if (!name.endsWith(".java")) name += ".java";
+        File dir = projectRoot;
+        if (isMavenProject()) {
+            dir = ProjectLayoutHelper.mainJavaPackageDir(projectRoot);
+        }
+        File file = new File(dir, name);
+        if (file.createNewFile()) {
+            writeFile(file, template);
+            return file;
+        }
+        return null;
+    }
+
+    public boolean deleteFile(File file) {
+        return file.delete();
+    }
+
+    public String readFile(File file) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line).append("\n");
+            }
+        }
+        return sb.toString();
+    }
+
+    public void writeFile(File file, String content) throws IOException {
+        try (OutputStreamWriter writer = new OutputStreamWriter(
+                new FileOutputStream(file), StandardCharsets.UTF_8)) {
+            writer.write(content);
+        }
+    }
+}

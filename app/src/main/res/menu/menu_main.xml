@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_undo"
+        android:title="@string/menu_undo"
+        android:icon="@drawable/ic_undo"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_redo"
+        android:title="@string/menu_redo"
+        android:icon="@drawable/ic_redo"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_save"
+        android:title="@string/menu_save"
+        android:icon="@drawable/ic_save"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_run"
+        android:title="@string/menu_run"
+        android:icon="@drawable/ic_run"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_find"
+        android:title="@string/menu_find_replace"
+        android:icon="@drawable/ic_search"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_bytecode"
+        android:title="@string/menu_bytecode"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_new_file"
+        android:title="@string/menu_new_java_file"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_new_maven_project"
+        android:title="@string/menu_new_maven_project"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_sync_deps"
+        android:title="@string/menu_sync_deps"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_maven_package"
+        android:title="@string/menu_maven_package"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_maven_test"
+        android:title="@string/menu_maven_test"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_settings"
+        android:title="@string/menu_settings"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_clear_console"
+        android:title="@string/menu_clear_console"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_copy_console"
+        android:title="@string/menu_copy_console"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_share_file"
+        android:title="@string/menu_share_file"
+        app:showAsAction="never" />
+
+</menu>

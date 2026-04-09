@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">JavaDroid</string>
+
+    <!-- Menu -->
+    <string name="menu_undo">Undo</string>
+    <string name="menu_redo">Redo</string>
+    <string name="menu_save">Save</string>
+    <string name="menu_run">Run</string>
+    <string name="menu_find_replace">Find / Replace</string>
+    <string name="menu_bytecode">Bytecode</string>
+    <string name="menu_new_java_file">New Java File</string>
+    <string name="menu_new_maven_project">New Maven Project</string>
+    <string name="menu_sync_deps">Sync / Download Dependencies</string>
+    <string name="menu_maven_package">Maven package</string>
+    <string name="menu_maven_test">Maven test (compile tests)</string>
+    <string name="menu_settings">Settings</string>
+    <string name="menu_clear_console">Clear Console</string>
+    <string name="menu_copy_console">Copy console</string>
+    <string name="menu_share_file">Share current file</string>
+
+    <!-- Main layout -->
+    <string name="drawer_project_label">PROJECT</string>
+    <string name="drawer_maven_hint">Maven: src, main, test</string>
+    <string name="find_hint">Find…</string>
+    <string name="replace_hint">Replace with…</string>
+    <string name="replace">Replace</string>
+    <string name="replace_all">All</string>
+    <string name="tab_run">▶  Run</string>
+    <string name="tab_problems">Problems</string>
+    <string name="tab_bytecode">Bytecode</string>
+    <string name="status_line">Ln %1$d, Col %2$d</string>
+    <string name="status_encoding">UTF-8</string>
+    <string name="status_language_java">Java</string>
+
+    <!-- Problems adapter -->
+    <string name="problem_error">ERROR</string>
+    <string name="problem_warn">WARN</string>
+    <string name="problem_info">INFO</string>
+    <string name="problem_location_unknown">?</string>
+
+    <!-- Toasts & messages -->
+    <string name="error_cannot_create_main">Cannot create Main.java</string>
+    <string name="error_cannot_open">Cannot open: %1$s</string>
+    <string name="error_cannot_read">Cannot read: %1$s</string>
+    <string name="toast_saved">Saved</string>
+    <string name="toast_save_failed">Save failed: %1$s</string>
+    <string name="toast_no_file_open">No file open</string>
+    <string name="toast_not_maven">Not a Maven project (no pom.xml)</string>
+    <string name="toast_sync_done">Dependencies updated</string>
+    <string name="toast_pom_required">pom.xml required</string>
+    <string name="find_not_found">\"%1$s\" not found</string>
+    <string name="toast_file_exists">%1$s.java already exists</string>
+    <string name="toast_error_prefix">Error: %1$s</string>
+    <string name="toast_copied_clipboard">Copied to clipboard</string>
+    <string name="toast_console_empty">Console is empty</string>
+    <string name="toast_project_path_copied">Project path copied</string>
+    <string name="share_file_chooser">Share file</string>
+    <string name="toolbar_project_a11y">Project name. Long press to copy project folder path.</string>
+    <string name="toast_rename_failed">Rename failed</string>
+
+    <!-- Dialogs -->
+    <string name="dialog_unsaved_title">Unsaved changes</string>
+    <string name="dialog_unsaved_message">%1$s has unsaved changes.</string>
+    <string name="dialog_save_close">Save &amp; close</string>
+    <string name="dialog_discard">Discard</string>
+    <string name="dialog_cancel">Cancel</string>
+    <string name="dialog_create">Create</string>
+    <string name="dialog_apply">Apply</string>
+    <string name="dialog_delete">Delete</string>
+    <string name="dialog_rename">Rename</string>
+
+    <string name="dialog_new_java_title">New Java File</string>
+    <string name="dialog_new_java_hint">Class name (e.g. MyHelper)</string>
+
+    <string name="dialog_new_maven_title">New Maven project</string>
+    <string name="dialog_new_maven_message">Maven layout (like IntelliJ): src/main/java with package path, main/resources, test/java, test/resources.\nRoot: app storage Documents/JavaDroid/.</string>
+    <string name="dialog_maven_name_hint">Project folder name (e.g. MyApp)</string>
+    <string name="dialog_maven_group_hint">Group ID / package (e.g. com.company.app)</string>
+    <string name="dialog_maven_artifact_hint">Artifact ID (e.g. myapp), optional</string>
+
+    <string name="dialog_file_context_open">Open</string>
+    <string name="dialog_file_context_rename">Rename</string>
+    <string name="dialog_file_context_delete">Delete</string>
+
+    <string name="dialog_delete_file_title">Delete file</string>
+    <string name="dialog_delete_file_message">Delete %1$s? This cannot be undone.</string>
+
+    <string name="dialog_settings_title">Settings</string>
+    <string name="dialog_font_size">Font size: %1$dsp</string>
+
+    <!-- Console -->
+    <string name="console_maven_run">▶ Maven: compile + run…</string>
+    <string name="console_running_file">▶ Running %1$s…</string>
+    <string name="console_output_separator">──────────── Output ────────────</string>
+    <string name="console_build_success">BUILD SUCCESS</string>
+    <string name="console_process_exit_ok">Process finished with exit code 0</string>
+    <string name="console_sync_maven">▶ Downloading dependencies (Maven Central)…</string>
+    <string name="console_sync_done">Sync finished.</string>
+    <string name="console_mvn_package">▶ mvn package…</string>
+    <string name="console_mvn_test_compile">▶ mvn test-compile…</string>
+
+    <string name="bytecode_compiling">Compiling…</string>
+    <string name="bytecode_only_java">Open a .java file to view JVM bytecode (ASM / javap-style).</string>
+    <string name="bytecode_failed">Bytecode: %1$s</string>
+</resources>

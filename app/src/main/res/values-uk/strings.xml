@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">JavaDroid</string>
+
+    <string name="menu_undo">Скасувати</string>
+    <string name="menu_redo">Повторити</string>
+    <string name="menu_save">Зберегти</string>
+    <string name="menu_run">Запуск</string>
+    <string name="menu_find_replace">Пошук / Заміна</string>
+    <string name="menu_bytecode">Байткод</string>
+    <string name="menu_new_java_file">Новий Java-файл</string>
+    <string name="menu_new_maven_project">Новий Maven-проєкт</string>
+    <string name="menu_sync_deps">Синхронізувати залежності</string>
+    <string name="menu_maven_package">Maven package</string>
+    <string name="menu_maven_test">Maven test (компіляція тестів)</string>
+    <string name="menu_settings">Налаштування</string>
+    <string name="menu_clear_console">Очистити консоль</string>
+    <string name="menu_copy_console">Копіювати консоль</string>
+    <string name="menu_share_file">Поділитися поточним файлом</string>
+
+    <string name="drawer_project_label">ПРОЄКТ</string>
+    <string name="drawer_maven_hint">Maven: src, main, test</string>
+    <string name="find_hint">Пошук…</string>
+    <string name="replace_hint">Замінити на…</string>
+    <string name="replace">Замінити</string>
+    <string name="replace_all">Усі</string>
+    <string name="tab_run">▶  Запуск</string>
+    <string name="tab_problems">Проблеми</string>
+    <string name="tab_bytecode">Байткод</string>
+    <string name="status_line">Ряд. %1$d, стовп. %2$d</string>
+    <string name="status_encoding">UTF-8</string>
+    <string name="status_language_java">Java</string>
+
+    <string name="problem_error">ПОМИЛКА</string>
+    <string name="problem_warn">ПОПЕР.</string>
+    <string name="problem_info">ІНФО</string>
+    <string name="problem_location_unknown">?</string>
+
+    <string name="error_cannot_create_main">Не вдалося створити Main.java</string>
+    <string name="error_cannot_open">Не вдалося відкрити: %1$s</string>
+    <string name="error_cannot_read">Не вдалося прочитати: %1$s</string>
+    <string name="toast_saved">Збережено</string>
+    <string name="toast_save_failed">Помилка збереження: %1$s</string>
+    <string name="toast_no_file_open">Немає відкритого файлу</string>
+    <string name="toast_not_maven">Це не Maven-проєкт (немає pom.xml)</string>
+    <string name="toast_sync_done">Залежності оновлено</string>
+    <string name="toast_pom_required">Потрібен pom.xml</string>
+    <string name="find_not_found">«%1$s» не знайдено</string>
+    <string name="toast_file_exists">%1$s.java вже існує</string>
+    <string name="toast_error_prefix">Помилка: %1$s</string>
+    <string name="toast_copied_clipboard">Скопійовано в буфер</string>
+    <string name="toast_console_empty">Консоль порожня</string>
+    <string name="toast_project_path_copied">Шлях до проєкту скопійовано</string>
+    <string name="share_file_chooser">Поділитися файлом</string>
+    <string name="toolbar_project_a11y">Назва проєкту. Довге натискання — скопіювати шлях до папки проєкту.</string>
+    <string name="toast_rename_failed">Не вдалося перейменувати</string>
+
+    <string name="dialog_unsaved_title">Незбережені зміни</string>
+    <string name="dialog_unsaved_message">У файлі %1$s є незбережені зміни.</string>
+    <string name="dialog_save_close">Зберегти й закрити</string>
+    <string name="dialog_discard">Відкинути</string>
+    <string name="dialog_cancel">Скасувати</string>
+    <string name="dialog_create">Створити</string>
+    <string name="dialog_apply">Застосувати</string>
+    <string name="dialog_delete">Видалити</string>
+    <string name="dialog_rename">Перейменувати</string>
+
+    <string name="dialog_new_java_title">Новий Java-файл</string>
+    <string name="dialog_new_java_hint">Ім’я класу (напр. MyHelper)</string>
+
+    <string name="dialog_new_maven_title">Новий Maven-проєкт</string>
+    <string name="dialog_new_maven_message">Структура Maven (як у IntelliJ): src/main/java з package-шляхом, main/resources, test/java, test/resources.\nКорінь: Documents/JavaDroid/ у сховищі застосунку.</string>
+    <string name="dialog_maven_name_hint">Ім’я папки проєкту (напр. MyApp)</string>
+    <string name="dialog_maven_group_hint">Group ID / package (напр. com.company.app)</string>
+    <string name="dialog_maven_artifact_hint">Artifact ID (напр. myapp), можна лишити порожнім</string>
+
+    <string name="dialog_file_context_open">Відкрити</string>
+    <string name="dialog_file_context_rename">Перейменувати</string>
+    <string name="dialog_file_context_delete">Видалити</string>
+
+    <string name="dialog_delete_file_title">Видалити файл</string>
+    <string name="dialog_delete_file_message">Видалити %1$s? Цю дію не скасувати.</string>
+
+    <string name="dialog_settings_title">Налаштування</string>
+    <string name="dialog_font_size">Розмір шрифту: %1$dsp</string>
+
+    <string name="console_maven_run">▶ Maven: компіляція + запуск…</string>
+    <string name="console_running_file">▶ Запуск %1$s…</string>
+    <string name="console_output_separator">──────────── Вивід ────────────</string>
+    <string name="console_build_success">ЗБІРКА УСПІШНА</string>
+    <string name="console_process_exit_ok">Процес завершено з кодом 0</string>
+    <string name="console_sync_maven">▶ Завантаження залежностей (Maven Central)…</string>
+    <string name="console_sync_done">Синхронізацію завершено.</string>
+    <string name="console_mvn_package">▶ mvn package…</string>
+    <string name="console_mvn_test_compile">▶ mvn test-compile…</string>
+
+    <string name="bytecode_compiling">Компіляція…</string>
+    <string name="bytecode_only_java">Відкрийте .java файл для перегляду JVM-байткоду (ASM, стиль javap).</string>
+    <string name="bytecode_failed">Байткод: %1$s</string>
+</resources>

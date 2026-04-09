@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Без DayNight: завжди одна палітра Darcula — кнопки діалогів не «ламаються» у системній темній темі -->
+    <style name="Theme.JavaDroid" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="colorPrimary">@color/idea_toolbar</item>
+        <item name="colorPrimaryVariant">@color/idea_bg</item>
+        <item name="colorOnPrimary">@color/idea_text</item>
+        <item name="colorSecondary">@color/idea_accent</item>
+        <item name="colorSecondaryVariant">@color/idea_accent</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <item name="colorSurface">@color/idea_toolbar</item>
+        <item name="colorOnSurface">@color/idea_text</item>
+        <item name="colorOnSurfaceVariant">@color/idea_text_dim</item>
+        <item name="android:colorBackground">@color/idea_bg</item>
+        <item name="android:textColorPrimary">@color/idea_text</item>
+        <item name="android:textColorSecondary">@color/idea_text_dim</item>
+        <item name="android:statusBarColor">@color/idea_bg</item>
+        <item name="android:navigationBarColor">@color/idea_statusbar</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
+        <item name="colorControlHighlight">#334A86C8</item>
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.JavaDroid.AlertDialog</item>
+        <item name="alertDialogTheme">@style/ThemeOverlay.JavaDroid.AlertDialog</item>
+    </style>
+
+    <style name="ThemeOverlay.JavaDroid.AlertDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="colorPrimary">@color/idea_accent</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSurface">@color/idea_toolbar</item>
+        <item name="colorOnSurface">@color/idea_text</item>
+        <item name="android:textColorPrimary">@color/idea_text</item>
+        <item name="android:textColorSecondary">@color/idea_text_dim</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.JavaDroid.DialogButton</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.JavaDroid.DialogButton</item>
+        <item name="buttonBarNeutralButtonStyle">@style/Widget.JavaDroid.DialogButton</item>
+    </style>
+
+    <style name="Widget.JavaDroid.DialogButton" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/idea_accent</item>
+        <item name="rippleColor">#334A86C8</item>
+    </style>
+</resources>
