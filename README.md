@@ -23,21 +23,3 @@ Small Java IDE for Android: edit code, open Maven projects, compile on the devic
 ```
 
 APK: `app/build/outputs/apk/debug/`
-
-## Google Play (release)
-
-1. **Package name** — `applicationId` is in `app/build.gradle` (`com.ccs.javadroid`). It must be unique on Play.
-
-2. **Upload keystore** — copy `keystore.properties.example` to `keystore.properties`, fill in passwords and `storeFile` path (project root). Create a keystore with `keytool` (see comments in the example file). Do not commit `keystore.properties` or `.jks` files.
-
-3. **App Bundle** (what Play expects):
-
-   ```bash
-   ./gradlew :app:bundleRelease
-   ```
-
-   Output: `app/build/outputs/bundle/release/app-release.aab`  
-   Without `keystore.properties`, the release may be signed with the **debug** key — only for local checks. Uploads to Play need your upload keystore (step 2).
-
-Best for learning, experiments, and small projects. Very large builds may be limited by device memory and CPU.
-
