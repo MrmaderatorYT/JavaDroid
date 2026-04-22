@@ -39,36 +39,5 @@ APK: `app/build/outputs/apk/debug/`
    Output: `app/build/outputs/bundle/release/app-release.aab`  
    Without `keystore.properties`, the release may be signed with the **debug** key — only for local checks. Uploads to Play need your upload keystore (step 2).
 
-4. **Play Console** — enable **Play App Signing**, upload the AAB, complete **Data safety** (this app declares `INTERNET`), store listing, content rating, and meet the target API policy (`targetSdk` 35 in this project).
-
-5. **Updates** — increase `versionCode` and `versionName` in `app/build.gradle` for every upload.
-
-### Play Store listing (English)
-
-**Short description** (max 80 characters on Play):
-
-`Java IDE for Android: Maven, on-device compile & run, editor, dark theme.`
-
-**Full description** — copy into the store listing (plain text):
-
-```
-JavaDroid is a compact Java IDE on your Android device. Edit code with syntax highlighting, open Maven projects, resolve dependencies from Maven Central, compile on the phone with ECJ and D8, run your app, and fix issues in a Problems panel—without a desktop PC.
-
-Features
-• Code editor with Java highlighting, find and replace
-• Maven: pom.xml, dependency resolution, run / package / test-compile
-• On-device compilation; Android APIs bundled for the classpath
-• Problems: compiler diagnostics and lightweight checks
-• Code completion: keywords, identifiers, methods after a dot, project classes
-• UI languages: English, Ukrainian, German, French — Darcula-inspired dark theme
-
 Best for learning, experiments, and small projects. Very large builds may be limited by device memory and CPU.
 
-Requirements: Android 8.0 (API 26) or newer.
-```
-
-## Legal / deps
-
-Before you ship anywhere, check licenses of libraries listed in `app/build.gradle` (editor, ECJ, R8, AndroidX, etc.).
-
-Personal / learning project.
