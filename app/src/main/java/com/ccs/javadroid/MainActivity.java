@@ -4,6 +4,9 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.Spannable;
@@ -11,15 +14,16 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,15 +36,21 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import io.github.rosemoe.sora.event.ContentChangeEvent;
 import io.github.rosemoe.sora.event.SelectionChangeEvent;
 import io.github.rosemoe.sora.widget.CodeEditor;
-import io.github.rosemoe.sora.widget.schemes.SchemeDarcula;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -64,6 +74,12 @@ public class MainActivity extends AppCompatActivity {
     private ScrollView    bytecodeOuterScroll;
     private TextView      bytecodeOutput;
     private View          btnClearConsole;
+    private View          tabsBar;
+    private View          tabBorder;
+    private View          bottomTabsBar;
+    private Toolbar       toolbar;
+    private View          keyAccessoryBar;
+    private LinearLayout  accessoryBarLayout;
 
     private static final int PANEL_RUN       = 0;
     private static final int PANEL_PROBLEMS  = 1;
@@ -82,16 +98,15 @@ public class MainActivity extends AppCompatActivity {
 
     // ── State ──────────────────────────────────────────────
     private SharedPreferences prefs;
-    private int     currentFontSize  = 14;
+    private AppPreferences    appPrefs;
+    private AppTheme          theme;
     private boolean isRunning        = false;
     private int     lastSearchOffset = -1;
 
-    // ── Colors ─────────────────────────────────────────────
-    private static final int COL_PROGRESS  = 0xFF808080;
-    private static final int COL_OUTPUT    = 0xFFA9B7C6;
-    private static final int COL_ERROR     = 0xFFFF6B6B;
-    private static final int COL_SUCCESS   = 0xFF499C54;
-    private static final int COL_SEPARATOR = 0xFF4A86C8;
+    private static final int REQ_SETTINGS    = 4001;
+    private static final int REQ_OPEN_FILE   = 4002;
+    private static final int REQ_SAVE_AS     = 4003;
+    private static final int REQ_EXPORT_PROJ = 4004;
 
     private static final String DEFAULT_CODE =
             "public class Main {\n" +
@@ -109,10 +124,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        prefs = getSharedPreferences("com.ccs.javadroid.prefs", MODE_PRIVATE);
-        currentFontSize = prefs.getInt("font_size", 14);
+        prefs = getSharedPreferences(AppPreferences.PREFS_NAME, MODE_PRIVATE);
+        appPrefs = new AppPreferences(this);
+        theme    = AppTheme.byId(appPrefs.getThemeId(), appPrefs);
 
         bindViews();
+        applyTheme();
         setupBackHandling();
         setupToolbar();
         setupTabs();
@@ -185,15 +202,101 @@ public class MainActivity extends AppCompatActivity {
         bytecodeOuterScroll = findViewById(R.id.bytecodeOuterScroll);
         bytecodeOutput   = findViewById(R.id.bytecodeOutput);
         btnClearConsole  = findViewById(R.id.btnClearConsole);
+        tabsBar          = findViewById(R.id.tabsBar);
+        tabBorder        = findViewById(R.id.tabBorder);
+        bottomTabsBar    = findViewById(R.id.bottomTabsBar);
+        statusBar        = findViewById(R.id.statusBar);
+        toolbar          = findViewById(R.id.toolbar);
+        keyAccessoryBar  = findViewById(R.id.keyAccessoryBar);
+        accessoryBarLayout = findViewById(R.id.accessoryBarLayout);
+    }
+
+    /** Перефарбовує статичні UI-елементи відповідно до поточної теми. */
+    private void applyTheme() {
+        if (drawerLayout != null) drawerLayout.setBackgroundColor(theme.bg);
+        View drawerRoot   = findViewById(R.id.drawerRoot);
+        View drawerHeader = findViewById(R.id.drawerHeader);
+        if (drawerRoot != null)   drawerRoot.setBackgroundColor(theme.toolbar);
+        if (drawerHeader != null) drawerHeader.setBackgroundColor(theme.bg);
+        if (toolbar != null)      toolbar.setBackgroundColor(theme.toolbar);
+        if (toolbarTitle != null) toolbarTitle.setTextColor(theme.text);
+        if (tabsBar != null)      tabsBar.setBackgroundColor(theme.toolbar);
+        if (tabBorder != null)    tabBorder.setBackgroundColor(theme.accent);
+        if (bottomTabsBar != null) bottomTabsBar.setBackgroundColor(theme.toolbar);
+        if (statusBar != null)    statusBar.setBackgroundColor(theme.statusBar);
+        if (consoleScroll != null) consoleScroll.setBackgroundColor(theme.consoleBg);
+        if (consoleOutput != null) consoleOutput.setTextColor(theme.consoleText);
+        if (problemsRecycler != null) problemsRecycler.setBackgroundColor(theme.consoleBg);
+        if (bytecodeOuterScroll != null) bytecodeOuterScroll.setBackgroundColor(theme.consoleBg);
+        if (bytecodeOutput != null) bytecodeOutput.setTextColor(theme.consoleText);
+        // Status bar дочірні: дивайдери та текстові підписи (UTF-8 / Java)
+        if (statusBar instanceof android.view.ViewGroup) {
+            android.view.ViewGroup g = (android.view.ViewGroup) statusBar;
+            for (int i = 0; i < g.getChildCount(); i++) {
+                View v = g.getChildAt(i);
+                if (v instanceof TextView) {
+                    ((TextView) v).setTextColor(theme.textDim);
+                } else if (v.getBackground() != null) {
+                    v.setBackgroundColor(theme.separator);
+                }
+            }
+        }
+        if (statusLineCol != null) statusLineCol.setTextColor(theme.text);
+        if (statusFileName != null) statusFileName.setTextColor(theme.textDim);
+        if (keyAccessoryBar != null) keyAccessoryBar.setBackgroundColor(theme.toolbar);
+        setupKeyAccessoryBar();
+    }
+
+    private void setupKeyAccessoryBar() {
+        if (accessoryBarLayout == null) return;
+        accessoryBarLayout.removeAllViews();
+
+        final String[] symbols = { "{", "}", "(", ")", "[", "]", ";", ".", "=", "\"", "+", "-", "*", "/", "Tab" };
+
+        for (final String symbol : symbols) {
+            TextView btn = new TextView(this);
+            btn.setText(symbol);
+            btn.setTextColor(theme.text);
+            btn.setTextSize(14);
+            btn.setGravity(Gravity.CENTER);
+            btn.setPadding(dp(12), 0, dp(12), 0);
+
+            android.util.TypedValue tv = new android.util.TypedValue();
+            getTheme().resolveAttribute(android.R.attr.selectableItemBackground, tv, true);
+            if (tv.resourceId != 0) {
+                btn.setBackgroundResource(tv.resourceId);
+            }
+
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            btn.setLayoutParams(lp);
+            btn.setClickable(true);
+            btn.setFocusable(true);
+
+            btn.setOnClickListener(v -> {
+                if (editor != null && editor.isEditable()) {
+                    if ("Tab".equals(symbol)) {
+                        int tabSize = appPrefs.getTabSize();
+                        StringBuilder spaces = new StringBuilder();
+                        for (int i = 0; i < tabSize; i++) spaces.append(" ");
+                        editor.insertText(spaces.toString(), spaces.length());
+                    } else {
+                        editor.insertText(symbol, symbol.length());
+                    }
+                }
+            });
+            accessoryBarLayout.addView(btn);
+        }
     }
 
     private void setupToolbar() {
-        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
         toolbar.setNavigationIcon(R.drawable.ic_menu);
+        Drawable nav = toolbar.getNavigationIcon();
+        if (nav != null) nav.setColorFilter(theme.text, PorterDuff.Mode.SRC_IN);
         toolbar.setNavigationOnClickListener(v ->
                 drawerLayout.openDrawer(GravityCompat.START));
 
@@ -241,10 +344,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupEditor() {
-        editor.setColorScheme(new SchemeDarcula());
         editor.setEditorLanguage(new JavaDroidLanguage(this, null));
-        editor.setTextSize(currentFontSize);
-        editor.setLineNumberEnabled(true);
+        EditorSettingsApplier.apply(editor, appPrefs, theme);
         editor.setEditable(false);
 
         // Cursor position → status bar
@@ -255,10 +356,16 @@ public class MainActivity extends AppCompatActivity {
             runOnUiThread(() -> statusLineCol.setText(getString(R.string.status_line, ln, col)));
         });
 
-        // Content change → mark tab as modified
+        // Content change → mark tab as modified + auto-save (if enabled)
         editor.subscribeEvent(ContentChangeEvent.class, (event, sub) -> {
             int idx = tabsAdapter.getActiveIndex();
-            if (idx >= 0) runOnUiThread(() -> tabsAdapter.markModified(idx, true));
+            if (idx >= 0) runOnUiThread(() -> {
+                tabsAdapter.markModified(idx, true);
+                if (appPrefs.isAutoSave()) {
+                    saveCurrentToActiveTab();
+                    tabsAdapter.markModified(idx, false);
+                }
+            });
         });
     }
 
@@ -303,18 +410,31 @@ public class MainActivity extends AppCompatActivity {
         consoleScroll.setVisibility(mode == PANEL_RUN ? View.VISIBLE : View.GONE);
         problemsRecycler.setVisibility(mode == PANEL_PROBLEMS ? View.VISIBLE : View.GONE);
         bytecodeOuterScroll.setVisibility(mode == PANEL_BYTECODE ? View.VISIBLE : View.GONE);
-        tabRun.setBackgroundColor(mode == PANEL_RUN ? 0xFF4E5254 : 0xFF3C3F41);
-        tabProblems.setBackgroundColor(mode == PANEL_PROBLEMS ? 0xFF4E5254 : 0xFF3C3F41);
-        tabBytecode.setBackgroundColor(mode == PANEL_BYTECODE ? 0xFF4E5254 : 0xFF3C3F41);
-        tabRun.setTextColor(mode == PANEL_RUN ? 0xFF499C54 : 0xFF808080);
-        tabProblems.setTextColor(mode == PANEL_PROBLEMS ? 0xFFBBBBBB : 0xFF808080);
-        tabBytecode.setTextColor(mode == PANEL_BYTECODE ? 0xFFCCC77A : 0xFF808080);
+
+        int activeBg   = blend(theme.toolbar, theme.bg, 0.4f);
+        int inactiveBg = theme.toolbar;
+        tabRun.setBackgroundColor(mode == PANEL_RUN ? activeBg : inactiveBg);
+        tabProblems.setBackgroundColor(mode == PANEL_PROBLEMS ? activeBg : inactiveBg);
+        tabBytecode.setBackgroundColor(mode == PANEL_BYTECODE ? activeBg : inactiveBg);
+        tabRun.setTextColor(mode == PANEL_RUN ? theme.successText : theme.textDim);
+        tabProblems.setTextColor(mode == PANEL_PROBLEMS ? theme.text : theme.textDim);
+        tabBytecode.setTextColor(mode == PANEL_BYTECODE ? theme.accent : theme.textDim);
         if (btnClearConsole != null) {
             btnClearConsole.setVisibility(mode == PANEL_RUN ? View.VISIBLE : View.GONE);
+            ((TextView) btnClearConsole).setTextColor(theme.textDim);
         }
         if (mode == PANEL_BYTECODE) {
             refreshBytecodePanel();
         }
+    }
+
+    private static int blend(int a, int b, float t) {
+        int ar = (a >> 16) & 0xFF, ag = (a >> 8) & 0xFF, ab = a & 0xFF;
+        int br = (b >> 16) & 0xFF, bg = (b >> 8) & 0xFF, bb = b & 0xFF;
+        int r = (int) (ar + (br - ar) * t);
+        int g = (int) (ag + (bg - ag) * t);
+        int bl = (int) (ab + (bb - ab) * t);
+        return 0xFF000000 | (r << 16) | (g << 8) | bl;
     }
 
     private void refreshBytecodePanel() {
@@ -533,13 +653,16 @@ public class MainActivity extends AppCompatActivity {
         }
         saveCurrentToActiveTab();
         try {
-            String content = projectManager.readFile(tab.file);
+            Uri fileUri = androidx.core.content.FileProvider.getUriForFile(
+                    this, "com.ccs.javadroid.fileprovider", tab.file);
             Intent send = new Intent(Intent.ACTION_SEND);
-            send.setType("text/plain");
+            String mime = tab.file.getName().endsWith(".java") ? "text/x-java" : "text/plain";
+            send.setType(mime);
             send.putExtra(Intent.EXTRA_SUBJECT, tab.file.getName());
-            send.putExtra(Intent.EXTRA_TEXT, content);
+            send.putExtra(Intent.EXTRA_STREAM, fileUri);
+            send.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             startActivity(Intent.createChooser(send, getString(R.string.share_file_chooser)));
-        } catch (IOException e) {
+        } catch (Exception e) {
             Toast.makeText(this, getString(R.string.error_cannot_read, e.getMessage()), Toast.LENGTH_SHORT).show();
         }
     }
@@ -568,11 +691,71 @@ public class MainActivity extends AppCompatActivity {
         else if (id == R.id.action_sync_deps)        { syncDependencies();        return true; }
         else if (id == R.id.action_maven_package)    { mavenPackage();            return true; }
         else if (id == R.id.action_maven_test)       { mavenTestCompile();        return true; }
-        else if (id == R.id.action_settings)         { showSettingsDialog();      return true; }
+        else if (id == R.id.action_settings)         { openSettings();            return true; }
         else if (id == R.id.action_clear_console)    { consoleOutput.setText(""); return true; }
         else if (id == R.id.action_copy_console)     { copyConsoleToClipboard(); return true; }
         else if (id == R.id.action_share_file)       { shareCurrentFile(); return true; }
+        else if (id == R.id.action_open_file)        { pickFileToOpen(); return true; }
+        else if (id == R.id.action_save_as)          { saveCurrentAs(); return true; }
+        else if (id == R.id.action_export_project)   { exportProjectAsZip(); return true; }
+        else if (id == R.id.action_git)              { openGit(); return true; }
+        else if (id == R.id.action_git_quick_commit) { showQuickCommitDialog(); return true; }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void openGit() {
+        saveCurrentToActiveTab();
+        GitActivity.launch(this, projectManager.getProjectDir());
+    }
+
+    private void showQuickCommitDialog() {
+        saveCurrentToActiveTab();
+        File dir = projectManager.getProjectDir();
+        if (!GitManager.isGitRepo(dir)) {
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.menu_git_quick_commit)
+                    .setMessage(R.string.git_quick_init_first)
+                    .setPositiveButton(R.string.git_init, (d, w) -> {
+                        new Thread(() -> {
+                            try { GitManager.init(dir); }
+                            catch (Exception e) { runOnUiThread(() ->
+                                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show()); return; }
+                            runOnUiThread(this::showQuickCommitDialog);
+                        }, "git-init").start();
+                    })
+                    .setNegativeButton(R.string.dialog_cancel, null)
+                    .show();
+            return;
+        }
+        EditText et = new EditText(this);
+        et.setHint(R.string.git_commit_hint);
+        et.setHintTextColor(theme.textDim);
+        et.setTextColor(theme.text);
+        et.setPadding(dp(16), dp(12), dp(16), dp(12));
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.menu_git_quick_commit)
+                .setView(et)
+                .setPositiveButton(R.string.git_commit, (d, w) -> {
+                    String msg = et.getText().toString().trim();
+                    if (msg.isEmpty()) return;
+                    GitCredentialsStore creds = new GitCredentialsStore(this);
+                    String name  = creds.authorName();
+                    String email = creds.authorEmail();
+                    new Thread(() -> {
+                        try {
+                            GitManager.addAll(dir);
+                            GitManager.commit(dir, msg, name, email);
+                            runOnUiThread(() -> Toast.makeText(this,
+                                    R.string.git_quick_commit_done, Toast.LENGTH_SHORT).show());
+                        } catch (Exception e) {
+                            runOnUiThread(() -> Toast.makeText(this,
+                                    e.getMessage(), Toast.LENGTH_LONG).show());
+                        }
+                    }, "git-commit").start();
+                })
+                .setNeutralButton(R.string.menu_git, (d, w) -> openGit())
+                .setNegativeButton(R.string.dialog_cancel, null)
+                .show();
     }
 
     // ══════════════════════════════════════════════════════════
@@ -718,23 +901,23 @@ public class MainActivity extends AppCompatActivity {
             isRunning = true;
             consoleOutput.setText("");
             switchBottomPanel(PANEL_RUN);
-            appendConsole(getString(R.string.console_maven_run), COL_PROGRESS);
+            appendConsole(getString(R.string.console_maven_run), theme.textDim);
             try {
                 PomModel pom = PomParser.parse(MavenPaths.pomFile(projectManager.getProjectDir()));
                 ProjectCompiler.mavenCompileAndRun(this, projectManager.getProjectDir(), pom,
                         new ProjectCompiler.Callback() {
                             @Override
                             public void onProgress(String msg) {
-                                appendConsole("   " + msg, COL_PROGRESS);
+                                appendConsole("   " + msg, theme.textDim);
                             }
 
                             @Override
                             public void onResult(String output) {
                                 isRunning = false;
-                                appendConsole("", COL_SEPARATOR);
-                                appendConsole(getString(R.string.console_output_separator), COL_SEPARATOR);
+                                appendConsole("", theme.accent);
+                                appendConsole(getString(R.string.console_output_separator), theme.accent);
                                 if (output == null || output.trim().isEmpty()) {
-                                    appendConsole(getString(R.string.console_build_success), COL_SUCCESS);
+                                    appendConsole(getString(R.string.console_build_success), theme.successText);
                                     refreshProblemsMergedAsync();
                                     return;
                                 }
@@ -742,9 +925,9 @@ public class MainActivity extends AppCompatActivity {
                                         || output.startsWith("Execution Exception")
                                         || output.startsWith("System Error")
                                         || output.startsWith("Error:");
-                                appendConsole(output.trim(), err ? COL_ERROR : COL_OUTPUT);
+                                appendConsole(output.trim(), err ? theme.errorText : theme.consoleText);
                                 if (!err) {
-                                    appendConsole("\n" + getString(R.string.console_build_success), COL_SUCCESS);
+                                    appendConsole("\n" + getString(R.string.console_build_success), theme.successText);
                                 }
                                 boolean compilationFailed = output.startsWith("Compilation Error");
                                 if (!compilationFailed) {
@@ -770,31 +953,31 @@ public class MainActivity extends AppCompatActivity {
         isRunning = true;
         consoleOutput.setText("");
         switchBottomPanel(PANEL_RUN);
-        appendConsole(getString(R.string.console_running_file, activeTab.file.getName()), COL_PROGRESS);
+        appendConsole(getString(R.string.console_running_file, activeTab.file.getName()), theme.textDim);
 
         ProjectCompiler.runSingleSource(this, editor.getText().toString(), activeTab.file,
                 new ProjectCompiler.Callback() {
                     @Override
                     public void onProgress(String msg) {
-                        appendConsole("   " + msg, COL_PROGRESS);
+                        appendConsole("   " + msg, theme.textDim);
                     }
 
                     @Override
                     public void onResult(String output) {
                         isRunning = false;
-                        appendConsole("", COL_SEPARATOR);
-                        appendConsole(getString(R.string.console_output_separator), COL_SEPARATOR);
+                        appendConsole("", theme.accent);
+                        appendConsole(getString(R.string.console_output_separator), theme.accent);
                         if (output == null || output.trim().isEmpty()) {
-                            appendConsole(getString(R.string.console_process_exit_ok), COL_SUCCESS);
+                            appendConsole(getString(R.string.console_process_exit_ok), theme.successText);
                             return;
                         }
                         boolean isError = output.startsWith("Compilation Error")
                                 || output.startsWith("Execution Exception")
                                 || output.startsWith("System Error")
                                 || output.startsWith("Error:");
-                        appendConsole(output.trim(), isError ? COL_ERROR : COL_OUTPUT);
+                        appendConsole(output.trim(), isError ? theme.errorText : theme.consoleText);
                         if (!isError) {
-                            appendConsole("\n" + getString(R.string.console_process_exit_ok), COL_SUCCESS);
+                            appendConsole("\n" + getString(R.string.console_process_exit_ok), theme.successText);
                         }
                     }
 
@@ -819,15 +1002,15 @@ public class MainActivity extends AppCompatActivity {
         mavenSyncInProgress = true;
         switchBottomPanel(PANEL_RUN);
         consoleOutput.setText("");
-        appendConsole(getString(R.string.console_sync_maven), COL_PROGRESS);
+        appendConsole(getString(R.string.console_sync_maven), theme.textDim);
         new Thread(() -> {
             try {
                 PomModel pom = PomParser.parse(MavenPaths.pomFile(projectManager.getProjectDir()));
                 MavenDependencyResolver.resolve(projectManager.getProjectDir(), pom, line ->
-                        runOnUiThread(() -> appendConsole("   " + line, COL_PROGRESS)));
+                        runOnUiThread(() -> appendConsole("   " + line, theme.textDim)));
                 runOnUiThread(() -> {
                     mavenSyncInProgress = false;
-                    appendConsole(getString(R.string.console_sync_done), COL_SUCCESS);
+                    appendConsole(getString(R.string.console_sync_done), theme.successText);
                     Toast.makeText(this, R.string.toast_sync_done, Toast.LENGTH_SHORT).show();
                 });
             } catch (Exception e) {
@@ -847,16 +1030,16 @@ public class MainActivity extends AppCompatActivity {
         saveCurrentToActiveTab();
         switchBottomPanel(PANEL_RUN);
         consoleOutput.setText("");
-        appendConsole(getString(R.string.console_mvn_package), COL_PROGRESS);
+        appendConsole(getString(R.string.console_mvn_package), theme.textDim);
         try {
             PomModel pom = PomParser.parse(MavenPaths.pomFile(projectManager.getProjectDir()));
             ProjectCompiler.mavenPackage(this, projectManager.getProjectDir(), pom,
                     new ProjectCompiler.Callback() {
                         @Override public void onProgress(String msg) {
-                            appendConsole("   " + msg, COL_PROGRESS);
+                            appendConsole("   " + msg, theme.textDim);
                         }
                         @Override public void onResult(String output) {
-                            appendConsole(output, COL_OUTPUT);
+                            appendConsole(output, theme.consoleText);
                         }
                         @Override public void onProblems(List<ProblemItem> problems) {
                             if (problems != null) problemsAdapter.setItems(problems);
@@ -875,16 +1058,16 @@ public class MainActivity extends AppCompatActivity {
         saveCurrentToActiveTab();
         switchBottomPanel(PANEL_RUN);
         consoleOutput.setText("");
-        appendConsole(getString(R.string.console_mvn_test_compile), COL_PROGRESS);
+        appendConsole(getString(R.string.console_mvn_test_compile), theme.textDim);
         try {
             PomModel pom = PomParser.parse(MavenPaths.pomFile(projectManager.getProjectDir()));
             ProjectCompiler.mavenTestCompile(this, projectManager.getProjectDir(), pom,
                     new ProjectCompiler.Callback() {
                         @Override public void onProgress(String msg) {
-                            appendConsole("   " + msg, COL_PROGRESS);
+                            appendConsole("   " + msg, theme.textDim);
                         }
                         @Override public void onResult(String output) {
-                            appendConsole(output, COL_OUTPUT);
+                            appendConsole(output, theme.consoleText);
                         }
                         @Override public void onProblems(List<ProblemItem> problems) {
                             problemsAdapter.setItems(problems);
@@ -1157,49 +1340,194 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // ══════════════════════════════════════════════════════════
-    //  Settings
+    //  Settings + new features
     // ══════════════════════════════════════════════════════════
 
-    private void showSettingsDialog() {
-        LinearLayout layout = new LinearLayout(this);
-        layout.setOrientation(LinearLayout.VERTICAL);
-        layout.setBackgroundColor(0xFF3C3F41);
-        int pad = dp(20);
-        layout.setPadding(pad, pad, pad, pad / 2);
+    private void openSettings() {
+        startActivityForResult(new Intent(this, SettingsActivity.class), REQ_SETTINGS);
+    }
 
-        TextView fontLabel = new TextView(this);
-        fontLabel.setText(getString(R.string.dialog_font_size, currentFontSize));
-        fontLabel.setTextColor(0xFFBBBBBB);
-        fontLabel.setTextSize(13);
-        layout.addView(fontLabel);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQ_SETTINGS) {
+            // Перезастосовуємо тему/шрифт без повного recreate, щоб не втрачати стан вкладок.
+            theme = AppTheme.byId(appPrefs.getThemeId(), appPrefs);
+            applyTheme();
+            EditorSettingsApplier.apply(editor, appPrefs, theme);
+            switchBottomPanel(bottomPanelMode);
+            Drawable nav = toolbar != null ? toolbar.getNavigationIcon() : null;
+            if (nav != null) nav.setColorFilter(theme.text, PorterDuff.Mode.SRC_IN);
+            return;
+        }
+        if (resultCode != RESULT_OK || data == null) return;
+        Uri uri = data.getData();
+        if (uri == null) return;
+        if (requestCode == REQ_OPEN_FILE)        importExternalJavaFile(uri);
+        else if (requestCode == REQ_SAVE_AS)     writeCurrentEditorToUri(uri);
+        else if (requestCode == REQ_EXPORT_PROJ) exportProjectToUri(uri);
+    }
 
-        SeekBar seekBar = new SeekBar(this);
-        seekBar.setMax(20);  // range: 8–28
-        seekBar.setProgress(currentFontSize - 8);
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override public void onStartTrackingTouch(SeekBar s) {}
-            @Override public void onStopTrackingTouch(SeekBar s) {}
-            @Override public void onProgressChanged(SeekBar s, int progress, boolean fromUser) {
-                int size = progress + 8;
-                fontLabel.setText(getString(R.string.dialog_font_size, size));
-                editor.setTextSize(size);
-                currentFontSize = size;
+    // ── External file: open ────────────────────────────────────
+
+    private void pickFileToOpen() {
+        Intent i = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        i.addCategory(Intent.CATEGORY_OPENABLE);
+        i.setType("*/*");
+        try {
+            startActivityForResult(i, REQ_OPEN_FILE);
+        } catch (Exception e) {
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void importExternalJavaFile(Uri uri) {
+        String name = displayName(uri);
+        if (name == null) name = "Imported.java";
+        if (!name.toLowerCase().endsWith(".java")) {
+            // Дозволяємо інші текстові файли — імпортуємо як Imported.txt у проєкт
+            // АЛЕ якщо це не текст, кажемо
+            // Простіше: створюємо .java якщо розширення не txt
+        }
+        try (InputStream in = getContentResolver().openInputStream(uri)) {
+            if (in == null) throw new IOException("Cannot open stream");
+            byte[] data = readAll(in);
+            String text = new String(data, StandardCharsets.UTF_8);
+            String safe = name.replaceAll("[^A-Za-z0-9._-]", "_");
+            if (!safe.endsWith(".java") && !safe.contains(".")) safe += ".java";
+            File target;
+            if (safe.endsWith(".java")) {
+                String className = safe.substring(0, safe.length() - 5);
+                File made = projectManager.createFile(className, text);
+                if (made == null) {
+                    File dir = projectManager.isMavenProject()
+                            ? ProjectLayoutHelper.mainJavaPackageDir(projectManager.getProjectDir())
+                            : projectManager.getProjectDir();
+                    target = new File(dir, safe);
+                    projectManager.writeFile(target, text);
+                } else {
+                    target = made;
+                }
+            } else {
+                File dir = projectManager.getProjectDir();
+                target = new File(dir, safe);
+                projectManager.writeFile(target, text);
             }
-        });
-        layout.addView(seekBar);
+            refreshFileTree();
+            openFile(target);
+            Toast.makeText(this, getString(R.string.toast_imported_to, target.getName()),
+                    Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
 
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.dialog_settings_title)
-                .setView(layout)
-                .setPositiveButton(R.string.dialog_apply, (d, w) ->
-                        prefs.edit().putInt("font_size", currentFontSize).apply())
-                .setNegativeButton(R.string.dialog_cancel, (d, w) -> {
-                    // restore
-                    int saved = prefs.getInt("font_size", 14);
-                    editor.setTextSize(saved);
-                    currentFontSize = saved;
-                })
-                .show();
+    // ── Save as ────────────────────────────────────────────────
+
+    private void saveCurrentAs() {
+        FileTab tab = tabsAdapter.getActiveTab();
+        if (tab == null || tab.file == null) {
+            Toast.makeText(this, R.string.toast_no_file_open, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Intent i = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        i.addCategory(Intent.CATEGORY_OPENABLE);
+        i.setType("text/x-java");
+        i.putExtra(Intent.EXTRA_TITLE, tab.file.getName());
+        try {
+            startActivityForResult(i, REQ_SAVE_AS);
+        } catch (Exception e) {
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void writeCurrentEditorToUri(Uri uri) {
+        try (OutputStream os = getContentResolver().openOutputStream(uri)) {
+            if (os == null) throw new IOException("Cannot open output");
+            os.write(editor.getText().toString().getBytes(StandardCharsets.UTF_8));
+            String name = displayName(uri);
+            Toast.makeText(this, getString(R.string.toast_export_done,
+                    name != null ? name : uri.toString()), Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Toast.makeText(this, getString(R.string.toast_export_failed, e.getMessage()),
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    // ── Export project as zip ──────────────────────────────────
+
+    private void exportProjectAsZip() {
+        Intent i = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        i.addCategory(Intent.CATEGORY_OPENABLE);
+        i.setType("application/zip");
+        i.putExtra(Intent.EXTRA_TITLE, projectManager.getProjectDir().getName() + ".zip");
+        try {
+            startActivityForResult(i, REQ_EXPORT_PROJ);
+        } catch (Exception e) {
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void exportProjectToUri(Uri uri) {
+        new Thread(() -> {
+            try (OutputStream os = getContentResolver().openOutputStream(uri);
+                 ZipOutputStream zos = new ZipOutputStream(os)) {
+                if (os == null) throw new IOException("Cannot open output");
+                File root = projectManager.getProjectDir();
+                zipDir(root, root, zos);
+                runOnUiThread(() -> Toast.makeText(this,
+                        getString(R.string.toast_export_done, root.getName() + ".zip"),
+                        Toast.LENGTH_SHORT).show());
+            } catch (Exception e) {
+                runOnUiThread(() -> Toast.makeText(this,
+                        getString(R.string.toast_export_failed, e.getMessage()),
+                        Toast.LENGTH_SHORT).show());
+            }
+        }, "export-zip").start();
+    }
+
+    private static void zipDir(File rootDir, File current, ZipOutputStream zos) throws IOException {
+        File[] children = current.listFiles();
+        if (children == null) return;
+        for (File f : children) {
+            // Не пакуємо target/ та .gradle/.idea — економимо місце
+            String n = f.getName();
+            if (f.isDirectory() && (n.equals("target") || n.equals(".gradle")
+                    || n.equals(".idea") || n.equals("build"))) continue;
+            if (f.isDirectory()) {
+                zipDir(rootDir, f, zos);
+            } else {
+                String rel = rootDir.toPath().relativize(f.toPath()).toString().replace('\\', '/');
+                zos.putNextEntry(new ZipEntry(rel));
+                try (FileInputStream in = new FileInputStream(f)) {
+                    byte[] buf = new byte[8192];
+                    int n2;
+                    while ((n2 = in.read(buf)) != -1) zos.write(buf, 0, n2);
+                }
+                zos.closeEntry();
+            }
+        }
+    }
+
+    // ── SAF helpers ────────────────────────────────────────────
+
+    private String displayName(Uri uri) {
+        try (android.database.Cursor c = getContentResolver().query(uri, null, null, null, null)) {
+            if (c != null && c.moveToFirst()) {
+                int idx = c.getColumnIndex(android.provider.OpenableColumns.DISPLAY_NAME);
+                if (idx >= 0) return c.getString(idx);
+            }
+        } catch (Exception ignored) {}
+        return null;
+    }
+
+    private static byte[] readAll(InputStream in) throws IOException {
+        java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
+        BufferedInputStream bis = new BufferedInputStream(in);
+        byte[] buf = new byte[8192];
+        int n;
+        while ((n = bis.read(buf)) != -1) out.write(buf, 0, n);
+        return out.toByteArray();
     }
 
     // ══════════════════════════════════════════════════════════

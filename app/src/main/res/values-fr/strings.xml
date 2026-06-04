@@ -97,4 +97,111 @@
     <string name="bytecode_compiling">Compilation…</string>
     <string name="bytecode_only_java">Ouvrez un fichier .java pour le bytecode JVM (ASM, style javap).</string>
     <string name="bytecode_failed">Bytecode : %1$s</string>
+
+    <!-- Settings screen -->
+    <string name="settings_section_theme">Thème</string>
+    <string name="settings_section_custom_colors">Couleurs personnalisées</string>
+    <string name="settings_section_editor">Éditeur</string>
+    <string name="settings_section_compiler">Compilateur</string>
+    <string name="settings_theme_custom">Personnalisé</string>
+
+    <string name="settings_color_bg">Arrière-plan</string>
+    <string name="settings_color_toolbar">Barre d’outils</string>
+    <string name="settings_color_fg">Couleur du texte</string>
+    <string name="settings_color_accent">Accent</string>
+    <string name="settings_color_console_bg">Fond de la console</string>
+    <string name="settings_color_keyword">Mot-clé</string>
+    <string name="settings_color_string">Chaîne littérale</string>
+    <string name="settings_color_comment">Commentaire</string>
+
+    <string name="settings_font_family">Police</string>
+    <string name="settings_font_size_n">Taille : %1$dsp</string>
+    <string name="settings_tab_size_n">Taille des tabulations : %1$d</string>
+    <string name="settings_line_spacing_n">Interligne : %1$s×</string>
+    <string name="settings_line_numbers">Afficher les numéros de ligne</string>
+    <string name="settings_word_wrap">Retour à la ligne</string>
+    <string name="settings_auto_save">Enregistrement auto</string>
+
+    <string name="font_monospace">Chasse fixe</string>
+    <string name="font_sans">Sans empattement</string>
+    <string name="font_serif">Empattement</string>
+    <string name="font_default">Par défaut du système</string>
+
+    <string name="settings_java_target">Cible Java</string>
+    <string name="settings_java_hint">Affecte la compilation ECJ. Les versions plus récentes peuvent ne pas s’exécuter via D8.</string>
+
+    <string name="settings_reset_defaults">Réinitialiser</string>
+    <string name="settings_reset_confirm">Toutes les préférences d’interface, de police et du compilateur seront réinitialisées. Les fichiers du projet sont conservés.</string>
+    <string name="settings_reset_done">Valeurs par défaut restaurées</string>
+    <string name="soon">bientôt</string>
+
+    <string name="menu_open_file">Ouvrir un fichier…</string>
+    <string name="menu_save_as">Enregistrer sous…</string>
+    <string name="menu_export_project">Exporter le projet (ZIP)</string>
+    <string name="toast_imported_to">Importé sous %1$s</string>
+    <string name="toast_export_done">Exporté : %1$s</string>
+    <string name="toast_export_failed">Échec de l’export : %1$s</string>
+    <string name="toast_only_text_files">Seuls les fichiers texte sont pris en charge</string>
+    <string name="toast_only_java_supported">Seul l’import .java est pris en charge dans le projet</string>
+
+    <!-- Git -->
+    <string name="git_activity_title">Git</string>
+    <string name="menu_git">Git…</string>
+    <string name="menu_git_quick_commit">Git : commit rapide</string>
+
+    <string name="git_tab_status">Statut</string>
+    <string name="git_tab_commit">Commit</string>
+    <string name="git_tab_log">Journal</string>
+    <string name="git_tab_branches">Branches</string>
+    <string name="git_tab_remote">Distant</string>
+
+    <string name="git_no_repo">Ce projet n’est pas encore un dépôt Git.\n%1$s</string>
+    <string name="git_no_repo_short">pas de .git</string>
+    <string name="git_init">Initialiser le dépôt</string>
+    <string name="git_init_done">Dépôt initialisé</string>
+    <string name="git_clone">Cloner</string>
+    <string name="git_clone_into_dir">Cloner dans ce dossier…</string>
+    <string name="git_clone_message">Clone un dépôt et remplace le contenu de ce dossier.</string>
+    <string name="git_clone_done">Clonage réussi</string>
+    <string name="git_loading">Chargement…</string>
+    <string name="git_clean">Arbre de travail propre</string>
+    <string name="git_grp_staged">Indexés</string>
+    <string name="git_grp_modified">Modifiés</string>
+    <string name="git_grp_untracked">Non suivis</string>
+    <string name="git_grp_conflict">Conflits</string>
+    <string name="git_stage">Indexer</string>
+    <string name="git_unstage">Désindexer</string>
+    <string name="git_stage_all">Tout indexer</string>
+    <string name="git_stage_all_first">Indexer toutes les modifications avant le commit</string>
+
+    <string name="git_commit">Commit</string>
+    <string name="git_commit_message">Message de commit</string>
+    <string name="git_commit_hint">ex. Correction NullPointer dans MainActivity</string>
+    <string name="git_commit_done">Commit : %1$s</string>
+    <string name="git_quick_commit_done">Commit rapide effectué</string>
+    <string name="git_quick_init_first">Initialiser d’abord un dépôt Git dans ce projet ?</string>
+    <string name="git_empty_message">Le message de commit ne peut pas être vide</string>
+    <string name="git_author_identity">Identité de l’auteur</string>
+    <string name="git_author_name">Nom</string>
+    <string name="git_author_email">E-mail</string>
+
+    <string name="git_url_hint">https://github.com/user/repo.git</string>
+    <string name="git_user_hint">Nom d’utilisateur</string>
+    <string name="git_token_hint">Jeton / Mot de passe</string>
+    <string name="git_token_hint_long">Pour GitHub : utilisez un jeton d’accès personnel (Paramètres → Developer settings → Tokens). Stocké localement avec obfuscation simple.</string>
+    <string name="git_save_creds">Enregistrer les identifiants pour cet hôte</string>
+    <string name="git_save_remote">Enregistrer le distant</string>
+    <string name="git_remote_origin">Distant : origin</string>
+    <string name="git_invalid_url">URL Git invalide</string>
+    <string name="git_saved">Enregistré</string>
+    <string name="git_pull">Pull</string>
+    <string name="git_push">Push</string>
+
+    <string name="git_no_commits">Aucun commit pour l’instant</string>
+    <string name="git_no_branches">Aucune branche</string>
+    <string name="git_branch_new">Nouvelle branche</string>
+    <string name="git_branch_name_hint">Nom de la branche (ex. feature/login)</string>
+    <string name="git_checkout_done">Basculé vers %1$s</string>
+
+    <string name="git_error">Erreur Git</string>
 </resources>

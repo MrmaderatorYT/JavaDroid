@@ -17,7 +17,7 @@ android {
         applicationId 'com.ccs.javadroid'
         minSdk 26
         targetSdk 35
-        versionCode 1
+        versionCode 2
         versionName '1.1.0'
     }
 
@@ -70,4 +70,17 @@ dependencies {
     // JVM bytecode disassembly (javap-style text, like Recaf)
     implementation 'org.ow2.asm:asm:9.6'
     implementation 'org.ow2.asm:asm-util:9.6'
+
+    // JGit — pure Java git implementation (works on Android, no native binary, no root)
+    implementation('org.eclipse.jgit:org.eclipse.jgit:5.13.5.202508271544-r') {
+        // JGit's bundled HTTP/SSH transports we don't need; SLF4J pulled separately
+        exclude group: 'com.jcraft', module: 'jsch'
+    }
+    implementation 'org.slf4j:slf4j-nop:1.7.36'
+}
+
+configurations.all {
+    // JGit transitively pulls Bouncycastle which clashes with Android's built-in;
+    // JGit core works without it for our HTTPS-only use case.
+    exclude group: 'org.bouncycastle'
 }

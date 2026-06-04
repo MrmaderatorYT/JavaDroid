@@ -59,7 +59,7 @@ public final class ProjectCompiler {
             File srcFile = new File(cacheDir, className + ".java");
             File androidJar = ensureAndroidJar(context, cacheDir);
             writeUtf8(srcFile, sourceCode);
-            String ecjErr = compileEcj(androidJar, null, cacheDir, srcFile);
+            String ecjErr = compileEcj(androidJar, null, cacheDir, javaTarget(context), srcFile);
             if (ecjErr == null) {
                 return new ArrayList<>();
             }
@@ -67,6 +67,14 @@ public final class ProjectCompiler {
                     EcjProblemParser.parse(ecjErr, null), logicalFile);
         } catch (Exception e) {
             return new ArrayList<>();
+        }
+    }
+
+    private static String javaTarget(Context ctx) {
+        try {
+            return new AppPreferences(ctx).getJavaTarget();
+        } catch (Throwable t) {
+            return AppPreferences.JAVA_8;
         }
     }
 
@@ -92,7 +100,7 @@ public final class ProjectCompiler {
 
                 writeUtf8(srcFile, sourceCode);
 
-                String ecjErr = compileEcj(androidJar, null, cacheDir, srcFile);
+                String ecjErr = compileEcj(androidJar, null, cacheDir, javaTarget(context), srcFile);
                 if (ecjErr != null) {
                     postCompileFailure(callback, context, null, ecjErr, logicalSourceFile,
                             "Compilation Error:\n" + ecjErr);
@@ -136,7 +144,7 @@ public final class ProjectCompiler {
                 List<File> srcArgs = new ArrayList<>(sources);
                 File[] ecjFiles = srcArgs.toArray(new File[0]);
 
-                String ecjErr = compileEcjMulti(androidJar, cp, outDir, ecjFiles);
+                String ecjErr = compileEcjMulti(androidJar, cp, outDir, javaTarget(context), ecjFiles);
                 if (ecjErr != null) {
                     postCompileFailure(callback, context, projectRoot, ecjErr, null,
                             "Compilation Error:\n" + ecjErr);
@@ -245,7 +253,7 @@ public final class ProjectCompiler {
                     return;
                 }
 
-                String ecjErr = compileEcjMulti(androidJar, cp, outDir,
+                String ecjErr = compileEcjMulti(androidJar, cp, outDir, javaTarget(context),
                         testSrc.toArray(new File[0]));
                 if (ecjErr != null) {
                     postCompileFailure(callback, context, projectRoot, ecjErr, null,
@@ -272,7 +280,8 @@ public final class ProjectCompiler {
         List<File> sources = ProjectScanner.listJavaSources(projectRoot);
         if (sources.isEmpty()) throw new IllegalStateException("no sources");
 
-        String ecjErr = compileEcjMulti(androidJar, cp, outDir, sources.toArray(new File[0]));
+        String ecjErr = compileEcjMulti(androidJar, cp, outDir, javaTarget(context),
+                sources.toArray(new File[0]));
         if (ecjErr != null) throw new IllegalStateException(ecjErr);
     }
 
@@ -326,14 +335,15 @@ public final class ProjectCompiler {
         }
     }
 
-    private static String compileEcj(File androidJar, String classpath, File outDir, File... srcFiles) {
+    private static String compileEcj(File androidJar, String classpath, File outDir,
+                                     String javaTarget, File... srcFiles) {
         ByteArrayOutputStream ecjOut = new ByteArrayOutputStream();
         ByteArrayOutputStream ecjErr = new ByteArrayOutputStream();
         PrintWriter outWriter = new PrintWriter(new OutputStreamWriter(ecjOut, StandardCharsets.UTF_8), true);
         PrintWriter errWriter = new PrintWriter(new OutputStreamWriter(ecjErr, StandardCharsets.UTF_8), true);
         Main ecj = new Main(outWriter, errWriter, false, null, null);
         List<String> args = new ArrayList<>();
-        args.add("-1.8");
+        args.add(ecjVersionFlag(javaTarget));
         args.add("-proc:none");
         args.add("-bootclasspath");
         args.add(androidJar.getAbsolutePath());
@@ -370,8 +380,15 @@ public final class ProjectCompiler {
         }
     }
 
-    private static String compileEcjMulti(File androidJar, String classpath, File outDir, File[] srcFiles) {
-        return compileEcj(androidJar, classpath, outDir, srcFiles);
+    private static String compileEcjMulti(File androidJar, String classpath, File outDir,
+                                          String javaTarget, File[] srcFiles) {
+        return compileEcj(androidJar, classpath, outDir, javaTarget, srcFiles);
+    }
+
+    /** Перетворює "1.8"/"11"/"17"/"21" → "-1.8"/"-11"/"-17"/"-21" (формат, який очікує ECJ). */
+    private static String ecjVersionFlag(String javaTarget) {
+        if (javaTarget == null || javaTarget.isEmpty()) return "-1.8";
+        return javaTarget.startsWith("1.") ? "-" + javaTarget : "-" + javaTarget;
     }
 
     private static String classpath(List<File> jars) {
@@ -521,7 +538,7 @@ public final class ProjectCompiler {
                     cp += tc.getAbsolutePath();
                 }
             }
-            String ecjErr = compileEcj(androidJar, cp, outDir, srcFile);
+            String ecjErr = compileEcj(androidJar, cp, outDir, javaTarget(context), srcFile);
             if (ecjErr != null) {
                 return new BytecodeCompileResult(null, ecjErr.trim());
             }

@@ -103,4 +103,112 @@
     <string name="bytecode_compiling">Compiling…</string>
     <string name="bytecode_only_java">Open a .java file to view JVM bytecode (ASM / javap-style).</string>
     <string name="bytecode_failed">Bytecode: %1$s</string>
+
+    <!-- Settings screen -->
+    <string name="settings_section_theme">Theme</string>
+    <string name="settings_section_custom_colors">Custom colors</string>
+    <string name="settings_section_editor">Editor</string>
+    <string name="settings_section_compiler">Compiler</string>
+    <string name="settings_theme_custom">Custom</string>
+
+    <string name="settings_color_bg">Background</string>
+    <string name="settings_color_toolbar">Toolbar</string>
+    <string name="settings_color_fg">Text color</string>
+    <string name="settings_color_accent">Accent</string>
+    <string name="settings_color_console_bg">Console background</string>
+    <string name="settings_color_keyword">Keyword</string>
+    <string name="settings_color_string">String literal</string>
+    <string name="settings_color_comment">Comment</string>
+
+    <string name="settings_font_family">Font family</string>
+    <string name="settings_font_size_n">Font size: %1$dsp</string>
+    <string name="settings_tab_size_n">Tab size: %1$d</string>
+    <string name="settings_line_spacing_n">Line spacing: %1$s×</string>
+    <string name="settings_line_numbers">Show line numbers</string>
+    <string name="settings_word_wrap">Word wrap</string>
+    <string name="settings_auto_save">Auto-save</string>
+
+    <string name="font_monospace">Monospace</string>
+    <string name="font_sans">Sans-serif</string>
+    <string name="font_serif">Serif</string>
+    <string name="font_default">System default</string>
+
+    <string name="settings_java_target">Java target</string>
+    <string name="settings_java_hint">Affects ECJ compilation. Higher targets may not run via D8 desugaring.</string>
+
+    <string name="settings_reset_defaults">Reset to defaults</string>
+    <string name="settings_reset_confirm">All UI, font and compiler preferences will be reset. Project files are kept.</string>
+    <string name="settings_reset_done">Defaults restored</string>
+    <string name="soon">soon</string>
+
+    <!-- New features -->
+    <string name="menu_open_file">Open file…</string>
+    <string name="menu_save_as">Save as…</string>
+    <string name="menu_export_project">Export project (zip)</string>
+    <string name="toast_imported_to">Imported as %1$s</string>
+    <string name="toast_export_done">Exported: %1$s</string>
+    <string name="toast_export_failed">Export failed: %1$s</string>
+    <string name="toast_only_text_files">Only text files are supported</string>
+    <string name="toast_only_java_supported">Only .java import is supported in the project</string>
+
+    <!-- Git -->
+    <string name="git_activity_title">Git</string>
+    <string name="menu_git">Git…</string>
+    <string name="menu_git_quick_commit">Git: quick commit</string>
+
+    <string name="git_tab_status">Status</string>
+    <string name="git_tab_commit">Commit</string>
+    <string name="git_tab_log">Log</string>
+    <string name="git_tab_branches">Branches</string>
+    <string name="git_tab_remote">Remote</string>
+
+    <string name="git_no_repo">This project is not a git repository yet.\n%1$s</string>
+    <string name="git_no_repo_short">no .git</string>
+    <string name="git_init">Init repository</string>
+    <string name="git_init_done">Repository initialised</string>
+    <string name="git_clone">Clone</string>
+    <string name="git_clone_into_dir">Clone into this folder…</string>
+    <string name="git_clone_message">Clones a repository and replaces the contents of this folder.</string>
+    <string name="git_clone_done">Cloned successfully</string>
+    <string name="git_loading">Loading…</string>
+    <string name="git_clean">Working tree is clean</string>
+    <string name="git_grp_staged">Staged</string>
+    <string name="git_grp_modified">Modified</string>
+    <string name="git_grp_untracked">Untracked</string>
+    <string name="git_grp_conflict">Conflicts</string>
+    <string name="git_stage">Stage</string>
+    <string name="git_unstage">Unstage</string>
+    <string name="git_stage_all">Stage all changes</string>
+    <string name="git_stage_all_first">Stage all changes before committing</string>
+
+    <string name="git_commit">Commit</string>
+    <string name="git_commit_message">Commit message</string>
+    <string name="git_commit_hint">e.g. Fix null pointer in MainActivity</string>
+    <string name="git_commit_done">Committed: %1$s</string>
+    <string name="git_quick_commit_done">Quick commit done</string>
+    <string name="git_quick_init_first">Initialise a Git repository in this project first?</string>
+    <string name="git_empty_message">Commit message must not be empty</string>
+    <string name="git_author_identity">Author identity</string>
+    <string name="git_author_name">Name</string>
+    <string name="git_author_email">Email</string>
+
+    <string name="git_url_hint">https://github.com/user/repo.git</string>
+    <string name="git_user_hint">Username</string>
+    <string name="git_token_hint">Token / Password</string>
+    <string name="git_token_hint_long">For GitHub: use a Personal Access Token (Settings → Developer settings → Tokens). Stored locally with simple obfuscation.</string>
+    <string name="git_save_creds">Save credentials for this host</string>
+    <string name="git_save_remote">Save remote</string>
+    <string name="git_remote_origin">Remote: origin</string>
+    <string name="git_invalid_url">Invalid Git URL</string>
+    <string name="git_saved">Saved</string>
+    <string name="git_pull">Pull</string>
+    <string name="git_push">Push</string>
+
+    <string name="git_no_commits">No commits yet</string>
+    <string name="git_no_branches">No branches</string>
+    <string name="git_branch_new">New branch</string>
+    <string name="git_branch_name_hint">Branch name (e.g. feature/login)</string>
+    <string name="git_checkout_done">Switched to %1$s</string>
+
+    <string name="git_error">Git error</string>
 </resources>

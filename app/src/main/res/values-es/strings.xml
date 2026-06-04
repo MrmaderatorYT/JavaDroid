@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">JavaDroid</string>
+
+    <string name="menu_undo">Deshacer</string>
+    <string name="menu_redo">Rehacer</string>
+    <string name="menu_save">Guardar</string>
+    <string name="menu_run">Ejecutar</string>
+    <string name="menu_find_replace">Buscar / Reemplazar</string>
+    <string name="menu_bytecode">Bytecode</string>
+    <string name="menu_new_java_file">Nuevo archivo Java</string>
+    <string name="menu_new_maven_project">Nuevo proyecto Maven</string>
+    <string name="menu_sync_deps">Sincronizar dependencias</string>
+    <string name="menu_maven_package">Maven package</string>
+    <string name="menu_maven_test">Maven test (compilar tests)</string>
+    <string name="menu_settings">Ajustes</string>
+    <string name="menu_clear_console">Vaciar consola</string>
+    <string name="menu_copy_console">Copiar consola</string>
+    <string name="menu_share_file">Compartir archivo actual</string>
+
+    <string name="drawer_project_label">PROYECTO</string>
+    <string name="drawer_maven_hint">Maven: src, main, test</string>
+    <string name="find_hint">Buscar…</string>
+    <string name="replace_hint">Reemplazar por…</string>
+    <string name="replace">Reemplazar</string>
+    <string name="replace_all">Todo</string>
+    <string name="tab_run">▶  Ejecutar</string>
+    <string name="tab_problems">Problemas</string>
+    <string name="tab_bytecode">Bytecode</string>
+    <string name="status_line">Lín. %1$d, col. %2$d</string>
+    <string name="status_encoding">UTF-8</string>
+    <string name="status_language_java">Java</string>
+
+    <string name="problem_error">ERROR</string>
+    <string name="problem_warn">AVISO</string>
+    <string name="problem_info">INFO</string>
+    <string name="problem_location_unknown">?</string>
+
+    <string name="error_cannot_create_main">No se puede crear Main.java</string>
+    <string name="error_cannot_open">No se puede abrir: %1$s</string>
+    <string name="error_cannot_read">No se puede leer: %1$s</string>
+    <string name="toast_saved">Guardado</string>
+    <string name="toast_save_failed">Error al guardar: %1$s</string>
+    <string name="toast_no_file_open">No hay archivo abierto</string>
+    <string name="toast_not_maven">No es un proyecto Maven (no hay pom.xml)</string>
+    <string name="toast_sync_done">Dependencias actualizadas</string>
+    <string name="toast_pom_required">Se requiere pom.xml</string>
+    <string name="find_not_found">«%1$s» no encontrado</string>
+    <string name="toast_file_exists">%1$s.java ya existe</string>
+    <string name="toast_error_prefix">Error: %1$s</string>
+    <string name="toast_copied_clipboard">Copiado al portapapeles</string>
+    <string name="toast_console_empty">La consola está vacía</string>
+    <string name="toast_project_path_copied">Ruta del proyecto copiada</string>
+    <string name="share_file_chooser">Compartir archivo</string>
+    <string name="toolbar_project_a11y">Nombre del proyecto. Mantén pulsado para copiar la carpeta.</string>
+    <string name="toast_rename_failed">Error al renombrar</string>
+
+    <string name="dialog_unsaved_title">Cambios sin guardar</string>
+    <string name="dialog_unsaved_message">%1$s tiene cambios sin guardar.</string>
+    <string name="dialog_save_close">Guardar y cerrar</string>
+    <string name="dialog_discard">Descartar</string>
+    <string name="dialog_cancel">Cancelar</string>
+    <string name="dialog_create">Crear</string>
+    <string name="dialog_apply">Aplicar</string>
+    <string name="dialog_delete">Eliminar</string>
+    <string name="dialog_rename">Renombrar</string>
+
+    <string name="dialog_new_java_title">Nuevo archivo Java</string>
+    <string name="dialog_new_java_hint">Nombre de clase (ej. MyHelper)</string>
+
+    <string name="dialog_new_maven_title">Nuevo proyecto Maven</string>
+    <string name="dialog_new_maven_message">Estructura Maven (como IntelliJ): src/main/java con paquete, main/resources, test/java, test/resources.\nRaíz: Documents/JavaDroid/ en el almacenamiento de la app.</string>
+    <string name="dialog_maven_name_hint">Carpeta del proyecto (ej. MyApp)</string>
+    <string name="dialog_maven_group_hint">Group ID / paquete (ej. com.empresa.app)</string>
+    <string name="dialog_maven_artifact_hint">Artifact ID (ej. myapp), opcional</string>
+
+    <string name="dialog_file_context_open">Abrir</string>
+    <string name="dialog_file_context_rename">Renombrar</string>
+    <string name="dialog_file_context_delete">Eliminar</string>
+
+    <string name="dialog_delete_file_title">Eliminar archivo</string>
+    <string name="dialog_delete_file_message">¿Eliminar %1$s? No se puede deshacer.</string>
+
+    <string name="dialog_settings_title">Ajustes</string>
+    <string name="dialog_font_size">Tamaño de fuente: %1$dsp</string>
+
+    <string name="console_maven_run">▶ Maven: compilar + ejecutar…</string>
+    <string name="console_running_file">▶ Ejecutando %1$s…</string>
+    <string name="console_output_separator">──────────── Salida ────────────</string>
+    <string name="console_build_success">COMPILACIÓN CORRECTA</string>
+    <string name="console_process_exit_ok">Proceso terminado con código 0</string>
+    <string name="console_sync_maven">▶ Descargando dependencias (Maven Central)…</string>
+    <string name="console_sync_done">Sincronización terminada.</string>
+    <string name="console_mvn_package">▶ mvn package…</string>
+    <string name="console_mvn_test_compile">▶ mvn test-compile…</string>
+
+    <string name="bytecode_compiling">Compilando…</string>
+    <string name="bytecode_only_java">Abre un archivo .java para ver bytecode JVM (ASM, estilo javap).</string>
+    <string name="bytecode_failed">Bytecode: %1$s</string>
+
+    <string name="settings_section_theme">Tema</string>
+    <string name="settings_section_custom_colors">Colores personalizados</string>
+    <string name="settings_section_editor">Editor</string>
+    <string name="settings_section_compiler">Compilador</string>
+    <string name="settings_theme_custom">Personalizado</string>
+
+    <string name="settings_color_bg">Fondo</string>
+    <string name="settings_color_toolbar">Barra de herramientas</string>
+    <string name="settings_color_fg">Color del texto</string>
+    <string name="settings_color_accent">Acento</string>
+    <string name="settings_color_console_bg">Fondo de consola</string>
+    <string name="settings_color_keyword">Palabra clave</string>
+    <string name="settings_color_string">Literal de cadena</string>
+    <string name="settings_color_comment">Comentario</string>
+
+    <string name="settings_font_family">Fuente</string>
+    <string name="settings_font_size_n">Tamaño: %1$dsp</string>
+    <string name="settings_tab_size_n">Tabulación: %1$d</string>
+    <string name="settings_line_spacing_n">Interlineado: %1$s×</string>
+    <string name="settings_line_numbers">Mostrar números de línea</string>
+    <string name="settings_word_wrap">Ajuste de línea</string>
+    <string name="settings_auto_save">Guardado automático</string>
+
+    <string name="font_monospace">Monoespaciada</string>
+    <string name="font_sans">Sans-serif</string>
+    <string name="font_serif">Serif</string>
+    <string name="font_default">Predeterminada del sistema</string>
+
+    <string name="settings_java_target">Java objetivo</string>
+    <string name="settings_java_hint">Afecta la compilación ECJ. Versiones altas pueden fallar con D8.</string>
+
+    <string name="settings_reset_defaults">Restaurar valores</string>
+    <string name="settings_reset_confirm">Se restablecerán interfaz, fuente y compilador. Los archivos del proyecto se conservan.</string>
+    <string name="settings_reset_done">Valores restaurados</string>
+    <string name="soon">pronto</string>
+
+    <string name="menu_open_file">Abrir archivo…</string>
+    <string name="menu_save_as">Guardar como…</string>
+    <string name="menu_export_project">Exportar proyecto (ZIP)</string>
+    <string name="toast_imported_to">Importado como %1$s</string>
+    <string name="toast_export_done">Exportado: %1$s</string>
+    <string name="toast_export_failed">Error de exportación: %1$s</string>
+    <string name="toast_only_text_files">Solo archivos de texto</string>
+    <string name="toast_only_java_supported">En el proyecto solo se puede importar .java</string>
+
+    <string name="git_activity_title">Git</string>
+    <string name="menu_git">Git…</string>
+    <string name="menu_git_quick_commit">Git: commit rápido</string>
+
+    <string name="git_tab_status">Estado</string>
+    <string name="git_tab_commit">Commit</string>
+    <string name="git_tab_log">Historial</string>
+    <string name="git_tab_branches">Ramas</string>
+    <string name="git_tab_remote">Remoto</string>
+
+    <string name="git_no_repo">Este proyecto aún no es un repositorio Git.\n%1$s</string>
+    <string name="git_no_repo_short">sin .git</string>
+    <string name="git_init">Inicializar repositorio</string>
+    <string name="git_init_done">Repositorio inicializado</string>
+    <string name="git_clone">Clonar</string>
+    <string name="git_clone_into_dir">Clonar en esta carpeta…</string>
+    <string name="git_clone_message">Clona un repositorio y reemplaza el contenido de esta carpeta.</string>
+    <string name="git_clone_done">Clonado correctamente</string>
+    <string name="git_loading">Cargando…</string>
+    <string name="git_clean">Árbol de trabajo limpio</string>
+    <string name="git_grp_staged">En staging</string>
+    <string name="git_grp_modified">Modificados</string>
+    <string name="git_grp_untracked">Sin seguimiento</string>
+    <string name="git_grp_conflict">Conflictos</string>
+    <string name="git_stage">Añadir</string>
+    <string name="git_unstage">Quitar del staging</string>
+    <string name="git_stage_all">Añadir todos los cambios</string>
+    <string name="git_stage_all_first">Añadir todos los cambios antes del commit</string>
+
+    <string name="git_commit">Commit</string>
+    <string name="git_commit_message">Mensaje del commit</string>
+    <string name="git_commit_hint">ej. Corrección NullPointer en MainActivity</string>
+    <string name="git_commit_done">Commit: %1$s</string>
+    <string name="git_quick_commit_done">Commit rápido hecho</string>
+    <string name="git_quick_init_first">¿Inicializar primero un repositorio Git en este proyecto?</string>
+    <string name="git_empty_message">El mensaje no puede estar vacío</string>
+    <string name="git_author_identity">Identidad del autor</string>
+    <string name="git_author_name">Nombre</string>
+    <string name="git_author_email">Correo</string>
+
+    <string name="git_url_hint">https://github.com/user/repo.git</string>
+    <string name="git_user_hint">Usuario</string>
+    <string name="git_token_hint">Token / Contraseña</string>
+    <string name="git_token_hint_long">GitHub: usa un Personal Access Token (Settings → Developer settings → Tokens). Guardado localmente con ofuscación simple.</string>
+    <string name="git_save_creds">Guardar credenciales para este host</string>
+    <string name="git_save_remote">Guardar remoto</string>
+    <string name="git_remote_origin">Remoto: origin</string>
+    <string name="git_invalid_url">URL de Git no válida</string>
+    <string name="git_saved">Guardado</string>
+    <string name="git_pull">Pull</string>
+    <string name="git_push">Push</string>
+
+    <string name="git_no_commits">Aún no hay commits</string>
+    <string name="git_no_branches">No hay ramas</string>
+    <string name="git_branch_new">Nueva rama</string>
+    <string name="git_branch_name_hint">Nombre de la rama (ej. feature/login)</string>
+    <string name="git_checkout_done">Cambiado a %1$s</string>
+
+    <string name="git_error">Error de Git</string>
+</resources>

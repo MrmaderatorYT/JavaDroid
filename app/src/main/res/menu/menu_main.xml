@@ -82,4 +82,30 @@
         android:title="@string/menu_share_file"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/action_open_file"
+        android:title="@string/menu_open_file"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_save_as"
+        android:title="@string/menu_save_as"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_export_project"
+        android:title="@string/menu_export_project"
+        app:showAsAction="never" />
+
+<!--
+    <item
+        android:id="@+id/action_git"
+        android:title="@string/menu_git"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_git_quick_commit"
+        android:title="@string/menu_git_quick_commit"
+        app:showAsAction="never" />
+-->
 </menu>

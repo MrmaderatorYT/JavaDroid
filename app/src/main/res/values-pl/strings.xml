@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">JavaDroid</string>
+
+    <string name="menu_undo">Cofnij</string>
+    <string name="menu_redo">Ponów</string>
+    <string name="menu_save">Zapisz</string>
+    <string name="menu_run">Uruchom</string>
+    <string name="menu_find_replace">Znajdź / Zamień</string>
+    <string name="menu_bytecode">Bytecode</string>
+    <string name="menu_new_java_file">Nowy plik Java</string>
+    <string name="menu_new_maven_project">Nowy projekt Maven</string>
+    <string name="menu_sync_deps">Synchronizuj zależności</string>
+    <string name="menu_maven_package">Maven package</string>
+    <string name="menu_maven_test">Maven test (kompilacja testów)</string>
+    <string name="menu_settings">Ustawienia</string>
+    <string name="menu_clear_console">Wyczyść konsolę</string>
+    <string name="menu_copy_console">Kopiuj konsolę</string>
+    <string name="menu_share_file">Udostępnij plik</string>
+
+    <string name="drawer_project_label">PROJEKT</string>
+    <string name="drawer_maven_hint">Maven: src, main, test</string>
+    <string name="find_hint">Znajdź…</string>
+    <string name="replace_hint">Zamień na…</string>
+    <string name="replace">Zamień</string>
+    <string name="replace_all">Wszystkie</string>
+    <string name="tab_run">▶  Uruchom</string>
+    <string name="tab_problems">Problemy</string>
+    <string name="tab_bytecode">Bytecode</string>
+    <string name="status_line">W %1$d, kol. %2$d</string>
+    <string name="status_encoding">UTF-8</string>
+    <string name="status_language_java">Java</string>
+
+    <string name="problem_error">BŁĄD</string>
+    <string name="problem_warn">OSTR.</string>
+    <string name="problem_info">INFO</string>
+    <string name="problem_location_unknown">?</string>
+
+    <string name="error_cannot_create_main">Nie można utworzyć Main.java</string>
+    <string name="error_cannot_open">Nie można otworzyć: %1$s</string>
+    <string name="error_cannot_read">Nie można odczytać: %1$s</string>
+    <string name="toast_saved">Zapisano</string>
+    <string name="toast_save_failed">Błąd zapisu: %1$s</string>
+    <string name="toast_no_file_open">Brak otwartego pliku</string>
+    <string name="toast_not_maven">To nie jest projekt Maven (brak pom.xml)</string>
+    <string name="toast_sync_done">Zależności zaktualizowane</string>
+    <string name="toast_pom_required">Wymagany pom.xml</string>
+    <string name="find_not_found">Nie znaleziono „%1$s”</string>
+    <string name="toast_file_exists">%1$s.java już istnieje</string>
+    <string name="toast_error_prefix">Błąd: %1$s</string>
+    <string name="toast_copied_clipboard">Skopiowano do schowka</string>
+    <string name="toast_console_empty">Konsola jest pusta</string>
+    <string name="toast_project_path_copied">Skopiowano ścieżkę projektu</string>
+    <string name="share_file_chooser">Udostępnij plik</string>
+    <string name="toolbar_project_a11y">Nazwa projektu. Długie naciśnięcie kopiuje ścieżkę folderu.</string>
+    <string name="toast_rename_failed">Zmiana nazwy nie powiodła się</string>
+
+    <string name="dialog_unsaved_title">Niezapisane zmiany</string>
+    <string name="dialog_unsaved_message">Plik %1$s ma niezapisane zmiany.</string>
+    <string name="dialog_save_close">Zapisz i zamknij</string>
+    <string name="dialog_discard">Odrzuć</string>
+    <string name="dialog_cancel">Anuluj</string>
+    <string name="dialog_create">Utwórz</string>
+    <string name="dialog_apply">Zastosuj</string>
+    <string name="dialog_delete">Usuń</string>
+    <string name="dialog_rename">Zmień nazwę</string>
+
+    <string name="dialog_new_java_title">Nowy plik Java</string>
+    <string name="dialog_new_java_hint">Nazwa klasy (np. MyHelper)</string>
+
+    <string name="dialog_new_maven_title">Nowy projekt Maven</string>
+    <string name="dialog_new_maven_message">Struktura Maven (jak IntelliJ): src/main/java ze ścieżką pakietu, main/resources, test/java, test/resources.\nKatalog główny: Documents/JavaDroid/ w pamięci aplikacji.</string>
+    <string name="dialog_maven_name_hint">Nazwa folderu projektu (np. MyApp)</string>
+    <string name="dialog_maven_group_hint">Group ID / pakiet (np. com.firma.app)</string>
+    <string name="dialog_maven_artifact_hint">Artifact ID (np. myapp), opcjonalnie</string>
+
+    <string name="dialog_file_context_open">Otwórz</string>
+    <string name="dialog_file_context_rename">Zmień nazwę</string>
+    <string name="dialog_file_context_delete">Usuń</string>
+
+    <string name="dialog_delete_file_title">Usuń plik</string>
+    <string name="dialog_delete_file_message">Usunąć %1$s? Tej operacji nie można cofnąć.</string>
+
+    <string name="dialog_settings_title">Ustawienia</string>
+    <string name="dialog_font_size">Rozmiar czcionki: %1$dsp</string>
+
+    <string name="console_maven_run">▶ Maven: kompilacja + uruchomienie…</string>
+    <string name="console_running_file">▶ Uruchamianie %1$s…</string>
+    <string name="console_output_separator">──────────── Wynik ────────────</string>
+    <string name="console_build_success">KOMPILACJA OK</string>
+    <string name="console_process_exit_ok">Proces zakończony kodem 0</string>
+    <string name="console_sync_maven">▶ Pobieranie zależności (Maven Central)…</string>
+    <string name="console_sync_done">Synchronizacja zakończona.</string>
+    <string name="console_mvn_package">▶ mvn package…</string>
+    <string name="console_mvn_test_compile">▶ mvn test-compile…</string>
+
+    <string name="bytecode_compiling">Kompilacja…</string>
+    <string name="bytecode_only_java">Otwórz plik .java, aby zobaczyć bytecode JVM (ASM, styl javap).</string>
+    <string name="bytecode_failed">Bytecode: %1$s</string>
+
+    <string name="settings_section_theme">Motyw</string>
+    <string name="settings_section_custom_colors">Własne kolory</string>
+    <string name="settings_section_editor">Edytor</string>
+    <string name="settings_section_compiler">Kompilator</string>
+    <string name="settings_theme_custom">Własny</string>
+
+    <string name="settings_color_bg">Tło</string>
+    <string name="settings_color_toolbar">Pasek narzędzi</string>
+    <string name="settings_color_fg">Kolor tekstu</string>
+    <string name="settings_color_accent">Akcent</string>
+    <string name="settings_color_console_bg">Tło konsoli</string>
+    <string name="settings_color_keyword">Słowo kluczowe</string>
+    <string name="settings_color_string">Literał łańcuchowy</string>
+    <string name="settings_color_comment">Komentarz</string>
+
+    <string name="settings_font_family">Czcionka</string>
+    <string name="settings_font_size_n">Rozmiar czcionki: %1$dsp</string>
+    <string name="settings_tab_size_n">Szerokość tabulatora: %1$d</string>
+    <string name="settings_line_spacing_n">Interlinia: %1$s×</string>
+    <string name="settings_line_numbers">Numery wierszy</string>
+    <string name="settings_word_wrap">Zawijanie wierszy</string>
+    <string name="settings_auto_save">Auto-zapis</string>
+
+    <string name="font_monospace">Monospace</string>
+    <string name="font_sans">Sans-serif</string>
+    <string name="font_serif">Serif</string>
+    <string name="font_default">Domyślna systemowa</string>
+
+    <string name="settings_java_target">Docelowa Java</string>
+    <string name="settings_java_hint">Wpływa na kompilację ECJ. Wyższe wersje mogą nie działać przez D8.</string>
+
+    <string name="settings_reset_defaults">Przywróć domyślne</string>
+    <string name="settings_reset_confirm">Wszystkie ustawienia interfejsu, czcionki i kompilatora zostaną zresetowane. Pliki projektu pozostają.</string>
+    <string name="settings_reset_done">Przywrócono domyślne</string>
+    <string name="soon">wkrótce</string>
+
+    <string name="menu_open_file">Otwórz plik…</string>
+    <string name="menu_save_as">Zapisz jako…</string>
+    <string name="menu_export_project">Eksport projektu (ZIP)</string>
+    <string name="toast_imported_to">Zaimportowano jako %1$s</string>
+    <string name="toast_export_done">Wyeksportowano: %1$s</string>
+    <string name="toast_export_failed">Eksport nie powiódł się: %1$s</string>
+    <string name="toast_only_text_files">Obsługiwane są tylko pliki tekstowe</string>
+    <string name="toast_only_java_supported">W projekcie można importować tylko .java</string>
+
+    <string name="git_activity_title">Git</string>
+    <string name="menu_git">Git…</string>
+    <string name="menu_git_quick_commit">Git: szybki commit</string>
+
+    <string name="git_tab_status">Status</string>
+    <string name="git_tab_commit">Commit</string>
+    <string name="git_tab_log">Historia</string>
+    <string name="git_tab_branches">Gałęzie</string>
+    <string name="git_tab_remote">Remote</string>
+
+    <string name="git_no_repo">To nie jest repozytorium Git.\n%1$s</string>
+    <string name="git_no_repo_short">brak .git</string>
+    <string name="git_init">Inicjalizuj repozytorium</string>
+    <string name="git_init_done">Repozytorium utworzone</string>
+    <string name="git_clone">Sklonuj</string>
+    <string name="git_clone_into_dir">Sklonuj do tego folderu…</string>
+    <string name="git_clone_message">Klonuje repozytorium i zastępuje zawartość tego folderu.</string>
+    <string name="git_clone_done">Sklonowano</string>
+    <string name="git_loading">Ładowanie…</string>
+    <string name="git_clean">Drzewo robocze czyste</string>
+    <string name="git_grp_staged">W indeksie</string>
+    <string name="git_grp_modified">Zmodyfikowane</string>
+    <string name="git_grp_untracked">Nieśledzone</string>
+    <string name="git_grp_conflict">Konflikty</string>
+    <string name="git_stage">Dodaj</string>
+    <string name="git_unstage">Cofnij indeks</string>
+    <string name="git_stage_all">Dodaj wszystkie zmiany</string>
+    <string name="git_stage_all_first">Najpierw dodaj wszystkie zmiany do indeksu</string>
+
+    <string name="git_commit">Commit</string>
+    <string name="git_commit_message">Wiadomość commita</string>
+    <string name="git_commit_hint">np. Naprawa NullPointer w MainActivity</string>
+    <string name="git_commit_done">Commit: %1$s</string>
+    <string name="git_quick_commit_done">Szybki commit wykonany</string>
+    <string name="git_quick_init_first">Najpierw utworzyć repozytorium Git w tym projekcie?</string>
+    <string name="git_empty_message">Wiadomość nie może być pusta</string>
+    <string name="git_author_identity">Autor</string>
+    <string name="git_author_name">Imię</string>
+    <string name="git_author_email">E-mail</string>
+
+    <string name="git_url_hint">https://github.com/user/repo.git</string>
+    <string name="git_user_hint">Użytkownik</string>
+    <string name="git_token_hint">Token / Hasło</string>
+    <string name="git_token_hint_long">GitHub: użyj Personal Access Token (Settings → Developer settings → Tokens). Przechowywane lokalnie z prostą obfuskacją.</string>
+    <string name="git_save_creds">Zapisz dane dla tego hosta</string>
+    <string name="git_save_remote">Zapisz remote</string>
+    <string name="git_remote_origin">Remote: origin</string>
+    <string name="git_invalid_url">Nieprawidłowy URL Git</string>
+    <string name="git_saved">Zapisano</string>
+    <string name="git_pull">Pull</string>
+    <string name="git_push">Push</string>
+
+    <string name="git_no_commits">Brak commitów</string>
+    <string name="git_no_branches">Brak gałęzi</string>
+    <string name="git_branch_new">Nowa gałąź</string>
+    <string name="git_branch_name_hint">Nazwa gałęzi (np. feature/login)</string>
+    <string name="git_checkout_done">Przełączono na %1$s</string>
+
+    <string name="git_error">Błąd Git</string>
+</resources>

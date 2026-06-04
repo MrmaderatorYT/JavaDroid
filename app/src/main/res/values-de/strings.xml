@@ -97,4 +97,111 @@
     <string name="bytecode_compiling">Kompilieren…</string>
     <string name="bytecode_only_java">Öffnen Sie eine .java-Datei für JVM-Bytecode (ASM / javap-ähnlich).</string>
     <string name="bytecode_failed">Bytecode: %1$s</string>
+
+    <!-- Settings screen -->
+    <string name="settings_section_theme">Design</string>
+    <string name="settings_section_custom_colors">Eigene Farben</string>
+    <string name="settings_section_editor">Editor</string>
+    <string name="settings_section_compiler">Compiler</string>
+    <string name="settings_theme_custom">Benutzerdefiniert</string>
+
+    <string name="settings_color_bg">Hintergrund</string>
+    <string name="settings_color_toolbar">Symbolleiste</string>
+    <string name="settings_color_fg">Textfarbe</string>
+    <string name="settings_color_accent">Akzent</string>
+    <string name="settings_color_console_bg">Konsole-Hintergrund</string>
+    <string name="settings_color_keyword">Schlüsselwort</string>
+    <string name="settings_color_string">Zeichenkette</string>
+    <string name="settings_color_comment">Kommentar</string>
+
+    <string name="settings_font_family">Schriftfamilie</string>
+    <string name="settings_font_size_n">Schriftgröße: %1$dsp</string>
+    <string name="settings_tab_size_n">Tabulatorbreite: %1$d</string>
+    <string name="settings_line_spacing_n">Zeilenabstand: %1$s×</string>
+    <string name="settings_line_numbers">Zeilennummern anzeigen</string>
+    <string name="settings_word_wrap">Zeilenumbruch</string>
+    <string name="settings_auto_save">Automatisch speichern</string>
+
+    <string name="font_monospace">Monospace</string>
+    <string name="font_sans">Sans Serif</string>
+    <string name="font_serif">Serif</string>
+    <string name="font_default">Systemstandard</string>
+
+    <string name="settings_java_target">Java-Zielversion</string>
+    <string name="settings_java_hint">Beeinflusst die ECJ-Kompilierung. Höhere Versionen laufen evtl. nicht über D8.</string>
+
+    <string name="settings_reset_defaults">Standard wiederherstellen</string>
+    <string name="settings_reset_confirm">Alle UI-, Schrift- und Compiler-Einstellungen werden zurückgesetzt. Projektdateien bleiben erhalten.</string>
+    <string name="settings_reset_done">Standardeinstellungen wiederhergestellt</string>
+    <string name="soon">bald</string>
+
+    <string name="menu_open_file">Datei öffnen…</string>
+    <string name="menu_save_as">Speichern unter…</string>
+    <string name="menu_export_project">Projekt exportieren (ZIP)</string>
+    <string name="toast_imported_to">Importiert als %1$s</string>
+    <string name="toast_export_done">Exportiert: %1$s</string>
+    <string name="toast_export_failed">Export fehlgeschlagen: %1$s</string>
+    <string name="toast_only_text_files">Nur Textdateien werden unterstützt</string>
+    <string name="toast_only_java_supported">Im Projekt ist nur der Import von .java möglich</string>
+
+    <!-- Git -->
+    <string name="git_activity_title">Git</string>
+    <string name="menu_git">Git…</string>
+    <string name="menu_git_quick_commit">Git: Schnell-Commit</string>
+
+    <string name="git_tab_status">Status</string>
+    <string name="git_tab_commit">Commit</string>
+    <string name="git_tab_log">Protokoll</string>
+    <string name="git_tab_branches">Branches</string>
+    <string name="git_tab_remote">Remote</string>
+
+    <string name="git_no_repo">Dieses Projekt ist noch kein Git-Repository.\n%1$s</string>
+    <string name="git_no_repo_short">kein .git</string>
+    <string name="git_init">Repository initialisieren</string>
+    <string name="git_init_done">Repository initialisiert</string>
+    <string name="git_clone">Klonen</string>
+    <string name="git_clone_into_dir">In diesen Ordner klonen…</string>
+    <string name="git_clone_message">Klont ein Repository und ersetzt den Inhalt dieses Ordners.</string>
+    <string name="git_clone_done">Erfolgreich geklont</string>
+    <string name="git_loading">Laden…</string>
+    <string name="git_clean">Arbeitsbaum ist sauber</string>
+    <string name="git_grp_staged">Gestaged</string>
+    <string name="git_grp_modified">Geändert</string>
+    <string name="git_grp_untracked">Unversioniert</string>
+    <string name="git_grp_conflict">Konflikte</string>
+    <string name="git_stage">Stagen</string>
+    <string name="git_unstage">Unstagen</string>
+    <string name="git_stage_all">Alle Änderungen stagen</string>
+    <string name="git_stage_all_first">Alle Änderungen vor dem Commit stagen</string>
+
+    <string name="git_commit">Commit</string>
+    <string name="git_commit_message">Commit-Nachricht</string>
+    <string name="git_commit_hint">z. B. Fix NullPointer in MainActivity</string>
+    <string name="git_commit_done">Commit: %1$s</string>
+    <string name="git_quick_commit_done">Schnell-Commit ausgeführt</string>
+    <string name="git_quick_init_first">Zuerst ein Git-Repository in diesem Projekt initialisieren?</string>
+    <string name="git_empty_message">Commit-Nachricht darf nicht leer sein</string>
+    <string name="git_author_identity">Autor</string>
+    <string name="git_author_name">Name</string>
+    <string name="git_author_email">E-Mail</string>
+
+    <string name="git_url_hint">https://github.com/user/repo.git</string>
+    <string name="git_user_hint">Benutzername</string>
+    <string name="git_token_hint">Token / Passwort</string>
+    <string name="git_token_hint_long">GitHub: Personal Access Token verwenden (Settings → Developer settings → Tokens). Lokal mit einfacher Verschleierung gespeichert.</string>
+    <string name="git_save_creds">Anmeldedaten für diesen Host speichern</string>
+    <string name="git_save_remote">Remote speichern</string>
+    <string name="git_remote_origin">Remote: origin</string>
+    <string name="git_invalid_url">Ungültige Git-URL</string>
+    <string name="git_saved">Gespeichert</string>
+    <string name="git_pull">Pull</string>
+    <string name="git_push">Push</string>
+
+    <string name="git_no_commits">Noch keine Commits</string>
+    <string name="git_no_branches">Keine Branches</string>
+    <string name="git_branch_new">Neuer Branch</string>
+    <string name="git_branch_name_hint">Branch-Name (z. B. feature/login)</string>
+    <string name="git_checkout_done">Gewechselt zu %1$s</string>
+
+    <string name="git_error">Git-Fehler</string>
 </resources>

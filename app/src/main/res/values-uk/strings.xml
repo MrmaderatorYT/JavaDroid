@@ -97,4 +97,112 @@
     <string name="bytecode_compiling">Компіляція…</string>
     <string name="bytecode_only_java">Відкрийте .java файл для перегляду JVM-байткоду (ASM, стиль javap).</string>
     <string name="bytecode_failed">Байткод: %1$s</string>
+
+    <!-- Settings screen -->
+    <string name="settings_section_theme">Тема</string>
+    <string name="settings_section_custom_colors">Кастомні кольори</string>
+    <string name="settings_section_editor">Редактор</string>
+    <string name="settings_section_compiler">Компілятор</string>
+    <string name="settings_theme_custom">Своя</string>
+
+    <string name="settings_color_bg">Фон</string>
+    <string name="settings_color_toolbar">Тулбар</string>
+    <string name="settings_color_fg">Колір тексту</string>
+    <string name="settings_color_accent">Акцент</string>
+    <string name="settings_color_console_bg">Фон консолі</string>
+    <string name="settings_color_keyword">Ключове слово</string>
+    <string name="settings_color_string">Рядковий літерал</string>
+    <string name="settings_color_comment">Коментар</string>
+
+    <string name="settings_font_family">Шрифт</string>
+    <string name="settings_font_size_n">Розмір шрифту: %1$dsp</string>
+    <string name="settings_tab_size_n">Розмір табуляції: %1$d</string>
+    <string name="settings_line_spacing_n">Міжрядковий інтервал: %1$s×</string>
+    <string name="settings_line_numbers">Показувати номери рядків</string>
+    <string name="settings_word_wrap">Перенесення рядків</string>
+    <string name="settings_auto_save">Авто-збереження</string>
+
+    <string name="font_monospace">Моноширинний</string>
+    <string name="font_sans">Без зарубок</string>
+    <string name="font_serif">З зарубками</string>
+    <string name="font_default">Системний</string>
+
+    <string name="settings_java_target">Цільова Java</string>
+    <string name="settings_java_hint">Впливає на компіляцію ECJ. Вищі версії можуть не запускатись через D8.</string>
+
+    <string name="settings_reset_defaults">Скинути до типових</string>
+    <string name="settings_reset_confirm">Усі налаштування інтерфейсу, шрифту та компілятора будуть скинуті. Файли проєкту збережуться.</string>
+    <string name="settings_reset_done">Типові налаштування відновлено</string>
+    <string name="soon">скоро</string>
+
+    <!-- New features -->
+    <string name="menu_open_file">Відкрити файл…</string>
+    <string name="menu_save_as">Зберегти як…</string>
+    <string name="menu_export_project">Експортувати проєкт (zip)</string>
+    <string name="toast_imported_to">Імпортовано як %1$s</string>
+    <string name="toast_export_done">Експортовано: %1$s</string>
+    <string name="toast_export_failed">Помилка експорту: %1$s</string>
+    <string name="toast_only_text_files">Підтримуються лише текстові файли</string>
+    <string name="toast_only_java_supported">У проєкті можна імпортувати лише .java</string>
+
+    <!-- Git -->
+    <string name="git_activity_title">Git</string>
+    <string name="menu_git">Git…</string>
+    <string name="menu_git_quick_commit">Git: швидкий коміт</string>
+
+    <string name="git_tab_status">Статус</string>
+    <string name="git_tab_commit">Коміт</string>
+    <string name="git_tab_log">Історія</string>
+    <string name="git_tab_branches">Гілки</string>
+    <string name="git_tab_remote">Remote</string>
+
+    <string name="git_no_repo">Це не Git-репозиторій.\n%1$s</string>
+    <string name="git_no_repo_short">немає .git</string>
+    <string name="git_init">Створити репозиторій</string>
+    <string name="git_init_done">Репозиторій створено</string>
+    <string name="git_clone">Клонувати</string>
+    <string name="git_clone_into_dir">Клонувати у цю папку…</string>
+    <string name="git_clone_message">Клонує репозиторій та замінить вміст цієї папки.</string>
+    <string name="git_clone_done">Клоновано</string>
+    <string name="git_loading">Завантаження…</string>
+    <string name="git_clean">Робоча копія чиста</string>
+    <string name="git_grp_staged">Stage-нуто</string>
+    <string name="git_grp_modified">Змінено</string>
+    <string name="git_grp_untracked">Невідстежувані</string>
+    <string name="git_grp_conflict">Конфлікти</string>
+    <string name="git_stage">Stage</string>
+    <string name="git_unstage">Unstage</string>
+    <string name="git_stage_all">Stage всі зміни</string>
+    <string name="git_stage_all_first">Stage-нути всі зміни перед комітом</string>
+
+    <string name="git_commit">Закомітити</string>
+    <string name="git_commit_message">Повідомлення коміту</string>
+    <string name="git_commit_hint">напр. Fix null pointer in MainActivity</string>
+    <string name="git_commit_done">Коміт: %1$s</string>
+    <string name="git_quick_commit_done">Швидкий коміт виконано</string>
+    <string name="git_quick_init_first">Створити Git-репозиторій у цьому проєкті?</string>
+    <string name="git_empty_message">Повідомлення коміту не може бути порожнім</string>
+    <string name="git_author_identity">Автор</string>
+    <string name="git_author_name">Імʼя</string>
+    <string name="git_author_email">Email</string>
+
+    <string name="git_url_hint">https://github.com/user/repo.git</string>
+    <string name="git_user_hint">Користувач</string>
+    <string name="git_token_hint">Токен / Пароль</string>
+    <string name="git_token_hint_long">Для GitHub використовуйте Personal Access Token (Settings → Developer settings → Tokens). Зберігається локально з простою обфускацією.</string>
+    <string name="git_save_creds">Зберегти креди для цього хоста</string>
+    <string name="git_save_remote">Зберегти remote</string>
+    <string name="git_remote_origin">Remote: origin</string>
+    <string name="git_invalid_url">Некоректний Git URL</string>
+    <string name="git_saved">Збережено</string>
+    <string name="git_pull">Pull</string>
+    <string name="git_push">Push</string>
+
+    <string name="git_no_commits">Немає комітів</string>
+    <string name="git_no_branches">Немає гілок</string>
+    <string name="git_branch_new">Нова гілка</string>
+    <string name="git_branch_name_hint">Назва гілки (напр. feature/login)</string>
+    <string name="git_checkout_done">Перейшли на %1$s</string>
+
+    <string name="git_error">Помилка Git</string>
 </resources>
