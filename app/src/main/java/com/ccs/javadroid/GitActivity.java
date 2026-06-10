@@ -236,6 +236,11 @@ public class GitActivity extends AppCompatActivity {
         btnClone.setOnClickListener(v -> showCloneIntoCurrentDialog());
         box.addView(btnClone);
 
+        box.addView(spacer(dp(8)));
+        TextView btnCreateGitHub = secondaryButton("Create on GitHub");
+        btnCreateGitHub.setOnClickListener(v -> showCreateOnGitHubDialog(true));
+        box.addView(btnCreateGitHub);
+
         ScrollView sv = new ScrollView(this);
         sv.addView(box);
         panel.addView(sv);
@@ -296,6 +301,69 @@ public class GitActivity extends AppCompatActivity {
                 .setNegativeButton(R.string.dialog_cancel, null)
                 .show();
     }
+    private void showCreateOnGitHubDialog(boolean doInitLocal) {
+        LinearLayout box = new LinearLayout(this);
+        box.setOrientation(LinearLayout.VERTICAL);
+        int p = dp(16);
+        box.setPadding(p, p, p, p);
+
+        EditText name = newEdit("Repository Name");
+        name.setText(projectDir.getName());
+        
+        CheckBox isPrivate = new CheckBox(this);
+        isPrivate.setText("Private Repository");
+        isPrivate.setTextColor(theme.text);
+        
+        EditText token = newEdit(getString(R.string.git_token_hint));
+        token.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        token.setText(creds.token("https://github.com/")); // Try to load existing GitHub token
+        
+        CheckBox save = new CheckBox(this);
+        save.setText(getString(R.string.git_save_creds));
+        save.setTextColor(theme.text);
+        save.setChecked(true);
+        
+        box.addView(name);
+        box.addView(isPrivate);
+        box.addView(spacer(dp(8)));
+        box.addView(token);
+        box.addView(save);
+
+        new AlertDialog.Builder(this)
+                .setTitle("Create on GitHub")
+                .setView(box)
+                .setPositiveButton("Create", (d, w) -> {
+                    String repoName = name.getText().toString().trim();
+                    String tk = token.getText().toString().trim();
+                    boolean priv = isPrivate.isChecked();
+                    if (repoName.isEmpty() || tk.isEmpty()) {
+                        Toast.makeText(this, "Name and Token are required", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    if (save.isChecked()) {
+                        // Dummy URL just to store the GitHub token
+                        creds.save("https://github.com/", "", tk);
+                    }
+                    
+                    doBackground(() -> {
+                        String cloneUrl = GitHubApiClient.createRepo(repoName, tk, priv);
+                        if (doInitLocal) {
+                            GitManager.init(projectDir);
+                        }
+                        GitManager.setRemoteOrigin(projectDir, cloneUrl);
+                        // Save the token for the specific repo URL so pull/push works seamlessly
+                        creds.save(cloneUrl, "", tk);
+                        return cloneUrl;
+                    }, url -> {
+                        Toast.makeText(this, "Created: " + url, Toast.LENGTH_LONG).show();
+                        switchTab(TAB_STATUS);
+                        refreshHeader();
+                    }, this::showError);
+                })
+                .setNegativeButton(R.string.dialog_cancel, null)
+                .show();
+    }
+
 
     // ══════════════════════════════════════════════════════════
     //  Status panel
@@ -712,6 +780,12 @@ public class GitActivity extends AppCompatActivity {
                     this::showError);
         });
         box.addView(btnSave);
+
+        box.addView(spacer(dp(8)));
+        
+        TextView btnCreateGitHub = secondaryButton("Create new on GitHub");
+        btnCreateGitHub.setOnClickListener(v -> showCreateOnGitHubDialog(false)); // doInitLocal=false since repo exists
+        box.addView(btnCreateGitHub);
 
         box.addView(spacer(dp(8)));
 

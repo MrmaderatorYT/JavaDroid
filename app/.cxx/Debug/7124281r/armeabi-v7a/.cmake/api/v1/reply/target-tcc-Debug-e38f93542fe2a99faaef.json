@@ -34,7 +34,7 @@
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 38,
+				"line" : 39,
 				"parent" : 0
 			},
 			{
@@ -46,7 +46,7 @@
 			{
 				"command" : 3,
 				"file" : 0,
-				"line" : 34,
+				"line" : 35,
 				"parent" : 0
 			}
 		]
@@ -57,7 +57,7 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : "-g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -fno-limit-debug-info  -fPIC"
+					"fragment" : "-g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security  -fno-limit-debug-info  -fPIC"
 				},
 				{
 					"backtrace" : 2,
@@ -96,11 +96,27 @@
 				},
 				{
 					"backtrace" : 3,
+					"define" : "TARGETOS_ANDROID=1"
+				},
+				{
+					"backtrace" : 3,
 					"define" : "TARGETOS_Linux=1"
 				},
 				{
 					"backtrace" : 3,
-					"define" : "TCC_TARGET_I386=1"
+					"define" : "TCC_ARM_EABI=1"
+				},
+				{
+					"backtrace" : 3,
+					"define" : "TCC_ARM_HARDFLOAT=1"
+				},
+				{
+					"backtrace" : 3,
+					"define" : "TCC_ARM_VFP=1"
+				},
+				{
+					"backtrace" : 3,
+					"define" : "TCC_TARGET_ARM=1"
 				},
 				{
 					"backtrace" : 3,

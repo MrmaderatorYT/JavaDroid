@@ -176,6 +176,7 @@ public class MainActivity extends AppCompatActivity {
         if (liveProblemsScheduler != null) {
             liveProblemsScheduler.start();
         }
+        invalidateOptionsMenu();
     }
 
     @Override
@@ -793,6 +794,11 @@ public class MainActivity extends AppCompatActivity {
                 icon.mutate().setColorFilter(theme.text, PorterDuff.Mode.SRC_IN);
             }
         }
+        MenuItem gitItem = menu.findItem(R.id.action_git);
+        if (gitItem != null) {
+            File dir = projectManager.getProjectDir();
+            gitItem.setVisible(dir != null && GitManager.isGitRepo(dir));
+        }
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -820,7 +826,6 @@ public class MainActivity extends AppCompatActivity {
         else if (id == R.id.action_format)           { formatCurrentFile(); return true; }
         else if (id == R.id.action_export_project)   { exportProjectAsZip(); return true; }
         else if (id == R.id.action_git)              { openGit(); return true; }
-        else if (id == R.id.action_git_quick_commit) { showQuickCommitDialog(); return true; }
         else if (id == R.id.action_create_cpp_module) { showCreateCppModuleDialog(); return true; }
         return super.onOptionsItemSelected(item);
     }
@@ -828,56 +833,6 @@ public class MainActivity extends AppCompatActivity {
     private void openGit() {
         saveCurrentToActiveTab();
         GitActivity.launch(this, projectManager.getProjectDir());
-    }
-
-    private void showQuickCommitDialog() {
-        saveCurrentToActiveTab();
-        File dir = projectManager.getProjectDir();
-        if (!GitManager.isGitRepo(dir)) {
-            new AlertDialog.Builder(this)
-                    .setTitle(R.string.menu_git_quick_commit)
-                    .setMessage(R.string.git_quick_init_first)
-                    .setPositiveButton(R.string.git_init, (d, w) -> {
-                        new Thread(() -> {
-                            try { GitManager.init(dir); }
-                            catch (Exception e) { runOnUiThread(() ->
-                                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show()); return; }
-                            runOnUiThread(this::showQuickCommitDialog);
-                        }, "git-init").start();
-                    })
-                    .setNegativeButton(R.string.dialog_cancel, null)
-                    .show();
-            return;
-        }
-        EditText et = new EditText(this);
-        et.setHint(R.string.git_commit_hint);
-        et.setHintTextColor(theme.textDim);
-        et.setTextColor(theme.text);
-        et.setPadding(dp(16), dp(12), dp(16), dp(12));
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.menu_git_quick_commit)
-                .setView(et)
-                .setPositiveButton(R.string.git_commit, (d, w) -> {
-                    String msg = et.getText().toString().trim();
-                    if (msg.isEmpty()) return;
-                    GitCredentialsStore creds = new GitCredentialsStore(this);
-                    String name  = creds.authorName();
-                    String email = creds.authorEmail();
-                    new Thread(() -> {
-                        try {
-                            GitManager.addAll(dir);
-                            GitManager.commit(dir, msg, name, email);
-                            runOnUiThread(() -> Toast.makeText(this,
-                                    R.string.git_quick_commit_done, Toast.LENGTH_SHORT).show());
-                        } catch (Exception e) {
-                            runOnUiThread(() -> Toast.makeText(this,
-                                    e.getMessage(), Toast.LENGTH_LONG).show());
-                        }
-                    }, "git-commit").start();
-                })
-                .setNeutralButton(R.string.menu_git, (d, w) -> openGit())
-                .setNegativeButton(R.string.dialog_cancel, null)
-                .show();
     }
 
     // ══════════════════════════════════════════════════════════

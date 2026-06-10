@@ -41,14 +41,14 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "native_compiler::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-native_compiler-Debug-692c62caa4b819585f58.json",
+					"jsonFile" : "target-native_compiler-Debug-d7b259ef79043eb9b3e9.json",
 					"name" : "native_compiler",
 					"projectIndex" : 0
 				},
 				{
 					"directoryIndex" : 0,
 					"id" : "tcc::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-tcc-Debug-b9c82fac4cc00f327346.json",
+					"jsonFile" : "target-tcc-Debug-e38f93542fe2a99faaef.json",
 					"name" : "tcc",
 					"projectIndex" : 0
 				}
@@ -58,7 +58,7 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "/Users/dmitroparhomenko/AndroidStudioProjects/JavaDroid/app/.cxx/Debug/7124281r/x86",
+		"build" : "/Users/dmitroparhomenko/AndroidStudioProjects/JavaDroid/app/.cxx/Debug/7124281r/armeabi-v7a",
 		"source" : "/Users/dmitroparhomenko/AndroidStudioProjects/JavaDroid/app/src/main/cpp"
 	},
 	"version" : 
