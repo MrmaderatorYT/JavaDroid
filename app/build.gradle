@@ -17,11 +17,17 @@ android {
         applicationId 'com.ccs.javadroid'
         minSdk 26
         targetSdk 35
-        versionCode 3
-        versionName '1.2.0'
+        versionCode 4
+        versionName '1.2.1'
 
         ndk {
             abiFilters 'arm64-v8a', 'armeabi-v7a', 'x86_64', 'x86'
+        }
+        externalNativeBuild {
+            cmake {
+                arguments "-DCMAKE_SHARED_LINKER_FLAGS=-Wl,-z,max-page-size=16384",
+                          "-DCMAKE_EXE_LINKER_FLAGS=-Wl,-z,max-page-size=16384"
+            }
         }
     }
 
