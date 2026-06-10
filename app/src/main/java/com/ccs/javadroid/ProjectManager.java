@@ -15,10 +15,16 @@ import java.util.List;
 public class ProjectManager {
 
     private File projectRoot;
+    private final Context context;
 
     public ProjectManager(Context context) {
+        this.context = context;
         projectRoot = new File(context.getFilesDir(), "project");
         projectRoot.mkdirs();
+    }
+
+    private String getEncoding() {
+        return new AppPreferences(context).getFileEncoding();
     }
 
     public void setProjectRoot(File root) {
@@ -45,7 +51,9 @@ public class ProjectManager {
     }
 
     public File createFile(String name, String template) throws IOException {
-        if (!name.endsWith(".java")) name += ".java";
+        if (!name.contains(".")) {
+            name += ".java";
+        }
         File dir = projectRoot;
         if (isMavenProject()) {
             dir = ProjectLayoutHelper.mainJavaPackageDir(projectRoot);
@@ -59,13 +67,25 @@ public class ProjectManager {
     }
 
     public boolean deleteFile(File file) {
+        return deleteRecursive(file);
+    }
+
+    private boolean deleteRecursive(File file) {
+        if (file.isDirectory()) {
+            File[] children = file.listFiles();
+            if (children != null) {
+                for (File child : children) {
+                    deleteRecursive(child);
+                }
+            }
+        }
         return file.delete();
     }
 
     public String readFile(File file) throws IOException {
         StringBuilder sb = new StringBuilder();
         try (BufferedReader reader = new BufferedReader(
-                new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8))) {
+                new InputStreamReader(new FileInputStream(file), getEncoding()))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 sb.append(line).append("\n");
@@ -76,7 +96,7 @@ public class ProjectManager {
 
     public void writeFile(File file, String content) throws IOException {
         try (OutputStreamWriter writer = new OutputStreamWriter(
-                new FileOutputStream(file), StandardCharsets.UTF_8)) {
+                new FileOutputStream(file), getEncoding())) {
             writer.write(content);
         }
     }

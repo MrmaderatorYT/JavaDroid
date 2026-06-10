@@ -23,6 +23,12 @@ public class FileTreeAdapter extends RecyclerView.Adapter<FileTreeAdapter.FileVi
     private final List<FileTreeNode> nodes = new ArrayList<>();
     private NodeListener listener;
     private File activeFile;
+    private AppTheme theme;
+
+    public void setTheme(AppTheme theme) {
+        this.theme = theme;
+        notifyDataSetChanged();
+    }
 
     public void setNodeListener(NodeListener listener) {
         this.listener = listener;
@@ -56,16 +62,21 @@ public class FileTreeAdapter extends RecyclerView.Adapter<FileTreeAdapter.FileVi
             holder.itemView.setBackgroundColor(0x00000000);
             holder.icon.setText("📁");
             holder.fileName.setText(name);
-            holder.fileName.setTextColor(0xFF9E9E9E);
+            holder.fileName.setTextColor(theme != null ? theme.textDim : 0xFF9E9E9E);
         } else {
             String lower = name.toLowerCase();
             if (lower.endsWith(".java")) holder.icon.setText("☕");
             else if (lower.endsWith(".xml")) holder.icon.setText("📜");
             else if (lower.endsWith(".properties")) holder.icon.setText("⚙");
+            else if (lower.endsWith(".c") || lower.endsWith(".cpp") || lower.endsWith(".h") || lower.endsWith(".hpp")) holder.icon.setText("🛠️");
             else holder.icon.setText("📄");
             holder.fileName.setText(name);
             boolean active = node.path.equals(activeFile);
-            holder.fileName.setTextColor(active ? 0xFFBBBBBB : 0xFF9E9E9E);
+            if (theme != null) {
+                holder.fileName.setTextColor(active ? theme.text : theme.textDim);
+            } else {
+                holder.fileName.setTextColor(active ? 0xFFBBBBBB : 0xFF9E9E9E);
+            }
         }
 
         int depthPx = (int) TypedValue.applyDimension(
@@ -78,7 +89,8 @@ public class FileTreeAdapter extends RecyclerView.Adapter<FileTreeAdapter.FileVi
                 holder.itemView.getPaddingBottom());
 
         boolean activeRow = !node.directory && node.path.equals(activeFile);
-        holder.itemView.setBackgroundColor(activeRow ? 0x334A86C8 : 0x00000000);
+        int activeRowBg = theme != null ? (0x33000000 | (theme.accent & 0x00FFFFFF)) : 0x334A86C8;
+        holder.itemView.setBackgroundColor(activeRow ? activeRowBg : 0x00000000);
 
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) listener.onNodeClicked(node);

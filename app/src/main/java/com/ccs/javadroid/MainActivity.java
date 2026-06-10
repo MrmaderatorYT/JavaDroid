@@ -64,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText      etReplace;
     private TextView      statusLineCol;
     private TextView      statusFileName;
+    private TextView      statusEncoding;
     private TextView      toolbarTitle;
     private ScrollView    consoleScroll;
     private TextView      consoleOutput;
@@ -78,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
     private View          tabBorder;
     private View          bottomTabsBar;
     private Toolbar       toolbar;
+    private View          statusBar;
     private View          keyAccessoryBar;
     private LinearLayout  accessoryBarLayout;
 
@@ -101,12 +103,14 @@ public class MainActivity extends AppCompatActivity {
     private AppPreferences    appPrefs;
     private AppTheme          theme;
     private boolean isRunning        = false;
+    private boolean isProgrammaticChange = false;
     private int     lastSearchOffset = -1;
 
     private static final int REQ_SETTINGS    = 4001;
     private static final int REQ_OPEN_FILE   = 4002;
     private static final int REQ_SAVE_AS     = 4003;
     private static final int REQ_EXPORT_PROJ = 4004;
+    private static final int REQ_LIB_MANAGER = 4005;
 
     private static final String DEFAULT_CODE =
             "public class Main {\n" +
@@ -121,15 +125,19 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        appPrefs = new AppPreferences(this);
+        theme    = AppTheme.byId(appPrefs.getThemeId(), appPrefs);
+        setTheme(theme.dark ? R.style.Theme_JavaDroid : R.style.Theme_JavaDroid_Light);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         prefs = getSharedPreferences(AppPreferences.PREFS_NAME, MODE_PRIVATE);
-        appPrefs = new AppPreferences(this);
-        theme    = AppTheme.byId(appPrefs.getThemeId(), appPrefs);
 
         bindViews();
-        applyTheme();
+        if (statusEncoding != null) {
+            statusEncoding.setOnClickListener(v -> showEncodingSelectionDialog());
+        }
         setupBackHandling();
         setupToolbar();
         setupTabs();
@@ -138,7 +146,27 @@ public class MainActivity extends AppCompatActivity {
         setupFindBar();
         setupBottomTabs();
         setupProblemsList();
-        setupProject();
+        
+        setupProject(savedInstanceState != null);
+
+        if (savedInstanceState != null) {
+            java.util.ArrayList<String> paths = savedInstanceState.getStringArrayList("open_tab_paths");
+            int activeIndex = savedInstanceState.getInt("active_tab_index", -1);
+            if (paths != null && !paths.isEmpty()) {
+                tabsAdapter.getTabs().clear();
+                tabsAdapter.notifyDataSetChanged();
+                tabsAdapter.setActiveIndex(-1);
+
+                for (String path : paths) {
+                    tabsAdapter.addTab(new FileTab(new File(path)));
+                }
+                if (activeIndex >= 0 && activeIndex < tabsAdapter.getTabs().size()) {
+                    switchTab(activeIndex);
+                }
+            }
+        }
+
+        applyTheme();
         initLiveProblemsScheduler();
     }
 
@@ -175,9 +203,10 @@ public class MainActivity extends AppCompatActivity {
                     drawerLayout.closeDrawer(GravityCompat.START);
                     return;
                 }
-                setEnabled(false);
-                MainActivity.this.getOnBackPressedDispatcher().onBackPressed();
-                setEnabled(true);
+                // Return to WelcomeActivity when back pressed at root level
+                Intent intent = new Intent(MainActivity.this, WelcomeActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
     }
@@ -206,6 +235,7 @@ public class MainActivity extends AppCompatActivity {
         tabBorder        = findViewById(R.id.tabBorder);
         bottomTabsBar    = findViewById(R.id.bottomTabsBar);
         statusBar        = findViewById(R.id.statusBar);
+        statusEncoding   = findViewById(R.id.statusEncoding);
         toolbar          = findViewById(R.id.toolbar);
         keyAccessoryBar  = findViewById(R.id.keyAccessoryBar);
         accessoryBarLayout = findViewById(R.id.accessoryBarLayout);
@@ -218,7 +248,13 @@ public class MainActivity extends AppCompatActivity {
         View drawerHeader = findViewById(R.id.drawerHeader);
         if (drawerRoot != null)   drawerRoot.setBackgroundColor(theme.toolbar);
         if (drawerHeader != null) drawerHeader.setBackgroundColor(theme.bg);
-        if (toolbar != null)      toolbar.setBackgroundColor(theme.toolbar);
+        if (toolbar != null) {
+            toolbar.setBackgroundColor(theme.toolbar);
+            Drawable overflow = toolbar.getOverflowIcon();
+            if (overflow != null) {
+                overflow.mutate().setColorFilter(theme.text, PorterDuff.Mode.SRC_IN);
+            }
+        }
         if (toolbarTitle != null) toolbarTitle.setTextColor(theme.text);
         if (tabsBar != null)      tabsBar.setBackgroundColor(theme.toolbar);
         if (tabBorder != null)    tabBorder.setBackgroundColor(theme.accent);
@@ -229,6 +265,53 @@ public class MainActivity extends AppCompatActivity {
         if (problemsRecycler != null) problemsRecycler.setBackgroundColor(theme.consoleBg);
         if (bytecodeOuterScroll != null) bytecodeOuterScroll.setBackgroundColor(theme.consoleBg);
         if (bytecodeOutput != null) bytecodeOutput.setTextColor(theme.consoleText);
+        
+        // Drawer elements theming
+        TextView tvDrawerProjectLabel = findViewById(R.id.tvDrawerProjectLabel);
+        if (tvDrawerProjectLabel != null) tvDrawerProjectLabel.setTextColor(theme.accent);
+        TextView tvDrawerArrow = findViewById(R.id.tvDrawerArrow);
+        if (tvDrawerArrow != null) tvDrawerArrow.setTextColor(theme.textDim);
+        TextView tvDrawerMavenHint = findViewById(R.id.tvDrawerMavenHint);
+        if (tvDrawerMavenHint != null) tvDrawerMavenHint.setTextColor(theme.textDim);
+        TextView tvDrawerNewFilePlus = findViewById(R.id.tvDrawerNewFilePlus);
+        if (tvDrawerNewFilePlus != null) tvDrawerNewFilePlus.setTextColor(theme.accent);
+        TextView tvDrawerNewFileText = findViewById(R.id.tvDrawerNewFileText);
+        if (tvDrawerNewFileText != null) tvDrawerNewFileText.setTextColor(theme.text);
+        View sep1 = findViewById(R.id.drawerSeparator1);
+        if (sep1 != null) sep1.setBackgroundColor(theme.separator);
+        View sep2 = findViewById(R.id.drawerSeparator2);
+        if (sep2 != null) sep2.setBackgroundColor(theme.separator);
+
+        // Find & Replace bar theming
+        if (findBar != null) {
+            findBar.setBackgroundColor(blend(theme.toolbar, theme.bg, 0.2f));
+        }
+        if (etFind != null) {
+            etFind.setBackgroundColor(theme.bg);
+            etFind.setTextColor(theme.text);
+            etFind.setHintTextColor(theme.textDim);
+        }
+        if (etReplace != null) {
+            etReplace.setBackgroundColor(theme.bg);
+            etReplace.setTextColor(theme.text);
+            etReplace.setHintTextColor(theme.textDim);
+        }
+        TextView btnFindPrev = findViewById(R.id.btnFindPrev);
+        if (btnFindPrev != null) btnFindPrev.setTextColor(theme.text);
+        TextView btnFindNext = findViewById(R.id.btnFindNext);
+        if (btnFindNext != null) btnFindNext.setTextColor(theme.text);
+        TextView btnFindClose = findViewById(R.id.btnFindClose);
+        if (btnFindClose != null) btnFindClose.setTextColor(theme.textDim);
+        TextView btnReplace = findViewById(R.id.btnReplace);
+        if (btnReplace != null) btnReplace.setTextColor(theme.accent);
+        TextView btnReplaceAll = findViewById(R.id.btnReplaceAll);
+        if (btnReplaceAll != null) btnReplaceAll.setTextColor(theme.accent);
+
+        // Adapters theming
+        if (tabsAdapter != null) tabsAdapter.setTheme(theme);
+        if (fileTreeAdapter != null) fileTreeAdapter.setTheme(theme);
+        if (problemsAdapter != null) problemsAdapter.setTheme(theme);
+
         // Status bar дочірні: дивайдери та текстові підписи (UTF-8 / Java)
         if (statusBar instanceof android.view.ViewGroup) {
             android.view.ViewGroup g = (android.view.ViewGroup) statusBar;
@@ -243,8 +326,13 @@ public class MainActivity extends AppCompatActivity {
         }
         if (statusLineCol != null) statusLineCol.setTextColor(theme.text);
         if (statusFileName != null) statusFileName.setTextColor(theme.textDim);
+        if (statusEncoding != null) {
+            statusEncoding.setTextColor(theme.textDim);
+            statusEncoding.setText(appPrefs.getFileEncoding());
+        }
         if (keyAccessoryBar != null) keyAccessoryBar.setBackgroundColor(theme.toolbar);
         setupKeyAccessoryBar();
+        invalidateOptionsMenu();
     }
 
     private void setupKeyAccessoryBar() {
@@ -332,8 +420,11 @@ public class MainActivity extends AppCompatActivity {
             }
             @Override
             public void onNodeLongClicked(FileTreeNode node) {
-                if (node.directory) return;
-                showFileContextMenu(node.path);
+                if (node.directory) {
+                    showFolderContextMenu(node.path);
+                } else {
+                    showFileContextMenu(node.path);
+                }
             }
         });
         fileTreeRecycler.setLayoutManager(new LinearLayoutManager(this));
@@ -358,6 +449,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Content change → mark tab as modified + auto-save (if enabled)
         editor.subscribeEvent(ContentChangeEvent.class, (event, sub) -> {
+            if (isProgrammaticChange) return;
             int idx = tabsAdapter.getActiveIndex();
             if (idx >= 0) runOnUiThread(() -> {
                 tabsAdapter.markModified(idx, true);
@@ -502,7 +594,7 @@ public class MainActivity extends AppCompatActivity {
         editor.setEditorLanguage(new JavaDroidLanguage(this, projectManager.getProjectDir()));
     }
 
-    private void setupProject() {
+    private void setupProject(boolean isRestoringState) {
         projectManager = new ProjectManager(this);
 
         String saved = prefs.getString("project_root", null);
@@ -531,33 +623,35 @@ public class MainActivity extends AppCompatActivity {
         setupToolbarProjectPathLongClick();
         refreshFileTree();
 
-        List<File> files = projectManager.getJavaFiles();
-        if (files.isEmpty()) {
-            if (projectManager.isMavenProject()) {
-                try {
-                    File pkgDir = ProjectLayoutHelper.mainJavaPackageDir(root);
-                    String pkg = ProjectLayoutHelper.mainPackageName(root);
-                    File app = new File(pkgDir, "App.java");
-                    projectManager.writeFile(app,
-                            "package " + pkg + ";\n\npublic class App {\n"
-                                    + "    public static void main(String[] args) {\n"
-                                    + "        System.out.println(\"Hello\");\n"
-                                    + "    }\n}\n");
-                    refreshFileTree();
-                    openFile(app);
-                } catch (Exception e) {
-                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        if (!isRestoringState) {
+            List<File> files = projectManager.getJavaFiles();
+            if (files.isEmpty()) {
+                if (projectManager.isMavenProject()) {
+                    try {
+                        File pkgDir = ProjectLayoutHelper.mainJavaPackageDir(root);
+                        String pkg = ProjectLayoutHelper.mainPackageName(root);
+                        File app = new File(pkgDir, "App.java");
+                        projectManager.writeFile(app,
+                                "package " + pkg + ";\n\npublic class App {\n"
+                                        + "    public static void main(String[] args) {\n"
+                                        + "        System.out.println(\"Hello\");\n"
+                                        + "    }\n}\n");
+                        refreshFileTree();
+                        openFile(app);
+                    } catch (Exception e) {
+                        Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    try {
+                        File main = projectManager.createFile("Main", DEFAULT_CODE);
+                        if (main != null) openFile(main);
+                    } catch (IOException e) {
+                        Toast.makeText(this, R.string.error_cannot_create_main, Toast.LENGTH_SHORT).show();
+                    }
                 }
             } else {
-                try {
-                    File main = projectManager.createFile("Main", DEFAULT_CODE);
-                    if (main != null) openFile(main);
-                } catch (IOException e) {
-                    Toast.makeText(this, R.string.error_cannot_create_main, Toast.LENGTH_SHORT).show();
-                }
+                openFile(files.get(0));
             }
-        } else {
-            openFile(files.get(0));
         }
         refreshProblemsMergedAsync();
         editor.setEditorLanguage(new JavaDroidLanguage(this, projectManager.getProjectDir()));
@@ -667,6 +761,19 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onSaveInstanceState(@androidx.annotation.NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (tabsAdapter != null) {
+            java.util.ArrayList<String> paths = new java.util.ArrayList<>();
+            for (FileTab tab : tabsAdapter.getTabs()) {
+                paths.add(tab.file.getAbsolutePath());
+            }
+            outState.putStringArrayList("open_tab_paths", paths);
+            outState.putInt("active_tab_index", tabsAdapter.getActiveIndex());
+        }
+    }
+
     // ══════════════════════════════════════════════════════════
     //  Menu
     // ══════════════════════════════════════════════════════════
@@ -675,6 +782,18 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        for (int i = 0; i < menu.size(); i++) {
+            MenuItem item = menu.getItem(i);
+            Drawable icon = item.getIcon();
+            if (icon != null) {
+                icon.mutate().setColorFilter(theme.text, PorterDuff.Mode.SRC_IN);
+            }
+        }
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -689,6 +808,7 @@ public class MainActivity extends AppCompatActivity {
         else if (id == R.id.action_new_file)         { showNewFileDialog();       return true; }
         else if (id == R.id.action_new_maven_project){ showNewMavenProjectDialog(); return true; }
         else if (id == R.id.action_sync_deps)        { syncDependencies();        return true; }
+        else if (id == R.id.action_library_manager)   { openLibraryManager();      return true; }
         else if (id == R.id.action_maven_package)    { mavenPackage();            return true; }
         else if (id == R.id.action_maven_test)       { mavenTestCompile();        return true; }
         else if (id == R.id.action_settings)         { openSettings();            return true; }
@@ -697,9 +817,11 @@ public class MainActivity extends AppCompatActivity {
         else if (id == R.id.action_share_file)       { shareCurrentFile(); return true; }
         else if (id == R.id.action_open_file)        { pickFileToOpen(); return true; }
         else if (id == R.id.action_save_as)          { saveCurrentAs(); return true; }
+        else if (id == R.id.action_format)           { formatCurrentFile(); return true; }
         else if (id == R.id.action_export_project)   { exportProjectAsZip(); return true; }
         else if (id == R.id.action_git)              { openGit(); return true; }
         else if (id == R.id.action_git_quick_commit) { showQuickCommitDialog(); return true; }
+        else if (id == R.id.action_create_cpp_module) { showCreateCppModuleDialog(); return true; }
         return super.onOptionsItemSelected(item);
     }
 
@@ -775,7 +897,9 @@ public class MainActivity extends AppCompatActivity {
             tabsAdapter.addTab(tab);
             int idx = tabsAdapter.getTabs().size() - 1;
             tabsAdapter.setActiveIndex(idx);
+            isProgrammaticChange = true;
             editor.setText(content);
+            isProgrammaticChange = false;
             applyEditorLanguage(file);
             editor.setEditable(true);
             tabsRecycler.scrollToPosition(idx);
@@ -793,10 +917,12 @@ public class MainActivity extends AppCompatActivity {
         FileTab tab = tabsAdapter.getTabs().get(index);
         try {
             String content = projectManager.readFile(tab.file);
+            tabsAdapter.setActiveIndex(index);
+            isProgrammaticChange = true;
             editor.setText(content);
+            isProgrammaticChange = false;
             applyEditorLanguage(tab.file);
             editor.setEditable(true);
-            tabsAdapter.setActiveIndex(index);
             tabsAdapter.markModified(index, false);
             tabsRecycler.scrollToPosition(index);
             updateStatusFileName(tab.file);
@@ -828,7 +954,9 @@ public class MainActivity extends AppCompatActivity {
         tabsAdapter.removeTab(index);
 
         if (tabsAdapter.getTabs().isEmpty()) {
+            isProgrammaticChange = true;
             editor.setText("");
+            isProgrammaticChange = false;
             editor.setEditable(false);
             statusFileName.setText("");
             fileTreeAdapter.setActiveFile(null);
@@ -842,10 +970,12 @@ public class MainActivity extends AppCompatActivity {
         // Load the next tab without saving (we already removed it)
         FileTab tab = tabsAdapter.getTabs().get(next);
         try {
+            tabsAdapter.setActiveIndex(next);
+            isProgrammaticChange = true;
             editor.setText(projectManager.readFile(tab.file));
+            isProgrammaticChange = false;
             applyEditorLanguage(tab.file);
             editor.setEditable(true);
-            tabsAdapter.setActiveIndex(next);
             tabsRecycler.scrollToPosition(next);
             updateStatusFileName(tab.file);
             fileTreeAdapter.setActiveFile(tab.file);
@@ -865,6 +995,13 @@ public class MainActivity extends AppCompatActivity {
         if (index != tabsAdapter.getActiveIndex()) return;
         FileTab tab = tabsAdapter.getTabs().get(index);
         try {
+            if (appPrefs.isFormatOnSave() && tab.file.getName().endsWith(".java")) {
+                String currentText = editor.getText().toString();
+                String formatted = JavaFormatter.format(currentText, appPrefs.getTabSize());
+                if (!formatted.equals(currentText)) {
+                    editor.setText(formatted);
+                }
+            }
             projectManager.writeFile(tab.file, editor.getText().toString());
             tabsAdapter.markModified(index, false);
         } catch (IOException e) {
@@ -881,6 +1018,32 @@ public class MainActivity extends AppCompatActivity {
             tab.isModified = false;
         } catch (IOException e) {
             Toast.makeText(this, getString(R.string.toast_save_failed, e.getMessage()), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void formatCurrentFile() {
+        FileTab tab = tabsAdapter.getActiveTab();
+        if (tab == null || tab.file == null) {
+            Toast.makeText(this, R.string.toast_no_file_open, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (!tab.file.getName().endsWith(".java")) {
+            return;
+        }
+        String currentText = editor.getText() != null ? editor.getText().toString() : "";
+        if (currentText.isEmpty()) return;
+
+        String formatted = JavaFormatter.format(currentText, appPrefs.getTabSize());
+        if (!formatted.equals(currentText)) {
+            editor.setText(formatted);
+            int idx = tabsAdapter.getActiveIndex();
+            if (idx >= 0) {
+                tabsAdapter.markModified(idx, true);
+                if (appPrefs.isAutoSave()) {
+                    saveCurrentToActiveTab();
+                    tabsAdapter.markModified(idx, false);
+                }
+            }
         }
     }
 
@@ -1079,47 +1242,136 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void showNewMavenProjectDialog() {
-        int pad = dp(12);
-        LinearLayout box = new LinearLayout(this);
-        box.setOrientation(LinearLayout.VERTICAL);
-        box.setPadding(pad, pad, pad, pad);
+    private void showCreateCppModuleDialog() {
+        android.widget.LinearLayout layout = new android.widget.LinearLayout(this);
+        layout.setOrientation(android.widget.LinearLayout.VERTICAL);
+        layout.setPadding(32, 24, 32, 24);
 
-        EditText etName = newEditForDialog(getString(R.string.dialog_maven_name_hint));
-        EditText etGroup = newEditForDialog(getString(R.string.dialog_maven_group_hint));
-        EditText etArtifact = newEditForDialog(getString(R.string.dialog_maven_artifact_hint));
+        EditText input = newEditForDialog("Module/Library name (e.g. native-lib)");
+        layout.addView(input);
 
-        box.addView(etName);
-        box.addView(etGroup);
-        box.addView(etArtifact);
+        android.widget.RadioGroup rg = new android.widget.RadioGroup(this);
+        android.widget.RadioButton rbC = new android.widget.RadioButton(this);
+        rbC.setText("C (Fast, built-in TCC compiler)");
+        rbC.setTextColor(theme.text);
+        rbC.setChecked(true);
+        android.widget.RadioButton rbCpp = new android.widget.RadioButton(this);
+        rbCpp.setText("C++ (Requires external NDK ~130MB)");
+        rbCpp.setTextColor(theme.text);
+        rg.addView(rbC);
+        rg.addView(rbCpp);
+        layout.addView(rg);
 
         new AlertDialog.Builder(this)
-                .setTitle(R.string.dialog_new_maven_title)
-                .setMessage(R.string.dialog_new_maven_message)
-                .setView(box)
+                .setTitle(R.string.menu_create_cpp_module)
+                .setView(layout)
                 .setPositiveButton(R.string.dialog_create, (d, w) -> {
-                    String name = etName.getText().toString().trim();
+                    String name = input.getText().toString().trim();
                     if (name.isEmpty()) return;
-                    String group = etGroup.getText().toString().trim();
-                    String artifact = etArtifact.getText().toString().trim();
+                    String cleanName = name.replaceAll("[^a-zA-Z0-9_-]", "_");
+                    
+                    boolean isCpp = rbCpp.isChecked();
+                    String ext = isCpp ? ".cpp" : ".c";
+                    
+                    File root = projectManager.getProjectDir();
+                    File cppDir = new File(root, "src/main/cpp");
+                    if (!cppDir.exists()) cppDir.mkdirs();
+                    
+                    File cppFile = new File(cppDir, cleanName + ext);
+                    if (cppFile.exists()) {
+                        Toast.makeText(this, "Native file already exists", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    
                     try {
-                        File root = MavenProjectFactory.create(this, name, group, artifact);
-                        prefs.edit().putString("project_root", root.getAbsolutePath()).apply();
-                        recreate();
-                    } catch (Exception e) {
-                        Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        String pkg = ProjectLayoutHelper.mainPackageName(root);
+                        String cMethodName = "Java_" + pkg.replace('.', '_') + "_App_stringFromJNI_" + cleanName;
+                        
+                        String cTemplate;
+                        if (isCpp) {
+                            cTemplate = "#include <jni.h>\n#include <string>\n\n"
+                                    + "extern \"C\" JNIEXPORT jstring JNICALL\n"
+                                    + cMethodName + "(JNIEnv *env, jobject thiz) {\n"
+                                    + "    std::string hello = \"Hello from C++ code in \" + std::string(\"" + cleanName + "\") + \"!\";\n"
+                                    + "    return env->NewStringUTF(hello.c_str());\n"
+                                    + "}\n";
+                        } else {
+                            cTemplate = "#include <jni.h>\n\n"
+                                    + "JNIEXPORT jstring JNICALL\n"
+                                    + cMethodName + "(JNIEnv *env, jobject thiz) {\n"
+                                    + "    return (*env)->NewStringUTF(env, \"Hello from C code in " + cleanName + "!\");\n"
+                                    + "}\n";
+                        }
+                        
+                        projectManager.writeFile(cppFile, cTemplate);
+                        
+                        // Let's check App.java to inject static JNI loaders
+                        File mainJavaPkgDir = ProjectLayoutHelper.mainJavaPackageDir(root);
+                        File appJavaFile = new File(mainJavaPkgDir, "App.java");
+                        if (appJavaFile.exists()) {
+                            String javaCode = projectManager.readFile(appJavaFile);
+                            if (!javaCode.contains("System.loadLibrary(\"" + cleanName + "\")")) {
+                                String loadBlock = "    static {\n"
+                                        + "        try {\n"
+                                        + "            System.loadLibrary(\"" + cleanName + "\");\n"
+                                        + "        } catch (UnsatisfiedLinkError e) {\n"
+                                        + "            System.err.println(\"WARNING: native library '" + cleanName + "' not found.\\n\"\n"
+                                        + "                + \"Run the project first to compile C sources.\");\n"
+                                        + "        }\n"
+                                        + "    }\n\n"
+                                        + "    public native String stringFromJNI_" + cleanName + "();\n\n";
+                                
+                                int classBodyIdx = javaCode.indexOf("public class App {");
+                                if (classBodyIdx != -1) {
+                                    int insertPos = javaCode.indexOf('{', classBodyIdx) + 1;
+                                    String updatedJava = javaCode.substring(0, insertPos) + "\n" + loadBlock + javaCode.substring(insertPos);
+                                    if (updatedJava.contains("System.out.println(\"Hello from \" + App.class.getPackage().getName());")) {
+                                        updatedJava = updatedJava.replace(
+                                            "System.out.println(\"Hello from \" + App.class.getPackage().getName());",
+                                            "System.out.println(\"Hello from \" + App.class.getPackage().getName());\n        System.out.println(new App().stringFromJNI_" + cleanName + "());"
+                                        );
+                                    }
+                                    projectManager.writeFile(appJavaFile, updatedJava);
+                                    
+                                    // Update editor content if App.java is currently active
+                                    int activeIdx = tabsAdapter.indexOfFile(appJavaFile);
+                                    if (activeIdx >= 0 && activeIdx == tabsAdapter.getActiveIndex()) {
+                                        isProgrammaticChange = true;
+                                        editor.setText(updatedJava);
+                                        isProgrammaticChange = false;
+                                    }
+                                }
+                            }
+                        }
+                        
+                        refreshFileTree();
+                        openFile(cppFile);
+                        if (appJavaFile.exists()) {
+                            openFile(appJavaFile);
+                        }
+                        Toast.makeText(this, "C++ Module created successfully", Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        Toast.makeText(this, "Failed to create C++ module: " + e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 })
                 .setNegativeButton(R.string.dialog_cancel, null)
                 .show();
     }
 
+    private void showNewMavenProjectDialog() {
+        saveCurrentToActiveTab();
+        Intent intent = new Intent(this, WelcomeActivity.class);
+        intent.setAction("ACTION_NEW_PROJECT");
+        startActivity(intent);
+        finish();
+    }
+
     private EditText newEditForDialog(String hint) {
         EditText e = new EditText(this);
         e.setHint(hint);
-        e.setHintTextColor(0xFF666666);
-        e.setTextColor(0xFFBBBBBB);
-        e.setBackgroundColor(0xFF2B2B2B);
+        e.setHintTextColor(theme.textDim);
+        e.setTextColor(theme.text);
+        e.setBackgroundColor(blend(theme.bg, theme.text, 0.05f));
         e.setPadding(32, 16, 32, 16);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -1232,12 +1484,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showNewFileDialog() {
-        EditText input = new EditText(this);
-        input.setHint(R.string.dialog_new_java_hint);
-        input.setHintTextColor(0xFF666666);
-        input.setTextColor(0xFFBBBBBB);
-        input.setBackgroundColor(0xFF2B2B2B);
-        input.setPadding(32, 24, 32, 24);
+        EditText input = newEditForDialog(getString(R.string.dialog_new_java_hint));
 
         new AlertDialog.Builder(this)
                 .setTitle(R.string.dialog_new_java_title)
@@ -1245,17 +1492,20 @@ public class MainActivity extends AppCompatActivity {
                 .setPositiveButton(R.string.dialog_create, (d, w) -> {
                     String name = input.getText().toString().trim();
                     if (name.isEmpty()) return;
+                    String template = "";
+                    boolean isJava = name.endsWith(".java") || !name.contains(".");
                     String className = name.replace(".java", "");
-                    String template;
-                    if (projectManager.isMavenProject()) {
-                        try {
-                            String pkg = ProjectLayoutHelper.mainPackageName(projectManager.getProjectDir());
-                            template = "package " + pkg + ";\n\npublic class " + className + " {\n\n}\n";
-                        } catch (Exception e) {
+                    if (isJava) {
+                        if (projectManager.isMavenProject()) {
+                            try {
+                                String pkg = ProjectLayoutHelper.mainPackageName(projectManager.getProjectDir());
+                                template = "package " + pkg + ";\n\npublic class " + className + " {\n\n}\n";
+                            } catch (Exception e) {
+                                template = "public class " + className + " {\n\n}\n";
+                            }
+                        } else {
                             template = "public class " + className + " {\n\n}\n";
                         }
-                    } else {
-                        template = "public class " + className + " {\n\n}\n";
                     }
                     try {
                         File f = projectManager.createFile(className, template);
@@ -1270,6 +1520,92 @@ public class MainActivity extends AppCompatActivity {
                     } catch (IOException e) {
                         Toast.makeText(this, getString(R.string.toast_error_prefix, e.getMessage()),
                                 Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton(R.string.dialog_cancel, null)
+                .show();
+    }
+
+    private void showFolderContextMenu(File folder) {
+        String[] options = {
+                getString(R.string.menu_create_file),
+                getString(R.string.menu_create_folder),
+                getString(R.string.dialog_file_context_rename),
+                getString(R.string.dialog_file_context_delete)
+        };
+        new AlertDialog.Builder(this)
+                .setTitle(folder.getName())
+                .setItems(options, (dialog, which) -> {
+                    switch (which) {
+                        case 0: showNewFileInFolderDialog(folder); break;
+                        case 1: showNewFolderInFolderDialog(folder); break;
+                        case 2: showRenameDialog(folder); break;
+                        case 3: showDeleteDialog(folder); break;
+                    }
+                })
+                .show();
+    }
+
+    private void showNewFileInFolderDialog(File folder) {
+        EditText input = newEditForDialog(getString(R.string.dialog_new_java_hint));
+
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.menu_create_file)
+                .setView(input)
+                .setPositiveButton(R.string.dialog_create, (d, w) -> {
+                    String name = input.getText().toString().trim();
+                    if (name.isEmpty()) return;
+                    if (!name.contains(".")) {
+                        name += ".java";
+                    }
+                    File file = new File(folder, name);
+                    if (file.exists()) {
+                        Toast.makeText(this, getString(R.string.toast_file_exists, name), Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    try {
+                        if (file.createNewFile()) {
+                            if (name.endsWith(".java")) {
+                                String className = name.substring(0, name.length() - 5);
+                                String template;
+                                String pkg = ProjectLayoutHelper.packageNameForDir(projectManager.getProjectDir(), folder);
+                                if (pkg != null && !pkg.isEmpty()) {
+                                    template = "package " + pkg + ";\n\npublic class " + className + " {\n\n}\n";
+                                } else {
+                                    template = "public class " + className + " {\n\n}\n";
+                                }
+                                projectManager.writeFile(file, template);
+                            }
+                            refreshFileTree();
+                            openFile(file);
+                            drawerLayout.closeDrawer(GravityCompat.START);
+                        }
+                    } catch (IOException e) {
+                        Toast.makeText(this, getString(R.string.toast_error_prefix, e.getMessage()), Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton(R.string.dialog_cancel, null)
+                .show();
+    }
+
+    private void showNewFolderInFolderDialog(File folder) {
+        EditText input = newEditForDialog(getString(R.string.dialog_create_folder_hint));
+
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.dialog_create_folder_title)
+                .setView(input)
+                .setPositiveButton(R.string.dialog_create, (d, w) -> {
+                    String name = input.getText().toString().trim();
+                    if (name.isEmpty()) return;
+                    File sub = new File(folder, name);
+                    if (sub.exists()) {
+                        Toast.makeText(this, "Folder already exists", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    if (sub.mkdirs()) {
+                        refreshFileTree();
+                    } else {
+                        Toast.makeText(this, "Failed to create folder", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .setNegativeButton(R.string.dialog_cancel, null)
@@ -1295,20 +1631,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showRenameDialog(File file) {
-        EditText input = new EditText(this);
-        input.setText(file.getName().replace(".java", ""));
-        input.setTextColor(0xFFBBBBBB);
-        input.setBackgroundColor(0xFF2B2B2B);
-        input.setPadding(32, 24, 32, 24);
+        EditText input = newEditForDialog("");
+        String currentNameWithoutExt = file.isDirectory() ? file.getName() :
+                (file.getName().endsWith(".java") ? file.getName().substring(0, file.getName().length() - 5) : file.getName());
+        input.setText(currentNameWithoutExt);
 
         new AlertDialog.Builder(this)
                 .setTitle(R.string.dialog_rename)
                 .setView(input)
                 .setPositiveButton(R.string.dialog_rename, (d, w) -> {
                     String newName = input.getText().toString().trim();
-                    if (newName.isEmpty() || newName.equals(file.getName().replace(".java", ""))) return;
+                    if (newName.isEmpty() || newName.equals(currentNameWithoutExt)) return;
                     File parent = file.getParentFile() != null ? file.getParentFile() : projectManager.getProjectDir();
-                    File newFile = new File(parent, newName + ".java");
+                    File newFile;
+                    if (file.isDirectory()) {
+                        newFile = new File(parent, newName);
+                    } else {
+                        if (file.getName().endsWith(".java") && !newName.endsWith(".java") && !newName.contains(".")) {
+                            newFile = new File(parent, newName + ".java");
+                        } else {
+                            newFile = new File(parent, newName);
+                        }
+                    }
                     int tabIdx = tabsAdapter.indexOfFile(file);
                     if (tabIdx >= 0) saveCurrentToActiveTab();
                     if (file.renameTo(newFile)) {
@@ -1316,7 +1660,9 @@ public class MainActivity extends AppCompatActivity {
                             tabsAdapter.removeTab(tabIdx);
                         }
                         refreshFileTree();
-                        openFile(newFile);
+                        if (newFile.isFile()) {
+                            openFile(newFile);
+                        }
                     } else {
                         Toast.makeText(this, R.string.toast_rename_failed, Toast.LENGTH_SHORT).show();
                     }
@@ -1347,17 +1693,36 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(new Intent(this, SettingsActivity.class), REQ_SETTINGS);
     }
 
+    private void openLibraryManager() {
+        if (!projectManager.isMavenProject()) {
+            Toast.makeText(this, R.string.toast_not_maven, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        saveCurrentToActiveTab();
+        LibraryManagerActivity.launch(this, projectManager.getProjectDir(), REQ_LIB_MANAGER);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQ_SETTINGS) {
-            // Перезастосовуємо тему/шрифт без повного recreate, щоб не втрачати стан вкладок.
-            theme = AppTheme.byId(appPrefs.getThemeId(), appPrefs);
-            applyTheme();
-            EditorSettingsApplier.apply(editor, appPrefs, theme);
-            switchBottomPanel(bottomPanelMode);
-            Drawable nav = toolbar != null ? toolbar.getNavigationIcon() : null;
-            if (nav != null) nav.setColorFilter(theme.text, PorterDuff.Mode.SRC_IN);
+            recreate();
+            return;
+        }
+        if (requestCode == REQ_LIB_MANAGER) {
+            if (resultCode == RESULT_OK) {
+                // Reload pom.xml if it's currently open
+                FileTab activeTab = tabsAdapter.getActiveTab();
+                if (activeTab != null && activeTab.file != null && activeTab.file.getName().equals("pom.xml")) {
+                    try {
+                        String content = projectManager.readFile(activeTab.file);
+                        isProgrammaticChange = true;
+                        editor.setText(content);
+                        isProgrammaticChange = false;
+                    } catch (IOException ignored) {}
+                }
+                syncDependencies();
+            }
             return;
         }
         if (resultCode != RESULT_OK || data == null) return;
@@ -1578,5 +1943,43 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return super.dispatchKeyEvent(event);
+    }
+
+    private void showEncodingSelectionDialog() {
+        final String[] encodings = { "UTF-8", "US-ASCII", "ISO-8859-1", "UTF-16", "Windows-1251", "Windows-1252" };
+        String current = appPrefs.getFileEncoding();
+        int checkedItem = 0;
+        for (int i = 0; i < encodings.length; i++) {
+            if (encodings[i].equals(current)) {
+                checkedItem = i;
+                break;
+            }
+        }
+
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.dialog_select_encoding)
+                .setSingleChoiceItems(encodings, checkedItem, (dialog, which) -> {
+                    String selected = encodings[which];
+                    appPrefs.setFileEncoding(selected);
+                    if (statusEncoding != null) {
+                        statusEncoding.setText(selected);
+                    }
+                    dialog.dismiss();
+
+                    // Reload currently active tab with the new encoding
+                    FileTab activeTab = tabsAdapter.getActiveTab();
+                    if (activeTab != null && activeTab.file != null) {
+                        try {
+                            String content = projectManager.readFile(activeTab.file);
+                            isProgrammaticChange = true;
+                            editor.setText(content);
+                            isProgrammaticChange = false;
+                        } catch (Exception e) {
+                            Toast.makeText(MainActivity.this, getString(R.string.error_cannot_read, e.getMessage()), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                .setNegativeButton(R.string.dialog_cancel, null)
+                .show();
     }
 }

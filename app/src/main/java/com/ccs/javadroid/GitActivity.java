@@ -65,9 +65,11 @@ public class GitActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         prefs = new AppPreferences(this);
         theme = AppTheme.byId(prefs.getThemeId(), prefs);
+        setTheme(theme.dark ? R.style.Theme_JavaDroid : R.style.Theme_JavaDroid_Light);
+
+        super.onCreate(savedInstanceState);
         creds = new GitCredentialsStore(this);
 
         String dir = getIntent().getStringExtra(EXTRA_PROJECT_DIR);

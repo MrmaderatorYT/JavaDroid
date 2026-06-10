@@ -1,0 +1,5 @@
+# ninja log v5
+1	51	1780986066419432143	CMakeFiles/native_compiler.dir/native_compiler_jni.c.o	d8d8e56b07d1e6ac
+0	6726	1780986073078761535	CMakeFiles/tcc.dir/tcc/libtcc.c.o	445230ea3fca42e0
+6726	6759	1780986073129251000	libtcc.a	b87349241786ba8d
+6759	6811	1780986073173568390	/Users/dmitroparhomenko/AndroidStudioProjects/JavaDroid/app/build/intermediates/cxx/Debug/7124281r/obj/x86_64/libnative_compiler.so	172d82574029736a

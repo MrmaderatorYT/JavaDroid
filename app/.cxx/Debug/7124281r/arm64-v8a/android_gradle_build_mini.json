@@ -1,0 +1,33 @@
+{
+  "buildFiles": [
+    "/Users/dmitroparhomenko/AndroidStudioProjects/JavaDroid/app/src/main/cpp/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/Users/dmitroparhomenko/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/Users/dmitroparhomenko/AndroidStudioProjects/JavaDroid/app/.cxx/Debug/7124281r/arm64-v8a",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/Users/dmitroparhomenko/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/Users/dmitroparhomenko/AndroidStudioProjects/JavaDroid/app/.cxx/Debug/7124281r/arm64-v8a",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "native_compiler::@6890427a1f51a3e7e1df": {
+      "artifactName": "native_compiler",
+      "abi": "arm64-v8a",
+      "output": "/Users/dmitroparhomenko/AndroidStudioProjects/JavaDroid/app/build/intermediates/cxx/Debug/7124281r/obj/arm64-v8a/libnative_compiler.so",
+      "runtimeFiles": []
+    },
+    "tcc::@6890427a1f51a3e7e1df": {
+      "artifactName": "tcc",
+      "abi": "arm64-v8a",
+      "output": "/Users/dmitroparhomenko/AndroidStudioProjects/JavaDroid/app/.cxx/Debug/7124281r/arm64-v8a/libtcc.a",
+      "runtimeFiles": []
+    }
+  }
+}

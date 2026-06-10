@@ -1,0 +1,4 @@
+/Users/dmitroparhomenko/AndroidStudioProjects/JavaDroid/app/.cxx/Debug/7124281r/x86/CMakeFiles/tcc.dir
+/Users/dmitroparhomenko/AndroidStudioProjects/JavaDroid/app/.cxx/Debug/7124281r/x86/CMakeFiles/native_compiler.dir
+/Users/dmitroparhomenko/AndroidStudioProjects/JavaDroid/app/.cxx/Debug/7124281r/x86/CMakeFiles/edit_cache.dir
+/Users/dmitroparhomenko/AndroidStudioProjects/JavaDroid/app/.cxx/Debug/7124281r/x86/CMakeFiles/rebuild_cache.dir

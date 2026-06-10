@@ -22,6 +22,12 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.TabViewHolder>
     private final List<FileTab> tabs = new ArrayList<>();
     private int activeIndex = -1;
     private TabListener listener;
+    private AppTheme theme;
+
+    public void setTheme(AppTheme theme) {
+        this.theme = theme;
+        notifyDataSetChanged();
+    }
 
     public void setTabListener(TabListener listener) {
         this.listener = listener;
@@ -83,9 +89,17 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.TabViewHolder>
         holder.tabName.setText(tab.getDisplayName());
 
         boolean isActive = position == activeIndex;
-        holder.itemView.setBackgroundColor(isActive ? 0xFF4E5254 : 0xFF3C3F41);
-        holder.tabName.setTextColor(isActive ? 0xFFBBBBBB : 0xFF808080);
-        holder.tabClose.setTextColor(isActive ? 0xFF808080 : 0xFF606060);
+        if (theme != null) {
+            int activeBg   = blend(theme.toolbar, theme.bg, 0.4f);
+            int inactiveBg = theme.toolbar;
+            holder.itemView.setBackgroundColor(isActive ? activeBg : inactiveBg);
+            holder.tabName.setTextColor(isActive ? theme.text : theme.textDim);
+            holder.tabClose.setTextColor(isActive ? theme.textDim : blend(theme.textDim, theme.toolbar, 0.5f));
+        } else {
+            holder.itemView.setBackgroundColor(isActive ? 0xFF4E5254 : 0xFF3C3F41);
+            holder.tabName.setTextColor(isActive ? 0xFFBBBBBB : 0xFF808080);
+            holder.tabClose.setTextColor(isActive ? 0xFF808080 : 0xFF606060);
+        }
 
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) listener.onTabSelected(holder.getAdapterPosition());
@@ -93,6 +107,15 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.TabViewHolder>
         holder.tabClose.setOnClickListener(v -> {
             if (listener != null) listener.onTabClosed(holder.getAdapterPosition());
         });
+    }
+
+    private static int blend(int a, int b, float t) {
+        int ar = (a >> 16) & 0xFF, ag = (a >> 8) & 0xFF, ab = a & 0xFF;
+        int br = (b >> 16) & 0xFF, bg = (b >> 8) & 0xFF, bb = b & 0xFF;
+        int r = (int) (ar + (br - ar) * t);
+        int g = (int) (ag + (bg - ag) * t);
+        int bl = (int) (ab + (bb - ab) * t);
+        return 0xFF000000 | (r << 16) | (g << 8) | bl;
     }
 
     @Override

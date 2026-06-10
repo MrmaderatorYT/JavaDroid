@@ -20,6 +20,7 @@ public final class AppPreferences {
     private static final String K_WORD_WRAP        = "word_wrap";
     private static final String K_LINE_SPACING_X10 = "line_spacing_x10"; // зберігаємо як ціле *10
     private static final String K_AUTO_SAVE        = "auto_save";
+    private static final String K_FORMAT_ON_SAVE   = "format_on_save";
 
     // ── Theme ─────────────────────────────────────────────────
     private static final String K_THEME_ID         = "theme_id";
@@ -37,6 +38,8 @@ public final class AppPreferences {
 
     // ── Misc ──────────────────────────────────────────────────
     private static final String K_PROJECT_ROOT     = "project_root";
+    private static final String K_FILE_ENCODING    = "file_encoding";
+    private static final String K_VERBOSE_LOGGING  = "verbose_logging";
 
     // Family constants
     public static final int FONT_MONOSPACE = 0;
@@ -88,6 +91,9 @@ public final class AppPreferences {
     public boolean isAutoSave()           { return prefs.getBoolean(K_AUTO_SAVE, false); }
     public void setAutoSave(boolean v)    { prefs.edit().putBoolean(K_AUTO_SAVE, v).apply(); }
 
+    public boolean isFormatOnSave()       { return prefs.getBoolean(K_FORMAT_ON_SAVE, false); }
+    public void setFormatOnSave(boolean v) { prefs.edit().putBoolean(K_FORMAT_ON_SAVE, v).apply(); }
+
     // ── Theme ─────────────────────────────────────────────────
 
     public String getThemeId()            { return prefs.getString(K_THEME_ID, AppTheme.ID_DARCULA); }
@@ -126,6 +132,46 @@ public final class AppPreferences {
 
     public String getProjectRoot()        { return prefs.getString(K_PROJECT_ROOT, null); }
     public void setProjectRoot(String v)  { prefs.edit().putString(K_PROJECT_ROOT, v).apply(); }
+
+    public String getFileEncoding()       { return prefs.getString(K_FILE_ENCODING, "UTF-8"); }
+    public void setFileEncoding(String v) { prefs.edit().putString(K_FILE_ENCODING, v).apply(); }
+
+    public boolean isVerboseLoggingEnabled() { return prefs.getBoolean(K_VERBOSE_LOGGING, true); }
+    public void setVerboseLoggingEnabled(boolean v) { prefs.edit().putBoolean(K_VERBOSE_LOGGING, v).apply(); }
+
+    public java.util.List<String> getRecentProjects() {
+        String data = prefs.getString("recent_projects", "");
+        if (data.isEmpty()) return new java.util.ArrayList<>();
+        return new java.util.ArrayList<>(java.util.Arrays.asList(data.split("\\|")));
+    }
+
+    public void addRecentProject(String path) {
+        if (path == null || path.isEmpty()) return;
+        java.util.List<String> list = getRecentProjects();
+        list.remove(path); // remove if exists to move to top
+        list.add(0, path); // insert at top
+        if (list.size() > 20) {
+            list = list.subList(0, 20);
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < list.size(); i++) {
+            if (i > 0) sb.append("|");
+            sb.append(list.get(i));
+        }
+        prefs.edit().putString("recent_projects", sb.toString()).apply();
+    }
+
+    public void removeRecentProject(String path) {
+        java.util.List<String> list = getRecentProjects();
+        if (list.remove(path)) {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < list.size(); i++) {
+                if (i > 0) sb.append("|");
+                sb.append(list.get(i));
+            }
+            prefs.edit().putString("recent_projects", sb.toString()).apply();
+        }
+    }
 
     // ── Helpers ───────────────────────────────────────────────
 

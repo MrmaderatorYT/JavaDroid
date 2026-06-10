@@ -29,6 +29,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import java.util.Locale;
+import java.io.File;
 
 /**
  * Розгорнутий екран налаштувань: тема, шрифт, поведінка редактора та компілятор.
@@ -49,10 +50,11 @@ public class SettingsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         prefs = new AppPreferences(this);
         theme = AppTheme.byId(prefs.getThemeId(), prefs);
+        setTheme(theme.dark ? R.style.Theme_JavaDroid : R.style.Theme_JavaDroid_Light);
 
+        super.onCreate(savedInstanceState);
         setContentView(buildRoot());
     }
 
@@ -516,6 +518,8 @@ public class SettingsActivity extends AppCompatActivity {
                 prefs.isWordWrap(), prefs::setWordWrap));
         section.addView(buildSwitch(getString(R.string.settings_auto_save),
                 prefs.isAutoSave(), prefs::setAutoSave));
+        section.addView(buildSwitch(getString(R.string.settings_format_on_save),
+                prefs.isFormatOnSave(), prefs::setFormatOnSave));
 
         return section;
     }
@@ -565,6 +569,72 @@ public class SettingsActivity extends AppCompatActivity {
         hint.setLayoutParams(lp);
         section.addView(hint);
 
+        // NDK Installation Button
+        TextView ndkBtn = new TextView(this);
+        boolean ndkInstalled = NdkManager.isNdkInstalled(this);
+        ndkBtn.setText(ndkInstalled ? "C++ NDK Installed (Uninstall)" : "Install C++ NDK (~130MB)");
+        ndkBtn.setTextColor(ndkInstalled ? theme.errorText : theme.accent);
+        ndkBtn.setTextSize(14);
+        ndkBtn.setPadding(dp(8), dp(16), dp(8), dp(8));
+        ndkBtn.setOnClickListener(v -> {
+            if (NdkManager.isNdkInstalled(this)) {
+                new AlertDialog.Builder(this)
+                        .setTitle("Uninstall NDK")
+                        .setMessage("Remove the C++ NDK to free up space?")
+                        .setPositiveButton("Remove", (di, w) -> {
+                            deleteRecursive(NdkManager.getNdkDir(this).getParentFile());
+                            ndkBtn.setText("Install C++ NDK (~130MB)");
+                            ndkBtn.setTextColor(theme.accent);
+                            Toast.makeText(this, "NDK Removed", Toast.LENGTH_SHORT).show();
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .show();
+            } else {
+                new AlertDialog.Builder(this)
+                        .setTitle("Install C++ NDK")
+                        .setMessage("This will download ~130MB (extracts to ~500MB) of Clang/LLVM toolchain for full C++ support. Proceed?")
+                        .setPositiveButton("Download", (di, w) -> {
+                            android.app.ProgressDialog pd = new android.app.ProgressDialog(this);
+                            pd.setTitle("Installing NDK");
+                            pd.setMessage("Connecting...");
+                            pd.setCancelable(false);
+                            pd.setProgressStyle(android.app.ProgressDialog.STYLE_HORIZONTAL);
+                            pd.setMax(100);
+                            pd.show();
+
+                            NdkManager.downloadAndInstallNdk(this, new NdkManager.NdkInstallCallback() {
+                                @Override
+                                public void onProgress(String message, int percent) {
+                                    pd.setMessage(message);
+                                    pd.setProgress(percent);
+                                }
+                                @Override
+                                public void onSuccess() {
+                                    pd.dismiss();
+                                    ndkBtn.setText("C++ NDK Installed (Uninstall)");
+                                    ndkBtn.setTextColor(theme.errorText);
+                                    Toast.makeText(SettingsActivity.this, "NDK Installed Successfully!", Toast.LENGTH_LONG).show();
+                                }
+                                @Override
+                                public void onError(String error) {
+                                    pd.dismiss();
+                                    new AlertDialog.Builder(SettingsActivity.this)
+                                            .setTitle("Error")
+                                            .setMessage("Failed to install NDK:\n" + error)
+                                            .setPositiveButton("OK", null)
+                                            .show();
+                                }
+                            });
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .show();
+            }
+        });
+        section.addView(ndkBtn);
+
+        section.addView(buildSwitch(getString(R.string.settings_verbose_logging),
+                prefs.isVerboseLoggingEnabled(), prefs::setVerboseLoggingEnabled));
+
         return section;
     }
 
@@ -600,6 +670,18 @@ public class SettingsActivity extends AppCompatActivity {
         if (root != null) prefs.setProjectRoot(root);
         Toast.makeText(this, R.string.settings_reset_done, Toast.LENGTH_SHORT).show();
         recreate();
+    }
+
+    private void deleteRecursive(File fileOrDirectory) {
+        if (fileOrDirectory.isDirectory()) {
+            File[] files = fileOrDirectory.listFiles();
+            if (files != null) {
+                for (File child : files) {
+                    deleteRecursive(child);
+                }
+            }
+        }
+        fileOrDirectory.delete();
     }
 
     // ══════════════════════════════════════════════════════════

@@ -14,8 +14,7 @@ public final class MavenPaths {
     private MavenPaths() {}
 
     public static File getJavaDroidBase(Context context) {
-        File doc = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
-        if (doc == null) doc = context.getFilesDir();
+        File doc = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
         return new File(doc, "JavaDroid");
     }
 

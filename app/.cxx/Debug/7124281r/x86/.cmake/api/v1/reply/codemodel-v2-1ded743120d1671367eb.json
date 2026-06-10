@@ -1,0 +1,69 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.6.0"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "native_compiler",
+					"targetIndexes" : 
+					[
+						0,
+						1
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "native_compiler::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-native_compiler-Debug-692c62caa4b819585f58.json",
+					"name" : "native_compiler",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "tcc::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-tcc-Debug-b9c82fac4cc00f327346.json",
+					"name" : "tcc",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/Users/dmitroparhomenko/AndroidStudioProjects/JavaDroid/app/.cxx/Debug/7124281r/x86",
+		"source" : "/Users/dmitroparhomenko/AndroidStudioProjects/JavaDroid/app/src/main/cpp"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}

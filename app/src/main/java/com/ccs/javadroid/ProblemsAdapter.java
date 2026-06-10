@@ -20,6 +20,12 @@ public class ProblemsAdapter extends RecyclerView.Adapter<ProblemsAdapter.VH> {
 
     private final List<ProblemItem> items = new ArrayList<>();
     private Listener listener;
+    private AppTheme theme;
+
+    public void setTheme(AppTheme theme) {
+        this.theme = theme;
+        notifyDataSetChanged();
+    }
 
     public void setListener(Listener listener) {
         this.listener = listener;
@@ -48,7 +54,7 @@ public class ProblemsAdapter extends RecyclerView.Adapter<ProblemsAdapter.VH> {
         switch (p.severity) {
             case ERROR:
                 sev = ctx.getString(R.string.problem_error);
-                color = 0xFFFF6B6B;
+                color = theme != null ? theme.errorText : 0xFFFF6B6B;
                 break;
             case WARNING:
                 sev = ctx.getString(R.string.problem_warn);
@@ -56,7 +62,7 @@ public class ProblemsAdapter extends RecyclerView.Adapter<ProblemsAdapter.VH> {
                 break;
             default:
                 sev = ctx.getString(R.string.problem_info);
-                color = 0xFF64B5F6;
+                color = theme != null ? theme.accent : 0xFF64B5F6;
                 break;
         }
         h.severity.setText(sev);
@@ -64,7 +70,9 @@ public class ProblemsAdapter extends RecyclerView.Adapter<ProblemsAdapter.VH> {
         String loc = p.file != null ? p.file.getName() : ctx.getString(R.string.problem_location_unknown);
         if (p.line > 0) loc += ":" + p.line;
         h.location.setText(loc);
+        h.location.setTextColor(theme != null ? theme.textDim : 0xFF808080);
         h.message.setText(p.message);
+        h.message.setTextColor(theme != null ? theme.text : 0xFFA9B7C6);
         h.itemView.setOnClickListener(v -> {
             if (listener != null) listener.onProblemClicked(p);
         });

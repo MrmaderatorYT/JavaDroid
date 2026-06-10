@@ -32,6 +32,7 @@
     <string name="status_line">Ln %1$d, Col %2$d</string>
     <string name="status_encoding">UTF-8</string>
     <string name="status_language_java">Java</string>
+    <string name="dialog_select_encoding">Select File Encoding</string>
 
     <!-- Problems adapter -->
     <string name="problem_error">ERROR</string>
@@ -211,4 +212,23 @@
     <string name="git_checkout_done">Switched to %1$s</string>
 
     <string name="git_error">Git error</string>
+    <string name="menu_format_code">Format code</string>
+    <string name="settings_format_on_save">Format code on save</string>
+    <string name="menu_library_manager">Library Manager</string>
+    <string name="lib_title">Library Manager</string>
+    <string name="lib_search_hint">e.g. gson, okhttp, junit</string>
+    <string name="lib_search">Search</string>
+    <string name="lib_searching">Searching Maven Central…</string>
+    <string name="lib_no_results">No libraries found</string>
+    <string name="lib_add_dependency">Add dependency?</string>
+    <string name="lib_add_dependency_message">Do you want to add %1$s:%2$s:%3$s to pom.xml?</string>
+    <string name="lib_added">Added: %1$s</string>
+    <string name="lib_loading_versions">Loading versions…</string>
+    <string name="lib_select_version">Select Version</string>
+    <string name="menu_create_file">Create File</string>
+    <string name="menu_create_folder">Create Folder</string>
+    <string name="dialog_create_folder_title">Create Folder</string>
+    <string name="dialog_create_folder_hint">Folder name (e.g. model)</string>
+    <string name="menu_create_cpp_module">Create C++ JNI Module</string>
+    <string name="settings_verbose_logging">Detailed logging (Logcat)</string>
 </resources>

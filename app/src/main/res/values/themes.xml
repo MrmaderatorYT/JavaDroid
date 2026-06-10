@@ -38,4 +38,42 @@
         <item name="android:textColor">@color/idea_accent</item>
         <item name="rippleColor">#334A86C8</item>
     </style>
+
+    <style name="Theme.JavaDroid.Light" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">#E7E7E7</item>
+        <item name="colorPrimaryVariant">#FFFFFF</item>
+        <item name="colorOnPrimary">#1E1E1E</item>
+        <item name="colorSecondary">#1F6FEB</item>
+        <item name="colorSecondaryVariant">#1F6FEB</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <item name="colorSurface">#E7E7E7</item>
+        <item name="colorOnSurface">#1E1E1E</item>
+        <item name="colorOnSurfaceVariant">#606060</item>
+        <item name="android:colorBackground">#FFFFFF</item>
+        <item name="android:textColorPrimary">#1E1E1E</item>
+        <item name="android:textColorSecondary">#606060</item>
+        <item name="android:statusBarColor">#E7E7E7</item>
+        <item name="android:navigationBarColor">#E7E7E7</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+        <item name="colorControlHighlight">#331F6FEB</item>
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.JavaDroid.AlertDialog.Light</item>
+        <item name="alertDialogTheme">@style/ThemeOverlay.JavaDroid.AlertDialog.Light</item>
+    </style>
+
+    <style name="ThemeOverlay.JavaDroid.AlertDialog.Light" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="colorPrimary">#1F6FEB</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSurface">#FFFFFF</item>
+        <item name="colorOnSurface">#1E1E1E</item>
+        <item name="android:textColorPrimary">#1E1E1E</item>
+        <item name="android:textColorSecondary">#606060</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.JavaDroid.DialogButton.Light</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.JavaDroid.DialogButton.Light</item>
+        <item name="buttonBarNeutralButtonStyle">@style/Widget.JavaDroid.DialogButton.Light</item>
+    </style>
+
+    <style name="Widget.JavaDroid.DialogButton.Light" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">#1F6FEB</item>
+        <item name="rippleColor">#331F6FEB</item>
+    </style>
 </resources>

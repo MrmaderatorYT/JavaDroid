@@ -30,6 +30,7 @@
     <string name="status_line">Ряд. %1$d, стовп. %2$d</string>
     <string name="status_encoding">UTF-8</string>
     <string name="status_language_java">Java</string>
+    <string name="dialog_select_encoding">Вибрати кодування файлу</string>
 
     <string name="problem_error">ПОМИЛКА</string>
     <string name="problem_warn">ПОПЕР.</string>
@@ -205,4 +206,23 @@
     <string name="git_checkout_done">Перейшли на %1$s</string>
 
     <string name="git_error">Помилка Git</string>
+    <string name="menu_format_code">Форматувати код</string>
+    <string name="settings_format_on_save">Форматувати код при збереженні</string>
+    <string name="menu_library_manager">Менеджер бібліотек</string>
+    <string name="lib_title">Менеджер бібліотек</string>
+    <string name="lib_search_hint">напр. gson, okhttp, junit</string>
+    <string name="lib_search">Пошук</string>
+    <string name="lib_searching">Пошук у Maven Central…</string>
+    <string name="lib_no_results">Нічого не знайдено</string>
+    <string name="lib_add_dependency">Додати залежність?</string>
+    <string name="lib_add_dependency_message">Бажаєте додати %1$s:%2$s:%3$s у pom.xml?</string>
+    <string name="lib_added">Додано: %1$s</string>
+    <string name="lib_loading_versions">Завантаження версій…</string>
+    <string name="lib_select_version">Оберіть версію</string>
+    <string name="menu_create_file">Створити файл</string>
+    <string name="menu_create_folder">Створити папку</string>
+    <string name="dialog_create_folder_title">Створити папку</string>
+    <string name="dialog_create_folder_hint">Назва папки (напр. model)</string>
+    <string name="menu_create_cpp_module">Створити C++ JNI модуль</string>
+    <string name="settings_verbose_logging">Детальне логування (Logcat)</string>
 </resources>

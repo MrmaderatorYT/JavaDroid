@@ -34,4 +34,30 @@ public final class ProjectLayoutHelper {
             return "com.ccs";
         }
     }
+
+    public static String packageNameForDir(File projectRoot, File folder) {
+        File mainJava = MavenPaths.mainJavaDir(projectRoot);
+        File testJava = MavenPaths.testJavaDir(projectRoot);
+
+        String folderPath = folder.getAbsolutePath();
+        String mainJavaPath = mainJava.getAbsolutePath();
+        String testJavaPath = testJava.getAbsolutePath();
+
+        if (folderPath.startsWith(mainJavaPath)) {
+            String rel = folderPath.substring(mainJavaPath.length());
+            if (rel.startsWith(File.separator)) {
+                rel = rel.substring(1);
+            }
+            if (rel.isEmpty()) return "";
+            return rel.replace(File.separatorChar, '.');
+        } else if (folderPath.startsWith(testJavaPath)) {
+            String rel = folderPath.substring(testJavaPath.length());
+            if (rel.startsWith(File.separator)) {
+                rel = rel.substring(1);
+            }
+            if (rel.isEmpty()) return "";
+            return rel.replace(File.separatorChar, '.');
+        }
+        return "";
+    }
 }

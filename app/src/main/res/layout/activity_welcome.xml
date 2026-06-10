@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:background="#1E1E20"
+    tools:context=".WelcomeActivity">
+
+    <!-- Left Navigation Sidebar -->
+    <LinearLayout
+        android:layout_width="200dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="#2B2D30"
+        android:padding="12dp">
+
+        <!-- App Logo & Version Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="24dp"
+            android:paddingStart="8dp">
+
+            <ImageView
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:src="@mipmap/ic_launcher"
+                android:contentDescription="JavaDroid Logo" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginStart="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="JavaDroid"
+                    android:textColor="#FFFFFF"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2026.1.1"
+                    android:textColor="#808080"
+                    android:textSize="10sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Sidebar Options -->
+        <TextView
+            android:id="@+id/sidebarProjects"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:gravity="center_vertical"
+            android:paddingStart="12dp"
+            android:text="Projects"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:background="#3574F0"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:id="@+id/sidebarCustomize"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:gravity="center_vertical"
+            android:paddingStart="12dp"
+            android:text="Customize"
+            android:textColor="#DFE1E5"
+            android:textSize="12sp"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:id="@+id/sidebarPlugins"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:gravity="center_vertical"
+            android:paddingStart="12dp"
+            android:text="Plugins"
+            android:textColor="#DFE1E5"
+            android:textSize="12sp"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:id="@+id/sidebarLearn"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:gravity="center_vertical"
+            android:paddingStart="12dp"
+            android:text="Learn"
+            android:textColor="#DFE1E5"
+            android:textSize="12sp"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginBottom="4dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <!-- Settings Icon at Bottom -->
+        <ImageView
+            android:id="@+id/sidebarSettings"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_gravity="start"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/ic_settings"
+            android:contentDescription="Settings"
+            android:tint="#DFE1E5"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true" />
+    </LinearLayout>
+
+    <!-- Right Workspace Area -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <!-- Header Actions -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="20dp">
+
+            <!-- Search projects -->
+            <EditText
+                android:id="@+id/etSearchProjects"
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                android:layout_weight="1"
+                android:background="#2B2D30"
+                android:hint="Search projects"
+                android:textColorHint="#6F737A"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:singleLine="true"
+                android:layout_marginEnd="16dp" />
+
+            <!-- Buttons -->
+            <Button
+                android:id="@+id/btnNewProject"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:text="New Project"
+                android:textAllCaps="false"
+                android:textSize="12sp"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#3574F0"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:layout_marginEnd="8dp" />
+
+            <Button
+                android:id="@+id/btnOpenProject"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:text="Open"
+                android:textAllCaps="false"
+                android:textSize="12sp"
+                android:textColor="#DFE1E5"
+                android:backgroundTint="#393B40"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:layout_marginEnd="8dp" />
+
+            <Button
+                android:id="@+id/btnCloneRepo"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:text="Get from VCS"
+                android:textAllCaps="false"
+                android:textSize="12sp"
+                android:textColor="#808080"
+                android:backgroundTint="#2B2D30"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp" />
+
+        </LinearLayout>
+
+        <!-- Project List View / Placeholders -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <!-- Empty List Placeholder -->
+            <LinearLayout
+                android:id="@+id/layoutEmptyProjects"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="No recent projects"
+                    android:textColor="#8F939C"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Create a new Maven project or open an existing directory."
+                    android:textColor="#6F737A"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+            <!-- Projects RecyclerView -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvRecentProjects"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="vertical" />
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -11,13 +12,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.JavaDroid">
         <activity
-            android:name=".MainActivity"
-            android:exported="true">
+            android:name=".WelcomeActivity"
+            android:exported="true"
+            android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true" />
 
         <activity
             android:name=".SettingsActivity"
@@ -29,6 +35,12 @@
             android:name=".GitActivity"
             android:exported="false"
             android:label="@string/git_activity_title"
+            android:parentActivityName=".MainActivity" />
+
+        <activity
+            android:name=".LibraryManagerActivity"
+            android:exported="false"
+            android:label="@string/lib_title"
             android:parentActivityName=".MainActivity" />
 
         <provider

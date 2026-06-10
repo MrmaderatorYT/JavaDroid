@@ -15,6 +15,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
@@ -86,7 +87,8 @@ public final class ProjectCompiler {
      * @param logicalSourceFile файл у проєкті (редактор); шляхи помилок ECJ з кешу підміняються на нього
      */
     public static void runSingleSource(Context context, String sourceCode, File logicalSourceFile,
-                                       Callback callback) {
+                                       Callback rawCallback) {
+        final Callback callback = wrapCallback(context, rawCallback);
         new Thread(() -> {
             try {
                 String className = extractClassName(sourceCode);
@@ -96,7 +98,14 @@ public final class ProjectCompiler {
                 File srcFile = new File(cacheDir, className + ".java");
                 File androidJar = ensureAndroidJar(context, cacheDir);
                 File dexDir = new File(cacheDir, "dex");
-                if (!dexDir.exists()) dexDir.mkdirs();
+                if (!dexDir.exists()) {
+                    dexDir.mkdirs();
+                } else {
+                    File[] oldFiles = dexDir.listFiles();
+                    if (oldFiles != null) {
+                        for (File f : oldFiles) f.delete();
+                    }
+                }
 
                 writeUtf8(srcFile, sourceCode);
 
@@ -115,7 +124,7 @@ public final class ProjectCompiler {
                 }
 
                 runD8Dex(androidJar, dexDir, classFile);
-                runDexMain(context, cacheDir, dexDir, className, callback);
+                runDexMain(context, null, dexDir, className, callback);
             } catch (Exception e) {
                 postResult(callback, "System Error: " + e.getMessage() + "\n" + Log.getStackTraceString(e));
             }
@@ -123,13 +132,169 @@ public final class ProjectCompiler {
     }
 
     public static void mavenCompileAndRun(Context context, File projectRoot, PomModel pom,
-                                          Callback callback) {
+                                          Callback rawCallback) {
+        final Callback callback = wrapCallback(context, rawCallback);
         new Thread(() -> {
             try {
+                // Clean up old maven_dex_* directories first to prevent disk bloat
+                cleanupOldDexDirs(context);
+
                 File androidJar = ensureAndroidJar(context,
                         new File(context.getCacheDir(), "compile_cache"));
                 File outDir = MavenPaths.targetClassesDir(projectRoot);
                 outDir.mkdirs();
+
+                // Clean up old JNI lib directories
+                File[] cacheFiles = context.getCacheDir().listFiles();
+                if (cacheFiles != null) {
+                    for (File f : cacheFiles) {
+                        if (f.getName().startsWith("jni_libs_")) {
+                            deleteRecursive(f);
+                        }
+                    }
+                }
+                
+                // Dynamic JNI C/C++ Compilation
+                File jniLibsDir = new File(context.getCacheDir(), "jni_libs_" + System.currentTimeMillis());
+                if (!jniLibsDir.exists()) jniLibsDir.mkdirs();
+                
+                File srcMain = new File(projectRoot, "src/main");
+                File cppDir = new File(srcMain, "cpp");
+                File jniDir = new File(srcMain, "jni");
+                List<File> nativeCSources = new ArrayList<>();
+                List<File> nativeCppSources = new ArrayList<>();
+                if (cppDir.exists() && cppDir.isDirectory()) {
+                    File[] files = cppDir.listFiles();
+                    if (files != null) {
+                        for (File f : files) {
+                            if (f.getName().endsWith(".c")) nativeCSources.add(f);
+                            else if (f.getName().endsWith(".cpp") || f.getName().endsWith(".cxx")) nativeCppSources.add(f);
+                        }
+                    }
+                }
+                if (jniDir.exists() && jniDir.isDirectory()) {
+                    File[] files = jniDir.listFiles();
+                    if (files != null) {
+                        for (File f : files) {
+                            if (f.getName().endsWith(".c")) nativeCSources.add(f);
+                            else if (f.getName().endsWith(".cpp") || f.getName().endsWith(".cxx")) nativeCppSources.add(f);
+                        }
+                    }
+                }
+
+                if (!nativeCSources.isEmpty() || !nativeCppSources.isEmpty()) {
+                    postProgress(callback, "Compiling native sources...");
+                    List<File> javaSources = ProjectScanner.listJavaSources(projectRoot);
+                    
+                    // 1. Compile C sources with built-in TCC
+                    if (!nativeCSources.isEmpty()) {
+                        NativeCompiler.init(context);
+                        if (!NativeCompiler.isLoaded() || !NativeCompiler.isAvailable()) {
+                            postResult(callback, "\u274C Native Build Error:\nBuilt-in C compiler is not available on this device.");
+                            return;
+                        }
+                        String includePath = NativeCompiler.getIncludePath();
+                        for (File nativeSrc : nativeCSources) {
+                            String simpleName = nativeSrc.getName();
+                            String baseName = simpleName.substring(0, simpleName.lastIndexOf('.'));
+                            String libName = "lib" + baseName + ".so";
+                            File destSo = new File(jniLibsDir, libName);
+                            
+                            String sourceCode;
+                            try {
+                                sourceCode = new String(java.nio.file.Files.readAllBytes(nativeSrc.toPath()), java.nio.charset.StandardCharsets.UTF_8);
+                            } catch (IOException ex) {
+                                postResult(callback, "❌ Cannot read " + simpleName + ": " + ex.getMessage());
+                                return;
+                            }
+                            
+                            String error = NativeCompiler.compileToSharedLib(sourceCode, destSo.getAbsolutePath(), includePath);
+                            if (error != null) {
+                                postResult(callback, "❌ C Compilation Error (" + simpleName + "):\n" + error);
+                                return;
+                            }
+                            destSo.setExecutable(true, false);
+                            
+                            File userLibsDir = new File(projectRoot, "build/jni_libs");
+                            userLibsDir.mkdirs();
+                            File userSo = new File(userLibsDir, libName);
+                            try {
+                                java.nio.file.Files.copy(destSo.toPath(), userSo.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+                            } catch (Exception e) {}
+                            
+                            postProgress(callback, "✅ Compiled (TCC) " + simpleName + " → " + libName + " (at build/jni_libs)");
+                        }
+                    }
+                    
+                    // 2. Compile C++ sources with NDK
+                    if (!nativeCppSources.isEmpty()) {
+                        if (!NdkManager.isNdkInstalled(context)) {
+                            postResult(callback, "\u274C C++ Build Error:\n"
+                                    + "C++ sources (.cpp) require the external NDK.\n\n"
+                                    + "Please go to Settings -> Install C++ NDK to download the toolchain (~130MB).\n"
+                                    + "Or rewrite your JNI code in pure C (.c) to use the built-in fast compiler.");
+                            return;
+                        }
+                        
+                        File clang = NdkManager.getClangPath(context);
+                        File sysroot = new File(NdkManager.getNdkDir(context), "toolchains/llvm/prebuilt/linux-aarch64/sysroot");
+                        
+                        for (File nativeSrc : nativeCppSources) {
+                            String simpleName = nativeSrc.getName();
+                            String baseName = simpleName.substring(0, simpleName.lastIndexOf('.'));
+                            String libName = "lib" + baseName + ".so";
+                            File destSo = new File(jniLibsDir, libName);
+                            
+                            List<String> cmd = new ArrayList<>();
+                            cmd.add(clang.getAbsolutePath());
+                            cmd.add("-shared");
+                            cmd.add("-fPIC");
+                            cmd.add("--sysroot=" + sysroot.getAbsolutePath());
+                            cmd.add("-target");
+                            cmd.add("aarch64-linux-android26"); // Match minSdkVersion
+                            cmd.add("-o");
+                            cmd.add(destSo.getAbsolutePath());
+                            cmd.add(nativeSrc.getAbsolutePath());
+                            
+                            try {
+                                ProcessBuilder pb = new ProcessBuilder(cmd);
+                                pb.redirectErrorStream(true);
+                                // Set library path so clang can find libc++_shared.so and others
+                                File libDir = new File(NdkManager.getNdkDir(context), "toolchains/llvm/prebuilt/linux-aarch64/lib");
+                                pb.environment().put("LD_LIBRARY_PATH", libDir.getAbsolutePath());
+                                
+                                Process p = pb.start();
+                                java.io.ByteArrayOutputStream bos = new java.io.ByteArrayOutputStream();
+                                InputStream is = p.getInputStream();
+                                byte[] buffer = new byte[1024];
+                                int readBytes;
+                                while ((readBytes = is.read(buffer)) != -1) {
+                                    bos.write(buffer, 0, readBytes);
+                                }
+                                int code = p.waitFor();
+                                if (code != 0) {
+                                    postResult(callback, "\u274C C++ Compilation Error (" + simpleName + "):\n" + bos.toString("UTF-8"));
+                                    return;
+                                } else {
+                                    destSo.setExecutable(true, false);
+                                    
+                                    File userLibsDir = new File(projectRoot, "build/jni_libs");
+                                    userLibsDir.mkdirs();
+                                    File userSo = new File(userLibsDir, libName);
+                                    try {
+                                        java.nio.file.Files.copy(destSo.toPath(), userSo.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+                                    } catch (Exception e) {}
+                                    
+                                    postProgress(callback, "✅ Compiled (Clang++) " + simpleName + " → " + libName + " (at build/jni_libs)");
+                                }
+                            } catch (Exception ex) {
+                                postResult(callback, "\u274C C++ Build Error:\n"
+                                        + "Failed to execute clang++ for " + simpleName + ": " + ex.getMessage());
+                                return;
+                            }
+                        }
+                    }
+                }
 
                 List<File> depJars = MavenDependencyResolver.resolve(projectRoot, pom,
                         msg -> postProgress(callback, msg));
@@ -137,7 +302,7 @@ public final class ProjectCompiler {
                 String cp = classpath(depJars);
                 List<File> sources = ProjectScanner.listJavaSources(projectRoot);
                 if (sources.isEmpty()) {
-                    postResult(callback, "Немає .java файлів у src/main/java");
+                    postResult(callback, "\u041D\u0435\u043C\u0430\u0454 .java \u0444\u0430\u0439\u043B\u0456\u0432 \u0443 src/main/java");
                     return;
                 }
 
@@ -155,19 +320,13 @@ public final class ProjectCompiler {
                 List<java.nio.file.Path> classes = new ArrayList<>();
                 collectClasses(outDir, classes);
                 if (classes.isEmpty()) {
-                    postResult(callback, "Немає .class після компіляції");
+                    postResult(callback, "\u041D\u0435\u043C\u0430\u0454 .class \u043F\u0456\u0441\u043B\u044F \u043A\u043E\u043C\u043F\u0456\u043B\u044F\u0446\u0456\u0457");
                     return;
                 }
 
-                File dexDir = new File(context.getCacheDir(), "maven_dex");
-                if (!dexDir.exists()) dexDir.mkdirs();
-                File[] oldDex = dexDir.listFiles();
-                if (oldDex != null) {
-                    for (File f : oldDex) {
-                        if (f.getName().endsWith(".dex")) f.delete();
-                    }
-                }
-
+                File dexDir = new File(context.getCacheDir(), "maven_dex_" + System.currentTimeMillis());
+                dexDir.mkdirs();
+                
                 D8Command.Builder b = D8Command.builder()
                         .setOutput(dexDir.toPath(), OutputMode.DexIndexed)
                         .setDisableDesugaring(true);
@@ -184,14 +343,17 @@ public final class ProjectCompiler {
                 if (mainClass == null || mainClass.isEmpty()) mainClass = "com.ccs.App";
 
                 postProgress(callback, "Running " + mainClass + "...");
-                runDexMain(context, context.getCacheDir(), dexDir, mainClass, callback);
+                runDexMain(context, jniLibsDir, dexDir, mainClass, callback);
             } catch (Exception e) {
                 postResult(callback, "System Error: " + e.getMessage() + "\n" + Log.getStackTraceString(e));
+            } finally {
+                // Keep cache clean but avoid deleting during execution
             }
         }).start();
     }
 
-    public static void mavenPackage(Context context, File projectRoot, PomModel pom, Callback callback) {
+    public static void mavenPackage(Context context, File projectRoot, PomModel pom, Callback rawCallback) {
+        final Callback callback = wrapCallback(context, rawCallback);
         new Thread(() -> {
             try {
                 mavenCompileOnly(context, projectRoot, pom, callback);
@@ -224,7 +386,8 @@ public final class ProjectCompiler {
     }
 
     public static void mavenTestCompile(Context context, File projectRoot, PomModel pom,
-                                        Callback callback) {
+                                        Callback rawCallback) {
+        final Callback callback = wrapCallback(context, rawCallback);
         new Thread(() -> {
             try {
                 File androidJar = ensureAndroidJar(context,
@@ -411,8 +574,9 @@ public final class ProjectCompiler {
     }
 
     private static void runD8Dex(File androidJar, File dexDir, File classFile) throws Exception {
-        for (File f : dexDir.listFiles()) {
-            if (f.getName().endsWith(".dex")) f.delete();
+        File[] old = dexDir.listFiles();
+        if (old != null) {
+            for (File f : old) f.delete();
         }
         D8.run(D8Command.builder()
                 .addProgramFiles(classFile.toPath())
@@ -422,20 +586,75 @@ public final class ProjectCompiler {
                 .build());
     }
 
-    private static void runDexMain(Context context, File cacheDir, File dexDir, String className,
+    private static void runDexMain(Context context, File jniLibsDir, File dexDir, String className,
                                  Callback callback) {
         try {
             File dexFile = new File(dexDir, "classes.dex");
+            if (!dexFile.exists()) {
+                postResult(callback, "Error: classes.dex not found in " + dexDir.getAbsolutePath());
+                return;
+            }
+
+            // Expose the cache directory containing dynamically compiled JNI .so libraries to DexClassLoader
+            File nativeLibDir = jniLibsDir != null ? jniLibsDir : new File(context.getCacheDir(), "jni_libs");
+            if (!nativeLibDir.exists()) nativeLibDir.mkdirs();
+            
+            // Use a unique optimized-dex output directory per run to prevent
+            // "Dex checksum does not match" errors. Android's DexClassLoader caches
+            // optimized dex files keyed by path; reusing a shared directory causes
+            // checksum conflicts when the source dex changes between runs.
+            File optDir = new File(dexDir, "opt");
+            if (optDir.exists()) deleteRecursive(optDir);
+            optDir.mkdirs();
+
             DexClassLoader cl = new DexClassLoader(
                     dexFile.getAbsolutePath(),
-                    cacheDir.getAbsolutePath(),
-                    null,
+                    optDir.getAbsolutePath(),
+                    nativeLibDir.getAbsolutePath(),
                     context.getClassLoader()
             );
             Class<?> cls = cl.loadClass(className);
             Method main = cls.getMethod("main", String[].class);
+            final boolean verbose = new AppPreferences(context).isVerboseLoggingEnabled();
             ByteArrayOutputStream execOut = new ByteArrayOutputStream();
-            PrintStream ps = new PrintStream(execOut);
+            java.io.OutputStream interceptor = new java.io.OutputStream() {
+                private StringBuilder line = new StringBuilder();
+                @Override
+                public void write(int b) throws java.io.IOException {
+                    execOut.write(b);
+                    if (verbose) {
+                        if (b == '\n') {
+                            Log.d("JavaDroidProgram", line.toString());
+                            line.setLength(0);
+                        } else if (b != '\r') {
+                            line.append((char) b);
+                        }
+                    }
+                }
+                @Override
+                public void write(byte[] b, int off, int len) throws java.io.IOException {
+                    execOut.write(b, off, len);
+                    if (verbose) {
+                        for (int i = off; i < off + len; i++) {
+                            if (b[i] == '\n') {
+                                Log.d("JavaDroidProgram", line.toString());
+                                line.setLength(0);
+                            } else if (b[i] != '\r') {
+                                line.append((char) b[i]);
+                            }
+                        }
+                    }
+                }
+                @Override
+                public void flush() throws java.io.IOException {
+                    execOut.flush();
+                    if (verbose && line.length() > 0) {
+                        Log.d("JavaDroidProgram", line.toString());
+                        line.setLength(0);
+                    }
+                }
+            };
+            PrintStream ps = new PrintStream(interceptor, true);
             PrintStream oldOut = System.out;
             PrintStream oldErr = System.err;
             System.setOut(ps);
@@ -444,7 +663,7 @@ public final class ProjectCompiler {
                 main.invoke(null, new Object[]{new String[]{}});
                 ps.flush();
                 postResult(callback, execOut.toString("UTF-8"));
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 e.printStackTrace(ps);
                 ps.flush();
                 postResult(callback, "Execution Exception:\n" + execOut.toString("UTF-8"));
@@ -452,9 +671,23 @@ public final class ProjectCompiler {
                 System.setOut(oldOut);
                 System.setErr(oldErr);
             }
-        } catch (Exception e) {
-            postResult(callback, "System Error: " + e.getMessage());
+        } catch (Throwable e) {
+            postResult(callback, "System Error: " + e.getMessage() + "\n" + Log.getStackTraceString(e));
         }
+    }
+
+    /** Remove stale maven_dex_* directories, keeping only the 2 most recent. */
+    private static void cleanupOldDexDirs(Context context) {
+        try {
+            File cacheDir = context.getCacheDir();
+            File[] dirs = cacheDir.listFiles((f) -> f.isDirectory() && f.getName().startsWith("maven_dex_"));
+            if (dirs == null || dirs.length <= 2) return;
+            java.util.Arrays.sort(dirs, (a, b) -> Long.compare(b.lastModified(), a.lastModified()));
+            // Keep the 2 newest, delete the rest
+            for (int i = 2; i < dirs.length; i++) {
+                deleteRecursive(dirs[i]);
+            }
+        } catch (Exception ignored) {}
     }
 
     private static String extractClassName(String source) {
@@ -501,6 +734,40 @@ public final class ProjectCompiler {
         if (cb == null) return;
         final List<ProblemItem> toPost = buildProblemsList(projectRoot, ecjErr, remapSourceFile);
         new Handler(Looper.getMainLooper()).post(() -> cb.onProblems(toPost));
+    }
+
+    private static Callback wrapCallback(Context context, Callback original) {
+        if (original == null) return null;
+        return new Callback() {
+            @Override
+            public void onProgress(String message) {
+                if (context != null) {
+                    try {
+                        if (new AppPreferences(context).isVerboseLoggingEnabled()) {
+                            Log.d("JavaDroidConsole", message);
+                        }
+                    } catch (Throwable ignored) {}
+                }
+                original.onProgress(message);
+            }
+
+            @Override
+            public void onResult(String output) {
+                if (context != null) {
+                    try {
+                        if (new AppPreferences(context).isVerboseLoggingEnabled()) {
+                            Log.d("JavaDroidConsole", output);
+                        }
+                    } catch (Throwable ignored) {}
+                }
+                original.onResult(output);
+            }
+
+            @Override
+            public void onProblems(List<ProblemItem> problems) {
+                original.onProblems(problems);
+            }
+        };
     }
 
     // ── Bytecode viewer (ECJ → .class → ASM Textifier) ────────────────────
@@ -604,4 +871,5 @@ public final class ProjectCompiler {
         }
         return null;
     }
+
 }

@@ -19,6 +19,7 @@
         android:gravity="center_vertical">
 
         <TextView
+            android:id="@+id/tvDrawerProjectLabel"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -39,6 +40,7 @@
         android:gravity="center_vertical">
 
         <TextView
+            android:id="@+id/tvDrawerArrow"
             android:layout_width="16dp"
             android:layout_height="wrap_content"
             android:text="▼"
@@ -48,6 +50,7 @@
             android:layout_marginEnd="4dp" />
 
         <TextView
+            android:id="@+id/tvDrawerMavenHint"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/drawer_maven_hint"
@@ -58,6 +61,7 @@
 
     <!-- Separator -->
     <View
+        android:id="@+id/drawerSeparator1"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/idea_separator" />
@@ -72,6 +76,7 @@
 
     <!-- Separator -->
     <View
+        android:id="@+id/drawerSeparator2"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/idea_separator" />
@@ -88,6 +93,7 @@
         android:background="?attr/selectableItemBackground">
 
         <TextView
+            android:id="@+id/tvDrawerNewFilePlus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="+"
@@ -96,6 +102,7 @@
             android:layout_marginEnd="10dp" />
 
         <TextView
+            android:id="@+id/tvDrawerNewFileText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/menu_new_java_file"

@@ -1,0 +1,12 @@
+[
+{
+  "directory": "/Users/dmitroparhomenko/AndroidStudioProjects/JavaDroid/app/.cxx/Debug/7124281r/x86_64",
+  "command": "/Users/dmitroparhomenko/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=x86_64-none-linux-android26 --sysroot=/Users/dmitroparhomenko/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -DCONFIG_TCC_ASM=1 -DCONFIG_TCC_BACKTRACE=0 -DCONFIG_TCC_BCHECK=0 -DCONFIG_TCC_SEMLOCK=1 -DONE_SOURCE=1 -DTARGETOS_Linux=1 -DTCC_TARGET_UNIX=1 -DTCC_TARGET_X86_64=1 -I/Users/dmitroparhomenko/AndroidStudioProjects/JavaDroid/app/src/main/cpp/tcc -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -fno-limit-debug-info  -fPIC -w -fPIC -O2 -o CMakeFiles/tcc.dir/tcc/libtcc.c.o -c /Users/dmitroparhomenko/AndroidStudioProjects/JavaDroid/app/src/main/cpp/tcc/libtcc.c",
+  "file": "/Users/dmitroparhomenko/AndroidStudioProjects/JavaDroid/app/src/main/cpp/tcc/libtcc.c"
+},
+{
+  "directory": "/Users/dmitroparhomenko/AndroidStudioProjects/JavaDroid/app/.cxx/Debug/7124281r/x86_64",
+  "command": "/Users/dmitroparhomenko/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=x86_64-none-linux-android26 --sysroot=/Users/dmitroparhomenko/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -Dnative_compiler_EXPORTS -I/Users/dmitroparhomenko/AndroidStudioProjects/JavaDroid/app/src/main/cpp/tcc -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -fno-limit-debug-info  -fPIC -Wall -O2 -o CMakeFiles/native_compiler.dir/native_compiler_jni.c.o -c /Users/dmitroparhomenko/AndroidStudioProjects/JavaDroid/app/src/main/cpp/native_compiler_jni.c",
+  "file": "/Users/dmitroparhomenko/AndroidStudioProjects/JavaDroid/app/src/main/cpp/native_compiler_jni.c"
+}
+]
