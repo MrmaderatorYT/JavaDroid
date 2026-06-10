@@ -1,1 +1,0 @@
-/Users/dmitroparhomenko/AndroidStudioProjects/JavaDroid/app/src/main/cpp/CMakeLists.txt
