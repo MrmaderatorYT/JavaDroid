@@ -23,3 +23,5 @@ Small Java IDE for Android: edit code, open Maven projects, compile on the devic
 ```
 
 APK: `app/build/outputs/apk/debug/`
+
+or download from Google Play Market: https://play.google.com/store/apps/details?id=com.ccs.javadroid&pli=1
