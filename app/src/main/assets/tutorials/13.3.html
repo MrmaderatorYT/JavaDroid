@@ -1,116 +1,31 @@
 <!DOCTYPE html>
-<html  lang="ru">
+<html  lang="uk">
 <head>
 <title>Java | Установка пути к классам</title>
 <meta charset="utf-8" />
-<meta name="description" content="Установка пути к классам в программе на языке программирования Java, переменная окружения CLASSPATH, параметр -classpath, принцип поиска классов компилятором javac и средой выполнения">
+<meta name="description" content="Установка пути к классам в программе на языке программирования Java, переменная окрвжения CLASSPATH, параметр -classpath, принцип поиска классов компилятором javac и средой виконання">
 <meta name="viewport" content="width=device-width">
-<link href="../../style50.css@v=1.css" rel="stylesheet" type="text/css">
+
+<link href="../prism/prism.css" rel="stylesheet" />
 </head>
 <body>
 <div id="container">
-<header>
-<div id="header">
-<div id="logo">
-<a class="logoTitle" href="https://metanit.com/" title="На главную">METANIT.COM</a>
-<div class="logoDefinition">Сайт о программировании</div> 
-</div>
+<div class="item center menC">
+     <h1>Установка пути к классам</h1><div class="date">Останнє оновлення: 21.09.2025</div>
 
-<div class="socbtns">
-<ul>
-<li><a title="Посмотреть меню" rel="nofollow" class="fa fa-lg fa-bars"></a></li>
-<li><a href="https://metanit.com/donations.html" title="Помощь сайту" rel="nofollow" style="color: var(--fa-usd-color);" class="fa fa-lg fa-usd"></a></li>
-<li><a href="https://vk.com/metanit" title="Группа в ВКонтакте" rel="nofollow" style="color: var(--fa-vk-color);" class="fa fa-lg fa-vk"></a></li>
-<li><a href="https://t.me/devnull22" title="Группа в Телеграмме"  class="fa fa-lg fa-tel" style="color: var(--fa-tel-color);"></a></li>
-<li><a href="https://metanit.com/android.html" title="Приложения андроид" rel="nofollow" style="color: var(--fa-android-color);" class="fa fa-lg fa-android"></a></li>
-<li><i id="toggle-theme" class="fa fa-lg fa-adjust"></i></li>
-</ul>
-</div>
-
-
-<div id="magnifying-glass"></div>
-
-<div class="menuButton" id="menuButton">
-	<span class="icon-bar"></span>
-    <span class="icon-bar"></span>
-    <span class="icon-bar"></span>
-</div>
-</div>
-
-<div id="search" class="transp">
-<form action="https://www.google.ru" id="cse-search-box">
-  <div>
-    <input type="hidden" name="cx" value="partner-pub-3716042175333627:1096498938" />
-    <input type="hidden" name="ie" value="UTF-8" />
-    <input type="text" name="q" />
-    <input type="submit" name="sa" value="Найти" />
-  </div>
-</form>
-</div>
-
-<div id="menu" class="menu">
-<ul class="mainmenu">
-    <li><a href="https://metanit.com/common/">Программирование</a></li>
-    <li><a href="https://metanit.com/assembler/">Ассемблер</a></li>
-   <li><a href="https://metanit.com/sharp/">C#</a></li>
-   <li><a href="https://metanit.com/java/">Java</a></li>
-   <li><a href="https://metanit.com/web/">WEB</a></li>
-   <li><a href="https://metanit.com/python/">Python</a></li>
-   <li><a href="https://metanit.com/c/">C</a></li>
-   <li><a href="https://metanit.com/cpp/">C++</a></li>
-   <li><a href="https://metanit.com/sql/">SQL</a></li>
-   <li><a href="https://metanit.com/nosql/mongodb/">MongoDB</a></li>
-   <li><a href="https://metanit.com/go/">Go</a></li>
-   <li><a href="https://metanit.com/visualbasic/">VB.NET</a></li>
-   <li><a href="https://metanit.com/swift/tutorial/">Swift</a></li>
-   <li><a href="https://metanit.com/kotlin/">Kotlin</a></li>
-   <li><a href="https://metanit.com/dart/">Dart</a></li>
-   <li><a href="https://metanit.com/php/">PHP</a></li>
-   <li><a href="https://metanit.com/rust/">Rust</a></li>
-   <li><a href="https://metanit.com/os/">Linux</a></li>
-   <li><a href="https://metanit.com/f/">F#</a></li>
-   <!--<li><a href="//metanit.com/lisp/tutorial/">Common Lisp</a></li>-->
-   <li><a href="https://metanit.com/hosting">Хостинг</a></li>
-</ul>
-</div>
-
-</header>
-<div class="outercontainer">
-<div class="innercontainer">
- 
-   <div class="item center menC">
-     <h1>Установка пути к классам</h1><div class="date">Последнее обновление: 21.09.2025</div>
-	<div class="socBlock">
-	<div class="share soctop">
-	<ul>
-	<li><a title="Поделиться в Вконтакте" rel="nofollow" class="fa fa-lg fa-vk"></a></li>
-	<li><a title="Поделиться в Телеграм" rel="nofollow" class="fa fa-lg fa-telegram"></a></li>
-	<li><a title="Поделиться в Одноклассниках" rel="nofollow" class="fa fa-lg fa-odnoklassniki"></a></li>
-	
-	</ul>
-	</div>
-	</div>
-
-	<div style="margin-top:23px;margin-left:5px;">
-		
-		
-		
-	</div>
-
-	
-<p>При создании программ на Java мы так или иначе работаем с классами. Какие-то какие-то созданы непосредственно нами, а какие-то классы созданы другими разработчиками, и мы хотми подключить эти классы себе в программу. Эти классы могут быть доступны в виде файлов с 
-расширением <code>.class</code>, либо в виде архивов <code>jar</code>. И в данном случае мы можем столкнуться с проблемой установки путей к этим классам: куда нам надо поместить эти файлы или как указать компилятору/среде выполнения, 
-что мы хотим использовать именно эти файлы.</p>
-<p>Многие распространенные инструменты разработки и сборки, как например, среды разработки IDE, имеют свои механизмы управления путями к классам. Однако разработчик при необходимости может задать пути к классам вручную. Поэтому рассмотрим, как мы можем управлять путями к классам Java.</p>
+<p>При создании программ на Java мы так або иначе работаем с классами. Какие-то якие-то созданы непосредственно нами, а якие-то классы созданы другими разработчиками, и мы хотми подключить эти классы себе в программу. Эти классы можуть быть доступны в виде файлов с 
+расширением <code>.class</code>, або в виде архивов <code>jar</code>. И в данном случае мы можемо столкнуться с проблемой установки путей к цим классам: куда нам треба поместить эти файлы або як указать компилятору/среде виконання, 
+что мы хочемо використовувати именно эти файлы.</p>
+<p>Многие распространенные инструменты разработки и сборки, як наприклад, среды разработки IDE, имеют свои механизмы управления путями к классам. Однак разработчик при необхідности может задать пути к классам вручную. Тому розглянемо, як мы можемо управлять путями к классам Java.</p>
 
 <h3>Расположение классов и формат пути</h3>
-<p>Подключаемые классы могут распространяться в виде отдельных файлов с расширением <code>.class</code> или в качестве библиотеки в виде jar-файла.</p>
+<p>Подключаемые классы можуть распространяться в виде отдельных файлов с расширением <code>.class</code> або в качестве библиотеки в виде jar-файла.</p>
 <h4>Файлы классов</h4>
-<p>Путь к файлам <code>.class</code> представляет путь к папке. Причем файлы располагаются с учетом из пакетов. Например, в качестве примера создадим в системе папку 
-<code>/home/user/classdir</code> (на Linux) или <code>c:\classdir</code> (на Windows)</p>
+<p>Путь к файлам <code>.class</code> представляє путь к папке. Причем файлы располагаются с учетом из пакетів. Наприклад, в качестве примера создадим в системе папку 
+<code>/home/user/classdir</code> (на Linux) або <code>c:\classdir</code> (на Windows)</p>
 <p>Пусть у нас есть следующий класс Person</p>
-<pre class="brush:java;">
-package com.metanit;
+<pre class="line-numbers"><code class="language-java">
+package com.;
 
 public class Person 
 {
@@ -126,22 +41,21 @@ public class Person
         System.out.printf("Person %s\n", name);
     }
 }
-</pre>
-<p>Этот код компилируется в файл <span class="b">Person.class</span>. Поскольку этот класс принадлежит пакету "com.metanit", соответственно полное название класса "com.metanit.Person". 
-Поэтому этот класс помещается в подкаталог <code><b>/home/user/classdir/</b>com/metanit/Person</code> (на Linux) или <code><b>c:\classdir</b>\com\metanit\Person</code> (на Windows). То есть при размещении классов 
+</code></pre>
+<p>Цет код компилируется в файл <span class="b">Person.class</span>. Поскольку цей класс принадлежит пакету "com.", соответственно полное название класса "com..Person". 
+Тому цей класс помещается в подкаталог <code><b>/home/user/classdir/</b>com//Person</code> (на Linux) або <code><b>c:\classdir</b>\com\\Person</code> (на Windows). То есть при размщении классов 
 мы учитываем пакеты класса и проецируем эти пакеты на структуру каталогов.</p>
 <h4>jar-файлы</h4>
-<p>Путь к классам внутри <code>.jar</code>- файла представляет путь к самому <code>.jar</code>- файлу. Например, возьмем в качестве примера папки для jar-файла папку 
-<code>/home/user/jardir</code> (на Linux) или <code>c:\jardir</code> (на Windows).</p>
-<p>Пусть в этой папке у нас располагается библиотека <span class="b">mathlib.jar</span>. В этом случае путь к ее классам этой библиотеке будет путь:</p>
+<p>Путь к классам внутри <code>.jar</code>- файла представляє путь к самому <code>.jar</code>- файлу. Наприклад, возьмем в качестве примера папки для jar-файла папку 
+<code>/home/user/jardir</code> (на Linux) або <code>c:\jardir</code> (на Windows).</p>
+<p>Пусть в цей папке у нас располагается библиотека <span class="b">mathlib.jar</span>. В цем случае путь к її классам цей библиотеке буде путь:</p>
 <ul>
 <li><p><code>/home/user/jardir/mathlib.jar</code> (на Linux) </p></li>
 <li><p><code>c:\jardir\mathlib.jar</code> (на Windows)</p></li>
 </ul>
 
-
 <h4>Формат пути</h4>
-<p>Путь к классам — это совокупность всех расположений, где могут находиться файлы классов. То есть может быть место (допустим, папка <code>classdir</code>), где храняться по отдельности скомпилированные классы, например:</p> 
+<p>Путь к классам — це совокупность всех расположений, где можуть находиться файлы классов. То есть может быть место (допустим, папка <code>classdir</code>), где храняться по отдельности скомпилированные классы, например:</p> 
 <pre class="browser">
 // Linux
 /home/user/classdir
@@ -149,7 +63,7 @@ public class Person
 // Windows
 c:\classdir
 </pre>
-<p>И также отдельно по другому пути могут располагаться библиотеки jar. Например, у нас есть библиотека "mathlib.jar" по следующему пути:</p>
+<p>И також отдельно по іншому пути можуть располагаться библиотеки jar. Наприклад, у нас есть библиотека "mathlib.jar" по следующему пути:</p>
 <pre class="browser">
 // Linux
 /home/user/jardir/mathlib.jar
@@ -157,7 +71,7 @@ c:\classdir
 // Windows
 c:\jardir\mathlib.jar
 </pre>
-<p>В этом случае общий путь к классам будет содержать оба этих подпути. Формат пути к классам следующий:</p>
+<p>В цем случае общий путь к классам буде містятьь оба цих подпути. Формат пути к классам следующий:</p>
 <pre class="browser">
 // Linux
 путь1:путь2:путь3:путьN
@@ -165,70 +79,63 @@ c:\jardir\mathlib.jar
 // Windows
 путь1;путь2;путь3;путьN
 </pre>
-<p>Все подпути к классам перечисляются друг за другом и отделяются друг от друга разделителем. В Linux таким разделителем является двоеточие (":"), а в Windows - точка с запятой (";").</p>
-<p>Кроме конкретных путей к классам мы можем использовать специальные относительные пути, например, "." (путь к текущей папке), ".." (путь к родительскому каталогу) и т.д.</p>
-<p>И если перейти непосредственно к нашим классам, то мы можем определить пути к классам следующим образом:</p>
-<pre class="sh">
+<p>Все подпути к классам перечисляются друг за другом и отделяются друг от друга разделителем. В Linux таким разделителем є двоеточие (":"), а в Windows - крапка с комою (";").</p>
+<p>Кроме конкретных путей к классам мы можемо використовувати специальные относительные пути, наприклад, "." (путь к текущей папке), ".." (путь к родительскому каталогу) и т.д.</p>
+<p>И якщо перейти непосредственно к нашим классам, то мы можемо определить пути к классам наступним чином:</p>
+<pre class="line-numbers"><code class="language-none">
 // Для Linux
 /home/user/classdir:.:/home/user/jardir/mathlib.jar
 
 // Windows
 c:\classdir;.;c:\jardir\mathlib.jar
-</pre>
-<p>То есть в данном случае для хранения классов мы будем использовать три подпути:</p>
+</code></pre>
+<p>То есть в данном случае для хранения классов мы будем використовувати три подпути:</p>
 <ul>
-<li><p>Базовый каталог "/home/user/classdir" или "c:\classdir"</p></li>
-<li><p>Текущий каталог (представляет символ точка = ".")</p></li>
-<li><p>Путь к jar - "/home/user/jardir/mathlib.jar" или "c:\jardir\mathlib.jar"</p></li>
+<li><p>Базовый каталог "/home/user/classdir" або "c:\classdir"</p></li>
+<li><p>Текущий каталог (представляє символ крапка = ".")</p></li>
+<li><p>Путь к jar - "/home/user/jardir/mathlib.jar" або "c:\jardir\mathlib.jar"</p></li>
 </ul>
 
-
-<p>Стоит отметить, что у нас может быть несколько jar-файлов, которые мы хотим использовать. В этом случае при определении пути можно использовать символ подстановки, 
+<p>Варто відзначити, что у нас может быть декілька jar-файлов, которые мы хочемо використовувати. В цем случае при определении пути можна використовувати символ подстановки, 
 чтобы указать каталог для произвольного количества JAR-файлов, например:</p>
 <pre class="browser">
-// Unix/Linux - символ * необходимо экранировать, чтобы предотвратить расширение командной оболочкой
+// Unix/Linux - символ * необхідно экранировать, чтобы предотвратить расширение командной оболочкой
 /home/user/classdir:.:/home/user/jardir/'*'
 
 // Windows
 c:\classdir;.;c:\jardir\*
 </pre>
-<p>Теперь посмотрим, как мы можем установить этот путь непосредственно при компиляции/выполнения программы.</p>
+<p>Теперь посмотрим, як мы можемо установить цей путь непосредственно при компиляции/виконання програми.</p>
 
-<h3>Переменная окружения CLASSPATH</h3>
-<p>Прежде всего пути к классам управляются через переменную окружения <span class="b">CLASSPATH</span>, которая обычно добавляется в систему при установке JDK. Обычно в качестве путей к файлам классов применяются текущий и родительский каталог. 
-Например, выведем значение этой переменной на консоль:</p>
-<pre class="sh">
+<h3>Переменная окрвжения CLASSPATH</h3>
+<p>Прежде всего пути к классам управляются через переменную окрвжения <span class="b">CLASSPATH</span>, которая обычно додаєся в систему при установке JDK. Обычно в качестве путей к файлам классов застосовуються текущий и родительский каталог. 
+Наприклад, выведем значение цей змінної на консоль:</p>
+<pre class="line-numbers"><code class="language-none">
 eugene@Eugene:~$  echo $CLASSPATH
 .:..
 eugene@Eugene:~$ 
-</pre>
-<p>В моем случае вывод показывает следующую строку ".:..". В данном случае первая точка "." указывает на текущий каталог, а последние две точки ".." на родительский каталог. Двоеточие между ними служит в качестве разделителя между путями. 
-То есть в данном случае переменная <span class="b">CLASSPATH</span> содержит два пути: текущий и родительский каталог.</p>
-<p>Таким образом, мы можем поместить файлы в текущий или в родительский каталог, и компилятор/среда выполнения их найдут.</p>
+</code></pre>
+<p>В моем случае вывод покизывает следующую строку ".:..". В данном случае первая крапка "." указывает на текущий каталог, а последние две точки ".." на родительский каталог. Двоеточие между ними служит в качестве разделителя между путями. 
+То есть в данном случае переменная <span class="b">CLASSPATH</span> містить два пути: текущий и родительский каталог.</p>
+<p>Таким чином, мы можемо поместить файлы в текущий або в родительский каталог, и компилятор/среда виконання их найдут.</p>
 
-<div style="margin-top:23px;margin-left:5px;">
-
-<!-- Yandex.RTB R-A-201190-9 -->
-
-</div>
-
-<h3>Настройка переменной окружения CLASSPATH</h3>
-<p>Обычно не рекомендуется менять глобальные настройки. И тогда при работе мы можем задать пути на время работы консоли. 
-Установка переменной окружения <span class="b">CLASSPATH</span> в данном случае зависит от конкретной оболочки и системы:</p>
-<pre class="sh">
+<h3>Настройка змінної окрвжения CLASSPATH</h3>
+<p>Обычно не рекомендуется менять глобальные настройки. И тогда при работе мы можемо задать пути на час работы консоли. 
+Установка змінної окрвжения <span class="b">CLASSPATH</span> в данном случае зависит от конкретной оболочки и системы:</p>
+<pre class="line-numbers"><code class="language-none">
 // Для Linux (bash)
 export CLASSPATH=/home/user/classdir:.:/home/user/jardir/mathlib.jar
 
 // Windows
 set CLASSPATH=c:\classdir;.;c:\jardir\mathlib.jar
-</pre>
-<p>Путь к классам сохраняется до завершения работы оболочки. Таким образом, мы сохраним начальное значение переменной <code>CLASSPATH</code>. С другой стороны, в следующий раз при работе с Java, нам потребуется снова устанавливать 
+</code></pre>
+<p>Путь к классам сохраняется до завершения работы оболочки. Таким чином, мы сохраним начальное значение змінної <code>CLASSPATH</code>. С другой стороны, в следующий раз при работе с Java, нам потребуется снова устанавливать 
 эту переменную.</p>
 
 <h3>Параметр -classpath</h3>
-<p>Самый простой способ установки пути к классам заключается в установке параметра <span class="b">-classpath</span> (или <span class="b">-cp</span>, или более современного варианта 
-<span class="b">--class-path</span>). При чем этот параметр действует как при компиляции с помощь. <code>javac</code>, так и при выполнении программы с помощью утилиты <code>java</code>:</p>
-<pre class="sh">
+<p>Самый простой способ установки пути к классам заключается в установке параметра <span class="b">-classpath</span> (или <span class="b">-cp</span>, або болїї современного варианта 
+<span class="b">--class-path</span>). При чем цей параметр действует як при компиляции с помощь. <code>javac</code>, так и при выполнении программы за допомогою утилиты <code>java</code>:</p>
+<pre class="line-numbers"><code class="language-none">
 // Для Linux
 javac -classpath /home/user/classdir:.:/home/user/jardir/mathlib.jar Program.java
 java -classpath /home/user/classdir:.:/home/user/jardir/mathlib.jar Program
@@ -236,17 +143,17 @@ java -classpath /home/user/classdir:.:/home/user/jardir/mathlib.jar Program
 // Windows
 javac -classpath c:\classdir;.;c:\jardir\mathlib.jar  Program.java
 java -classpath c:\classdir;.;c:\jardir\mathlib.jar Program
-</pre>
-<p>Вся команда должна быть набрана в одну строку.</p>
+</code></pre>
+<p>Вся команда повинна быть набрана в одну строку.</p>
 
 <h3>Поиск классов</h3>
 <p>Как происходит поиск файлов и классов?</p>
 <h4>Поиск компилятора</h4>
-<p>Если вы в коде программы используете класс, не указывая его пакет, компилятору сначала необходимо найти пакет, содержащий данный класс. Для этого компилятор просматривает все директивы импорта как возможные 
-источники расположения этого класса. Предположим, в коде используется некоторый класс <code>com.metanit.Person</code>, и компилятору надо найти путь при компиляции следующей программы:</p>
-<pre class="brush:java;">
+<p>Если вы в коде программы используете класс, не указывая его пакет, компилятору сначала необхідно найти пакет, содержащий данный класс. Для цього компилятор просматривает все директивы импорта як возможные 
+источники расположения цього класса. Предположим, в коде використовується неякий класс <code>com..Person</code>, и компилятору треба найти путь при компиляции следующей программы:</p>
+<pre class="line-numbers"><code class="language-java">
 import java.util.*;
-import com.metanit.*;
+import com..*;
 
 class Program{
 
@@ -256,450 +163,40 @@ class Program{
         tom.print();
     }
 }
-</pre>
-<p>Данный исходный файл содержит две директивы импорта:</p>
-<pre class="brush:java;">
+</code></pre>
+<p>Данный исходный файл містить две директивы импорта:</p>
+<pre class="line-numbers"><code class="language-java">
 import java.util.*;
-import com.metanit.*;
-</pre>
+import com..*;
+</code></pre>
 
-<p>В этом случае компилятор пытается найти классы <code>java.lang.Person</code> (поскольку пакет <code>java.lang</code> всегда импортируется по умолчанию), 
-<code>java.util.Person</code>, <code>com.metanit.Person</code> и <code>Person</code> в текущем пакете. Компилятор ищет каждый из этих классов во всех местах пути к классам, 
-в частности, пути, которые установлены с помощью переменной <code>CLASSPATH</code> и параметра <code>-classpath</code>. При этом порядок директив импорта или поиска не имеет значения, 
-так как имена классов должны быть уникальными. А если будет найдено более одного класса, возникнет ошибка компиляции.</p>
+<p>В цем случае компилятор пытается найти классы <code>java.lang.Person</code> (поскольку пакет <code>java.lang</code> всегда импортируется по умолчанию), 
+<code>java.util.Person</code>, <code>com..Person</code> и <code>Person</code> в текущем пакеті. Компилятор ищет каждый из цих классов во всех местах пути к классам, 
+в частности, пути, которые установлены за допомогою змінної <code>CLASSPATH</code> и параметра <code>-classpath</code>. При цем порядок директив импорта або поиска не имїїт значения, 
+оскільки имена классов повинні быть уникальными. А якщо буде найдено болїї одного класса, возникнет ошибка компиляции.</p>
 
-<p>Кроме того, компилятор также проверяет исходные файлы, чтобы определить, является ли исходный файл более новым, чем файл класса. 
-В этом случае исходный файл автоматически перекомпилируется.</p>
+<p>Крім того, компилятор також проверяет исходные файлы, чтобы определить, є ли исходный файл болїї новым, чем файл класса. 
+В цем случае исходный файл автоматически перекомпилируется.</p>
 
 <h4>Поиск виртуальной машины</h4>
-<p>Предположим, виртуальная машина ищет файл класса <code>com.metanit.Person</code>. Сначала она просматривает стандартные классы API Java. 
-Там класс не найден, поэтому она обращается к пути к классам. Допустим, путь к классам установлен на "/home/user/classdir:.:/home/user/jardir/mathlib.jar"</p>
+<p>Предположим, виртуальная машина ищет файл класса <code>com..Person</code>. Сначала она просматривает стандартные классы API Java. 
+Там класс не найден, поцему она обращается к пути к классам. Допустим, путь к классам установлен на "/home/user/classdir:.:/home/user/jardir/mathlib.jar"</p>
 <p>Используя эти пути виртуальная машина ищет следующие файлы:</p>
 <ul>
-<li><p><code>/home/user/classdir/com/metanit/Person.class</code></p></li>
-<li><p><code>com/metanit/Person.class</code> в текущем каталоге</code></p></li>
-<li><p><code>com/metanit/Person.class</code> в архиве <code>/home/user/jardir/mathlib.jar</code></p></li>
+<li><p><code>/home/user/classdir/com//Person.class</code></p></li>
+<li><p><code>com//Person.class</code> в текущем каталоге</code></p></li>
+<li><p><code>com//Person.class</code> в архиве <code>/home/user/jardir/mathlib.jar</code></p></li>
 </ul>
-<p>Компилятор Javac всегда ищет файлы в текущем каталоге, но модуль запуска виртуальной машины Java ищет файлы в текущем каталоге только в том случае, если каталог "." присутствует в пути к классам.</p>
+<p>Компилятор Javac всегда ищет файлы в текущем каталоге, но модуль запуска виртуальной машины Java ищет файлы в текущем каталоге лише в том случае, якщо каталог "." присутствует в пути к классам.</p>
 
-	
-
-	<div style="margin-top:25px;">
-
-	
-	</div>
-
-	<div class="nav"><p><a href="13.4.html">Назад</a><a href="index.html">Содержание</a><a href="14.1.html">Вперед</a></p></div>
-	<div class="socBlock">
-	<div class="share soctop">
-	<ul>
-	<li><a title="Поделиться в Вконтакте" rel="nofollow" class="fa fa-lg fa-vk"></a></li>
-	<li><a title="Поделиться в Телеграм" rel="nofollow" class="fa fa-lg fa-telegram"></a></li>
-	<li><a title="Поделиться в Одноклассниках" rel="nofollow" class="fa fa-lg fa-odnoklassniki"></a></li>
-	
-	</ul>
-	</div>
-	</div>
   </div>
-
-	<div class="item left">
-     <ul id="browser" class="filetree"> 
-	<li class="closed"><span class="folder">Глава 1. Введение в Java</span>
-		<ul>
-			<li><span class="file"><a href="1.1.html">Что такое Java</a></span></li>
-			<li><span class="file"><a href="1.6.html">Установка JDK</a></span></li>
-			<li><span class="file"><a href="1.2.html">Первая программа на Java</a></span></li>
-			<li><span class="file"><a href="1.5.html">Первая программа в IntelliJ IDEA</a></span></li>
-			<li><span class="file"><a href="1.3.html">Первая программа в NetBeans</a></span></li>
-			<li><span class="file"><a href="1.4.html">Первая программа в Eclipse</a></span></li>
-			<li><span class="file"><a href="1.7.html">JShell</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 2. Основы программирования на Java</span>
-		<ul>
-			<li><span class="file"><a href="2.11.html">Структура программы</a></span></li>
-			<li><span class="file"><a href="2.1.html">Переменные и константы</a></span></li>
-			<li><span class="file"><a href="2.19.html">Литералы</a></span></li>
-			<li><span class="file"><a href="2.12.html">Типы данных</a></span></li>
-			<li><span class="file"><a href="2.9.html">Консольный ввод/вывод в Java</a></span></li>
-			<li><span class="file"><a href="2.3.html">Арифметические операции</a></span></li>
-			<li><span class="file"><a href="2.13.html">Поразрядные операции</a></span></li>
-			<li><span class="file"><a href="2.14.html">Условные выражения</a></span></li>
-			<li><span class="file"><a href="2.15.html">Операции присваивания и приоритет операций</a></span></li>
-			<li><span class="file"><a href="2.2.html">Преобразования базовых типов данных</a></span></li>
-			<li><span class="file"><a href="2.5.html">Условные конструкции</a></span></li>
-			<li><span class="file"><a href="2.6.html">Циклы</a></span></li>
-			<li><span class="file"><a href="2.4.html">Массивы</a></span></li>
-			<li><span class="file"><a href="2.20.html">Конструкция и выражение switch</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 3. Классы</span>
-		<ul>
-			<li><span class="file"><a href="3.1.html">Классы и объекты</a></span></li>
-
-
-			<li><span class="file"><a href="2.7.html">Методы</a></span></li>
-			<li><span class="file"><a href="2.16.html">Параметры методов</a></span></li>
-			<li><span class="file"><a href="3.14.html">Объекты как параметры методов</a></span></li>
-			<li><span class="file"><a href="2.17.html">Оператор return. Результат метода</a></span></li>
-			<li><span class="file"><a href="2.18.html">Перегрузка методов</a></span></li>
-			<li><span class="file"><a href="3.21.html">Конструкторы и инициализаторы</a></span></li>
-
-
-			<li><span class="file"><a href="3.4.html">Статические компоненты класса и модификатор static</a></span></li>
-			<li><span class="file"><a href="3.20.html">Область действия и время жизни переменных</a></span></li>
-			<li><span class="file"><a href="2.8.html">Рекурсивные функции</a></span></li>
-			<li><span class="file"><a href="3.2.html">Пакеты</a></span></li>
-			<li><span class="file"><a href="3.3.html">Модификаторы доступа</a></span></li>
-			<li><span class="file"><a href="3.19.html">Компактные файлы кода и метод main</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 4. Объектно-ориентированное программирование</span>
-		<ul>
-			<li><span class="file"><a href="3.22.html">Инкапсуляция</a></span></li>
-			<li><span class="file"><a href="3.5.html">Наследование</a></span></li>
-			<li><span class="file"><a href="3.23.html">Запрет наследования и переопределения методов</a></span></li>
-			<li><span class="file"><a href="3.24.html">Полиморфизм и динамическая диспетчеризация методов</a></span></li>
-			<li><span class="file"><a href="3.9.html">Класс Object и его методы</a></span></li>
-			<li><span class="file"><a href="3.6.html">Абстрактные классы</a></span></li>
-			<li><span class="file"><a href="3.10.html">Иерархия наследования и преобразование типов</a></span></li>
-
-			<li><span class="file"><a href="3.7.html">Интерфейсы</a></span></li>
-			<li><span class="file"><a href="3.28.html">Интерфейсы и полиморфизм</a></span></li>
-			<li><span class="file"><a href="3.29.html">Множественная реализация и наследование интерфейсов</a></span></li>
-			<li><span class="file"><a href="3.16.html">Интерфейсы в механизме обратного вызова</a></span></li>
-			<li><span class="file"><a href="3.8.html">Перечисления enum</a></span></li>
-			<li><span class="file"><a href="3.11.html">Обобщения (Generics)</a></span></li>
-			<li><span class="file"><a href="3.17.html">Ограничения обобщений</a></span></li>
-			<li><span class="file"><a href="3.15.html">Наследование и обобщения</a></span></li>
-			<li><span class="file"><a href="3.31.html">Type Erasure (Стирание типов)</a></span></li>
-			<li><span class="file"><a href="3.32.html">Подстановочные знаки wildcards в обобщениях</a></span></li>
-			<li><span class="file"><a href="3.13.html">Ссылочные типы и клонирование объектов</a></span></li>
-			<li><span class="file"><a href="3.18.html">Классы Records</a></span></li>
-			<li><span class="file"><a href="9.4.html">Функциональные интерфейсы и ссылки на методы</a></span></li>
-			<li><span class="file"><a href="9.1.html">Лямбда-выражения</a></span></li>
-			<li><span class="file"><a href="9.2.html">Лямбды как параметры и результаты методов</a></span></li>
-			<li><span class="file"><a href="9.3.html">Встроенные функциональные интерфейсы</a></span></li>
-			<li><span class="file"><a href="3.12.html">Внутренние и вложенные классы</a></span></li>
-			<li><span class="file"><a href="3.30.html">Анонимные классы</a></span></li>
-
-
-			<li><span class="file"><a href="3.25.html">Sealed-классы и интерфейсы</a></span></li>
-			<li><span class="file"><a href="3.26.html">Pattern мatching. Паттерн типов</a></span></li>
-			<li><span class="file"><a href="3.27.html">Pattern мatching. record-паттерн</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 5. Обработка исключений</span>
-		<ul>
-			<li><span class="file"><a href="2.10.html">Обработка исключений и конструкция try...catch...finally</a></span></li>
-			<li><span class="file"><a href="4.2.html">Классы исключений</a></span></li>
-			<li><span class="file"><a href="4.1.html">Операторы throws и throw</a></span></li>
-			<li><span class="file"><a href="4.3.html">Создание своих классов исключений</a></span></li>
-			<li><span class="file"><a href="4.4.html">Assert</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 6. Коллекции</span>
-		<ul>
-			<li><span class="file"><a href="5.1.html">Типы коллекций. Интерфейс Collection</a></span></li>
-			<li><span class="file"><a href="5.2.html">Класс ArrayList и интерфейс List</a></span></li>
-			<li><span class="file"><a href="5.6.html">Интерфейсы Comparable и Comporator. Сортировка</a></span></li>
-			<li><span class="file"><a href="5.7.html">Очереди и стеки. Классы ArrayDeque и PriorityQueue</a></span></li>
-			<li><span class="file"><a href="5.3.html">Связанный список LinkedList</a></span></li>
-			<li><span class="file"><a href="5.4.html">Интерфейс Set и хеш-таблицы HashSet</a></span></li>
-			<li><span class="file"><a href="5.5.html">Деревья TreeSet и интерфейсы SortedSet и NavigableSet</a></span></li>
-			<li><span class="file"><a href="5.8.html">Словари. Интерфейс Map и класс HashMap</a></span></li>
-			<li><span class="file"><a href="5.9.html">Интерфейсы SortedMap и NavigableMap. Класс TreeMap</a></span></li>
-			<li><span class="file"><a href="5.10.html">Итераторы. Iterator и Iterable</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 7. Потоки ввода-вывода. Работа с файлами</span>
-		<ul>
-			<li><span class="file"><a href="6.1.html">Потоки ввода-вывода</a></span></li>
-			<li><span class="file"><a href="6.3.html">Чтение и запись файлов. FileInputStream и FileOutputStream</a></span></li>
-			<li><span class="file"><a href="6.2.html">Закрытие потоков и конструкция try-с-ресурсами</a></span></li>
-			<li><span class="file"><a href="6.4.html">Классы ByteArrayInputStream и ByteArrayOutputStream</a></span></li>
-			<li><span class="file"><a href="6.5.html">Буферизованные потоки BufferedInputStream и BufferedOutputStream</a></span></li>
-			<li><span class="file"><a href="6.6.html">Форматируемый вывод. PrintStream и PrintWriter</a></span></li>
-			<li><span class="file"><a href="6.7.html">Классы DataOutputStream и DataInputStream</a></span></li>
-			<li><span class="file"><a href="6.8.html">Чтение и запись текстовых файлов</a></span></li>
-			<li><span class="file"><a href="6.9.html">Буферизация символьных потоков. BufferedReader и BufferedWriter</a></span></li>
-			<li><span class="file"><a href="6.10.html">Сериализация объектов</a></span></li>
-			<li><span class="file"><a href="6.11.html">Класс File. Работа с файлами и каталогами</a></span></li>
-			<li><span class="file"><a href="6.12.html">Работа с ZIP-архивами</a></span></li>
-			<li><span class="file"><a href="6.13.html">Класс Console</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 8. Работа со строками</span>
-		<ul>
-			<li><span class="file"><a href="7.1.html">Введение в строки. Класс String</a></span></li>
-			<li><span class="file"><a href="7.2.html">Основные операции со строками</a></span></li>
-			<li><span class="file"><a href="7.3.html">StringBuffer и StringBuilder</a></span></li>
-			<li><span class="file"><a href="7.4.html">Регулярные выражения</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 9. Многопоточное программирование</span>
-		<ul>
-			<li><span class="file"><a href="8.1.html">Многопоточное программирование и класс Thread</a></span></li>
-			<li><span class="file"><a href="8.2.html">Создание и выполнение потоков</a></span></li>
-			<li><span class="file"><a href="8.11.html">Управление потоками</a></span></li>
-			<li><span class="file"><a href="8.4.html">Завершение и прерывание потока</a></span></li>
-			<li><span class="file"><a href="8.12.html">Виртуальные потоки</a></span></li>
-			<li><span class="file"><a href="8.3.html">Синхронизация потоков. Оператор synchronized</a></span></li>
-			<li><span class="file"><a href="8.5.html">Взаимодействие потоков. Методы wait и notify</a></span></li>
-			<li><span class="file"><a href="8.6.html">Семафоры</a></span></li>
-			<li><span class="file"><a href="8.7.html">Обмен между потоками. Класс Exchanger</a></span></li>
-			<li><span class="file"><a href="8.8.html">Класс Phaser</a></span></li>
-			<li><span class="file"><a href="8.9.html">Блокировки. ReentrantLock</a></span></li>
-			<li><span class="file"><a href="8.10.html">Условия в блокировках</a></span></li>
-			<li><span class="file"><a href="8.16.html">Переменные volatile</a></span></li>
-			<li><span class="file"><a href="8.17.html">Атомарность и Atomics. Потокобезопасность без блокировок</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 10. Асинхронность</span>
-		<ul>
-			<li><span class="file"><a href="8.13.html">Асинхронные задачи FutureTask. Callable и Future</a></span></li>
-			<li><span class="file"><a href="8.14.html">Executor - исполнитель задач</a></span></li>
-			<li><span class="file"><a href="8.15.html">Координация выполнения асинхронных задач</a></span></li>
-			<li><span class="file"><a href="8.18.html">CompletableFuture и промисы. Обработка результата асинхронных задач</a></span></li>
-			<li><span class="file"><a href="8.19.html">CompletableFuture, обработка ошибок и завершения асинхронных задач</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 11. Stream API</span>
-		<ul>
-			<li><span class="file"><a href="10.1.html">Введение в Stream API</a></span></li>
-			<li><span class="file"><a href="10.2.html">Создание потока данных</a></span></li>
-			<li><span class="file"><a href="10.3.html">Фильтрация, перебор элементов и отображение</a></span></li>
-			<li><span class="file"><a href="10.8.html">Сортировка</a></span></li>
-			<li><span class="file"><a href="10.13.html">Получение подпотока и объединение потоков</a></span></li>
-			<li><span class="file"><a href="10.4.html">Методы skip и limit</a></span></li>
-			<li><span class="file"><a href="10.11.html">Операции сведения</a></span></li>
-			<li><span class="file"><a href="10.5.html">Метод reduce</a></span></li>
-			<li><span class="file"><a href="10.12.html">Тип Optional</a></span></li>
-			<li><span class="file"><a href="10.6.html">Метод collect</a></span></li>
-			<li><span class="file"><a href="10.7.html">Группировка</a></span></li>
-			<li><span class="file"><a href="10.9.html">Параллельные потоки</a></span></li>
-			<li><span class="file"><a href="10.10.html">Параллельные операции над массивами</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 12. Модульность</span>
-		<ul>
-			<li><span class="file"><a href="11.1.html">Создание модуля</a></span></li>
-			<li><span class="file"><a href="11.2.html">Зависимые модули</a></span></li>
-			<li><span class="file"><a href="11.3.html">Взаимодействие между модулями. Экспорт и импорт</a></span></li>
-		</ul>
-	</li>
-	</li>
-	<li class="closed"><span class="folder">Глава 13. Дополнительные классы</span>
-		<ul>
-			<li><span class="file"><a href="12.1.html">Математические вычисления и класс Math</a></span></li>
-			<li><span class="file"><a href="12.2.html">Большие числа BigInteger и BigDecimal</a></span></li>
-			<li><span class="file"><a href="12.3.html">Работа с датами. LocalDate</a></span></li>
-			<li><span class="file"><a href="12.4.html">Процессы. Process и ProcessBuilder</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 14. JAR-файлы и подключение библиотек и классов</span>
-		<ul>
-			<li><span class="file"><a href="13.1.html">Файлы JAR, их создание и выполнение</a></span></li>
-			<li><span class="file"><a href="13.2.html">Создание и подключение библиотеки JAR</a></span></li>
-			<li><span class="file"><a href="13.4.html">Модульный jar-файл</a></span></li>
-			<li><span class="file"><a href="13.3.html">Установка пути к классам Java</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 15. Рефлексия</span>
-		<ul>
-			<li><span class="file"><a href="14.1.html">Введение в рефлексию. Класс Class</a></span></li>
-			<li><span class="file"><a href="14.2.html">Исследование типов</a></span></li>
-			<li><span class="file"><a href="14.3.html">Поля класса и класс Field</a></span></li>
-			<li><span class="file"><a href="14.4.html">Модификаторы доступа и класс Modifier</a></span></li>
-			<li><span class="file"><a href="14.5.html">Класс Constructor и cоздание объектов</a></span></li>
-			<li><span class="file"><a href="14.6.html">Методы и класс Method</a></span></li>
-			<li><span class="file"><a href="14.7.html">Proxy (Прокси)</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 16. Аннотации</span>
-		<ul>
-			<li><span class="file"><a href="15.1.html">Введение в аннотации. Встроенные аннотации</a></span></li>
-			<li><span class="file"><a href="15.2.html">Создание и применение аннотаций</a></span></li>
-			<li><span class="file"><a href="15.3.html">Обработка аннотаций во время выполнения</a></span></li>
-		</ul>
-	</li>
-
-
-	<li class="closed"><span class="folder">Глава 17. Взаимодействие с нативным кодом</span>
-		<ul>
-			<li><span class="file"><a href="16.1.html">Java Native Interface (JNI)</a></span></li>
-			<li><span class="file"><a href="16.2.html">Foreign Functions и Memory API</a></span></li>
-			<li><span class="file"><a href="16.3.html">Арена и сегменты памяти MemorySegment</a></span></li>
-			<li><span class="file"><a href="16.4.html">Компоновка памяти MemoryLayout и работа с MemorySegment</a></span></li>
-			<li><span class="file"><a href="16.5.html">Сложные данные и MemoryLayout</a></span></li>
-			<li><span class="file"><a href="16.6.html">Поиск и вызов внешних функций</a></span></li>
-			<li><span class="file"><a href="16.7.html">Нативные функции обратного вызова</a></span></li>
-		</ul>
-	</li>
-</ul>   </div>
-</div>
-
-  <div class="item right">
-<div class="help" style="border: 0px;">
-    
-	<div class="help-item">
-		<div class="help-item-name"><a href="https://metanit.com/settings.html">Настройки</a></div>
-	 </div>
-</div>
-			<div class="help">
-
-      <div class="help-header">Помощь сайту</div>
-
-       <div class="help-item">
-		<div class="help-item-name"><a href="https://yoomoney.ru/to/410011174743222" rel="nofollow">Помощь сайту</a></div>
-	 </div>
-       
-      <div class="help-item">
-		<div class="help-item-name">Юмани:</div>
-		<div class="help-item-req">410011174743222</div>
-	 </div>
-
-		<div class="help-item">
-			<div class="help-item-name">Номер карты:</div>
-			<div class="help-item-req">4048415020898850</div>
-		</div>
 
       </div>
 
-	
-	
-
-
-
-
   </div>
 </div>
 
-<div id="footer" style="padding-bottom:85px;">
-
-<div class="bootomLinks">
-<a href="https://vk.com/metanit" title="Присоединиться к группе вконтакте" rel="nofollow">
-Вконтакте</a>|
- <a href="https://t.me/devnull22" title="Подписаться на телеграм" rel="nofollow">
-Телеграм</a> | 
-<a href="https://metanit.com/donations.html" rel="nofollow">Донаты/Помощь сайту</a>
-</div>
-<p>Contacts: metanit22@mail.ru</p>
-<p>Copyright &copy; Евгений Попов, metanit.com, 2026. Все права защищены.</p>
-
-
-</div>
-
-</div>
-
-
-
-
-
-
-
-
-
-
-<script src='../../js/syntax16.js'></script>
-<script>
-// Syntax Highlighter
-if (typeof SyntaxHighlighter !== 'undefined') {
-    SyntaxHighlighter.all();
-}
-
-// Copy guard
-document.addEventListener('copy', (ev) => {
-    const et = ev.target;
-    if (et.type === 'textarea') {
-        ev.clipboardData.setData('text/plain', et.value.substring(et.selectionStart, et.selectionEnd).replace(/ /g, ' '));
-        ev.preventDefault();
-    }
-});
-
-// Mobile menu
-const faBars = document.querySelector('.fa-bars');
-if (faBars) {
-    faBars.addEventListener('click', () => {
-        const tree = document.querySelector('.item.left');
-        if (tree) {
-            tree.style.display = (tree.style.display === 'block') ? 'none' : 'block';
-        }
-    });
-}
-
-const menuButton = document.getElementById('menuButton');
-if (menuButton) {
-    menuButton.addEventListener('click', () => {
-        menuButton.classList.toggle('menu-opened');
-        const mainMenu = document.querySelector('.mainmenu');
-        if (mainMenu) mainMenu.classList.toggle('open');
-    });
-}
-
-// Search toggle
-const magGlass = document.getElementById('magnifying-glass');
-if (magGlass) {
-    magGlass.addEventListener('click', () => {
-        const search = document.getElementById('search');
-        if (search) search.classList.toggle('transp');
-    });
-}
-
-// Theme toggle
-const toggleTheme = document.getElementById('toggle-theme');
-if (toggleTheme) {
-    toggleTheme.addEventListener('click', () => {
-        if (document.documentElement.hasAttribute('theme')) {
-            document.documentElement.removeAttribute('theme');
-            document.cookie = 'theme=1;expires=Mon, 19 Feb 2001 12:00:00 UTC;path=/;';
-        } else {
-            document.documentElement.setAttribute('theme', 'dark');
-            var expire = new Date();
-            expire.setHours(expire.getHours() + 7);
-            document.cookie = 'theme=1;expires=' + expire.toUTCString() + ';path=/;';
-        }
-    });
-}
-
-// Share buttons
-const shareVK = document.querySelectorAll('.share .fa-vk');
-shareVK.forEach(e => e.addEventListener('click', () => window.open('http://vk.com/share.php?url=' + window.location.href, 'Поделиться в ВКОНТАКТЕ')));
-const shareTG = document.querySelectorAll('.share .fa-telegram');
-shareTG.forEach(e => e.addEventListener('click', () => window.open('tg://msg_url/url=' + window.location.href, 'Поделиться в Telegram')));
-const shareOK = document.querySelectorAll('.share .fa-odnoklassniki');
-shareOK.forEach(e => e.addEventListener('click', () => window.open('https://connect.ok.ru/offer?url=' + window.location.href, 'Поделиться в Одноклассниках')));
-
-// Folders
-const folders = document.getElementsByClassName('closed');
-for (let i = 0; i < folders.length; i++) {
-    folders[i].addEventListener('click', function (e) {
-        this.classList.toggle('closed');
-        this.classList.toggle('opened');
-    });
-}
-
-// Active Item Highlight
-const activePath = window.location.pathname.split('/').pop();
-const activeItem = document.querySelector(".file a[href*='" + activePath + "']");
-if (activeItem) {
-    activeItem.classList.add('aMItem');
-    activeItem.parentElement.classList.add('aMItem');
-    const activeFolder = activeItem.closest('li');
-    if (activeFolder) {
-        activeFolder.classList.remove('closed');
-        activeFolder.classList.add('opened');
-        const folderLabel = activeFolder.querySelector('.folder');
-        if (folderLabel) folderLabel.classList.add('aMItem');
-    }
-}
-
-// Settings
-const props = ['--main-font-size', '--main-font-family', '--menc-bg-color', '--container-bg-color', '--menu-bg-color', '--code-font-size', '--code-font-family', '--code-bgcolor', '--code-max-height'];
-for (let i = 0; i < props.length; i++) {
-    const propValue = localStorage.getItem(props[i]);
-    if (propValue !== null) document.documentElement.style.setProperty(props[i], propValue);
-}
-</script>
+<script src="../prism/prism.js"></script>
+<script src="../prism/prism-java.js"></script>
 </body>
 </html>

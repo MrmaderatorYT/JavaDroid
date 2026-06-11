@@ -1,110 +1,26 @@
 <!DOCTYPE html>
-<html  lang="ru">
+<html  lang="uk">
 <head>
 <title>Java | Обробка винятків та конструкція try...catch...finally</title>
 <meta charset="utf-8" />
 <meta name="description" content="Обработка исключений в языке программирования Java, использование конструкции try...catch...finally, обработка нескольких типов исключений, оператор throw">
 <meta name="viewport" content="width=device-width">
-<link href="../../style50.css@v=1.css" rel="stylesheet" type="text/css">
+
+<link href="../prism/prism.css" rel="stylesheet" />
 </head>
 <body>
 <div id="container">
-<header>
-<div id="header">
-<div id="logo">
-<a class="logoTitle" href="https://metanit.com/" title="На главную">METANIT.COM</a>
-<div class="logoDefinition">Сайт о программировании</div> 
-</div>
+<div class="item center menC">
+     <h1>Обробка винятків та конструкція try...catch...finally</h1><div class="date">Останнє оновлення: 07.10.2025</div>
 
-<div class="socbtns">
-<ul>
-<li><a title="Посмотреть меню" rel="nofollow" class="fa fa-lg fa-bars"></a></li>
-<li><a href="https://metanit.com/donations.html" title="Помощь сайту" rel="nofollow" style="color: var(--fa-usd-color);" class="fa fa-lg fa-usd"></a></li>
-<li><a href="https://vk.com/metanit" title="Группа в ВКонтакте" rel="nofollow" style="color: var(--fa-vk-color);" class="fa fa-lg fa-vk"></a></li>
-<li><a href="https://t.me/devnull22" title="Группа в Телеграмме"  class="fa fa-lg fa-tel" style="color: var(--fa-tel-color);"></a></li>
-<li><a href="https://metanit.com/android.html" title="Приложения андроид" rel="nofollow" style="color: var(--fa-android-color);" class="fa fa-lg fa-android"></a></li>
-<li><i id="toggle-theme" class="fa fa-lg fa-adjust"></i></li>
-</ul>
-</div>
-
-
-<div id="magnifying-glass"></div>
-
-<div class="menuButton" id="menuButton">
-	<span class="icon-bar"></span>
-    <span class="icon-bar"></span>
-    <span class="icon-bar"></span>
-</div>
-</div>
-
-<div id="search" class="transp">
-<form action="https://www.google.ru" id="cse-search-box">
-  <div>
-    <input type="hidden" name="cx" value="partner-pub-3716042175333627:1096498938" />
-    <input type="hidden" name="ie" value="UTF-8" />
-    <input type="text" name="q" />
-    <input type="submit" name="sa" value="Найти" />
-  </div>
-</form>
-</div>
-
-<div id="menu" class="menu">
-<ul class="mainmenu">
-    <li><a href="https://metanit.com/common/">Програмування</a></li>
-    <li><a href="https://metanit.com/assembler/">Асемблер</a></li>
-   <li><a href="https://metanit.com/sharp/">C#</a></li>
-   <li><a href="https://metanit.com/java/">Java</a></li>
-   <li><a href="https://metanit.com/web/">WEB</a></li>
-   <li><a href="https://metanit.com/python/">Python</a></li>
-   <li><a href="https://metanit.com/c/">C</a></li>
-   <li><a href="https://metanit.com/cpp/">C++</a></li>
-   <li><a href="https://metanit.com/sql/">SQL</a></li>
-   <li><a href="https://metanit.com/nosql/mongodb/">MongoDB</a></li>
-   <li><a href="https://metanit.com/go/">Go</a></li>
-   <li><a href="https://metanit.com/visualbasic/">VB.NET</a></li>
-   <li><a href="https://metanit.com/swift/tutorial/">Swift</a></li>
-   <li><a href="https://metanit.com/kotlin/">Kotlin</a></li>
-   <li><a href="https://metanit.com/dart/">Dart</a></li>
-   <li><a href="https://metanit.com/php/">PHP</a></li>
-   <li><a href="https://metanit.com/rust/">Rust</a></li>
-   <li><a href="https://metanit.com/os/">Linux</a></li>
-   <li><a href="https://metanit.com/f/">F#</a></li>
-   <!--<li><a href="//metanit.com/lisp/tutorial/">Common Lisp</a></li>-->
-   <li><a href="https://metanit.com/hosting">Хостинг</a></li>
-</ul>
-</div>
-
-</header>
-<div class="outercontainer">
-<div class="innercontainer">
- 
-   <div class="item center menC">
-     <h1>Обробка винятків та конструкція try...catch...finally</h1><div class="date">Последнее обновление: 07.10.2025</div>
-	<div class="socBlock">
-	<div class="share soctop">
-	<ul>
-	<li><a title="Поделиться в Вконтакте" rel="nofollow" class="fa fa-lg fa-vk"></a></li>
-	<li><a title="Поделиться в Телеграм" rel="nofollow" class="fa fa-lg fa-telegram"></a></li>
-	<li><a title="Поделиться в Одноклассниках" rel="nofollow" class="fa fa-lg fa-odnoklassniki"></a></li>
-	
-	</ul>
-	</div>
-	</div>
-
-	<div style="margin-top:23px;margin-left:5px;">
-		
-		
-		
-	</div>
-
-	<p>Нередко в процессе выполнения программы могут возникать ошибки, при том необязательно по вине разработчика. Некоторые из них трудно 
-предусмотреть или предвидеть, а иногда и вовсе невозможно. Так, например, может неожиданно оборваться сетевое подключение при передаче файла. 
-Подобные ситуации называются <span class="b">винятками</span>.</p>
-<p>В языке Java предусмотрены специальные средства для обработки подобных ситуаций. Одним из таких средств является конструкция <span class="b">try...catch...finally</span>. 
-При возникновении исключения в блоке try управление переходит в блок catch, который может обработать 
-данное исключение. Если такого блока не найдено, то пользователю отображается сообщение о необработанном исключении, а дальнейшее выполнение 
-программы останавливается. И чтобы программа не упала из-за возникшей ошибки, применяется блок <span class="b">try..catch..finally</span>:</p>
-<pre class="brush:java;">
+	<p>Нередко в процессе виконання програми можуть возникать ошибки, при том необязательно по вине разработчика. Некоторые из них трудно 
+предусмотреть або предвидеть, а иногда и вовсе невозможна. Так, наприклад, может неожиданно оборваться сетевое подключение при передаче файла. 
+Подобные ситуации називаються <span class="b">винятками</span>.</p>
+<p>В мові Java предусмотрены специальные средства для обработки подобных ситуаций. Одним из таких средств є конструкция <span class="b">try...catch...finally</span>. 
+При возникновении исключения в блоке try управление переходит в блок catch, який может обработать 
+данное исключение. Если такого блока не найдено, то пользователю отображается сообщение о необработанном исключении, а дальнейшїї выполнение 
+программы останавливается. И чтобы программа не упала из-за возникшей ошибки, застосовується блок <span class="b">try..catch..finally</span>:</p>
+<pre class="line-numbers"><code class="language-java">
 try{
      
 }
@@ -114,15 +30,15 @@ catch (Тип_исключения переменная){
 finally{
      
 }
-</pre>
+</code></pre>
 <p>При применении блока <span class="b">try...catch..finally</span> вначале выполняются все инструкции в блоке <span class="b">try</span>. Если в 
-этом блоке не возникло исключений, то после его выполнения начинает выполняться блок <span class="b">finally</span>. И затем конструкция <code>try..catch..finally</code> завершает свою работу.</p>
-<p>Если же в блоке <code>try</code> вдруг возникает исключение, то обычный порядок выполнения останавливается, и среда выполнения ищет блок <span class="b">catch</span>, который может обработать данный тип исключения. 
-Если нужный блок <code>catch</code> найден, то он выполняется, и после его завершения выполняется блок <code>finally</code>.</p>
-<p>Если нужный блок <code>catch</code не найден, то при возникновении исключения программа аварийно завершает свое выполнение.</p>
+цем блоке не возникло исключений, то после его виконання начинает выполняться блок <span class="b">finally</span>. И затем конструкция <code>try..catch..finally</code> завершує свою работу.</p>
+<p>Если же в блоке <code>try</code> вдруг возникает исключение, то обычный порядок виконання останавливается, и среда виконання ищет блок <span class="b">catch</span>, який может обработать данный тип исключения. 
+Если нужный блок <code>catch</code> найден, то он виконується, и после его завершения виконується блок <code>finally</code>.</p>
+<p>Если нужный блок <code>catch</code не найден, то при возникновении исключения программа аварийно завершує свое выполнение.</p>
 <h3>Застосування конструкції try..catch..finally</h3>
 <p>Розглянемо найпростіший приклад:</p>
-<pre class="brush:java;">
+<pre class="line-numbers"><code class="language-java">
 class Program{
      
 	public static void main(String[] args) {
@@ -133,17 +49,17 @@ class Program{
         System.out.printf("Результат: %d\n", result);
     }
 }
-</pre>
+</code></pre>
 <p>У разі відбувається розподіл числа на 0, що призведе до генерації винятку. У результаті побачимо на консолі таку картину:</p>
-<pre class="sh">
+<pre class="line-numbers"><code class="language-none">
 Exception in thread "main" java.lang.ArithmeticException: / by zero
 	at Program.main(Program.java:7)
-</pre>
-<p>Таким образом, консоль нас проинформирует, что в процессе выполнения программы произошло исключение типа <code>java.lang.ArithmeticException</code> и снабдит сообщение куцей информацией об исключении: "by zero". 
-Тем не менее по этому сообщению мы можем понять, что проблема в делении на ноль. Кроме того, мы видим, что непосредственно проблема возникла в методе <code>Program.main</code>, который располагается в файле 
-<code>Program.java</code> на строке 7. Это облегчает поиск проблемого участка кода в исходном файле.</p>
-<p>Звичайно, саме ця ситуація до певної міри штучна - навіщо ділити на нуль? А якщо число поділ приходить ззовні, то перед поділом ми можемо перевірити, чи це нуль чи не нуль, і тим самим уникнути падіння програми:</p>
-<pre class="brush:java;">
+</code></pre>
+<p>Таким чином, консоль нас проинформирует, что в процессе виконання програми произошло исключение типу <code>java.lang.ArithmeticException</code> и снабдит сообщение куцей информацией об исключении: "by zero". 
+Тем не менїї по цему сообщению мы можемо понять, что проблема в делении на ноль. Крім того, мы видим, что непосредственно проблема возникла в методе <code>Program.main</code>, який располагается в файле 
+<code>Program.java</code> на строке 7. Це облегчает поиск проблемого участка кода в исходном файле.</p>
+<p>Звичайно, саме ця ситуація до певної міри штучна - навіщо ділити на нуль? А якщо число поділ приходить ззовні, то перед поділом ми можемоо перевірити, чи це нуль чи не нуль, і тим самим уникнути падіння програми:</p>
+<pre class="line-numbers"><code class="language-java">
 class Program{
      
 	public static void main(String[] args) {
@@ -158,10 +74,10 @@ class Program{
         else System.out.println("Деление на ноль");
     }
 }
-</pre>
-<p>Но проблема заключается в том, что не все ситуации мы можем предотвратить таким образом. Поэтому посмотрим, как мы можем применить конструкцию <code>try...catch...finally</code>, 
+</code></pre>
+<p>Но проблема заключается в том, что не все ситуации мы можемо предотвратить таким чином. Тому посмотрим, як мы можемо применить конструкцию <code>try...catch...finally</code>, 
 чтобы избежать подобного аварийного завершения программы:</p>
-<pre class="brush:java;">
+<pre class="line-numbers"><code class="language-java">
 class Program{
      
 	public static void main(String[] args) {
@@ -179,7 +95,7 @@ class Program{
         }
         catch(Throwable _){
 
-            System.out.println("Возникло исключение!");
+            System.out.println("Підзникло исключение!");
         }
         finally{
 
@@ -187,108 +103,102 @@ class Program{
         }
     }
 }
-</pre>
+</code></pre>
 <p>Розглянемо основні моменти. Насамперед ми маємо певний код, який потенційно може викликати виняток:</p>
-<pre class="brush:java;">int result = a / b;</pre>
-<p>Поэтому его помещаем блок <code>try</code>.</p>
-<pre class="brush:java;">
+<pre class="line-numbers"><code class="language-java">int result = a / b;</code></pre>
+<p>Тому его помещаем блок <code>try</code>.</p>
+<pre class="line-numbers"><code class="language-java">
 try{
 
     int result = a / b;
     System.out.printf("Результат: %d\n", result);
 }
-</pre>
-<p>Если в блоке <code>try</code> вдруг возникает исключение (при <code>b = 0</code>), то обычный порядок выполнения останавливается и переходит к инструкции <code>сatch</code>. 
-Выражение <span class="b">catch</span> имеет следующий синтаксис:</p>
-<pre class="brush:java;">catch (тип_исключения имя_переменной){
+</code></pre>
+<p>Если в блоке <code>try</code> вдруг возникает исключение (при <code>b = 0</code>), то обычный порядок виконання останавливается и переходит к инструкции <code>сatch</code>. 
+Выражение <span class="b">catch</span> имїїт следующий синтаксис:</p>
+<pre class="line-numbers"><code class="language-java">catch (тип_исключения имя_змінної){
 
     // выполняемые инструкции при возвникновении исключения
-}</pre> 
-<p>После оператора <code>catch</code> в скобках указывается тип исключения и затем имя переменной этого исключения (то есть как и при объявлении переменной). 
+}</code></pre> 
+<p>После оператора <code>catch</code> в скобках указывается тип исключения и затем имя змінної цього исключения (то есть як и при оголошенийии змінної). 
 <span class="b">Якщо виняток відповідає цьому типу, то виконується даний блок catch.</span></p>
-<p>В нашем случае в качестве типа исключения использован максимально широкий тип, который соответствует любому исключению - это класс <span class="b">Throwable</span>:</p>
-<pre class="brush:java;">
+<p>В нашем случае в качестве типу исключения использован максимально широкий тип, який соответствует любому исключению - це класс <span class="b">Throwable</span>:</p>
+<pre class="line-numbers"><code class="language-java">
 catch(Throwable _){
 
-    System.out.println("Возникло исключение!");
+    System.out.println("Підзникло исключение!");
 }
-</pre>
-<p>Таким образом, обработка исключения типа <code>Throwable</code> предполагает обработку любого исключения, в том числе деления на ноль. Но здесь в целях упрощения примера нам пока переменная этого исключения не важна, мы ее никак не используем, поэтому вместо имени переменной я использовал прочерк. А в самом блоке 
-<code>catch</code> просто выводится диагностическое сообщение.</p>
-<p>И после блока <code>catch</code> идет блок <code>finally</code>, который также просто выводит сообщение на консоль.</p>
-<pre class="brush:java;">
+</code></pre>
+<p>Таким чином, обработка исключения типу <code>Throwable</code> предполагает обработку любого исключения, в том числе деления на ноль. Но здесь в целях упрощения примера нам поки переменная цього исключения не важна, мы її нияк не используем, поцему вместо имени змінної я использовал прочерк. А в самом блоке 
+<code>catch</code> просто виводиться диагностическое сообщение.</p>
+<p>И после блока <code>catch</code> идет блок <code>finally</code>, який також просто выводит сообщение на консоль.</p>
+<pre class="line-numbers"><code class="language-java">
 finally{
 
     System.out.println("Блок finally");
 }
-</pre>
-
-<div style="margin-top:23px;margin-left:5px;">
-
-<!-- Yandex.RTB R-A-201190-9 -->
-
-</div>
+</code></pre>
 
 <h3>Виконання try..catch..finally</h3>
 <p>Посмотрим выполнение выше определенной конструкции <code>try..catch..finally</code> на двух примерах: при упешном и неудачном выполнении программы. 
-Возьмем первую ситуацию - когда делитель равен 0:</p>
-<pre class="brush:java;">
+Підзьмем первую ситуацию - когда делитель равен 0:</p>
+<pre class="line-numbers"><code class="language-java">
 public static void main(String[] args) {
          
     divide(10, 0);
     System.out.println("Конец программы");
 }
-</pre>
+</code></pre>
 <p>Оскільки дільник дорівнює 0, і очевидно виникне помилка, відповідно програма не зможе виконати поділ, і ми отримаємо наступний консольний висновок:</p>
-<pre class="sh">
-Возникло исключение!
+<pre class="line-numbers"><code class="language-none">
+Підзникло исключение!
 Блок finally
 Конец программы
-</pre>
+</code></pre>
 <p>Якщо по інструкціям, хід програми виглядає так:</p>
 <ol>
 <li><p><code>divide(10, 0);</code></p>
 <p>Пеореходим в метод <code>divide</code></p></li>
 <li><p><code>int result = a / b;</code></p>
 <p>Поскольку <code>b</code> равно 0, переход в блок <code>catch</code></p></li>
-<li><p><code>System.out.println("Возникло исключение!");</code></p>
+<li><p><code>System.out.println("Підзникло исключение!");</code></p>
 <p>Переход в блок <code>finally</code></p></li>
 <li><p><code>System.out.println("Блок finally");</code></p>
-<p>Блок finally отработал, метод <code>divide</code> завершил свое выполнение, поэтому возвращаемся в мтеод <code>main</code></p></li>
+<p>Блок finally отработал, метод <code>divide</code> завершил свое выполнение, поцему возвращаемся в мтеод <code>main</code></p></li>
 <li><p><code>System.out.println("Конец программы");</code></p>
 <p>Последняя инструкция метода <code>main</code> выполнена, программа завершена</p></li>
 </ol>
 <p>Тепер подивимося іншу ситуацію - коли дільник не дорівнює 0:</p>
-<pre class="brush:java;">
+<pre class="line-numbers"><code class="language-java">
 public static void main(String[] args) {
          
     divide(10, 2);
     System.out.println("Конец программы");
 }
-</pre>
+</code></pre>
 <p>Ця програма успішно виконає поділ, і ми отримаємо наступний консольний висновок:</p>
-<pre class="sh">
+<pre class="line-numbers"><code class="language-none">
 Результат: 5
 Блок finally
 Конец программы
-</pre>
+</code></pre>
 <p>Якщо по інструкціям, хід програми виглядає так:</p>
 <ol>
 <li><p><code>divide(10, 2);</code></p>
 <p>Пеореходим в метод <code>divide</code></p></li>
 <li><p><code>int result = a / b;</code></p>
-<p>Поскольку <code>b</code> равно 2, выполняется деление, а переменная <code>result</code> получает значение 5</p></li>
+<p>Поскольку <code>b</code> равно 2, виконується деление, а переменная <code>result</code> отримує значение 5</p></li>
 <li><p><code>System.out.printf("Результат: %d\n", result);</code></p>
-<p>Блок <code>try</code> отработал, поэтому переходим в блок <code>finally</code></p></li>
+<p>Блок <code>try</code> отработал, поцему переходим в блок <code>finally</code></p></li>
 <li><p><code>System.out.println("Блок finally");</code></p>
-<p>Блок finally отработал, метод <code>divide</code> завершил свое выполнение, поэтому возвращаемся в мтеод <code>main</code></p></li>
+<p>Блок finally отработал, метод <code>divide</code> завершил свое выполнение, поцему возвращаемся в мтеод <code>main</code></p></li>
 <li><p><code>System.out.println("Конец программы");</code></p>
 <p>Последняя инструкция метода <code>main</code> выполнена, программа завершена</p></li>
 </ol>
 <h3>Скорочена версія конструкції try..catch..finally</h3>
-<p>При использовании конструкции <code>try..catch..finally</code> обязательным блоком является только блок <code>try</code>. Один из остальных двух блоков можно опустить и оставить либо <code>catch</code> 
-(если блок <codefinally</code> не нужен, либо <codefinally</code>. Например, часто блок <codefinally</code> не используется, и используются только <code>try..catch</code>:</p>
-<pre class="brush:java;">
+<p>При использовании конструкции <code>try..catch..finally</code> обязательным блоком є лише блок <code>try</code>. Один из остальных двух блоков можна опустить и оставить або <code>catch</code> 
+(якщо блок <codefinally</code> не нвжен, або <codefinally</code>. Наприклад, часто блок <codefinally</code> не використовується, и використовуються лише <code>try..catch</code>:</p>
+<pre class="line-numbers"><code class="language-java">
 static void divide(int a, int b){
 
     try{
@@ -298,13 +208,13 @@ static void divide(int a, int b){
     }
     catch(Throwable _){
 
-        System.out.println("Возникло исключение!");
+        System.out.println("Підзникло исключение!");
     }
 }
-</pre>
+</code></pre>
 
-<p>Можно оставить блок <code>finally</code>, но в этом случае при возникновении исключения оно не будет обработано, и программа упадет с ошибкой:</p>
-<pre class="brush:java;">
+<p>Можна оставить блок <code>finally</code>, но в цем случае при возникновении исключения оно не буде обработано, и программа упадет с ошибкой:</p>
+<pre class="line-numbers"><code class="language-java">
 static void divide(int a, int b){
 
     try{
@@ -317,11 +227,11 @@ static void divide(int a, int b){
         System.out.println("Блок finally");
     }
 }
-</pre>
+</code></pre>
 
 <h3>Повернення результату з try..catch..finally</h3>
-<p>Внутри конструкции <code>try..catch..finally</code> может использоваться оператор <code>return</code> для возвращения результата из метода. Например:</p>
-<pre class="brush:java;">
+<p>Внутри конструкции <code>try..catch..finally</code> может використовуватися оператор <code>return</code> для возвращения результата из метода. Например:</p>
+<pre class="line-numbers"><code class="language-java">
 static int parse(String s)
 {
     try
@@ -334,12 +244,12 @@ static int parse(String s)
         return 0;
     }
  }
-</pre>
-<p>Здесь в блоке <code>try</code> возвращается результат метода <code>Integer.parseInt()</code>. Этот метод преобразует строку в число. Однако если строку нельзя конвертировать в число, 
-то возникает ошибка. С помощью блока <code>catch</code> мы перехватываем ошибку и возвращаем число 0. Хотя здесь спорный момент: стоит ли возвращать значение при ошибке, а если возвращать, то какое. И Java для 
-подобных ситуаций имеет более гибкие механизмы. Но возьмем данный пример за основу.</p>
-<p>Далі у програмі ми можемо викликати метод parse і отримати результат:</p>
-<pre class="brush:java;">
+</code></pre>
+<p>Здесь в блоке <code>try</code> повертаєся результат метода <code>Integer.parseInt()</code>. Цет метод преобразует строку в число. Однак якщо строку нельзя конвертировать в число, 
+то возникает ошибка. С помощью блока <code>catch</code> мы перехватываем ошибку и возвращаем число 0. Хотя здесь спорный момент: варто ли возвращать значение при ошибке, а якщо возвращать, то якое. И Java для 
+подобных ситуаций имїїт болїї гибкие механизмы. Но возьмем данный пример за основу.</p>
+<p>Далі у програмі ми можемоо викликати метод parse і отримати результат:</p>
+<pre class="line-numbers"><code class="language-java">
 class Program{
      
 	public static void main(String[] args) throws Exception {
@@ -364,9 +274,9 @@ class Program{
         }
     }
 }
-</pre>
-<p>Но стоит учитывать, что, если конструкция <code>try</code> содержит блок <code>finally</code>, то этот блок обязательно выполняется. И если блок <code>finally</code> также содержит оператор <code>return</code>, то он маскирует исходное возвращаемое значение. Например</p>
-<pre class="brush:java;">
+</code></pre>
+<p>Но варто учитывать, что, якщо конструкция <code>try</code> містить блок <code>finally</code>, то цей блок обязательно виконується. И якщо блок <code>finally</code> також містить оператор <code>return</code>, то он маскирует исходное возвращаемое значение. Например</p>
+<pre class="line-numbers"><code class="language-java">
 class Program{
      
 	public static void main(String[] args) throws Exception {
@@ -394,429 +304,22 @@ class Program{
         }
     }
 }
-</pre>
-<p>Здесь блок <code>finally</code> возвращает значение -1. И вне зависимости от того, успешно было ли преобразование или нет, метод все равно возвратит -1, так как после блока <code>try</code> и <code>catch</code> 
-обязательно выполняется блок <code>finally</code></p>
+</code></pre>
+<p>Здесь блок <code>finally</code> повертає значение -1. И вне зависимости от того, успешно буво ли преобразование або нет, метод все равно возвратит -1, оскільки после блока <code>try</code> и <code>catch</code> 
+обязательно виконується блок <code>finally</code></p>
 
 <h3>Обробка винятків та умовні конструкції</h3>
-<p>Стоит отметить, что конструкция <code>try..catch</code> на низком уровне довольно дорогая операция. И если ряд исключительных ситуаций может быть предвиден разработчиком, то лучше обойтись без <code>try..catch</code>, а подобные ситуации обработать с помощью условных конструкций. Как, например, 
-в случае с делением на 0 предпочтительнее проверить второе число на 0, чем использовать конструкцию <code>try..catch</code>.</p>
-	
+<p>Варто відзначити, что конструкция <code>try..catch</code> на низком уровне довольно дорогая операция. И якщо ряд исключительных ситуаций может быть предвиден разработчиком, то лучше обойтись без <code>try..catch</code>, а подобные ситуации обработать за допомогою условных конструкций. Как, наприклад, 
+в случае с делением на 0 предпочтительнїї проверить второе число на 0, чем використовувати конструкцию <code>try..catch</code>.</p>
 
-	<div style="margin-top:25px;">
-
-	
-	</div>
-
-	<div class="nav"><p><a href="3.27.html">Назад</a><a href="index.html">Зміст</a><a href="4.2.html">Вперед</a></p></div>
-	<div class="socBlock">
-	<div class="share soctop">
-	<ul>
-	<li><a title="Поделиться в Вконтакте" rel="nofollow" class="fa fa-lg fa-vk"></a></li>
-	<li><a title="Поделиться в Телеграм" rel="nofollow" class="fa fa-lg fa-telegram"></a></li>
-	<li><a title="Поделиться в Одноклассниках" rel="nofollow" class="fa fa-lg fa-odnoklassniki"></a></li>
-	
-	</ul>
-	</div>
-	</div>
   </div>
-
-	<div class="item left">
-     <ul id="browser" class="filetree"> 
-	<li class="closed"><span class="folder">Глава 1. Введення у Java</span>
-		<ul>
-			<li><span class="file"><a href="1.1.html">Що таке Java</a></span></li>
-			<li><span class="file"><a href="1.6.html">Встановлення JDK</a></span></li>
-			<li><span class="file"><a href="1.2.html">Перша програма Java</a></span></li>
-			<li><span class="file"><a href="1.5.html">Перша програма у IntelliJ IDEA</a></span></li>
-			<li><span class="file"><a href="1.3.html">Перша програма у NetBeans</a></span></li>
-			<li><span class="file"><a href="1.4.html">Перша програма у Eclipse</a></span></li>
-			<li><span class="file"><a href="1.7.html">JShell</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 2. Основи програмування Java</span>
-		<ul>
-			<li><span class="file"><a href="2.11.html">Структура програми</a></span></li>
-			<li><span class="file"><a href="2.1.html">Змінні та константи</a></span></li>
-			<li><span class="file"><a href="2.19.html">Літерали</a></span></li>
-			<li><span class="file"><a href="2.12.html">Типи даних</a></span></li>
-			<li><span class="file"><a href="2.9.html">Консольне введення/виведення в Java</a></span></li>
-			<li><span class="file"><a href="2.3.html">Арифметичні операції</a></span></li>
-			<li><span class="file"><a href="2.13.html">Порозрядні операції</a></span></li>
-			<li><span class="file"><a href="2.14.html">Умовні вирази</a></span></li>
-			<li><span class="file"><a href="2.15.html">Операції присвоєння та пріоритет операцій</a></span></li>
-			<li><span class="file"><a href="2.2.html">Перетворення базових типів даних</a></span></li>
-			<li><span class="file"><a href="2.5.html">Умовні конструкції</a></span></li>
-			<li><span class="file"><a href="2.6.html">Цикли</a></span></li>
-			<li><span class="file"><a href="2.4.html">Масиви</a></span></li>
-			<li><span class="file"><a href="2.20.html">Конструкція та вираз switch</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Розділ 3. Класи</span>
-		<ul>
-			<li><span class="file"><a href="3.1.html">Класи та об&#x27;єкти</a></span></li>
-
-
-			<li><span class="file"><a href="2.7.html">Методи</a></span></li>
-			<li><span class="file"><a href="2.16.html">Параметри методів</a></span></li>
-			<li><span class="file"><a href="3.14.html">Об&#x27;єкти як параметри методів</a></span></li>
-			<li><span class="file"><a href="2.17.html">Оператор return. Результат методу</a></span></li>
-			<li><span class="file"><a href="2.18.html">Навантаження методів</a></span></li>
-			<li><span class="file"><a href="3.21.html">Конструктори та ініціалізатори</a></span></li>
-
-
-			<li><span class="file"><a href="3.4.html">Статичні компоненти класу та модифікатор static</a></span></li>
-			<li><span class="file"><a href="3.20.html">Область дії та час життя змінних</a></span></li>
-			<li><span class="file"><a href="2.8.html">Рекурсивні функції</a></span></li>
-			<li><span class="file"><a href="3.2.html">Пакети</a></span></li>
-			<li><span class="file"><a href="3.3.html">Модифікатори доступу</a></span></li>
-			<li><span class="file"><a href="3.19.html">Компактні файли коду та метод main</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 4. Об&#x27;єктно-орієнтоване програмування</span>
-		<ul>
-			<li><span class="file"><a href="3.22.html">Інкапсуляція</a></span></li>
-			<li><span class="file"><a href="3.5.html">Успадкування</a></span></li>
-			<li><span class="file"><a href="3.23.html">Заборона наслідування та перевизначення методів</a></span></li>
-			<li><span class="file"><a href="3.24.html">Поліморфізм та динамічна диспетчеризація методів</a></span></li>
-			<li><span class="file"><a href="3.9.html">Клас Object та його методи</a></span></li>
-			<li><span class="file"><a href="3.6.html">Абстрактні класи</a></span></li>
-			<li><span class="file"><a href="3.10.html">Ієрархія успадкування та перетворення типів</a></span></li>
-
-			<li><span class="file"><a href="3.7.html">Інтерфейси</a></span></li>
-			<li><span class="file"><a href="3.28.html">Інтерфейси та поліморфізм</a></span></li>
-			<li><span class="file"><a href="3.29.html">Множинна реалізація та успадкування інтерфейсів</a></span></li>
-			<li><span class="file"><a href="3.16.html">Інтерфейси у механізмі зворотного виклику</a></span></li>
-			<li><span class="file"><a href="3.8.html">Перерахування enum</a></span></li>
-			<li><span class="file"><a href="3.11.html">Узагальнення (Generics)</a></span></li>
-			<li><span class="file"><a href="3.17.html">Обмеження узагальнень</a></span></li>
-			<li><span class="file"><a href="3.15.html">Спадкування та узагальнення</a></span></li>
-			<li><span class="file"><a href="3.31.html">Type Erasure (Стирання типів)</a></span></li>
-			<li><span class="file"><a href="3.32.html">Підстановочні знаки wildcards в узагальненнях</a></span></li>
-			<li><span class="file"><a href="3.13.html">Посилальні типи та клонування об&#x27;єктів</a></span></li>
-			<li><span class="file"><a href="3.18.html">Класи Records</a></span></li>
-			<li><span class="file"><a href="9.4.html">Функціональні інтерфейси та посилання на методи</a></span></li>
-			<li><span class="file"><a href="9.1.html">Лямбда-вираження</a></span></li>
-			<li><span class="file"><a href="9.2.html">Лямбди як параметри та результати методів</a></span></li>
-			<li><span class="file"><a href="9.3.html">Вбудовані функціональні інтерфейси</a></span></li>
-			<li><span class="file"><a href="3.12.html">Внутрішні та вкладені класи</a></span></li>
-			<li><span class="file"><a href="3.30.html">Анонімні класи</a></span></li>
-
-
-			<li><span class="file"><a href="3.25.html">Sealed-класи та інтерфейси</a></span></li>
-			<li><span class="file"><a href="3.26.html">Pattern матч. Патер типів</a></span></li>
-			<li><span class="file"><a href="3.27.html">Pattern матч. record-паттерн</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 5. Обробка винятків</span>
-		<ul>
-			<li><span class="file"><a href="2.10.html">Обробка винятків та конструкція try...catch...finally</a></span></li>
-			<li><span class="file"><a href="4.2.html">Класи винятків</a></span></li>
-			<li><span class="file"><a href="4.1.html">Оператори throws та throw</a></span></li>
-			<li><span class="file"><a href="4.3.html">Створення своїх виняткових класів</a></span></li>
-			<li><span class="file"><a href="4.4.html">Assert</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 6. Колекції</span>
-		<ul>
-			<li><span class="file"><a href="5.1.html">Типи колекцій. Інтерфейс Collection</a></span></li>
-			<li><span class="file"><a href="5.2.html">Клас ArrayList та інтерфейс List</a></span></li>
-			<li><span class="file"><a href="5.6.html">Інтерфейси Comparable та Comporator. Сортування</a></span></li>
-			<li><span class="file"><a href="5.7.html">Черги та стеки. Класи ArrayDeque та PriorityQueue</a></span></li>
-			<li><span class="file"><a href="5.3.html">Пов&#x27;язаний список LinkedList</a></span></li>
-			<li><span class="file"><a href="5.4.html">Інтерфейс Set та хеш-таблиці HashSet</a></span></li>
-			<li><span class="file"><a href="5.5.html">Дерева TreeSet та інтерфейси SortedSet та NavigableSet</a></span></li>
-			<li><span class="file"><a href="5.8.html">Словники. Інтерфейс Map та клас HashMap</a></span></li>
-			<li><span class="file"><a href="5.9.html">Інтерфейси SortedMap та NavigableMap. Клас TreeMap</a></span></li>
-			<li><span class="file"><a href="5.10.html">Ітератори. Iterator та Iterable</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 7. Потоки введення-виведення. Робота з файлами</span>
-		<ul>
-			<li><span class="file"><a href="6.1.html">Потоки введення-виведення</a></span></li>
-			<li><span class="file"><a href="6.3.html">Читання та запис файлів. FileInputStream та FileOutputStream</a></span></li>
-			<li><span class="file"><a href="6.2.html">Закриття потоків та конструкція try-з-ресурсами</a></span></li>
-			<li><span class="file"><a href="6.4.html">Класи ByteArrayInputStream та ByteArrayOutputStream</a></span></li>
-			<li><span class="file"><a href="6.5.html">Буферизовані потоки BufferedInputStream та BufferedOutputStream</a></span></li>
-			<li><span class="file"><a href="6.6.html">Форматований висновок. PrintStream та PrintWriter</a></span></li>
-			<li><span class="file"><a href="6.7.html">Класи DataOutputStream та DataInputStream</a></span></li>
-			<li><span class="file"><a href="6.8.html">Читання та запис текстових файлів</a></span></li>
-			<li><span class="file"><a href="6.9.html">Буферизація символьних потоків. BufferedReader та BufferedWriter</a></span></li>
-			<li><span class="file"><a href="6.10.html">Серіалізація об&#x27;єктів</a></span></li>
-			<li><span class="file"><a href="6.11.html">Клас File. Робота з файлами та каталогами</a></span></li>
-			<li><span class="file"><a href="6.12.html">Робота з ZIP-архівами</a></span></li>
-			<li><span class="file"><a href="6.13.html">Клас Console</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 8. Робота з рядками</span>
-		<ul>
-			<li><span class="file"><a href="7.1.html">Введення у рядки. Клас String</a></span></li>
-			<li><span class="file"><a href="7.2.html">Основні операції з рядками</a></span></li>
-			<li><span class="file"><a href="7.3.html">StringBuffer та StringBuilder</a></span></li>
-			<li><span class="file"><a href="7.4.html">Регулярні вирази</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 9. Багатопоточне програмування</span>
-		<ul>
-			<li><span class="file"><a href="8.1.html">Багатопоточне програмування та клас Thread</a></span></li>
-			<li><span class="file"><a href="8.2.html">Створення та виконання потоків</a></span></li>
-			<li><span class="file"><a href="8.11.html">Управління потоками</a></span></li>
-			<li><span class="file"><a href="8.4.html">Завершення та переривання потоку</a></span></li>
-			<li><span class="file"><a href="8.12.html">Віртуальні потоки</a></span></li>
-			<li><span class="file"><a href="8.3.html">Синхронізація потоків. Оператор synchronized</a></span></li>
-			<li><span class="file"><a href="8.5.html">Взаємодія потоків. Методи wait та notify</a></span></li>
-			<li><span class="file"><a href="8.6.html">Семафори</a></span></li>
-			<li><span class="file"><a href="8.7.html">Обмін між потоками. Клас Exchanger</a></span></li>
-			<li><span class="file"><a href="8.8.html">Клас Phaser</a></span></li>
-			<li><span class="file"><a href="8.9.html">Блокування. ReentrantLock</a></span></li>
-			<li><span class="file"><a href="8.10.html">Умови блокування</a></span></li>
-			<li><span class="file"><a href="8.16.html">Змінні volatile</a></span></li>
-			<li><span class="file"><a href="8.17.html">Атомарність та Atomics. Потокобезпека без блокувань</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Розділ 10. Асинхронність</span>
-		<ul>
-			<li><span class="file"><a href="8.13.html">Асинхронні задачі FutureTask. Callable та Future</a></span></li>
-			<li><span class="file"><a href="8.14.html">Executor – виконавець завдань</a></span></li>
-			<li><span class="file"><a href="8.15.html">Координація виконання асинхронних завдань</a></span></li>
-			<li><span class="file"><a href="8.18.html">Комплектувальнемайно і проміси. Обробка результату асинхронних задач</a></span></li>
-			<li><span class="file"><a href="8.19.html">CompletableFuture, обробка помилок та завершення асинхронних завдань</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Розділ 11. Stream API</span>
-		<ul>
-			<li><span class="file"><a href="10.1.html">Введення у Stream API</a></span></li>
-			<li><span class="file"><a href="10.2.html">Створення потоку даних</a></span></li>
-			<li><span class="file"><a href="10.3.html">Фільтрування, перебір елементів та відображення</a></span></li>
-			<li><span class="file"><a href="10.8.html">Сортування</a></span></li>
-			<li><span class="file"><a href="10.13.html">Отримання підтоку та об&#x27;єднання потоків</a></span></li>
-			<li><span class="file"><a href="10.4.html">Методи skip та limit</a></span></li>
-			<li><span class="file"><a href="10.11.html">Операції відомості</a></span></li>
-			<li><span class="file"><a href="10.5.html">Метод reduce</a></span></li>
-			<li><span class="file"><a href="10.12.html">Тип Optional</a></span></li>
-			<li><span class="file"><a href="10.6.html">Метод collect</a></span></li>
-			<li><span class="file"><a href="10.7.html">Угруповання</a></span></li>
-			<li><span class="file"><a href="10.9.html">Паралельні потоки</a></span></li>
-			<li><span class="file"><a href="10.10.html">Паралельні операції над масивами</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Розділ 12. Модульність</span>
-		<ul>
-			<li><span class="file"><a href="11.1.html">Створення модуля</a></span></li>
-			<li><span class="file"><a href="11.2.html">Залежні модулі</a></span></li>
-			<li><span class="file"><a href="11.3.html">Взаємодія між модулями. Експорт та імпорт</a></span></li>
-		</ul>
-	</li>
-	</li>
-	<li class="closed"><span class="folder">Розділ 13. Додаткові класи</span>
-		<ul>
-			<li><span class="file"><a href="12.1.html">Математичні обчислення та клас Math</a></span></li>
-			<li><span class="file"><a href="12.2.html">Великі числа BigInteger та BigDecimal</a></span></li>
-			<li><span class="file"><a href="12.3.html">Робота із датами. LocalDate</a></span></li>
-			<li><span class="file"><a href="12.4.html">Процеси. Process та ProcessBuilder</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 14. JAR-файли та підключення бібліотек та класів</span>
-		<ul>
-			<li><span class="file"><a href="13.1.html">Файли JAR, їх створення та виконання</a></span></li>
-			<li><span class="file"><a href="13.2.html">Створення та підключення бібліотеки JAR</a></span></li>
-			<li><span class="file"><a href="13.4.html">Модульний jar-файл</a></span></li>
-			<li><span class="file"><a href="13.3.html">Встановлення шляху до класів Java</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Розділ 15. Рефлексія</span>
-		<ul>
-			<li><span class="file"><a href="14.1.html">Введення у рефлексію. Клас Class</a></span></li>
-			<li><span class="file"><a href="14.2.html">Дослідження типів</a></span></li>
-			<li><span class="file"><a href="14.3.html">Поля класу та клас Field</a></span></li>
-			<li><span class="file"><a href="14.4.html">Модифікатори доступу та клас Modifier</a></span></li>
-			<li><span class="file"><a href="14.5.html">Клас Constructor та створення об&#x27;єктів</a></span></li>
-			<li><span class="file"><a href="14.6.html">Методи та клас Method</a></span></li>
-			<li><span class="file"><a href="14.7.html">Proxy (Проксі)</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 16. Інструкції</span>
-		<ul>
-			<li><span class="file"><a href="15.1.html">Введення в інструкції. Вбудовані інструкції</a></span></li>
-			<li><span class="file"><a href="15.2.html">Створення та застосування анотацій</a></span></li>
-			<li><span class="file"><a href="15.3.html">Обробка інструкцій під час виконання</a></span></li>
-		</ul>
-	</li>
-
-
-	<li class="closed"><span class="folder">Глава 17. Взаємодія із нативним кодом</span>
-		<ul>
-			<li><span class="file"><a href="16.1.html">Java Native Interface (JNI)</a></span></li>
-			<li><span class="file"><a href="16.2.html">Foreign Functions та Memory API</a></span></li>
-			<li><span class="file"><a href="16.3.html">Арена та сегменти пам&#x27;яті MemorySegment</a></span></li>
-			<li><span class="file"><a href="16.4.html">Компонування пам&#x27;яті MemoryLayout та робота з MemorySegment</a></span></li>
-			<li><span class="file"><a href="16.5.html">Складні дані та MemoryLayout</a></span></li>
-			<li><span class="file"><a href="16.6.html">Пошук та виклик зовнішніх функцій</a></span></li>
-			<li><span class="file"><a href="16.7.html">Нативні функції зворотного дзвінка</a></span></li>
-		</ul>
-	</li>
-</ul>   </div>
-</div>
-
-  <div class="item right">
-<div class="help" style="border: 0px;">
-    
-	<div class="help-item">
-		<div class="help-item-name"><a href="https://metanit.com/settings.html">Налаштування</a></div>
-	 </div>
-</div>
-			<div class="help">
-
-      <div class="help-header">Помощь сайту</div>
-
-       <div class="help-item">
-		<div class="help-item-name"><a href="https://yoomoney.ru/to/410011174743222" rel="nofollow">Допомога сайту</a></div>
-	 </div>
-       
-      <div class="help-item">
-		<div class="help-item-name">Юмани:</div>
-		<div class="help-item-req">410011174743222</div>
-	 </div>
-
-		<div class="help-item">
-			<div class="help-item-name">Номер карты:</div>
-			<div class="help-item-req">4048415020898850</div>
-		</div>
 
       </div>
 
-	
-	
-
-
-
-
   </div>
 </div>
 
-<div id="footer" style="padding-bottom:85px;">
-
-<div class="bootomLinks">
-<a href="https://vk.com/metanit" title="Присоединиться к группе вконтакте" rel="nofollow">Вконтакті</a>|
- <a href="https://t.me/devnull22" title="Подписаться на телеграм" rel="nofollow">Телеграм</a> | 
-<a href="https://metanit.com/donations.html" rel="nofollow">Донати/Допомога сайту</a>
-</div>
-<p>Contacts: metanit22@mail.ru</p>
-<p>Copyright © Євген Попов, metanit.com, 2026. Усі права захищені.</p>
-
-
-</div>
-
-</div>
-
-
-
-
-
-
-
-
-
-
-<script src='../../js/syntax16.js'></script>
-<script>
-// Syntax Highlighter
-if (typeof SyntaxHighlighter !== 'undefined') {
-    SyntaxHighlighter.all();
-}
-
-// Copy guard
-document.addEventListener('copy', (ev) => {
-    const et = ev.target;
-    if (et.type === 'textarea') {
-        ev.clipboardData.setData('text/plain', et.value.substring(et.selectionStart, et.selectionEnd).replace(/ /g, ' '));
-        ev.preventDefault();
-    }
-});
-
-// Mobile menu
-const faBars = document.querySelector('.fa-bars');
-if (faBars) {
-    faBars.addEventListener('click', () => {
-        const tree = document.querySelector('.item.left');
-        if (tree) {
-            tree.style.display = (tree.style.display === 'block') ? 'none' : 'block';
-        }
-    });
-}
-
-const menuButton = document.getElementById('menuButton');
-if (menuButton) {
-    menuButton.addEventListener('click', () => {
-        menuButton.classList.toggle('menu-opened');
-        const mainMenu = document.querySelector('.mainmenu');
-        if (mainMenu) mainMenu.classList.toggle('open');
-    });
-}
-
-// Search toggle
-const magGlass = document.getElementById('magnifying-glass');
-if (magGlass) {
-    magGlass.addEventListener('click', () => {
-        const search = document.getElementById('search');
-        if (search) search.classList.toggle('transp');
-    });
-}
-
-// Theme toggle
-const toggleTheme = document.getElementById('toggle-theme');
-if (toggleTheme) {
-    toggleTheme.addEventListener('click', () => {
-        if (document.documentElement.hasAttribute('theme')) {
-            document.documentElement.removeAttribute('theme');
-            document.cookie = 'theme=1;expires=Mon, 19 Feb 2001 12:00:00 UTC;path=/;';
-        } else {
-            document.documentElement.setAttribute('theme', 'dark');
-            var expire = new Date();
-            expire.setHours(expire.getHours() + 7);
-            document.cookie = 'theme=1;expires=' + expire.toUTCString() + ';path=/;';
-        }
-    });
-}
-
-// Share buttons
-const shareVK = document.querySelectorAll('.share .fa-vk');
-shareVK.forEach(e => e.addEventListener('click', () => window.open('http://vk.com/share.php?url=' + window.location.href, 'Поделиться в ВКОНТАКТЕ')));
-const shareTG = document.querySelectorAll('.share .fa-telegram');
-shareTG.forEach(e => e.addEventListener('click', () => window.open('tg://msg_url/url=' + window.location.href, 'Поделиться в Telegram')));
-const shareOK = document.querySelectorAll('.share .fa-odnoklassniki');
-shareOK.forEach(e => e.addEventListener('click', () => window.open('https://connect.ok.ru/offer?url=' + window.location.href, 'Поделиться в Одноклассниках')));
-
-// Folders
-const folders = document.getElementsByClassName('closed');
-for (let i = 0; i < folders.length; i++) {
-    folders[i].addEventListener('click', function (e) {
-        this.classList.toggle('closed');
-        this.classList.toggle('opened');
-    });
-}
-
-// Active Item Highlight
-const activePath = window.location.pathname.split('/').pop();
-const activeItem = document.querySelector(".file a[href*='" + activePath + "']");
-if (activeItem) {
-    activeItem.classList.add('aMItem');
-    activeItem.parentElement.classList.add('aMItem');
-    const activeFolder = activeItem.closest('li');
-    if (activeFolder) {
-        activeFolder.classList.remove('closed');
-        activeFolder.classList.add('opened');
-        const folderLabel = activeFolder.querySelector('.folder');
-        if (folderLabel) folderLabel.classList.add('aMItem');
-    }
-}
-
-// Settings
-const props = ['--main-font-size', '--main-font-family', '--menc-bg-color', '--container-bg-color', '--menu-bg-color', '--code-font-size', '--code-font-family', '--code-bgcolor', '--code-max-height'];
-for (let i = 0; i < props.length; i++) {
-    const propValue = localStorage.getItem(props[i]);
-    if (propValue !== null) document.documentElement.style.setProperty(props[i], propValue);
-}
-</script>
+<script src="../prism/prism.js"></script>
+<script src="../prism/prism-java.js"></script>
 </body>
 </html>

@@ -1,111 +1,27 @@
 <!DOCTYPE html>
-<html  lang="ru">
+<html  lang="uk">
 <head>
-<title>Java | Лямбда-выражения</title>
+<title>Java | Лямбда-вираження</title>
 <meta charset="utf-8" />
-<meta name="description" content="Лямбда-выражения в языке программирования Java, функциональные интерфейсы, внешние переменные и лямбды,">
+<meta name="description" content="Лямбда-вираження в языке программирования Java, функциональные інтерфейсы, внешние переменные и лямбды,">
 <meta name="viewport" content="width=device-width">
-<link href="../../style50.css@v=1.css" rel="stylesheet" type="text/css">
+
+<link href="../prism/prism.css" rel="stylesheet" />
 </head>
 <body>
 <div id="container">
-<header>
-<div id="header">
-<div id="logo">
-<a class="logoTitle" href="https://metanit.com/" title="На главную">METANIT.COM</a>
-<div class="logoDefinition">Сайт о программировании</div> 
-</div>
+<div class="item center menC">
+     <h1>Введение в лямбда-выражения</h1><div class="date">Останнє оновлення: 02.10.2025</div>
 
-<div class="socbtns">
-<ul>
-<li><a title="Посмотреть меню" rel="nofollow" class="fa fa-lg fa-bars"></a></li>
-<li><a href="https://metanit.com/donations.html" title="Помощь сайту" rel="nofollow" style="color: var(--fa-usd-color);" class="fa fa-lg fa-usd"></a></li>
-<li><a href="https://vk.com/metanit" title="Группа в ВКонтакте" rel="nofollow" style="color: var(--fa-vk-color);" class="fa fa-lg fa-vk"></a></li>
-<li><a href="https://t.me/devnull22" title="Группа в Телеграмме"  class="fa fa-lg fa-tel" style="color: var(--fa-tel-color);"></a></li>
-<li><a href="https://metanit.com/android.html" title="Приложения андроид" rel="nofollow" style="color: var(--fa-android-color);" class="fa fa-lg fa-android"></a></li>
-<li><i id="toggle-theme" class="fa fa-lg fa-adjust"></i></li>
-</ul>
-</div>
-
-
-<div id="magnifying-glass"></div>
-
-<div class="menuButton" id="menuButton">
-	<span class="icon-bar"></span>
-    <span class="icon-bar"></span>
-    <span class="icon-bar"></span>
-</div>
-</div>
-
-<div id="search" class="transp">
-<form action="https://www.google.ru" id="cse-search-box">
-  <div>
-    <input type="hidden" name="cx" value="partner-pub-3716042175333627:1096498938" />
-    <input type="hidden" name="ie" value="UTF-8" />
-    <input type="text" name="q" />
-    <input type="submit" name="sa" value="Найти" />
-  </div>
-</form>
-</div>
-
-<div id="menu" class="menu">
-<ul class="mainmenu">
-    <li><a href="https://metanit.com/common/">Программирование</a></li>
-    <li><a href="https://metanit.com/assembler/">Ассемблер</a></li>
-   <li><a href="https://metanit.com/sharp/">C#</a></li>
-   <li><a href="https://metanit.com/java/">Java</a></li>
-   <li><a href="https://metanit.com/web/">WEB</a></li>
-   <li><a href="https://metanit.com/python/">Python</a></li>
-   <li><a href="https://metanit.com/c/">C</a></li>
-   <li><a href="https://metanit.com/cpp/">C++</a></li>
-   <li><a href="https://metanit.com/sql/">SQL</a></li>
-   <li><a href="https://metanit.com/nosql/mongodb/">MongoDB</a></li>
-   <li><a href="https://metanit.com/go/">Go</a></li>
-   <li><a href="https://metanit.com/visualbasic/">VB.NET</a></li>
-   <li><a href="https://metanit.com/swift/tutorial/">Swift</a></li>
-   <li><a href="https://metanit.com/kotlin/">Kotlin</a></li>
-   <li><a href="https://metanit.com/dart/">Dart</a></li>
-   <li><a href="https://metanit.com/php/">PHP</a></li>
-   <li><a href="https://metanit.com/rust/">Rust</a></li>
-   <li><a href="https://metanit.com/os/">Linux</a></li>
-   <li><a href="https://metanit.com/f/">F#</a></li>
-   <!--<li><a href="//metanit.com/lisp/tutorial/">Common Lisp</a></li>-->
-   <li><a href="https://metanit.com/hosting">Хостинг</a></li>
-</ul>
-</div>
-
-</header>
-<div class="outercontainer">
-<div class="innercontainer">
- 
-   <div class="item center menC">
-     <h1>Введение в лямбда-выражения</h1><div class="date">Последнее обновление: 02.10.2025</div>
-	<div class="socBlock">
-	<div class="share soctop">
-	<ul>
-	<li><a title="Поделиться в Вконтакте" rel="nofollow" class="fa fa-lg fa-vk"></a></li>
-	<li><a title="Поделиться в Телеграм" rel="nofollow" class="fa fa-lg fa-telegram"></a></li>
-	<li><a title="Поделиться в Одноклассниках" rel="nofollow" class="fa fa-lg fa-odnoklassniki"></a></li>
-	
-	</ul>
-	</div>
-	</div>
-
-	<div style="margin-top:23px;margin-left:5px;">
-		
-		
-		
-	</div>
-
-	<p>Лямбда-выражения в языке Java представляют набор инструкций, 
-которые можно выделить в отдельную переменную и затем многократно вызвать в различных местах программы.</p>
-<h3>Определение лямбда-выражения и функциональные интерфейсы</h3>
-<p>Для создания лямбда-выражения применяется <span class="b">лямбда-оператор</span> (стрелка <span class="b">-&gt;</span>). 
-Этот оператор разделяет лямбда-выражение на две части:</p>
-<pre class="brush:java;"> (параметры) -&gt; действия  </pre>
-<p>левая часть (до стрелки) содержит параметры через запятую, а правая часть (после стрелки) собственно представляет выполняемые действия лямбда-выражения.</p>
-<p>Лямбда-выражение не выполняется само по себе, а образует реализацию метода, определенного в <span class="b">функциональном интерфейсе</span>. Рассмотрим пример:</p>
-<pre class="brush:java;">
+	<p>Лямбда-вираження в мові Java представляють набор инструкций, 
+которые можна выделить в отдельную переменную и затем многократно вызвать в различных местах программы.</p>
+<h3>Определение лямбда-выражения и функциональные інтерфейсы</h3>
+<p>Для создания лямбда-выражения застосовується <span class="b">лямбда-оператор</span> (стрелка <span class="b">-&gt;</span>). 
+Цет оператор разделяет лямбда-выражение на две части:</p>
+<pre class="line-numbers"><code class="language-java"> (параметры) -&gt; действия  </code></pre>
+<p>левая часть (до стрелки) містить параметры через запятую, а правая часть (после стрелки) собственно представляє выполняемые действия лямбда-выражения.</p>
+<p>Лямбда-выражение не виконується само по себе, а образует реализацию метода, определенного в <span class="b">функциональном інтерфейсе</span>. Рассмотрим пример:</p>
+<pre class="line-numbers"><code class="language-java">
 public class Program {
 
     public static void main(String[] args) {
@@ -120,29 +36,29 @@ public class Program {
 interface Operationable{
     int execute(int x, int y);
 }
-</pre>
-<p>Здесь в роли функционального интерфейса выступает интерфейс <code>Operationable</code>, в котором определен один метод без реализации - метод 
-<code>execute</code>. Данный метод принимает два параметра - целых числа, и возвращает некоторое целое число.</p>
+</code></pre>
+<p>Здесь в роли функционального інтерфейса выступает інтерфейс <code>Operationable</code>, в котором определен один метод без реализации - метод 
+<code>execute</code>. Данный метод приймає два параметра - целых числа, и повертає некоторое целое число.</p>
 
-<p>Чтобы объявить и использовать лямбда-выражение, основная программа разбивается на ряд этапов:</p>
+<p>Щоб оголосити и використовувати лямбда-выражение, основная программа разбивается на ряд этапов:</p>
 <ol>
-<li><p>Определение ссылки на функциональный интерфейс:</p>
-<pre class="brush:java;">Operationable op;</pre></li>
-<li><p>Создание лямбда-выражения:</p>
-<pre class="brush:java;">op = (x,y)-&gt;x+y;</pre>
-<p>Причем параметры лямбда-выражения соответствуют параметрам единственного метода интерфейса Operationable, а результат соответствует возвращаемому результату 
-метода интерфейса. При этом нам не надо использовать ключевое слово <code>return</code> для возврата результата из лямбда-выражения.</p>
-<p>Так, в методе интерфейса оба параметра представляют тип <code>int</code>, значит, в теле лямбда-выражения мы можем применить к ним сложение. Результат сложения также представляет 
-тип <code>int</code>, объект которого возвращается методом интерфейса.</p>
+<li><p>Определение ссылки на функциональный інтерфейс:</p>
+<pre class="line-numbers"><code class="language-java">Operationable op;</code></pre></li>
+<li><p>Створення лямбда-выражения:</p>
+<pre class="line-numbers"><code class="language-java">op = (x,y)-&gt;x+y;</code></pre>
+<p>Причем параметры лямбда-выражения соответствуют параметрам единственного метода інтерфейса Operationable, а результат соответствует возвращаемому результату 
+метода інтерфейса. При цем нам не треба використовувати ключевое слово <code>return</code> для возврата результата из лямбда-выражения.</p>
+<p>Так, в методе інтерфейса оба параметра представляють тип <code>int</code>, значит, в теле лямбда-выражения мы можемо применить к ним сложение. Результат сложения також представляє 
+тип <code>int</code>, об'єкт которого повертаєся методом інтерфейса.</p>
 </li>
-<li><p>Использование лямбда-выражения в виде вызова метода интерфейса:</p>
-<pre class="brush:java;">int result = operation.execute(10, 20);</pre>
-<p>Так как в лямбда-выражении определена операция сложения параметров, результатом метода будет сумма чисел 10 и 20.</p></li>
+<li><p>Использование лямбда-выражения в виде вызова метода інтерфейса:</p>
+<pre class="line-numbers"><code class="language-java">int result = operation.execute(10, 20);</code></pre>
+<p>Так як в лямбда-выражении определена операция сложения параметров, результатом метода буде сумма чисел 10 и 20.</p></li>
 </ol>
 
-<p>По факту лямбда-выражения являются в некотором роде сокращенной формой внутренних анонимных классов, которые ранее применялись в Java. В частности, 
-предыдущий пример мы можем переписать следующим образом:</p>
-<pre class="brush:java;">
+<p>По факту лямбда-выражения є в некотором роде сокращенной формой внутренних анонимных классов, которые ранїї применялись в Java. В частности, 
+предыдущий пример мы можемо переписать наступним чином:</p>
+<pre class="line-numbers"><code class="language-java">
 public class Program {
 
     public static void main(String[] args) {
@@ -161,9 +77,9 @@ public class Program {
 interface Operationable{
     int execute(int x, int y);
 }
-</pre>
-<p>При этом для одного функционального интерфейса мы можем определить множество лямбда-выражений. Например:</p>
-<pre class="brush:java;">
+</code></pre>
+<p>При цем для одного функционального інтерфейса мы можемо определить множество лямбда-выражений. Например:</p>
+<pre class="line-numbers"><code class="language-java">
 Operationable sum = (int x, int y)-&gt; x + y;
 Operationable sub = (int x, int y)-&gt; x - y;
 Operationable mul = (int x, int y)-&gt; x * y;
@@ -171,9 +87,9 @@ Operationable mul = (int x, int y)-&gt; x * y;
 System.out.println(sum.execute(20, 10)); //30
 System.out.println(sub.execute(20, 10)); //10
 System.out.println(mul.execute(20, 10)); //200
-</pre>
-<p>Если лямбда-выражение принимает один параметр, то скобки вокруг параметров можно не использовать:</p>
-<pre class="brush:java;">
+</code></pre>
+<p>Если лямбда-выражение приймає один параметр, то скобки вокруг параметров можна не використовувати:</p>
+<pre class="line-numbers"><code class="language-java">
 public class Program {
 
     public static void main(String[] args) {
@@ -187,18 +103,18 @@ public class Program {
 interface Printable{
     void print(String message);
 }
-</pre>
-<p>Здесь лямбда-выражение printer представляет функциональный интерфейс Printable, единственный метод которого - print принимает только один параметр.</p>
-<p>Другая ситуация - в методе функционального интерфейса есть параметр, но в лямбда-выражении он не используется. В этом случае вместо параметра можно указать прочерк:</p>
-<pre class="brush:java;">
+</code></pre>
+<p>Здесь лямбда-выражение printer представляє функциональный інтерфейс Printable, единственный метод которого - print приймає лише один параметр.</p>
+<p>Другая ситуация - в методе функционального інтерфейса есть параметр, но в лямбда-выражении он не використовується. В цем случае вместо параметра можна указать прочерк:</p>
+<pre class="line-numbers"><code class="language-java">
 public class Program {
 
     public static void main(String[] args) {
         
         Printable printer = _ -&gt; System.out.println("Test");
 
-        // при вызове параметру все равно надо передать значение
-        // но оно не имеет значения, так как не будет использоваться
+        // при вызове параметру все равно треба передать значение
+        // но оно не имїїт значения, оскільки не буде використовуватися
         printer.print(null);    // Test
         printer.print("brr");   // Test
     }   
@@ -206,9 +122,9 @@ public class Program {
 interface Printable{
     void print(String message);
 }
-</pre>
-<p>Если метод интерфейса вообще не принимает никаких параметров, то при определении лямбда-выражения указываются пустые скобки:</p>
-<pre class="brush:java;">
+</code></pre>
+<p>Если метод інтерфейса вообще не приймає нияких параметров, то при определении лямбда-выражения указываются пустые скобки:</p>
+<pre class="line-numbers"><code class="language-java">
 public class Program {
 
     public static void main(String[] args) {
@@ -221,28 +137,22 @@ public class Program {
 interface Hello{
     void sayHello();
 }
-</pre>
+</code></pre>
 <h3>Отложенное выполнение</h3>
-<p>Одним из ключевых моментов в использовании лямбд является <span class="b">отложенное выполнение</span> (deferred execution). То есть мы определяем в одном месте программы 
-лямбда-выражение и затем можем его вызывать при необходимости неопределенное количество раз в различных частях программы. Отложенное выполнение может потребоваться, к примеру, в следующих случаях:</p>
+<p>Одним из ключевых моментов в использовании лямбд є <span class="b">отложенное выполнение</span> (deferred execution). То есть мы определяем в одном месте программы 
+лямбда-выражение и затем можемо его вызывать при необхідности неопределенное количество раз в различных частях программы. Отложенное выполнение может потребоваться, к примеру, в следующих случаях:</p>
 <ul>
 <li><p>Выполнение кода отдельном потоке</p></li>
-<li><p>Выполнение одного и того же кода несколько раз</p></li>
-<li><p>Выполнение кода в результате какого-то события</p></li>
-<li><p>Выполнение кода только в том случае, когда он действительно необходим и если он необходим</p></li>
+<li><p>Выполнение одного и того же кода декілька раз</p></li>
+<li><p>Выполнение кода в результате якого-то события</p></li>
+<li><p>Выполнение кода лише в том случае, когда он действительно необходим и якщо он необходим</p></li>
 </ul>
 
-<div style="margin-top:23px;margin-left:5px;">
-
-<!-- Yandex.RTB R-A-201190-9 -->
-
-</div>
-
 <h3>Лямбды и локальные переменные</h3>
-<p>Лямбда-выражение может использовать переменные, которые объявлены во вне в более общей области видимости - на уровне класса или метода, в котором 
-лямбда-выражение определено. Однако в зависимости от того, как и где определены переменные, могут различаться способы их использования в лямбдах. 
+<p>Лямбда-выражение может використовувати переменные, которые оголошенийы во вне в болїї общей области видимости - на уровне класса або метода, в котором 
+лямбда-выражение определено. Однак в зависимости от того, як и где определены переменные, можуть различаться способы их использования в лямбдах. 
 Рассмотрим первый пример - использования переменных уровня класса:</p>
-<pre class="brush:java;">
+<pre class="line-numbers"><code class="language-java">
 public class Program {
 
     static int x = 10;
@@ -261,11 +171,11 @@ public class Program {
 interface Operation{
     int execute();
 }
-</pre>
-<p>Переменные x и y объявлены на уровне класса, и в лямбда-выражении мы их можем получить и даже изменить. Так, в данном случае после выполнения выражения 
-изменяется значение переменной x.</p>
-<p>Теперь рассмотрим другой пример - локальные переменные на уровне метода:</p>
-<pre class="brush:java;">
+</code></pre>
+<p>Переменные x и y оголошенийы на уровне класса, и в лямбда-выражении мы их можемо отримати и даже изменить. Так, в данном случае после виконання выражения 
+змінюєся значение змінної x.</p>
+<p>Теперь розглянемо другой пример - локальные переменные на уровне метода:</p>
+<pre class="line-numbers"><code class="language-java">
 public static void main(String[] args) {
         
     int n = 70;
@@ -278,17 +188,17 @@ public static void main(String[] args) {
 	// n=100;  - так тоже нельзя
     System.out.println(op.execute()); // 100
 } 
-</pre>
-<p>Локальные переменные уровня метода мы также можем использовать в лямбдах, но изменять их значение нельзя. Если мы попробуем это сделать, 
-то среда разработки (Netbeans) может нам высветить ошибку и то, что такую переменную надо пометить с помощью ключевого слова <span class="b">final</span>, 
-то есть сделать константой: <code>final int n=70;</code>. Однако это необязательно.</p>
-<p>Более того, мы не сможем изменить значение переменной, которая используется в лямбда-выражении, вне этого выражения. То есть даже если такая переменная не объявлена 
-как константа, по сути она является константой.</p>
+</code></pre>
+<p>Локальные переменные уровня метода мы також можемо використовувати в лямбдах, но изменять их значение нельзя. Если мы попробуем це сделать, 
+то среда разработки (Netbeans) может нам высветить ошибку и то, что такую переменную треба пометить за допомогою ключевого слова <span class="b">final</span>, 
+то есть сделать константой: <code>final int n=70;</code>. Однак це необязательно.</p>
+<p>Болїї того, мы не сможемо изменить значение змінної, которая використовується в лямбда-выражении, вне цього выражения. То есть даже якщо такая переменная не оголошенийа 
+як константа, по сути она є константой.</p>
 <h3>Блоки кода в лямбда-выражениях</h3>
-<p>Существуют два типа лямбда-выражений: однострочное выражение и блок кода. Примеры однострочных выражений демонстрировались выше. 
-Блочные выражения обрамляются фигурными скобками. В блочных лямбда-выражениях можно использовать внутренние вложенные блоки, циклы, конструкции if, switch, 
-создавать переменные и т.д. Если блочное лямбда-выражение должно возвращать значение, то явным образом применяется оператор <code>return</code>:</p>
-<pre class="brush:java;">
+<p>Существуют два типу лямбда-выражений: однострочное выражение и блок кода. Примеры однострочных выражений демонстрировались выше. 
+Блочные выражения обрамляются фигурными скобками. В блочных лямбда-выражениях можна використовувати внутренние вложенные блоки, циклы, конструкции if, switch, 
+создавать переменные и т.д. Если блочное лямбда-выражение повинно возвращать значение, то явным чином застосовується оператор <code>return</code>:</p>
+<pre class="line-numbers"><code class="language-java">
 Operationable operation = (int x, int y)-&gt; {
         
     if(y==0)
@@ -298,11 +208,11 @@ Operationable operation = (int x, int y)-&gt; {
         
 System.out.println(operation.execute(20, 10)); //2
 System.out.println(operation.execute(20, 0)); //0
-</pre>
-<h3>Обобщенный функциональный интерфейс</h3>
-<p>Функциональный интерфейс может быть обобщенным, однако в лямбда-выражении использование обобщений не допускается. В этом случае нам надо типизировать 
-объект интерфейса определенным типом, который потом будет применяться в лямбда-выражении. Например:</p>
-<pre class="brush:java;">
+</code></pre>
+<h3>Обобщенный функциональный інтерфейс</h3>
+<p>Функциональный інтерфейс может быть обобщенным, однак в лямбда-выражении использование обобщений не допускается. В цем случае нам треба типизировать 
+об'єкт інтерфейса определенным типом, який потом буде застосовуватися в лямбда-выражении. Например:</p>
+<pre class="line-numbers"><code class="language-java">
 public class Program {
 
     public static void main(String[] args) {
@@ -317,426 +227,17 @@ public class Program {
 interface Operationable&lt;T&gt;{
     T execute(T x, T y);
 }
-</pre>
-<p>Таким образом, при объявлении лямбда-выражения ему уже известно, какой тип параметры будут представлять и какой тип они будут возвращать.</p>
-	
+</code></pre>
+<p>Таким чином, при оголошенийии лямбда-выражения ему вже известно, якой тип параметры будуть представлять и якой тип они будуть возвращать.</p>
 
-	<div style="margin-top:25px;">
-
-	
-	</div>
-
-	<div class="nav"><p><a href="9.4.html">Назад</a><a href="index.html">Содержание</a><a href="9.2.html">Вперед</a></p></div>
-	<div class="socBlock">
-	<div class="share soctop">
-	<ul>
-	<li><a title="Поделиться в Вконтакте" rel="nofollow" class="fa fa-lg fa-vk"></a></li>
-	<li><a title="Поделиться в Телеграм" rel="nofollow" class="fa fa-lg fa-telegram"></a></li>
-	<li><a title="Поделиться в Одноклассниках" rel="nofollow" class="fa fa-lg fa-odnoklassniki"></a></li>
-	
-	</ul>
-	</div>
-	</div>
   </div>
-
-	<div class="item left">
-     <ul id="browser" class="filetree"> 
-	<li class="closed"><span class="folder">Глава 1. Введение в Java</span>
-		<ul>
-			<li><span class="file"><a href="1.1.html">Что такое Java</a></span></li>
-			<li><span class="file"><a href="1.6.html">Установка JDK</a></span></li>
-			<li><span class="file"><a href="1.2.html">Первая программа на Java</a></span></li>
-			<li><span class="file"><a href="1.5.html">Первая программа в IntelliJ IDEA</a></span></li>
-			<li><span class="file"><a href="1.3.html">Первая программа в NetBeans</a></span></li>
-			<li><span class="file"><a href="1.4.html">Первая программа в Eclipse</a></span></li>
-			<li><span class="file"><a href="1.7.html">JShell</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 2. Основы программирования на Java</span>
-		<ul>
-			<li><span class="file"><a href="2.11.html">Структура программы</a></span></li>
-			<li><span class="file"><a href="2.1.html">Переменные и константы</a></span></li>
-			<li><span class="file"><a href="2.19.html">Литералы</a></span></li>
-			<li><span class="file"><a href="2.12.html">Типы данных</a></span></li>
-			<li><span class="file"><a href="2.9.html">Консольный ввод/вывод в Java</a></span></li>
-			<li><span class="file"><a href="2.3.html">Арифметические операции</a></span></li>
-			<li><span class="file"><a href="2.13.html">Поразрядные операции</a></span></li>
-			<li><span class="file"><a href="2.14.html">Условные выражения</a></span></li>
-			<li><span class="file"><a href="2.15.html">Операции присваивания и приоритет операций</a></span></li>
-			<li><span class="file"><a href="2.2.html">Преобразования базовых типов данных</a></span></li>
-			<li><span class="file"><a href="2.5.html">Условные конструкции</a></span></li>
-			<li><span class="file"><a href="2.6.html">Циклы</a></span></li>
-			<li><span class="file"><a href="2.4.html">Массивы</a></span></li>
-			<li><span class="file"><a href="2.20.html">Конструкция и выражение switch</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 3. Классы</span>
-		<ul>
-			<li><span class="file"><a href="3.1.html">Классы и объекты</a></span></li>
-
-
-			<li><span class="file"><a href="2.7.html">Методы</a></span></li>
-			<li><span class="file"><a href="2.16.html">Параметры методов</a></span></li>
-			<li><span class="file"><a href="3.14.html">Объекты как параметры методов</a></span></li>
-			<li><span class="file"><a href="2.17.html">Оператор return. Результат метода</a></span></li>
-			<li><span class="file"><a href="2.18.html">Перегрузка методов</a></span></li>
-			<li><span class="file"><a href="3.21.html">Конструкторы и инициализаторы</a></span></li>
-
-
-			<li><span class="file"><a href="3.4.html">Статические компоненты класса и модификатор static</a></span></li>
-			<li><span class="file"><a href="3.20.html">Область действия и время жизни переменных</a></span></li>
-			<li><span class="file"><a href="2.8.html">Рекурсивные функции</a></span></li>
-			<li><span class="file"><a href="3.2.html">Пакеты</a></span></li>
-			<li><span class="file"><a href="3.3.html">Модификаторы доступа</a></span></li>
-			<li><span class="file"><a href="3.19.html">Компактные файлы кода и метод main</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 4. Объектно-ориентированное программирование</span>
-		<ul>
-			<li><span class="file"><a href="3.22.html">Инкапсуляция</a></span></li>
-			<li><span class="file"><a href="3.5.html">Наследование</a></span></li>
-			<li><span class="file"><a href="3.23.html">Запрет наследования и переопределения методов</a></span></li>
-			<li><span class="file"><a href="3.24.html">Полиморфизм и динамическая диспетчеризация методов</a></span></li>
-			<li><span class="file"><a href="3.9.html">Класс Object и его методы</a></span></li>
-			<li><span class="file"><a href="3.6.html">Абстрактные классы</a></span></li>
-			<li><span class="file"><a href="3.10.html">Иерархия наследования и преобразование типов</a></span></li>
-
-			<li><span class="file"><a href="3.7.html">Интерфейсы</a></span></li>
-			<li><span class="file"><a href="3.28.html">Интерфейсы и полиморфизм</a></span></li>
-			<li><span class="file"><a href="3.29.html">Множественная реализация и наследование интерфейсов</a></span></li>
-			<li><span class="file"><a href="3.16.html">Интерфейсы в механизме обратного вызова</a></span></li>
-			<li><span class="file"><a href="3.8.html">Перечисления enum</a></span></li>
-			<li><span class="file"><a href="3.11.html">Обобщения (Generics)</a></span></li>
-			<li><span class="file"><a href="3.17.html">Ограничения обобщений</a></span></li>
-			<li><span class="file"><a href="3.15.html">Наследование и обобщения</a></span></li>
-			<li><span class="file"><a href="3.31.html">Type Erasure (Стирание типов)</a></span></li>
-			<li><span class="file"><a href="3.32.html">Подстановочные знаки wildcards в обобщениях</a></span></li>
-			<li><span class="file"><a href="3.13.html">Ссылочные типы и клонирование объектов</a></span></li>
-			<li><span class="file"><a href="3.18.html">Классы Records</a></span></li>
-			<li><span class="file"><a href="9.4.html">Функциональные интерфейсы и ссылки на методы</a></span></li>
-			<li><span class="file"><a href="9.1.html">Лямбда-выражения</a></span></li>
-			<li><span class="file"><a href="9.2.html">Лямбды как параметры и результаты методов</a></span></li>
-			<li><span class="file"><a href="9.3.html">Встроенные функциональные интерфейсы</a></span></li>
-			<li><span class="file"><a href="3.12.html">Внутренние и вложенные классы</a></span></li>
-			<li><span class="file"><a href="3.30.html">Анонимные классы</a></span></li>
-
-
-			<li><span class="file"><a href="3.25.html">Sealed-классы и интерфейсы</a></span></li>
-			<li><span class="file"><a href="3.26.html">Pattern мatching. Паттерн типов</a></span></li>
-			<li><span class="file"><a href="3.27.html">Pattern мatching. record-паттерн</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 5. Обработка исключений</span>
-		<ul>
-			<li><span class="file"><a href="2.10.html">Обработка исключений и конструкция try...catch...finally</a></span></li>
-			<li><span class="file"><a href="4.2.html">Классы исключений</a></span></li>
-			<li><span class="file"><a href="4.1.html">Операторы throws и throw</a></span></li>
-			<li><span class="file"><a href="4.3.html">Создание своих классов исключений</a></span></li>
-			<li><span class="file"><a href="4.4.html">Assert</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 6. Коллекции</span>
-		<ul>
-			<li><span class="file"><a href="5.1.html">Типы коллекций. Интерфейс Collection</a></span></li>
-			<li><span class="file"><a href="5.2.html">Класс ArrayList и интерфейс List</a></span></li>
-			<li><span class="file"><a href="5.6.html">Интерфейсы Comparable и Comporator. Сортировка</a></span></li>
-			<li><span class="file"><a href="5.7.html">Очереди и стеки. Классы ArrayDeque и PriorityQueue</a></span></li>
-			<li><span class="file"><a href="5.3.html">Связанный список LinkedList</a></span></li>
-			<li><span class="file"><a href="5.4.html">Интерфейс Set и хеш-таблицы HashSet</a></span></li>
-			<li><span class="file"><a href="5.5.html">Деревья TreeSet и интерфейсы SortedSet и NavigableSet</a></span></li>
-			<li><span class="file"><a href="5.8.html">Словари. Интерфейс Map и класс HashMap</a></span></li>
-			<li><span class="file"><a href="5.9.html">Интерфейсы SortedMap и NavigableMap. Класс TreeMap</a></span></li>
-			<li><span class="file"><a href="5.10.html">Итераторы. Iterator и Iterable</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 7. Потоки ввода-вывода. Работа с файлами</span>
-		<ul>
-			<li><span class="file"><a href="6.1.html">Потоки ввода-вывода</a></span></li>
-			<li><span class="file"><a href="6.3.html">Чтение и запись файлов. FileInputStream и FileOutputStream</a></span></li>
-			<li><span class="file"><a href="6.2.html">Закрытие потоков и конструкция try-с-ресурсами</a></span></li>
-			<li><span class="file"><a href="6.4.html">Классы ByteArrayInputStream и ByteArrayOutputStream</a></span></li>
-			<li><span class="file"><a href="6.5.html">Буферизованные потоки BufferedInputStream и BufferedOutputStream</a></span></li>
-			<li><span class="file"><a href="6.6.html">Форматируемый вывод. PrintStream и PrintWriter</a></span></li>
-			<li><span class="file"><a href="6.7.html">Классы DataOutputStream и DataInputStream</a></span></li>
-			<li><span class="file"><a href="6.8.html">Чтение и запись текстовых файлов</a></span></li>
-			<li><span class="file"><a href="6.9.html">Буферизация символьных потоков. BufferedReader и BufferedWriter</a></span></li>
-			<li><span class="file"><a href="6.10.html">Сериализация объектов</a></span></li>
-			<li><span class="file"><a href="6.11.html">Класс File. Работа с файлами и каталогами</a></span></li>
-			<li><span class="file"><a href="6.12.html">Работа с ZIP-архивами</a></span></li>
-			<li><span class="file"><a href="6.13.html">Класс Console</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 8. Работа со строками</span>
-		<ul>
-			<li><span class="file"><a href="7.1.html">Введение в строки. Класс String</a></span></li>
-			<li><span class="file"><a href="7.2.html">Основные операции со строками</a></span></li>
-			<li><span class="file"><a href="7.3.html">StringBuffer и StringBuilder</a></span></li>
-			<li><span class="file"><a href="7.4.html">Регулярные выражения</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 9. Многопоточное программирование</span>
-		<ul>
-			<li><span class="file"><a href="8.1.html">Многопоточное программирование и класс Thread</a></span></li>
-			<li><span class="file"><a href="8.2.html">Создание и выполнение потоков</a></span></li>
-			<li><span class="file"><a href="8.11.html">Управление потоками</a></span></li>
-			<li><span class="file"><a href="8.4.html">Завершение и прерывание потока</a></span></li>
-			<li><span class="file"><a href="8.12.html">Виртуальные потоки</a></span></li>
-			<li><span class="file"><a href="8.3.html">Синхронизация потоков. Оператор synchronized</a></span></li>
-			<li><span class="file"><a href="8.5.html">Взаимодействие потоков. Методы wait и notify</a></span></li>
-			<li><span class="file"><a href="8.6.html">Семафоры</a></span></li>
-			<li><span class="file"><a href="8.7.html">Обмен между потоками. Класс Exchanger</a></span></li>
-			<li><span class="file"><a href="8.8.html">Класс Phaser</a></span></li>
-			<li><span class="file"><a href="8.9.html">Блокировки. ReentrantLock</a></span></li>
-			<li><span class="file"><a href="8.10.html">Условия в блокировках</a></span></li>
-			<li><span class="file"><a href="8.16.html">Переменные volatile</a></span></li>
-			<li><span class="file"><a href="8.17.html">Атомарность и Atomics. Потокобезопасность без блокировок</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 10. Асинхронность</span>
-		<ul>
-			<li><span class="file"><a href="8.13.html">Асинхронные задачи FutureTask. Callable и Future</a></span></li>
-			<li><span class="file"><a href="8.14.html">Executor - исполнитель задач</a></span></li>
-			<li><span class="file"><a href="8.15.html">Координация выполнения асинхронных задач</a></span></li>
-			<li><span class="file"><a href="8.18.html">CompletableFuture и промисы. Обработка результата асинхронных задач</a></span></li>
-			<li><span class="file"><a href="8.19.html">CompletableFuture, обработка ошибок и завершения асинхронных задач</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 11. Stream API</span>
-		<ul>
-			<li><span class="file"><a href="10.1.html">Введение в Stream API</a></span></li>
-			<li><span class="file"><a href="10.2.html">Создание потока данных</a></span></li>
-			<li><span class="file"><a href="10.3.html">Фильтрация, перебор элементов и отображение</a></span></li>
-			<li><span class="file"><a href="10.8.html">Сортировка</a></span></li>
-			<li><span class="file"><a href="10.13.html">Получение подпотока и объединение потоков</a></span></li>
-			<li><span class="file"><a href="10.4.html">Методы skip и limit</a></span></li>
-			<li><span class="file"><a href="10.11.html">Операции сведения</a></span></li>
-			<li><span class="file"><a href="10.5.html">Метод reduce</a></span></li>
-			<li><span class="file"><a href="10.12.html">Тип Optional</a></span></li>
-			<li><span class="file"><a href="10.6.html">Метод collect</a></span></li>
-			<li><span class="file"><a href="10.7.html">Группировка</a></span></li>
-			<li><span class="file"><a href="10.9.html">Параллельные потоки</a></span></li>
-			<li><span class="file"><a href="10.10.html">Параллельные операции над массивами</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 12. Модульность</span>
-		<ul>
-			<li><span class="file"><a href="11.1.html">Создание модуля</a></span></li>
-			<li><span class="file"><a href="11.2.html">Зависимые модули</a></span></li>
-			<li><span class="file"><a href="11.3.html">Взаимодействие между модулями. Экспорт и импорт</a></span></li>
-		</ul>
-	</li>
-	</li>
-	<li class="closed"><span class="folder">Глава 13. Дополнительные классы</span>
-		<ul>
-			<li><span class="file"><a href="12.1.html">Математические вычисления и класс Math</a></span></li>
-			<li><span class="file"><a href="12.2.html">Большие числа BigInteger и BigDecimal</a></span></li>
-			<li><span class="file"><a href="12.3.html">Работа с датами. LocalDate</a></span></li>
-			<li><span class="file"><a href="12.4.html">Процессы. Process и ProcessBuilder</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 14. JAR-файлы и подключение библиотек и классов</span>
-		<ul>
-			<li><span class="file"><a href="13.1.html">Файлы JAR, их создание и выполнение</a></span></li>
-			<li><span class="file"><a href="13.2.html">Создание и подключение библиотеки JAR</a></span></li>
-			<li><span class="file"><a href="13.4.html">Модульный jar-файл</a></span></li>
-			<li><span class="file"><a href="13.3.html">Установка пути к классам Java</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 15. Рефлексия</span>
-		<ul>
-			<li><span class="file"><a href="14.1.html">Введение в рефлексию. Класс Class</a></span></li>
-			<li><span class="file"><a href="14.2.html">Исследование типов</a></span></li>
-			<li><span class="file"><a href="14.3.html">Поля класса и класс Field</a></span></li>
-			<li><span class="file"><a href="14.4.html">Модификаторы доступа и класс Modifier</a></span></li>
-			<li><span class="file"><a href="14.5.html">Класс Constructor и cоздание объектов</a></span></li>
-			<li><span class="file"><a href="14.6.html">Методы и класс Method</a></span></li>
-			<li><span class="file"><a href="14.7.html">Proxy (Прокси)</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 16. Аннотации</span>
-		<ul>
-			<li><span class="file"><a href="15.1.html">Введение в аннотации. Встроенные аннотации</a></span></li>
-			<li><span class="file"><a href="15.2.html">Создание и применение аннотаций</a></span></li>
-			<li><span class="file"><a href="15.3.html">Обработка аннотаций во время выполнения</a></span></li>
-		</ul>
-	</li>
-
-
-	<li class="closed"><span class="folder">Глава 17. Взаимодействие с нативным кодом</span>
-		<ul>
-			<li><span class="file"><a href="16.1.html">Java Native Interface (JNI)</a></span></li>
-			<li><span class="file"><a href="16.2.html">Foreign Functions и Memory API</a></span></li>
-			<li><span class="file"><a href="16.3.html">Арена и сегменты памяти MemorySegment</a></span></li>
-			<li><span class="file"><a href="16.4.html">Компоновка памяти MemoryLayout и работа с MemorySegment</a></span></li>
-			<li><span class="file"><a href="16.5.html">Сложные данные и MemoryLayout</a></span></li>
-			<li><span class="file"><a href="16.6.html">Поиск и вызов внешних функций</a></span></li>
-			<li><span class="file"><a href="16.7.html">Нативные функции обратного вызова</a></span></li>
-		</ul>
-	</li>
-</ul>   </div>
-</div>
-
-  <div class="item right">
-<div class="help" style="border: 0px;">
-    
-	<div class="help-item">
-		<div class="help-item-name"><a href="https://metanit.com/settings.html">Настройки</a></div>
-	 </div>
-</div>
-			<div class="help">
-
-      <div class="help-header">Помощь сайту</div>
-
-       <div class="help-item">
-		<div class="help-item-name"><a href="https://yoomoney.ru/to/410011174743222" rel="nofollow">Помощь сайту</a></div>
-	 </div>
-       
-      <div class="help-item">
-		<div class="help-item-name">Юмани:</div>
-		<div class="help-item-req">410011174743222</div>
-	 </div>
-
-		<div class="help-item">
-			<div class="help-item-name">Номер карты:</div>
-			<div class="help-item-req">4048415020898850</div>
-		</div>
 
       </div>
 
-	
-	
-
-
-
-
   </div>
 </div>
 
-<div id="footer" style="padding-bottom:85px;">
-
-<div class="bootomLinks">
-<a href="https://vk.com/metanit" title="Присоединиться к группе вконтакте" rel="nofollow">
-Вконтакте</a>|
- <a href="https://t.me/devnull22" title="Подписаться на телеграм" rel="nofollow">
-Телеграм</a> | 
-<a href="https://metanit.com/donations.html" rel="nofollow">Донаты/Помощь сайту</a>
-</div>
-<p>Contacts: metanit22@mail.ru</p>
-<p>Copyright &copy; Евгений Попов, metanit.com, 2026. Все права защищены.</p>
-
-
-</div>
-
-</div>
-
-
-
-
-
-
-
-
-
-
-<script src='../../js/syntax16.js'></script>
-<script>
-// Syntax Highlighter
-if (typeof SyntaxHighlighter !== 'undefined') {
-    SyntaxHighlighter.all();
-}
-
-// Copy guard
-document.addEventListener('copy', (ev) => {
-    const et = ev.target;
-    if (et.type === 'textarea') {
-        ev.clipboardData.setData('text/plain', et.value.substring(et.selectionStart, et.selectionEnd).replace(/ /g, ' '));
-        ev.preventDefault();
-    }
-});
-
-// Mobile menu
-const faBars = document.querySelector('.fa-bars');
-if (faBars) {
-    faBars.addEventListener('click', () => {
-        const tree = document.querySelector('.item.left');
-        if (tree) {
-            tree.style.display = (tree.style.display === 'block') ? 'none' : 'block';
-        }
-    });
-}
-
-const menuButton = document.getElementById('menuButton');
-if (menuButton) {
-    menuButton.addEventListener('click', () => {
-        menuButton.classList.toggle('menu-opened');
-        const mainMenu = document.querySelector('.mainmenu');
-        if (mainMenu) mainMenu.classList.toggle('open');
-    });
-}
-
-// Search toggle
-const magGlass = document.getElementById('magnifying-glass');
-if (magGlass) {
-    magGlass.addEventListener('click', () => {
-        const search = document.getElementById('search');
-        if (search) search.classList.toggle('transp');
-    });
-}
-
-// Theme toggle
-const toggleTheme = document.getElementById('toggle-theme');
-if (toggleTheme) {
-    toggleTheme.addEventListener('click', () => {
-        if (document.documentElement.hasAttribute('theme')) {
-            document.documentElement.removeAttribute('theme');
-            document.cookie = 'theme=1;expires=Mon, 19 Feb 2001 12:00:00 UTC;path=/;';
-        } else {
-            document.documentElement.setAttribute('theme', 'dark');
-            var expire = new Date();
-            expire.setHours(expire.getHours() + 7);
-            document.cookie = 'theme=1;expires=' + expire.toUTCString() + ';path=/;';
-        }
-    });
-}
-
-// Share buttons
-const shareVK = document.querySelectorAll('.share .fa-vk');
-shareVK.forEach(e => e.addEventListener('click', () => window.open('http://vk.com/share.php?url=' + window.location.href, 'Поделиться в ВКОНТАКТЕ')));
-const shareTG = document.querySelectorAll('.share .fa-telegram');
-shareTG.forEach(e => e.addEventListener('click', () => window.open('tg://msg_url/url=' + window.location.href, 'Поделиться в Telegram')));
-const shareOK = document.querySelectorAll('.share .fa-odnoklassniki');
-shareOK.forEach(e => e.addEventListener('click', () => window.open('https://connect.ok.ru/offer?url=' + window.location.href, 'Поделиться в Одноклассниках')));
-
-// Folders
-const folders = document.getElementsByClassName('closed');
-for (let i = 0; i < folders.length; i++) {
-    folders[i].addEventListener('click', function (e) {
-        this.classList.toggle('closed');
-        this.classList.toggle('opened');
-    });
-}
-
-// Active Item Highlight
-const activePath = window.location.pathname.split('/').pop();
-const activeItem = document.querySelector(".file a[href*='" + activePath + "']");
-if (activeItem) {
-    activeItem.classList.add('aMItem');
-    activeItem.parentElement.classList.add('aMItem');
-    const activeFolder = activeItem.closest('li');
-    if (activeFolder) {
-        activeFolder.classList.remove('closed');
-        activeFolder.classList.add('opened');
-        const folderLabel = activeFolder.querySelector('.folder');
-        if (folderLabel) folderLabel.classList.add('aMItem');
-    }
-}
-
-// Settings
-const props = ['--main-font-size', '--main-font-family', '--menc-bg-color', '--container-bg-color', '--menu-bg-color', '--code-font-size', '--code-font-family', '--code-bgcolor', '--code-max-height'];
-for (let i = 0; i < props.length; i++) {
-    const propValue = localStorage.getItem(props[i]);
-    if (propValue !== null) document.documentElement.style.setProperty(props[i], propValue);
-}
-</script>
+<script src="../prism/prism.js"></script>
+<script src="../prism/prism-java.js"></script>
 </body>
 </html>

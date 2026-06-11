@@ -233,4 +233,6 @@
     <string name="dialog_create_folder_hint">Folder name (e.g. model)</string>
     <string name="menu_create_cpp_module">Create C++ JNI Module</string>
     <string name="settings_verbose_logging">Detailed logging (Logcat)</string>
+    <string name="kotlin_run_warning_title">Run Kotlin</string>
+    <string name="kotlin_run_warning_message">Running and compiling Kotlin files (.kt) directly on-device is not supported due to resource constraints. \n\nPlease use syntax highlighting for code editing, and perform compilation on an external server or PC.</string>
 </resources>

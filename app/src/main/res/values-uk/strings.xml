@@ -226,4 +226,6 @@
     <string name="dialog_create_folder_hint">Назва папки (напр. model)</string>
     <string name="menu_create_cpp_module">Створити C++ JNI модуль</string>
     <string name="settings_verbose_logging">Детальне логування (Logcat)</string>
+    <string name="kotlin_run_warning_title">Запуск Kotlin</string>
+    <string name="kotlin_run_warning_message">Запуск та компіляція файлів Kotlin (.kt) безпосередньо на пристрої не підтримується через обмеження продуктивності. \n\nБудь ласка, використовуйте підсвітку синтаксису для написання коду, а компіляцію виконуйте на зовнішньому сервері або ПК.</string>
 </resources>

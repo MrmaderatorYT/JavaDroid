@@ -1,106 +1,22 @@
 <!DOCTYPE html>
-<html  lang="ru">
+<html  lang="uk">
 <head>
-<title>Java | CompletableFuture, обработка ошибок и завершения асинхронных задач</title>
+<title>Java | CompletableFuture, обробка помилок та завершення асинхронних завдань</title>
 <meta charset="utf-8" />
 <meta name="description" content="Обработка ошибок и завершения асинхронных задач в языке программирования Java, класс CompletableFuture и его методы whenComplete, exceptionally и exceptionallyCompose, исключение CompletionException">
 <meta name="viewport" content="width=device-width">
-<link href="../../style50.css@v=1.css" rel="stylesheet" type="text/css">
+
+<link href="../prism/prism.css" rel="stylesheet" />
 </head>
 <body>
 <div id="container">
-<header>
-<div id="header">
-<div id="logo">
-<a class="logoTitle" href="https://metanit.com/" title="На главную">METANIT.COM</a>
-<div class="logoDefinition">Сайт о программировании</div> 
-</div>
-
-<div class="socbtns">
-<ul>
-<li><a title="Посмотреть меню" rel="nofollow" class="fa fa-lg fa-bars"></a></li>
-<li><a href="https://metanit.com/donations.html" title="Помощь сайту" rel="nofollow" style="color: var(--fa-usd-color);" class="fa fa-lg fa-usd"></a></li>
-<li><a href="https://vk.com/metanit" title="Группа в ВКонтакте" rel="nofollow" style="color: var(--fa-vk-color);" class="fa fa-lg fa-vk"></a></li>
-<li><a href="https://t.me/devnull22" title="Группа в Телеграмме"  class="fa fa-lg fa-tel" style="color: var(--fa-tel-color);"></a></li>
-<li><a href="https://metanit.com/android.html" title="Приложения андроид" rel="nofollow" style="color: var(--fa-android-color);" class="fa fa-lg fa-android"></a></li>
-<li><i id="toggle-theme" class="fa fa-lg fa-adjust"></i></li>
-</ul>
-</div>
-
-
-<div id="magnifying-glass"></div>
-
-<div class="menuButton" id="menuButton">
-	<span class="icon-bar"></span>
-    <span class="icon-bar"></span>
-    <span class="icon-bar"></span>
-</div>
-</div>
-
-<div id="search" class="transp">
-<form action="https://www.google.ru" id="cse-search-box">
-  <div>
-    <input type="hidden" name="cx" value="partner-pub-3716042175333627:1096498938" />
-    <input type="hidden" name="ie" value="UTF-8" />
-    <input type="text" name="q" />
-    <input type="submit" name="sa" value="Найти" />
-  </div>
-</form>
-</div>
-
-<div id="menu" class="menu">
-<ul class="mainmenu">
-    <li><a href="https://metanit.com/common/">Программирование</a></li>
-    <li><a href="https://metanit.com/assembler/">Ассемблер</a></li>
-   <li><a href="https://metanit.com/sharp/">C#</a></li>
-   <li><a href="https://metanit.com/java/">Java</a></li>
-   <li><a href="https://metanit.com/web/">WEB</a></li>
-   <li><a href="https://metanit.com/python/">Python</a></li>
-   <li><a href="https://metanit.com/c/">C</a></li>
-   <li><a href="https://metanit.com/cpp/">C++</a></li>
-   <li><a href="https://metanit.com/sql/">SQL</a></li>
-   <li><a href="https://metanit.com/nosql/mongodb/">MongoDB</a></li>
-   <li><a href="https://metanit.com/go/">Go</a></li>
-   <li><a href="https://metanit.com/visualbasic/">VB.NET</a></li>
-   <li><a href="https://metanit.com/swift/tutorial/">Swift</a></li>
-   <li><a href="https://metanit.com/kotlin/">Kotlin</a></li>
-   <li><a href="https://metanit.com/dart/">Dart</a></li>
-   <li><a href="https://metanit.com/php/">PHP</a></li>
-   <li><a href="https://metanit.com/rust/">Rust</a></li>
-   <li><a href="https://metanit.com/os/">Linux</a></li>
-   <li><a href="https://metanit.com/f/">F#</a></li>
-   <!--<li><a href="//metanit.com/lisp/tutorial/">Common Lisp</a></li>-->
-   <li><a href="https://metanit.com/hosting">Хостинг</a></li>
-</ul>
-</div>
-
-</header>
-<div class="outercontainer">
-<div class="innercontainer">
- 
-   <div class="item center menC">
-     <h1>CompletableFuture, обработка ошибок и завершения асинхронных задач</h1><div class="date">Последнее обновление: 29.10.2025</div>
-	<div class="socBlock">
-	<div class="share soctop">
-	<ul>
-	<li><a title="Поделиться в Вконтакте" rel="nofollow" class="fa fa-lg fa-vk"></a></li>
-	<li><a title="Поделиться в Телеграм" rel="nofollow" class="fa fa-lg fa-telegram"></a></li>
-	<li><a title="Поделиться в Одноклассниках" rel="nofollow" class="fa fa-lg fa-odnoklassniki"></a></li>
-	
-	</ul>
-	</div>
-	</div>
-
-	<div style="margin-top:23px;margin-left:5px;">
-		
-		
-		
-	</div>
+<div class="item center menC">
+     <h1>CompletableFuture, обробка помилок та завершення асинхронних завдань</h1><div class="date">Останнє оновлення: 29.10.2025</div>
 
 	<h3>Обработка ошибок</h3>
-<p>В прошлой статье был рассмотрен такой пример для работы с асинхронностью в языке Java, как тип <b>CompletableFuture</b>, который позволяет устанавливать коллбеки для обработки результатов асинхронной задачи. Однако что, если при вычислениях возникнет ошибка? Например, у нас есть следующая задача по вычислению 
-факториала, где, если передаваемое число меньше 1, то генерируется ошибка:</p>
-<pre class="brush:java;">
+<p>В прошлой статье був рассмотрен такой пример для работы с асинхронностью в мові Java, як тип <b>CompletableFuture</b>, який дозволяє устанавливать коллбеки для обработки результатов асинхронной задачи. Однак что, якщо при вычислениях возникнет ошибка? Наприклад, у нас есть следующая задача по вычислению 
+факториала, где, якщо передаваемое число меньше 1, то генеруєся ошибка:</p>
+<pre class="line-numbers"><code class="language-java">
 Supplier&lt;Integer&gt; factorialTask = () -&gt; {
 
     // при некорректных данных генерируем ошибку
@@ -110,20 +26,20 @@ Supplier&lt;Integer&gt; factorialTask = () -&gt; {
     while(n &lt;= number)  result *= n++; 
     return result; 
 };
-</pre>
-<p>Как мы можем обработать эту ошибку? Для обработки ошибок в API класса <code>CompletedFuture</code> определен ряд методов. Рассмотрим ряд из них:</p>
-<pre class="brush:java;">
+</code></pre>
+<p>Как мы можемо обработать эту ошибку? Для обработки ошибок в API класса <code>CompletedFuture</code> определен ряд методів. Рассмотрим ряд из них:</p>
+<pre class="line-numbers"><code class="language-java">
 CompletableFuture&lt;T&gt; exceptionally(Function&lt;Throwable, ? extends T&gt; fn)
 CompletableFuture&lt;T&gt; exceptionallyCompose(Function&lt;Throwable, ? extends CompletionStage&lt;T&gt;&gt; fn)
-</pre>
-<p>Эти методы позволяют установить обратный вызов, который выполняется при возникновении ошибки на предыдущем этапе:</p>
+</code></pre>
+<p>Эти методы дозволяють установить обратный вызов, який виконується при возникновении ошибки на предыдущем этапе:</p>
 <ul>
-<li><p><span class="b">exceptionally()</span>: вычисляет результат на основе ошибки, если она возникла на предыдущем этапе. То есть фактически обратный вызов производит переход <code>Throwable -&gt; T</code></p></li>
-<li><p><span class="b">exceptionallyCompose()</span>: вызывает функцию для исключения, если она возникла на предыдущем этапе, и выполняет возвращенный результат - объект <code>CompletableFuture</code>. 
+<li><p><span class="b">exceptionally()</span>: вычисляет результат на основе ошибки, якщо она возникла на предыдущем этапе. То есть фактически обратный вызов производит переход <code>Throwable -&gt; T</code></p></li>
+<li><p><span class="b">exceptionallyCompose()</span>: вызывает функцию для исключения, якщо она возникла на предыдущем этапе, и выполняет возвращенный результат - об'єкт <code>CompletableFuture</code>. 
 То есть фактически обратный вызов производит переход <code>Throwable -&gt; CompletableFuture&lt;T&gt;</code></p></li>
 </ul>
 <p>Рассмотрим на примере вычисления факториала:</p>
-<pre class="brush:java;">
+<pre class="line-numbers"><code class="language-java">
 import java.util.concurrent.*;
 import java.util.function.Supplier;
 import java.util.function.Function;
@@ -155,7 +71,7 @@ class Program{
             throw new RuntimeException(ex.getMessage());
         };
 
-        // определяем объект Executor, который будет выполнять задачи
+        // определяем об'єкт Executor, який буде выполнять задачи
         ExecutorService executor = Executors.newCachedThreadPool();
         CompletableFuture
                 .supplyAsync(factorialTask, executor)
@@ -168,57 +84,57 @@ class Program{
         executor.close();  // закрываем исполнителя
     }
 }
-</pre>
-<p>Рассмотрим ключевые моменты. Прежде всего основная задача, которая выполняется с помощь <code>CompletedFuture</code> - это задача вычисления факториала factorialTask. Эта задача возвращает целое число (значение <code>Integer</code>)</code></p>
-<p>Для выполнения задачи и вызова коллбеков, обрабатывающих ее результат, определяем следующий код:</p>
-<pre class="brush:java;">
+</code></pre>
+<p>Рассмотрим ключевые моменты. Прежде всего основная задача, которая виконується с помощь <code>CompletedFuture</code> - це задача вычисления факториала factorialTask. Эта задача повертає целое число (значение <code>Integer</code>)</code></p>
+<p>Для виконання задачи и вызова коллбеков, обрабатывающих її результат, определяем следующий код:</p>
+<pre class="line-numbers"><code class="language-java">
 CompletableFuture
     .supplyAsync(factorialTask, executor)
     .exceptionally(printException)
     .thenAccept(printTask);
-</pre>
+</code></pre>
 <ul>
 <li><p><code>supplyAsync(factorialTask, executor)</code></p>
-<p>Устанавливаем выполняемую асинхронную задачу и объект Executor, который выполняет эту задачу.</p>
+<p>Устанавливаем выполняемую асинхронную задачу и об'єкт Executor, який выполняет эту задачу.</p>
 <p>Если передачаемое для вычисления факториала число некорректно, то генерируем исключение</p>
-<pre class="brush:java;">if(number &lt; 1) throw new RuntimeException("Number must be greater than 0");</pre>
+<pre class="line-numbers"><code class="language-java">if(number &lt; 1) throw new RuntimeException("Number must be greater than 0");</code></pre>
 </li>
 <li><p><code>exceptionally(printException)</code></p>
 <p>Для обработки исключения определяем задачу printException, которая просто выводит информацию об исключении на консоль:</p>
-<pre class="brush:java;">
+<pre class="line-numbers"><code class="language-java">
 Function&lt;Throwable, Integer&gt; printException = ex -&gt; { 
     System.out.println(ex.getMessage());    
     throw new RuntimeException(ex.getMessage());
 };
-</pre>
-<p>Здесь стоит отметить, что поскольку задача факториала возвращает значение типа Integer, то и эта задача должна возвращать значение типа Integer. Однако в данном случае мы ничего не возвращаем и просто повторно генерируем исключение 
-(причем непроверяемое исключение). Повторная генерация исключения позволит избежать выполнения следующего колбека, для которого требуется результат вычисления факториала.</p></li>
+</code></pre>
+<p>Здесь варто відзначити, что поскольку задача факториала повертає значение типу Integer, то и эта задача повинна возвращать значение типу Integer. Однак в данном случае мы ничего не возвращаем и просто повторно генерируем исключение 
+(причем непроверяемое исключение). Повторная генерация исключения позволит избежать виконання следующего колбека, для которого требуется результат вычисления факториала.</p></li>
 <li><p><code>thenAccept(printTask)</code></p>
-<p>Задача printTask принимает результат - результат вычисления факториала и просто выводит его на консоль</p>
+<p>Задача printTask приймає результат - результат вычисления факториала и просто выводит его на консоль</p>
 </li>
 </ul>
-<p>В программе входное число является отрицательным:</p>
-<pre class="brush:java;">int number = -5;</pre>
+<p>В программе входное число є отрицательным:</p>
+<pre class="line-numbers"><code class="language-java">int number = -5;</code></pre>
 <p>Соответственно при выполнении мы столкнемся с ошибкой и получим консольный вывод наподобие следующего:</p>
-<pre class="sh">
+<pre class="line-numbers"><code class="language-none">
 Main thread started...
 java.lang.RuntimeException: Number must be greater than 0
 Main thread works...
 Main thread finished...
-</pre>
-<p>И тут надо обратить внимание, что последний коллбек - printTask не выполняется, а выполнение основного потока не прерывается, хотя мы повторно генерируем исключение при его обработке.</p>
-<p>Если же входное число было бы больше 0:</p>
-<pre class="brush:java;">int number = 5;</pre>
-<p>то мы увидим результат работы коллбека из вызова <code>thenAccept(printTask)</code>, а коллбек из вызова <code>exceptionally(printException)</code> не будет выполняться:</p>
-<pre class="sh">
+</code></pre>
+<p>И тут треба обратить внимание, что последний коллбек - printTask не виконується, а выполнение основного потока не переривається, хотя мы повторно генерируем исключение при его обработке.</p>
+<p>Если же входное число буво бы больше 0:</p>
+<pre class="line-numbers"><code class="language-java">int number = 5;</code></pre>
+<p>то мы увидим результат работы коллбека из вызова <code>thenAccept(printTask)</code>, а коллбек из вызова <code>exceptionally(printException)</code> не буде выполняться:</p>
+<pre class="line-numbers"><code class="language-none">
 Main thread started...
 Final result: 120
 Main thread works...
 Main thread finished...
-</pre>
+</code></pre>
 
-<p>Естественно это не единственно возможная схема обработки ошибок. Например, в примере выше мы генерировали повторно исключение. Но мы могли бы и сгенерировать результат, если переданное значение генерировало ошибку:</p>
-<pre class="brush:java;">
+<p>Естественно це не единственно возможная схема обработки ошибок. Наприклад, в примере выше мы генерировали повторно исключение. Но мы могли бы и сгенерировать результат, якщо переданное значение генерировало ошибку:</p>
+<pre class="line-numbers"><code class="language-java">
 import java.util.concurrent.*;
 import java.util.function.Supplier;
 import java.util.function.Function;
@@ -245,7 +161,7 @@ class Program{
             return 18;  // возвращаем некоторое значение по умолчанию
         };
 
-        // определяем объект Executor, который будет выполнять задачи
+        // определяем об'єкт Executor, який буде выполнять задачи
         ExecutorService executor = Executors.newCachedThreadPool();
         CompletableFuture
                 .supplyAsync(validateAge, executor)
@@ -256,92 +172,85 @@ class Program{
         executor.close();  
     }
 }
-</pre>
-<p>Здесь мы сначала проверяем возраст - значение переменной age в задаче validateAge: если оно не входит в неготорый диапазон, генерируем исключение:</p>
-<pre class="brush:java;">
+</code></pre>
+<p>Здесь мы сначала проверяем возраст - значение змінної age в задаче validateAge: якщо оно не входит в неготорый диапазон, генерируем исключение:</p>
+<pre class="line-numbers"><code class="language-java">
 Supplier&lt;Integer&gt; validateAge = () -&gt; {
 
     if(age &gt; 110 || age &lt; 1) throw new RuntimeException("Age is invalid");
     return age; 
 };
-</pre>
-<p>Если генерируется исключение, то вызывается задача printException:</p>
-<pre class="brush:java;">
+</code></pre>
+<p>Если генеруєся исключение, то вызывается задача printException:</p>
+<pre class="line-numbers"><code class="language-java">
 Function&lt;Throwable, Integer&gt; printException = ex -&gt; { 
     System.out.println(ex.getMessage());    
     return 18;  // возвращаем некоторое значение по умолчанию
 };
-</pre>
-<p>Здесь также выводим сообщение об ошибке, но при этом возвращаем некоторое значение по умолчанию.</p>
-<p>Таким образом при определении следующей цепочки:</p>
-<pre class="brush:java;">
+</code></pre>
+<p>Здесь також выводим сообщение об ошибке, но при цем возвращаем некоторое значение по умолчанию.</p>
+<p>Таким чином при определении следующей цепочки:</p>
+<pre class="line-numbers"><code class="language-java">
 CompletableFuture
     .supplyAsync(validateAge, executor)
     .exceptionally(printException)
     .thenAccept(printAge);
-</pre>
-<p>Если в validateAge возникает исключение, оно передается в задачу printException, которая генерирует конечный результат. И этот результа передается в задачу printAge. То есть в данном случае последний коллбек - printAge 
-выполняется в любом случае, даже если возникает ошибка. Консольный вывод в данном случае</p>
-<pre class="sh">
+</code></pre>
+<p>Если в validateAge возникает исключение, оно передаєся в задачу printException, которая генерує конечный результат. И цей результа передаєся в задачу printAge. То есть в данном случае последний коллбек - printAge 
+виконується в любом случае, даже якщо возникает ошибка. Консольный вывод в данном случае</p>
+<pre class="line-numbers"><code class="language-none">
 java.lang.RuntimeException: Age is invalid
 Final age: 18
-</pre>
-
-<div style="margin-top:23px;margin-left:5px;">
-
-<!-- Yandex.RTB R-A-201190-9 -->
-
-</div>
-
+</code></pre>
 
 <h4>CompletionException</h4>
-<p>Исключение, которое генерируется в задачах <code>CompletedFuture</code> представляет тип <b>CompletionException</b>, которое наследуется от <code>RuntimeException</code> и фактически является оборткой над исключением. 
-Таким образом, когда мы генерируем исключение</p>
-<pre class="brush:java;">
+<p>Исключение, которое генеруєся в задачах <code>CompletedFuture</code> представляє тип <b>CompletionException</b>, которое найдеся от <code>RuntimeException</code> и фактически є оборткой над исключением. 
+Таким чином, когда мы генерируем исключение</p>
+<pre class="line-numbers"><code class="language-java">
 if(age &gt; 110 || age &lt; 1) throw new RuntimeException("Age is invalid");
-</pre>
-<p>В реальности в задачу для обработки исключения из вызова <code>exceptionally()</code> передается не сгенерированное исключения <code>RuntimeException</code>, а обертка над ним в виде объекта <b>CompletionException</b>. 
-Поэтому в сообщении об исключении мы видим изначальный тип исключения - "java.lang.RuntimeException: Age is invalid". Чтобы обратиться к этому внутреннему исключению, мы можем использовать метод 
-<code>getCause()</code>, который определен в интерфейсе Throwble:</p>
-<pre class="brush:java;">
+</code></pre>
+<p>В реальности в задачу для обработки исключения из вызова <code>exceptionally()</code> передаєся не сгенерированное исключения <code>RuntimeException</code>, а обертка над ним в виде об'єкта <b>CompletionException</b>. 
+Тому в сообщении об исключении мы видим изначальный тип исключения - "java.lang.RuntimeException: Age is invalid". Щоб обратиться к цему внутреннему исключению, мы можемо використовувати метод 
+<code>getCause()</code>, який определен в інтерфейсе Throwble:</p>
+<pre class="line-numbers"><code class="language-java">
 Function&lt;Throwable, Integer&gt; printException = ex -&gt; { 
     System.out.println(ex.getCause().getMessage());    
     return 18;  // возвращаем некоторое значение по умолчанию
 };
-</pre>
-<p>Соответственно теперь при выводе на консоль не будет указываться тип исключения:</p>
-<pre class="sh">
+</code></pre>
+<p>Соответственно теперь при выводе на консоль не буде указываться тип исключения:</p>
+<pre class="line-numbers"><code class="language-none">
 Age is invalid
 Final age: 18
-</pre>
+</code></pre>
 <h3>Завершение CompletedFuture</h3>
-<p>Асинхронные задачи объекта <b>CompletableFuture</b> могут завершиться двумя способами: с результатом или с неперехваченным исключением. Для обработки обоих случаев можно использовать метод 
+<p>Асинхронные задачи об'єкта <b>CompletableFuture</b> можуть завершиться двумя способами: с результатом або с неперехваченным исключением. Для обработки обоих случаев можна використовувати метод 
 <b>whenComplete()</b>:</p>
-<pre class="brush:java;">
+<pre class="line-numbers"><code class="language-java">
 CompletableFuture&lt;T&gt; whenComplete(BiConsumer&lt;? super T, ? super Throwable&gt; action)
-</pre>
-<p>В качестве параметра этот метод принимает действие, которое соответствует методу <code>accept()</code> функционального интерфейса <b>BiConsumer&lt;T,U&gt;</b>:</p>
-<pre class="brush:java;">void accept(T t, U u)</pre>
-<p>То есть действие ничего не возвращает и принимает два параметра, причем второй параметр должен представлять объект <code>Throwable</code>. В случае с <code>CompletableFuture</code> 
-первый параметр будет представлять результат асинхронной задачи, а второй параметр - исключение, если оно возвникло в процессе выполнения асинхронной задачи.</p>
-<p>Если результат был успешно вычислен, а исключения не возникло, то второй параметр равен <code>null</code>. Если же наоборот - при выполнении задачи возникло исключение, то первый параметр равен 
+</code></pre>
+<p>В качестве параметра цей метод приймає действие, которое соответствует методу <code>accept()</code> функционального інтерфейса <b>BiConsumer&lt;T,U&gt;</b>:</p>
+<pre class="line-numbers"><code class="language-java">void accept(T t, U u)</code></pre>
+<p>То есть действие ничего не повертає и приймає два параметра, причем второй параметр повинен представлять об'єкт <code>Throwable</code>. В случае с <code>CompletableFuture</code> 
+первый параметр буде представлять результат асинхронной задачи, а второй параметр - исключение, якщо оно возвникло в процессе виконання асинхронной задачи.</p>
+<p>Если результат був успешно вычислен, а исключения не возникло, то второй параметр равен <code>null</code>. Если же наоборот - при выполнении задачи возникло исключение, то первый параметр равен 
 <code>null</code></p>
-<p>Общая схема работы коллбека, который передается в данный метод, выглядит следующим образом:</p>
-<pre class="brush:java;">
+<p>Общая схема работы коллбека, який передаєся в данный метод, выглядит наступним чином:</p>
+<pre class="line-numbers"><code class="language-java">
 f.whenComplete((result, error) -&gt; {
 
-      if (error == null){  // если исключения нет
+      if (error == null){  // якщо исключения нет
       
-         обрабатывает результат result;
+         обробляє результат result;
       }
-      else {    // если возникло исключение
+      else {    // якщо возникло исключение
 
          обрабатываем ошибку error;
       }
 });
-</pre>
+</code></pre>
 <p>Рассмотрим на примере вычисления факториала:</p>
-<pre class="brush:java;">
+<pre class="line-numbers"><code class="language-java">
 import java.util.concurrent.*;
 import java.util.function.Supplier;
 import java.util.function.BiConsumer;
@@ -352,12 +261,11 @@ class Program{
           
         System.out.println("Main thread started...");
  
-        // определяем объект Executor, который будет выполнять задачи
+        // определяем об'єкт Executor, який буде выполнять задачи
         ExecutorService executor = Executors.newCachedThreadPool();
         work(executor, 5);
         work(executor, -5);
-       
-        
+
         System.out.println("Main thread finished...");
 
         executor.close(); 
@@ -376,9 +284,9 @@ class Program{
 
         BiConsumer&lt;Integer, Throwable&gt; completedTask = (result, ex) -&gt; {
 
-            if (ex == null)  // если нет исключения
+            if (ex == null)  // якщо нет исключения
                 System.out.printf("factorial of %d is %d\n", number, result);
-            else     // если возникло исключение
+            else     // якщо возникло исключение
                 System.out.println(ex.getCause().getMessage());
         };
 
@@ -387,10 +295,10 @@ class Program{
             .whenComplete(completedTask);
     }
 }
-</pre>
-<p>Основные действия здесь выполняются в методе <code>work()</code>, который принимает число для вычисления факториала и объект <code>Executor</code> для выполнения задач.</p>
+</code></pre>
+<p>Основные действия здесь выполняются в методе <code>work()</code>, який приймає число для вычисления факториала и об'єкт <code>Executor</code> для виконання задач.</p>
 <p>Сначала определяем собственно задачу для вычисления факториала:</p>
-<pre class="brush:java;">
+<pre class="line-numbers"><code class="language-java">
 Supplier&lt;Integer&gt; factorialTask = () -&gt; {
 
     if(number &lt; 1) throw new RuntimeException("Number must be greater than 0. Invalid number: " + number);
@@ -399,459 +307,49 @@ Supplier&lt;Integer&gt; factorialTask = () -&gt; {
     while(n &lt;= number)  result *= n++;
     return result; 
 };
-</pre>
+</code></pre>
 <p>Если переданное число здесь меньше 1, то генерируем исключение.</p>
-<p>Для обработки завершения задачи (вне зависимости успешного или неудачного) определяем отдельную задачу типа <code>BiConsumer</code>:</p>
-<pre class="brush:java;">
+<p>Для обработки завершения задачи (вне зависимости успешного або неудачного) определяем отдельную задачу типу <code>BiConsumer</code>:</p>
+<pre class="line-numbers"><code class="language-java">
 BiConsumer&lt;Integer, Throwable&gt; completedTask = (result, ex) -&gt; {
 
-    if (ex == null)  // если нет исключения
+    if (ex == null)  // якщо нет исключения
         System.out.printf("factorial of %d is %d\n", number, result);
-    else     // если возникло исключение
+    else     // якщо возникло исключение
          System.out.println(ex.getCause().getMessage());
 };
-</pre>
-<p>Поскольку результат вычисления факториала представляет тип <code>Integer</code>, то параметры задачи представляют типы <code>Integer</code> и <code>Throwable</code>. В целях демонстрации задача просто 
-выводит результат или сообщение об ошибке на консоль.</p>
+</code></pre>
+<p>Поскольку результат вычисления факториала представляє тип <code>Integer</code>, то параметры задачи представляють типы <code>Integer</code> и <code>Throwable</code>. В целях демонстрации задача просто 
+выводит результат або сообщение об ошибке на консоль.</p>
 <p>В конце делаем цепочку вызовов, в которые передаем выше определенные коллбеки:</p>
-<pre class="brush:java;">
+<pre class="line-numbers"><code class="language-java">
 CompletableFuture
     .supplyAsync(factorialTask, executor)
     .whenComplete(completedTask);
-</pre>
+</code></pre>
 <p>В методе <code>main()</code> вызываем метод <code>work()</code>, передавая в него для тестирования корркетные и некорректные значения:</p>
-<pre class="brush:java;">
+<pre class="line-numbers"><code class="language-java">
 ExecutorService executor = Executors.newCachedThreadPool();
 
 work(executor, 5);
 work(executor, -5);
-</pre>
-<p>В итоге мы получим консольный вывод типа следующего (порядок вывода сообщение не детерминирован):</p>
-<pre class="sh">
+</code></pre>
+<p>В итоге мы получим консольный вывод типу следующего (порядок вывода сообщение не детерминирован):</p>
+<pre class="line-numbers"><code class="language-none">
 Main thread started...
 factorial of 5 is 120
 Main thread finished...
 Number must be greater than 0. Invalid number: -5
-</pre>
+</code></pre>
 
-	
-
-	<div style="margin-top:25px;">
-
-	
-	</div>
-
-	<div class="nav"><p><a href="8.18.html">Назад</a><a href="index.html">Содержание</a><a href="10.1.html">Вперед</a></p></div>
-	<div class="socBlock">
-	<div class="share soctop">
-	<ul>
-	<li><a title="Поделиться в Вконтакте" rel="nofollow" class="fa fa-lg fa-vk"></a></li>
-	<li><a title="Поделиться в Телеграм" rel="nofollow" class="fa fa-lg fa-telegram"></a></li>
-	<li><a title="Поделиться в Одноклассниках" rel="nofollow" class="fa fa-lg fa-odnoklassniki"></a></li>
-	
-	</ul>
-	</div>
-	</div>
   </div>
-
-	<div class="item left">
-     <ul id="browser" class="filetree"> 
-	<li class="closed"><span class="folder">Глава 1. Введение в Java</span>
-		<ul>
-			<li><span class="file"><a href="1.1.html">Что такое Java</a></span></li>
-			<li><span class="file"><a href="1.6.html">Установка JDK</a></span></li>
-			<li><span class="file"><a href="1.2.html">Первая программа на Java</a></span></li>
-			<li><span class="file"><a href="1.5.html">Первая программа в IntelliJ IDEA</a></span></li>
-			<li><span class="file"><a href="1.3.html">Первая программа в NetBeans</a></span></li>
-			<li><span class="file"><a href="1.4.html">Первая программа в Eclipse</a></span></li>
-			<li><span class="file"><a href="1.7.html">JShell</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 2. Основы программирования на Java</span>
-		<ul>
-			<li><span class="file"><a href="2.11.html">Структура программы</a></span></li>
-			<li><span class="file"><a href="2.1.html">Переменные и константы</a></span></li>
-			<li><span class="file"><a href="2.19.html">Литералы</a></span></li>
-			<li><span class="file"><a href="2.12.html">Типы данных</a></span></li>
-			<li><span class="file"><a href="2.9.html">Консольный ввод/вывод в Java</a></span></li>
-			<li><span class="file"><a href="2.3.html">Арифметические операции</a></span></li>
-			<li><span class="file"><a href="2.13.html">Поразрядные операции</a></span></li>
-			<li><span class="file"><a href="2.14.html">Условные выражения</a></span></li>
-			<li><span class="file"><a href="2.15.html">Операции присваивания и приоритет операций</a></span></li>
-			<li><span class="file"><a href="2.2.html">Преобразования базовых типов данных</a></span></li>
-			<li><span class="file"><a href="2.5.html">Условные конструкции</a></span></li>
-			<li><span class="file"><a href="2.6.html">Циклы</a></span></li>
-			<li><span class="file"><a href="2.4.html">Массивы</a></span></li>
-			<li><span class="file"><a href="2.20.html">Конструкция и выражение switch</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 3. Классы</span>
-		<ul>
-			<li><span class="file"><a href="3.1.html">Классы и объекты</a></span></li>
-
-
-			<li><span class="file"><a href="2.7.html">Методы</a></span></li>
-			<li><span class="file"><a href="2.16.html">Параметры методов</a></span></li>
-			<li><span class="file"><a href="3.14.html">Объекты как параметры методов</a></span></li>
-			<li><span class="file"><a href="2.17.html">Оператор return. Результат метода</a></span></li>
-			<li><span class="file"><a href="2.18.html">Перегрузка методов</a></span></li>
-			<li><span class="file"><a href="3.21.html">Конструкторы и инициализаторы</a></span></li>
-
-
-			<li><span class="file"><a href="3.4.html">Статические компоненты класса и модификатор static</a></span></li>
-			<li><span class="file"><a href="3.20.html">Область действия и время жизни переменных</a></span></li>
-			<li><span class="file"><a href="2.8.html">Рекурсивные функции</a></span></li>
-			<li><span class="file"><a href="3.2.html">Пакеты</a></span></li>
-			<li><span class="file"><a href="3.3.html">Модификаторы доступа</a></span></li>
-			<li><span class="file"><a href="3.19.html">Компактные файлы кода и метод main</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 4. Объектно-ориентированное программирование</span>
-		<ul>
-			<li><span class="file"><a href="3.22.html">Инкапсуляция</a></span></li>
-			<li><span class="file"><a href="3.5.html">Наследование</a></span></li>
-			<li><span class="file"><a href="3.23.html">Запрет наследования и переопределения методов</a></span></li>
-			<li><span class="file"><a href="3.24.html">Полиморфизм и динамическая диспетчеризация методов</a></span></li>
-			<li><span class="file"><a href="3.9.html">Класс Object и его методы</a></span></li>
-			<li><span class="file"><a href="3.6.html">Абстрактные классы</a></span></li>
-			<li><span class="file"><a href="3.10.html">Иерархия наследования и преобразование типов</a></span></li>
-
-			<li><span class="file"><a href="3.7.html">Интерфейсы</a></span></li>
-			<li><span class="file"><a href="3.28.html">Интерфейсы и полиморфизм</a></span></li>
-			<li><span class="file"><a href="3.29.html">Множественная реализация и наследование интерфейсов</a></span></li>
-			<li><span class="file"><a href="3.16.html">Интерфейсы в механизме обратного вызова</a></span></li>
-			<li><span class="file"><a href="3.8.html">Перечисления enum</a></span></li>
-			<li><span class="file"><a href="3.11.html">Обобщения (Generics)</a></span></li>
-			<li><span class="file"><a href="3.17.html">Ограничения обобщений</a></span></li>
-			<li><span class="file"><a href="3.15.html">Наследование и обобщения</a></span></li>
-			<li><span class="file"><a href="3.31.html">Type Erasure (Стирание типов)</a></span></li>
-			<li><span class="file"><a href="3.32.html">Подстановочные знаки wildcards в обобщениях</a></span></li>
-			<li><span class="file"><a href="3.13.html">Ссылочные типы и клонирование объектов</a></span></li>
-			<li><span class="file"><a href="3.18.html">Классы Records</a></span></li>
-			<li><span class="file"><a href="9.4.html">Функциональные интерфейсы и ссылки на методы</a></span></li>
-			<li><span class="file"><a href="9.1.html">Лямбда-выражения</a></span></li>
-			<li><span class="file"><a href="9.2.html">Лямбды как параметры и результаты методов</a></span></li>
-			<li><span class="file"><a href="9.3.html">Встроенные функциональные интерфейсы</a></span></li>
-			<li><span class="file"><a href="3.12.html">Внутренние и вложенные классы</a></span></li>
-			<li><span class="file"><a href="3.30.html">Анонимные классы</a></span></li>
-
-
-			<li><span class="file"><a href="3.25.html">Sealed-классы и интерфейсы</a></span></li>
-			<li><span class="file"><a href="3.26.html">Pattern мatching. Паттерн типов</a></span></li>
-			<li><span class="file"><a href="3.27.html">Pattern мatching. record-паттерн</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 5. Обработка исключений</span>
-		<ul>
-			<li><span class="file"><a href="2.10.html">Обработка исключений и конструкция try...catch...finally</a></span></li>
-			<li><span class="file"><a href="4.2.html">Классы исключений</a></span></li>
-			<li><span class="file"><a href="4.1.html">Операторы throws и throw</a></span></li>
-			<li><span class="file"><a href="4.3.html">Создание своих классов исключений</a></span></li>
-			<li><span class="file"><a href="4.4.html">Assert</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 6. Коллекции</span>
-		<ul>
-			<li><span class="file"><a href="5.1.html">Типы коллекций. Интерфейс Collection</a></span></li>
-			<li><span class="file"><a href="5.2.html">Класс ArrayList и интерфейс List</a></span></li>
-			<li><span class="file"><a href="5.6.html">Интерфейсы Comparable и Comporator. Сортировка</a></span></li>
-			<li><span class="file"><a href="5.7.html">Очереди и стеки. Классы ArrayDeque и PriorityQueue</a></span></li>
-			<li><span class="file"><a href="5.3.html">Связанный список LinkedList</a></span></li>
-			<li><span class="file"><a href="5.4.html">Интерфейс Set и хеш-таблицы HashSet</a></span></li>
-			<li><span class="file"><a href="5.5.html">Деревья TreeSet и интерфейсы SortedSet и NavigableSet</a></span></li>
-			<li><span class="file"><a href="5.8.html">Словари. Интерфейс Map и класс HashMap</a></span></li>
-			<li><span class="file"><a href="5.9.html">Интерфейсы SortedMap и NavigableMap. Класс TreeMap</a></span></li>
-			<li><span class="file"><a href="5.10.html">Итераторы. Iterator и Iterable</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 7. Потоки ввода-вывода. Работа с файлами</span>
-		<ul>
-			<li><span class="file"><a href="6.1.html">Потоки ввода-вывода</a></span></li>
-			<li><span class="file"><a href="6.3.html">Чтение и запись файлов. FileInputStream и FileOutputStream</a></span></li>
-			<li><span class="file"><a href="6.2.html">Закрытие потоков и конструкция try-с-ресурсами</a></span></li>
-			<li><span class="file"><a href="6.4.html">Классы ByteArrayInputStream и ByteArrayOutputStream</a></span></li>
-			<li><span class="file"><a href="6.5.html">Буферизованные потоки BufferedInputStream и BufferedOutputStream</a></span></li>
-			<li><span class="file"><a href="6.6.html">Форматируемый вывод. PrintStream и PrintWriter</a></span></li>
-			<li><span class="file"><a href="6.7.html">Классы DataOutputStream и DataInputStream</a></span></li>
-			<li><span class="file"><a href="6.8.html">Чтение и запись текстовых файлов</a></span></li>
-			<li><span class="file"><a href="6.9.html">Буферизация символьных потоков. BufferedReader и BufferedWriter</a></span></li>
-			<li><span class="file"><a href="6.10.html">Сериализация объектов</a></span></li>
-			<li><span class="file"><a href="6.11.html">Класс File. Работа с файлами и каталогами</a></span></li>
-			<li><span class="file"><a href="6.12.html">Работа с ZIP-архивами</a></span></li>
-			<li><span class="file"><a href="6.13.html">Класс Console</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 8. Работа со строками</span>
-		<ul>
-			<li><span class="file"><a href="7.1.html">Введение в строки. Класс String</a></span></li>
-			<li><span class="file"><a href="7.2.html">Основные операции со строками</a></span></li>
-			<li><span class="file"><a href="7.3.html">StringBuffer и StringBuilder</a></span></li>
-			<li><span class="file"><a href="7.4.html">Регулярные выражения</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 9. Многопоточное программирование</span>
-		<ul>
-			<li><span class="file"><a href="8.1.html">Многопоточное программирование и класс Thread</a></span></li>
-			<li><span class="file"><a href="8.2.html">Создание и выполнение потоков</a></span></li>
-			<li><span class="file"><a href="8.11.html">Управление потоками</a></span></li>
-			<li><span class="file"><a href="8.4.html">Завершение и прерывание потока</a></span></li>
-			<li><span class="file"><a href="8.12.html">Виртуальные потоки</a></span></li>
-			<li><span class="file"><a href="8.3.html">Синхронизация потоков. Оператор synchronized</a></span></li>
-			<li><span class="file"><a href="8.5.html">Взаимодействие потоков. Методы wait и notify</a></span></li>
-			<li><span class="file"><a href="8.6.html">Семафоры</a></span></li>
-			<li><span class="file"><a href="8.7.html">Обмен между потоками. Класс Exchanger</a></span></li>
-			<li><span class="file"><a href="8.8.html">Класс Phaser</a></span></li>
-			<li><span class="file"><a href="8.9.html">Блокировки. ReentrantLock</a></span></li>
-			<li><span class="file"><a href="8.10.html">Условия в блокировках</a></span></li>
-			<li><span class="file"><a href="8.16.html">Переменные volatile</a></span></li>
-			<li><span class="file"><a href="8.17.html">Атомарность и Atomics. Потокобезопасность без блокировок</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 10. Асинхронность</span>
-		<ul>
-			<li><span class="file"><a href="8.13.html">Асинхронные задачи FutureTask. Callable и Future</a></span></li>
-			<li><span class="file"><a href="8.14.html">Executor - исполнитель задач</a></span></li>
-			<li><span class="file"><a href="8.15.html">Координация выполнения асинхронных задач</a></span></li>
-			<li><span class="file"><a href="8.18.html">CompletableFuture и промисы. Обработка результата асинхронных задач</a></span></li>
-			<li><span class="file"><a href="8.19.html">CompletableFuture, обработка ошибок и завершения асинхронных задач</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 11. Stream API</span>
-		<ul>
-			<li><span class="file"><a href="10.1.html">Введение в Stream API</a></span></li>
-			<li><span class="file"><a href="10.2.html">Создание потока данных</a></span></li>
-			<li><span class="file"><a href="10.3.html">Фильтрация, перебор элементов и отображение</a></span></li>
-			<li><span class="file"><a href="10.8.html">Сортировка</a></span></li>
-			<li><span class="file"><a href="10.13.html">Получение подпотока и объединение потоков</a></span></li>
-			<li><span class="file"><a href="10.4.html">Методы skip и limit</a></span></li>
-			<li><span class="file"><a href="10.11.html">Операции сведения</a></span></li>
-			<li><span class="file"><a href="10.5.html">Метод reduce</a></span></li>
-			<li><span class="file"><a href="10.12.html">Тип Optional</a></span></li>
-			<li><span class="file"><a href="10.6.html">Метод collect</a></span></li>
-			<li><span class="file"><a href="10.7.html">Группировка</a></span></li>
-			<li><span class="file"><a href="10.9.html">Параллельные потоки</a></span></li>
-			<li><span class="file"><a href="10.10.html">Параллельные операции над массивами</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 12. Модульность</span>
-		<ul>
-			<li><span class="file"><a href="11.1.html">Создание модуля</a></span></li>
-			<li><span class="file"><a href="11.2.html">Зависимые модули</a></span></li>
-			<li><span class="file"><a href="11.3.html">Взаимодействие между модулями. Экспорт и импорт</a></span></li>
-		</ul>
-	</li>
-	</li>
-	<li class="closed"><span class="folder">Глава 13. Дополнительные классы</span>
-		<ul>
-			<li><span class="file"><a href="12.1.html">Математические вычисления и класс Math</a></span></li>
-			<li><span class="file"><a href="12.2.html">Большие числа BigInteger и BigDecimal</a></span></li>
-			<li><span class="file"><a href="12.3.html">Работа с датами. LocalDate</a></span></li>
-			<li><span class="file"><a href="12.4.html">Процессы. Process и ProcessBuilder</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 14. JAR-файлы и подключение библиотек и классов</span>
-		<ul>
-			<li><span class="file"><a href="13.1.html">Файлы JAR, их создание и выполнение</a></span></li>
-			<li><span class="file"><a href="13.2.html">Создание и подключение библиотеки JAR</a></span></li>
-			<li><span class="file"><a href="13.4.html">Модульный jar-файл</a></span></li>
-			<li><span class="file"><a href="13.3.html">Установка пути к классам Java</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 15. Рефлексия</span>
-		<ul>
-			<li><span class="file"><a href="14.1.html">Введение в рефлексию. Класс Class</a></span></li>
-			<li><span class="file"><a href="14.2.html">Исследование типов</a></span></li>
-			<li><span class="file"><a href="14.3.html">Поля класса и класс Field</a></span></li>
-			<li><span class="file"><a href="14.4.html">Модификаторы доступа и класс Modifier</a></span></li>
-			<li><span class="file"><a href="14.5.html">Класс Constructor и cоздание объектов</a></span></li>
-			<li><span class="file"><a href="14.6.html">Методы и класс Method</a></span></li>
-			<li><span class="file"><a href="14.7.html">Proxy (Прокси)</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 16. Аннотации</span>
-		<ul>
-			<li><span class="file"><a href="15.1.html">Введение в аннотации. Встроенные аннотации</a></span></li>
-			<li><span class="file"><a href="15.2.html">Создание и применение аннотаций</a></span></li>
-			<li><span class="file"><a href="15.3.html">Обработка аннотаций во время выполнения</a></span></li>
-		</ul>
-	</li>
-
-
-	<li class="closed"><span class="folder">Глава 17. Взаимодействие с нативным кодом</span>
-		<ul>
-			<li><span class="file"><a href="16.1.html">Java Native Interface (JNI)</a></span></li>
-			<li><span class="file"><a href="16.2.html">Foreign Functions и Memory API</a></span></li>
-			<li><span class="file"><a href="16.3.html">Арена и сегменты памяти MemorySegment</a></span></li>
-			<li><span class="file"><a href="16.4.html">Компоновка памяти MemoryLayout и работа с MemorySegment</a></span></li>
-			<li><span class="file"><a href="16.5.html">Сложные данные и MemoryLayout</a></span></li>
-			<li><span class="file"><a href="16.6.html">Поиск и вызов внешних функций</a></span></li>
-			<li><span class="file"><a href="16.7.html">Нативные функции обратного вызова</a></span></li>
-		</ul>
-	</li>
-</ul>   </div>
-</div>
-
-  <div class="item right">
-<div class="help" style="border: 0px;">
-    
-	<div class="help-item">
-		<div class="help-item-name"><a href="https://metanit.com/settings.html">Настройки</a></div>
-	 </div>
-</div>
-			<div class="help">
-
-      <div class="help-header">Помощь сайту</div>
-
-       <div class="help-item">
-		<div class="help-item-name"><a href="https://yoomoney.ru/to/410011174743222" rel="nofollow">Помощь сайту</a></div>
-	 </div>
-       
-      <div class="help-item">
-		<div class="help-item-name">Юмани:</div>
-		<div class="help-item-req">410011174743222</div>
-	 </div>
-
-		<div class="help-item">
-			<div class="help-item-name">Номер карты:</div>
-			<div class="help-item-req">4048415020898850</div>
-		</div>
 
       </div>
 
-	
-	
-
-
-
-
   </div>
 </div>
 
-<div id="footer" style="padding-bottom:85px;">
-
-<div class="bootomLinks">
-<a href="https://vk.com/metanit" title="Присоединиться к группе вконтакте" rel="nofollow">
-Вконтакте</a>|
- <a href="https://t.me/devnull22" title="Подписаться на телеграм" rel="nofollow">
-Телеграм</a> | 
-<a href="https://metanit.com/donations.html" rel="nofollow">Донаты/Помощь сайту</a>
-</div>
-<p>Contacts: metanit22@mail.ru</p>
-<p>Copyright &copy; Евгений Попов, metanit.com, 2026. Все права защищены.</p>
-
-
-</div>
-
-</div>
-
-
-
-
-
-
-
-
-
-
-<script src='../../js/syntax16.js'></script>
-<script>
-// Syntax Highlighter
-if (typeof SyntaxHighlighter !== 'undefined') {
-    SyntaxHighlighter.all();
-}
-
-// Copy guard
-document.addEventListener('copy', (ev) => {
-    const et = ev.target;
-    if (et.type === 'textarea') {
-        ev.clipboardData.setData('text/plain', et.value.substring(et.selectionStart, et.selectionEnd).replace(/ /g, ' '));
-        ev.preventDefault();
-    }
-});
-
-// Mobile menu
-const faBars = document.querySelector('.fa-bars');
-if (faBars) {
-    faBars.addEventListener('click', () => {
-        const tree = document.querySelector('.item.left');
-        if (tree) {
-            tree.style.display = (tree.style.display === 'block') ? 'none' : 'block';
-        }
-    });
-}
-
-const menuButton = document.getElementById('menuButton');
-if (menuButton) {
-    menuButton.addEventListener('click', () => {
-        menuButton.classList.toggle('menu-opened');
-        const mainMenu = document.querySelector('.mainmenu');
-        if (mainMenu) mainMenu.classList.toggle('open');
-    });
-}
-
-// Search toggle
-const magGlass = document.getElementById('magnifying-glass');
-if (magGlass) {
-    magGlass.addEventListener('click', () => {
-        const search = document.getElementById('search');
-        if (search) search.classList.toggle('transp');
-    });
-}
-
-// Theme toggle
-const toggleTheme = document.getElementById('toggle-theme');
-if (toggleTheme) {
-    toggleTheme.addEventListener('click', () => {
-        if (document.documentElement.hasAttribute('theme')) {
-            document.documentElement.removeAttribute('theme');
-            document.cookie = 'theme=1;expires=Mon, 19 Feb 2001 12:00:00 UTC;path=/;';
-        } else {
-            document.documentElement.setAttribute('theme', 'dark');
-            var expire = new Date();
-            expire.setHours(expire.getHours() + 7);
-            document.cookie = 'theme=1;expires=' + expire.toUTCString() + ';path=/;';
-        }
-    });
-}
-
-// Share buttons
-const shareVK = document.querySelectorAll('.share .fa-vk');
-shareVK.forEach(e => e.addEventListener('click', () => window.open('http://vk.com/share.php?url=' + window.location.href, 'Поделиться в ВКОНТАКТЕ')));
-const shareTG = document.querySelectorAll('.share .fa-telegram');
-shareTG.forEach(e => e.addEventListener('click', () => window.open('tg://msg_url/url=' + window.location.href, 'Поделиться в Telegram')));
-const shareOK = document.querySelectorAll('.share .fa-odnoklassniki');
-shareOK.forEach(e => e.addEventListener('click', () => window.open('https://connect.ok.ru/offer?url=' + window.location.href, 'Поделиться в Одноклассниках')));
-
-// Folders
-const folders = document.getElementsByClassName('closed');
-for (let i = 0; i < folders.length; i++) {
-    folders[i].addEventListener('click', function (e) {
-        this.classList.toggle('closed');
-        this.classList.toggle('opened');
-    });
-}
-
-// Active Item Highlight
-const activePath = window.location.pathname.split('/').pop();
-const activeItem = document.querySelector(".file a[href*='" + activePath + "']");
-if (activeItem) {
-    activeItem.classList.add('aMItem');
-    activeItem.parentElement.classList.add('aMItem');
-    const activeFolder = activeItem.closest('li');
-    if (activeFolder) {
-        activeFolder.classList.remove('closed');
-        activeFolder.classList.add('opened');
-        const folderLabel = activeFolder.querySelector('.folder');
-        if (folderLabel) folderLabel.classList.add('aMItem');
-    }
-}
-
-// Settings
-const props = ['--main-font-size', '--main-font-family', '--menc-bg-color', '--container-bg-color', '--menu-bg-color', '--code-font-size', '--code-font-family', '--code-bgcolor', '--code-max-height'];
-for (let i = 0; i < props.length; i++) {
-    const propValue = localStorage.getItem(props[i]);
-    if (propValue !== null) document.documentElement.style.setProperty(props[i], propValue);
-}
-</script>
+<script src="../prism/prism.js"></script>
+<script src="../prism/prism-java.js"></script>
 </body>
 </html>

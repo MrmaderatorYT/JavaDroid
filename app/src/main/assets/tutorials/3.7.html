@@ -1,138 +1,54 @@
 <!DOCTYPE html>
-<html  lang="ru">
+<html  lang="uk">
 <head>
 <title>Java | Інтерфейси</title>
 <meta charset="utf-8" />
-<meta name="description" content="Использование интерфейсов в языке программирования Java, их определение и реализация в классах, ключевое слово implements, методы по умолчанию и константы в интерфейсах">
+<meta name="description" content="Использование інтерфейсов в языке программирования Java, их определение и реализация в классах, ключевое слово implements, методы по умолчанию и константы в інтерфейсах">
 <meta name="viewport" content="width=device-width">
-<link href="../../style50.css@v=1.css" rel="stylesheet" type="text/css">
+
+<link href="../prism/prism.css" rel="stylesheet" />
 </head>
 <body>
 <div id="container">
-<header>
-<div id="header">
-<div id="logo">
-<a class="logoTitle" href="https://metanit.com/" title="На главную">METANIT.COM</a>
-<div class="logoDefinition">Сайт о программировании</div> 
-</div>
+<div class="item center menC">
+     <h1>Інтерфейси</h1><div class="date">Останнє оновлення: 30.09.2025</div>
 
-<div class="socbtns">
-<ul>
-<li><a title="Посмотреть меню" rel="nofollow" class="fa fa-lg fa-bars"></a></li>
-<li><a href="https://metanit.com/donations.html" title="Помощь сайту" rel="nofollow" style="color: var(--fa-usd-color);" class="fa fa-lg fa-usd"></a></li>
-<li><a href="https://vk.com/metanit" title="Группа в ВКонтакте" rel="nofollow" style="color: var(--fa-vk-color);" class="fa fa-lg fa-vk"></a></li>
-<li><a href="https://t.me/devnull22" title="Группа в Телеграмме"  class="fa fa-lg fa-tel" style="color: var(--fa-tel-color);"></a></li>
-<li><a href="https://metanit.com/android.html" title="Приложения андроид" rel="nofollow" style="color: var(--fa-android-color);" class="fa fa-lg fa-android"></a></li>
-<li><i id="toggle-theme" class="fa fa-lg fa-adjust"></i></li>
-</ul>
-</div>
-
-
-<div id="magnifying-glass"></div>
-
-<div class="menuButton" id="menuButton">
-	<span class="icon-bar"></span>
-    <span class="icon-bar"></span>
-    <span class="icon-bar"></span>
-</div>
-</div>
-
-<div id="search" class="transp">
-<form action="https://www.google.ru" id="cse-search-box">
-  <div>
-    <input type="hidden" name="cx" value="partner-pub-3716042175333627:1096498938" />
-    <input type="hidden" name="ie" value="UTF-8" />
-    <input type="text" name="q" />
-    <input type="submit" name="sa" value="Найти" />
-  </div>
-</form>
-</div>
-
-<div id="menu" class="menu">
-<ul class="mainmenu">
-    <li><a href="https://metanit.com/common/">Програмування</a></li>
-    <li><a href="https://metanit.com/assembler/">Асемблер</a></li>
-   <li><a href="https://metanit.com/sharp/">C#</a></li>
-   <li><a href="https://metanit.com/java/">Java</a></li>
-   <li><a href="https://metanit.com/web/">WEB</a></li>
-   <li><a href="https://metanit.com/python/">Python</a></li>
-   <li><a href="https://metanit.com/c/">C</a></li>
-   <li><a href="https://metanit.com/cpp/">C++</a></li>
-   <li><a href="https://metanit.com/sql/">SQL</a></li>
-   <li><a href="https://metanit.com/nosql/mongodb/">MongoDB</a></li>
-   <li><a href="https://metanit.com/go/">Go</a></li>
-   <li><a href="https://metanit.com/visualbasic/">VB.NET</a></li>
-   <li><a href="https://metanit.com/swift/tutorial/">Swift</a></li>
-   <li><a href="https://metanit.com/kotlin/">Kotlin</a></li>
-   <li><a href="https://metanit.com/dart/">Dart</a></li>
-   <li><a href="https://metanit.com/php/">PHP</a></li>
-   <li><a href="https://metanit.com/rust/">Rust</a></li>
-   <li><a href="https://metanit.com/os/">Linux</a></li>
-   <li><a href="https://metanit.com/f/">F#</a></li>
-   <!--<li><a href="//metanit.com/lisp/tutorial/">Common Lisp</a></li>-->
-   <li><a href="https://metanit.com/hosting">Хостинг</a></li>
-</ul>
-</div>
-
-</header>
-<div class="outercontainer">
-<div class="innercontainer">
- 
-   <div class="item center menC">
-     <h1>Інтерфейси</h1><div class="date">Последнее обновление: 30.09.2025</div>
-	<div class="socBlock">
-	<div class="share soctop">
-	<ul>
-	<li><a title="Поделиться в Вконтакте" rel="nofollow" class="fa fa-lg fa-vk"></a></li>
-	<li><a title="Поделиться в Телеграм" rel="nofollow" class="fa fa-lg fa-telegram"></a></li>
-	<li><a title="Поделиться в Одноклассниках" rel="nofollow" class="fa fa-lg fa-odnoklassniki"></a></li>
-	
-	</ul>
-	</div>
-	</div>
-
-	<div style="margin-top:23px;margin-left:5px;">
-		
-		
-		
-	</div>
-
-	<p>Механізм успадкування дуже зручний, але має свої обмеження. Зокрема ми можемо успадковувати лише від одного класу, на відміну, 
+	<p>Механізм успадкування двже зручний, але має свої обмеження. Зокрема ми можемоо успадковувати лише від одного класу, на відміну, 
 наприклад, від мови С++, де є множинне успадкування.</p>
 <p>У мові Java подібну проблему частково дозволяють вирішити інтерфейси. Інтерфейси визначають деякий функціонал, який не має конкретної реалізації, 
 який потім реалізують класи, які використовують ці інтерфейси. І один клас може застосувати багато інтерфейсів.</p>
-<p>Но суть интерфейса не только и не столько в этом. Ключевая мысли интерфейса состоит в том, чтобы определить некий набор требований, которым должен соответствовать класс. 
-Интерфейс определяет, <span class="b">що</span> должен делать класс, а класс уже определяет, <span class="b">як</span> он это делает.</p>
+<p>Но суть інтерфейса не лише и не слише в цем. Ключевая мысли інтерфейса соварто в том, чтобы определить некий набор требований, которым повинен соответствовать класс. 
+Интерфейс определяет, <span class="b">що</span> повинен делать класс, а класс вже определяет, <span class="b">як</span> он це робить.</p>
 <h3>Визначення інтерфейсу</h3>
-<p>Чтобы определить интерфейс, используется ключевое слово <span class="b">interface</span>. Например:</p>
-<pre class="brush:java;">
+<p>Щоб определить інтерфейс, використовується ключевое слово <span class="b">interface</span>. Например:</p>
+<pre class="line-numbers"><code class="language-java">
 interface Movable{ }
-</pre>
+</code></pre>
 <p>Цей інтерфейс називається Movable і далі представлятиме якийсь транспортний засіб, щось, що може перещатися. Відповідно до умов назви інтерфейсів в Java починаються з великої літери і зазвичай закінчуються на суфікс &quot;-able&quot;, хоча в принципі це необов&#x27;язково.</p>
 <h3>Використання інтерфейсу</h3>
-<p>Как было сказано выше, интерфейс определяет набор требований к классу, а класс применяет эти требования. Чтобы указать, что класс <span class="b">застосовує</span> или <span class="b">реалізує</span> интерфейс, 
-после названия класса указывается ключевое слово <span class="b">implements</span>, после которого идет название интерфейса:</p>
-<pre class="brush:java;">
+<p>Как буво сказано выше, інтерфейс определяет набор требований к классу, а класс применяет эти требования. Щоб указать, что класс <span class="b">застосовує</span> або <span class="b">реалізує</span> інтерфейс, 
+после названия класса указывается ключевое слово <span class="b">implements</span>, после которого идет название інтерфейса:</p>
+<pre class="line-numbers"><code class="language-java">
 interface Movable{ }
 class Car implements Movable{ }
-</pre>
-<p>Тобто в даному випадку ми можемо сказати, що Car застосовує або реалізує інтерфейс Movable. Грубо кажучи, ми говоримо, що машина (Car) - це транспортний засіб, щось, що функціонал для 
+</code></pre>
+<p>Тобто в даному випадку ми можемоо сказати, що Car застосовує або реалізує інтерфейс Movable. Грубо кажучи, ми говоримо, що машина (Car) - це транспортний засіб, щось, що функціонал для 
 переміщення.</p>
 <h3>Змінні інтерфейси</h3>
-<p>Інтерфейс фактично представляє новий тип. І ми можемо визначати змінні інтерфейси:</p>
-<pre class="brush:java;">
+<p>Інтерфейс фактично представляє новий тип. І ми можемоо визначати змінні інтерфейси:</p>
+<pre class="line-numbers"><code class="language-java">
 public class Program{
       
     public static void main(String[] args) {
         
-        Movable obj;    // определяем интерфейс
+        Movable obj;    // определяем інтерфейс
     }
 }
-// определение интерфейса
+// определение інтерфейса
 interface Movable{ }
-</pre>
-<p>Однако все же интерфейсы - это не классы. В частности, мы не можем использовать оператор <code>new</code> для создания экземпляра интерфейса:</p>
-<pre class="brush:java;">
+</code></pre>
+<p>Однак все же інтерфейсы - це не классы. В частности, мы не можемо використовувати оператор <code>new</code> для создания экземпляра інтерфейса:</p>
+<pre class="line-numbers"><code class="language-java">
 public class Program{
       
     public static void main(String[] args) {
@@ -141,9 +57,9 @@ public class Program{
     }
 }
 interface Movable{ }
-</pre>
+</code></pre>
 <p>Але змінної інтерфейсу можна привласнити посилання на об&#x27;єкт класу, який застосовує цей інтерфейс. Наприклад:</p>
-<pre class="brush:java;">
+<pre class="line-numbers"><code class="language-java">
 public class Program{
       
     public static void main(String[] args) {
@@ -155,35 +71,35 @@ public class Program{
 
 interface Movable{ }
 class Car implements Movable{ }
-</pre>
-<p>Оскільки клас Car застосовує інтерфейс Movable, змінної цього інтерфейсу ми можемо привласнити об&#x27;єкт Car.</p>
+</code></pre>
+<p>Оскільки клас Car застосовує інтерфейс Movable, змінної цього інтерфейсу ми можемоо привласнити об&#x27;єкт Car.</p>
 
 <h2>Визначення компонентів інтерфейсу</h2>
-<p>Выше определенный интерфейс Movable был пустой и ничего не определял. Но интерфейс может определять ряд компонентов:</p>
+<p>Выше определенный інтерфейс Movable був пустой и ничего не определял. Но інтерфейс может визначати ряд компонентов:</p>
 <ul>
-<li><p>Методы без реализации</p></li>
-<li><p>Методы по умолчанию (с реализацией)</p></li>
+<li><p>Методи без реализации</p></li>
+<li><p>Методи по умолчанию (с реализацией)</p></li>
 <li><p>Приватные методы</p></li>
-<li><p>Статические методы (как приватные, так и публичные)</p></li>
+<li><p>Статические методы (як приватные, так и публичные)</p></li>
 <li><p>Константы</p></li>
 </ul>
-<h3>Определение методов в интерфейсе</h3>
-<p>Как говорилось выше, интерфейс определяет ряд требований или контракт, которым должен соответствовать класс. И эти требования определяются в интерфейсе в виде методов. Методы интерфейса могут иметь, а могут и не иметь реализации. 
-Если некоторый класс применяет определенный интерфейс, то этот класс должен 
-реализовать все методы применяемого интерфейса (исключение касается методов, для которых в интерфейсе определена реализация по умолчанию).</p> 
-<p>Например, изменим интерфейс Movable, добавив в него метод:</p>
-<pre class="brush:java;">
+<h3>Определение методів в інтерфейсе</h3>
+<p>Как говорилось выше, інтерфейс определяет ряд требований або контракт, которым повинен соответствовать класс. И эти требования визначаються в інтерфейсе в виде методів. Методи інтерфейса можуть иметь, а можуть и не иметь реализации. 
+Если неякий класс применяет определенный інтерфейс, то цей класс повинен 
+реализовать все методы применяемого інтерфейса (исключение касается методів, для которых в інтерфейсе определена реализация по умолчанию).</p> 
+<p>Наприклад, изменим інтерфейс Movable, добавив в него метод:</p>
+<pre class="line-numbers"><code class="language-java">
 interface Movable{
 
     void move();
 }
-</pre>
-<p>В данном случае интерфейс Movable представляет функционал транспортного средства и определяет один метод без реализации - метод <code>move()</code>, который условно предназначен 
-для передвижения транспортного средства. Методы без реализации похожи на абстрактные методы абстрактных классов. Все методы интерфейса не имеют модификаторов доступа, но фактически по умолчанию доступ <span class="b">public</span>, так как цель 
-интерфейса - определение функционала для реализации его классом. Поэтому весь функционал должен быть открыт для реализации.</p>
-<p>Таким образом, у нас еть интерфейс Movable, которое представляет непонятно какое транспортное средство, и есть функция move, которая предназначена для перемещения транспортного средства, но как именно это перемещение осуществляется - неизвестно.</p>
-<p>Однако класс, который будет применять интерфейс, <span class="b">должен</span> реализовать все его методы (которые не имеют реализации). Теперь реализуем интерфейс Movable:</p>
-<pre class="brush:java;">
+</code></pre>
+<p>В данном случае інтерфейс Movable представляє функционал транспортного средства и определяет один метод без реализации - метод <code>move()</code>, який условно призначений 
+для передвижения транспортного средства. Методи без реализации похожи на абстрактные методы абстрактных классов. Все методы інтерфейса не имеют модификаторов доступа, но фактически по умолчанию доступ <span class="b">public</span>, оскільки цель 
+інтерфейса - определение функционала для реализации его классом. Тому весь функционал повинен быть открыт для реализации.</p>
+<p>Таким чином, у нас еть інтерфейс Movable, которое представляє непонятно якое транспортное средство, и есть функция move, которая призначенийа для перемщения транспортного средства, но як именно це перемщение осуществляется - неизвестно.</p>
+<p>Однак класс, який буде застосовувати інтерфейс, <span class="b">повинен</span> реализовать все его методы (которые не имеют реализации). Теперь реализуем інтерфейс Movable:</p>
+<pre class="line-numbers"><code class="language-java">
 public class Program{
       
     public static void main(String[] args) {
@@ -205,13 +121,13 @@ class Car implements Movable{
         System.out.println("Едем на машине");
     }
 }
-</pre>
-<p>В данном случае класс Car применяет интерфейс Movable и поэтому должен реализовать его метод <code>move()</code>. Если класс не реализует какие-то методы интерфейса, то такой класс должен быть 
-определен как <span class="b">абстрактный</span>, но его неабстрактные классы-наследники затем все равно должны будут реализовать эти методы.</p>
-<p>Таким образом, интерфейс Movable определяет требования - реализовать метод перемещения (метод move). Класс Car применяет эти требования, но сам решает, как конкретно реализовать метод перемещения.</p>
+</code></pre>
+<p>В данном случае класс Car применяет інтерфейс Movable и поцему повинен реализовать его метод <code>move()</code>. Если класс не реализует якие-то методы інтерфейса, то такой класс повинен быть 
+определен як <span class="b">абстрактный</span>, но его неабстрактные классы-наследники затем все равно повинні будуть реализовать эти методы.</p>
+<p>Таким чином, інтерфейс Movable определяет требования - реализовать метод перемщения (метод move). Класс Car применяет эти требования, но сам решает, як конкретно реализовать метод перемщения.</p>
 
-<p>Подобным образом мы можем реализовать интерфейс в серии классов. Например, добавим класс, который будет представлять самолет:</p>
-<pre class="brush:java;">
+<p>Подобным чином мы можемо реализовать інтерфейс в серии классов. Наприклад, добавим класс, який буде представлять самолет:</p>
+<pre class="line-numbers"><code class="language-java">
 public class Program{
       
     public static void main(String[] args) {
@@ -243,26 +159,19 @@ class Aircraft implements Movable{
         System.out.println("Летим на самолете");
     }
 }
-</pre>
+</code></pre>
 
-<div style="margin-top:23px;margin-left:5px;">
+<h3>Методи по умолчанию</h3>
+<p>Інтерфейси в мові Java можуть иметь <span class="b">методы по умолчанию</span> (default methods) - методы с реализацией по умолчанию, которая використовується, якщо класс, реализующий данный 
+інтерфейс, не реализует метод.</p>
+<p>Зачем нужны методы по умолчанию? Допустим, ранїї був создан інтерфейс, який затем реализовало множество классов. Если мы захочемо внести изменения в цей інтерфейс в силу яких-то новых условий, 
+то нам також придется изменять все те методы, которые его применяют. Когда речь идет о паре классов, которые определены в одном файле с інтерфейсов, проблема может покизаться надуманной. Но когда 
+Но когда буво определено множество классов множеством разработчиков по всему миру в течение многих лет, як в случае с інтерфейсами стандартной библиотеки Java, 
+проблем становится болїї актуальной и трудно решаемой. Поскольку изменение інтерфейса приведет к тому, что классы больше не будуть компилироваться, поскольку не реализуют новые методы.</p>
+<p>При наличии же метода по умолчанию класс все равно буде загружаться, даже с отсутствующим методом. Программы по-прежнему можуть создавать экземпляры классов, и ничего страшного не произойдет.</p>
 
-<!-- Yandex.RTB R-A-201190-9 -->
-
-</div>
-
-<h3>Методы по умолчанию</h3>
-<p>Интерфейсы в языке Java могут иметь <span class="b">методы по умолчанию</span> (default methods) - методы с реализацией по умолчанию, которая используется, если класс, реализующий данный 
-интерфейс, не реализует метод.</p>
-<p>Зачем нужны методы по умолчанию? Допустим, ранее был создан интерфейс, который затем реализовало множество классов. Если мы захотим внести изменения в этот интерфейс в силу каких-то новых условий, 
-то нам также придется изменять все те методы, которые его применяют. Когда речь идет о паре классов, которые определены в одном файле с интерфейсов, проблема может показаться надуманной. Но когда 
-Но когда было определено множество классов множеством разработчиков по всему миру в течение многих лет, как в случае с интерфейсами стандартной библиотеки Java, 
-проблем становится более актуальной и трудно решаемой. Поскольку изменение интерфейса приведет к тому, что классы больше не будут компилироваться, поскольку не реализуют новые методы.</p>
-<p>При наличии же метода по умолчанию класс все равно будет загружаться, даже с отсутствующим методом. Программы по-прежнему могут создавать экземпляры классов, и ничего страшного не произойдет.</p>
-
-
-<p>Например, ранее использованный интерфейс Movable и добавим в него новый метод, который будет методом по умолчанию:</p>
-<pre class="brush:java;">
+<p>Наприклад, ранїї использованный інтерфейс Movable и добавим в него новый метод, який буде методом по умолчанию:</p>
+<pre class="line-numbers"><code class="language-java">
 interface Movable{
 
     void move();
@@ -270,11 +179,11 @@ interface Movable{
         System.out.println("Останавливаемся"); 
     }
 }
-</pre>
-<p>В данном случае метод <code>stop()</code> определен как метод по умолчанию. Метод по умолчанию - это обычный метод без модификаторов (формально имеет модификатор <code>public</code>), который помечается ключевым словом <span class="b">default</span>. В данном 
-случае метод stop выводит строку на консоль. В принципе можно было вообще ничего не делать и оставить пустые фигурные скобки (<code>default void stop() { }</code>)</p>
-<p>Затем в классе нам необязательно этот метод реализовать:</p>
-<pre class="brush:java;">
+</code></pre>
+<p>В данном случае метод <code>stop()</code> определен як метод по умолчанию. Метод по умолчанию - це обычный метод без модификаторов (формально имїїт модификатор <code>public</code>), який помечается ключевым словом <span class="b">default</span>. В данном 
+случае метод stop выводит строку на консоль. В принципе можна буво вообще ничего не делать и оставить пустые фигурные скобки (<code>default void stop() { }</code>)</p>
+<p>Затем в классе нам необязательно цей метод реализовать:</p>
+<pre class="line-numbers"><code class="language-java">
 public class Program{
       
     public static void main(String[] args) {
@@ -300,9 +209,9 @@ class Car implements Movable{
         System.out.println("Едем на машине");
     }
 }
-</pre>
-<p>При желании также можно переопределить этот метод:</p>
-<pre class="brush:java;">
+</code></pre>
+<p>При желании також можна переопределить цей метод:</p>
+<pre class="line-numbers"><code class="language-java">
 public class Program{
       
     public static void main(String[] args) {
@@ -331,11 +240,11 @@ class Car implements Movable{
         System.out.println("Машина останавливается");
     }
 }
-</pre>
+</code></pre>
 
 <h3>Статические методы</h3>
-<p>В интерфейсах также можно определять статические методы - они аналогичны методам класса:</p>
-<pre class="brush:java;">
+<p>В інтерфейсах також можна визначати статические методы - они аналогичны методам класса:</p>
+<pre class="line-numbers"><code class="language-java">
 interface Printable {
     
     void print();
@@ -345,20 +254,20 @@ interface Printable {
         System.out.println("Read printable");
     }
 }
-</pre>
-<p>Чтобы обратиться к статическому методу интерфейса также, как и в случае с классами, пишут название интерфейса и метод:</p>
-<pre class="brush:java;">
+</code></pre>
+<p>Щоб обратиться к статическому методу інтерфейса також, як и в случае с классами, пишут название інтерфейса и метод:</p>
+<pre class="line-numbers"><code class="language-java">
 public static void main(String[] args) {
         
     Printable.read();
 }
-</pre>
+</code></pre>
 <h3>Приватные методы</h3>
-<p>По умолчанию все методы в интерфейсе фактически имеют модификатор public. Однако начиная с Java 9 мы также можем определять в интерфейсе методы с 
-модификатором <span class="b">private</span>. Они могут быть статическими и нестатическими, но они не могут иметь реализации по умолчанию.</p>
-<p>Подобные методы могут использоваться только внутри самого интерфейса, в котором они определены. То есть к примеру нам надо выполнять в интерфейсе 
-некоторые повторяющиеся действия, и в этом случае такие действия можно выделить в приватные методы:</p>
-<pre class="brush:java;">
+<p>По умолчанию все методы в інтерфейсе фактически имеют модификатор public. Однак начиная с Java 9 мы також можемо визначати в інтерфейсе методы с 
+модификатором <span class="b">private</span>. Они можуть быть статическими и нестатическими, но они не можуть иметь реализации по умолчанию.</p>
+<p>Подобные методы можуть використовуватися лише внутри самого інтерфейса, в котором они определены. То есть к примеру нам треба выполнять в інтерфейсе 
+некоторые повторяющиеся действия, и в цем случае такие действия можна выделить в приватные методы:</p>
+<pre class="line-numbers"><code class="language-java">
 public class Program{
      
 	public static void main(String[] args) {
@@ -387,10 +296,10 @@ interface Sumable{
 		 return result;
     }
 }
-</pre>
-<h3>Константы в интерфейсах</h3>
-<p>Кроме методов в интерфейсах могут быть определены статические константы:</p>
-<pre class="brush:java;">
+</code></pre>
+<h3>Константы в інтерфейсах</h3>
+<p>Кроме методів в інтерфейсах можуть быть определены статические константы:</p>
+<pre class="line-numbers"><code class="language-java">
 interface Stateable{
 
 	int OPEN = 1;
@@ -398,11 +307,11 @@ interface Stateable{
 	
 	void printState(int n);
 }
-</pre>
-<p>Хотя такие константы также не имеют модификаторов, но по умолчанию они имеют модификатор доступа <code>public static final</code>, 
-и поэтому их значение доступно из любого места программы.</p>
-<p>Применение констант:</p>
-<pre class="brush:java;">
+</code></pre>
+<p>Хотя такие константы також не имеют модификаторов, но по умолчанию они имеют модификатор доступа <code>public static final</code>, 
+и поцему их значение доступно из любого места программы.</p>
+<p>Застосування констант:</p>
+<pre class="line-numbers"><code class="language-java">
 public class Program{
      
 	public static void main(String[] args) {
@@ -429,448 +338,40 @@ interface Stateable{
 	
 	void printState(int n);
 }
-</pre>
-<h3>Вложенные интерфейсы</h3>
-<p>Как и классы, интерфейсы могут быть вложенными, то есть могут быть определены в классах или других интерфейсах. Например:</p>
-<pre class="brush:java;">
+</code></pre>
+<h3>Вложенные інтерфейсы</h3>
+<p>Как и классы, інтерфейсы можуть быть вложенными, то есть можуть быть определены в классах або других інтерфейсах. Например:</p>
+<pre class="line-numbers"><code class="language-java">
 class Printer{
     interface Printable {
     
         void print();
     }
 }
-</pre>
-<p>При применении такого интерфейса нам надо указывать его полное имя вместе с именем класса:</p>
-<pre class="brush:java;">
+</code></pre>
+<p>При применении такого інтерфейса нам треба указывать его полное имя вместе с именем класса:</p>
+<pre class="line-numbers"><code class="language-java">
 class Book implements Printer.Printable {
 
     public void print() {
         System.out.println("Печатаем книгу");
     }  
 }
-</pre>
-<p>Использование интерфейса будет аналогично предыдущим случаям:</p>
-<pre class="brush:java;">
+</code></pre>
+<p>Использование інтерфейса буде аналогично предыдущим случаям:</p>
+<pre class="line-numbers"><code class="language-java">
 Printer.Printable printable = new Book();
 printable.print();
-</pre>
+</code></pre>
 
-	
-
-	<div style="margin-top:25px;">
-
-	
-	</div>
-
-	<div class="nav"><p><a href="3.10.html">Назад</a><a href="index.html">Содержание</a><a href="3.28.html">Вперед</a></p></div>
-	<div class="socBlock">
-	<div class="share soctop">
-	<ul>
-	<li><a title="Поделиться в Вконтакте" rel="nofollow" class="fa fa-lg fa-vk"></a></li>
-	<li><a title="Поделиться в Телеграм" rel="nofollow" class="fa fa-lg fa-telegram"></a></li>
-	<li><a title="Поделиться в Одноклассниках" rel="nofollow" class="fa fa-lg fa-odnoklassniki"></a></li>
-	
-	</ul>
-	</div>
-	</div>
   </div>
-
-	<div class="item left">
-     <ul id="browser" class="filetree"> 
-	<li class="closed"><span class="folder">Глава 1. Введение в Java</span>
-		<ul>
-			<li><span class="file"><a href="1.1.html">Що таке Java</a></span></li>
-			<li><span class="file"><a href="1.6.html">Встановлення JDK</a></span></li>
-			<li><span class="file"><a href="1.2.html">Перша програма Java</a></span></li>
-			<li><span class="file"><a href="1.5.html">Перша програма у IntelliJ IDEA</a></span></li>
-			<li><span class="file"><a href="1.3.html">Перша програма у NetBeans</a></span></li>
-			<li><span class="file"><a href="1.4.html">Перша програма у Eclipse</a></span></li>
-			<li><span class="file"><a href="1.7.html">JShell</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 2. Основи програмування Java</span>
-		<ul>
-			<li><span class="file"><a href="2.11.html">Структура програми</a></span></li>
-			<li><span class="file"><a href="2.1.html">Змінні та константи</a></span></li>
-			<li><span class="file"><a href="2.19.html">Літерали</a></span></li>
-			<li><span class="file"><a href="2.12.html">Типи даних</a></span></li>
-			<li><span class="file"><a href="2.9.html">Консольне введення/виведення в Java</a></span></li>
-			<li><span class="file"><a href="2.3.html">Арифметичні операції</a></span></li>
-			<li><span class="file"><a href="2.13.html">Порозрядні операції</a></span></li>
-			<li><span class="file"><a href="2.14.html">Умовні вирази</a></span></li>
-			<li><span class="file"><a href="2.15.html">Операції присвоєння та пріоритет операцій</a></span></li>
-			<li><span class="file"><a href="2.2.html">Перетворення базових типів даних</a></span></li>
-			<li><span class="file"><a href="2.5.html">Умовні конструкції</a></span></li>
-			<li><span class="file"><a href="2.6.html">Цикли</a></span></li>
-			<li><span class="file"><a href="2.4.html">Масиви</a></span></li>
-			<li><span class="file"><a href="2.20.html">Конструкція та вираз switch</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Розділ 3. Класи</span>
-		<ul>
-			<li><span class="file"><a href="3.1.html">Класи та об&#x27;єкти</a></span></li>
-
-
-			<li><span class="file"><a href="2.7.html">Методи</a></span></li>
-			<li><span class="file"><a href="2.16.html">Параметри методів</a></span></li>
-			<li><span class="file"><a href="3.14.html">Об&#x27;єкти як параметри методів</a></span></li>
-			<li><span class="file"><a href="2.17.html">Оператор return. Результат методу</a></span></li>
-			<li><span class="file"><a href="2.18.html">Навантаження методів</a></span></li>
-			<li><span class="file"><a href="3.21.html">Конструктори та ініціалізатори</a></span></li>
-
-
-			<li><span class="file"><a href="3.4.html">Статичні компоненти класу та модифікатор static</a></span></li>
-			<li><span class="file"><a href="3.20.html">Область дії та час життя змінних</a></span></li>
-			<li><span class="file"><a href="2.8.html">Рекурсивні функції</a></span></li>
-			<li><span class="file"><a href="3.2.html">Пакети</a></span></li>
-			<li><span class="file"><a href="3.3.html">Модифікатори доступу</a></span></li>
-			<li><span class="file"><a href="3.19.html">Компактні файли коду та метод main</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 4. Об&#x27;єктно-орієнтоване програмування</span>
-		<ul>
-			<li><span class="file"><a href="3.22.html">Інкапсуляція</a></span></li>
-			<li><span class="file"><a href="3.5.html">Успадкування</a></span></li>
-			<li><span class="file"><a href="3.23.html">Заборона успадкування та перевизначення методів</a></span></li>
-			<li><span class="file"><a href="3.24.html">Поліморфізм та динамічна диспетчеризація методів</a></span></li>
-			<li><span class="file"><a href="3.9.html">Клас Object та його методи</a></span></li>
-			<li><span class="file"><a href="3.6.html">Абстрактні класи</a></span></li>
-			<li><span class="file"><a href="3.10.html">Ієрархія успадкування та перетворення типів</a></span></li>
-
-			<li><span class="file"><a href="3.7.html">Інтерфейси</a></span></li>
-			<li><span class="file"><a href="3.28.html">Інтерфейси та поліморфізм</a></span></li>
-			<li><span class="file"><a href="3.29.html">Множинна реалізація та успадкування інтерфейсів</a></span></li>
-			<li><span class="file"><a href="3.16.html">Інтерфейси у механізмі зворотного виклику</a></span></li>
-			<li><span class="file"><a href="3.8.html">Перерахування enum</a></span></li>
-			<li><span class="file"><a href="3.11.html">Узагальнення (Generics)</a></span></li>
-			<li><span class="file"><a href="3.17.html">Обмеження узагальнень</a></span></li>
-			<li><span class="file"><a href="3.15.html">Спадкування та узагальнення</a></span></li>
-			<li><span class="file"><a href="3.31.html">Type Erasure (Стирання типів)</a></span></li>
-			<li><span class="file"><a href="3.32.html">Підстановочні знаки wildcards в узагальненнях</a></span></li>
-			<li><span class="file"><a href="3.13.html">Посилальні типи та клонування об&#x27;єктів</a></span></li>
-			<li><span class="file"><a href="3.18.html">Класи Records</a></span></li>
-			<li><span class="file"><a href="9.4.html">Функціональні інтерфейси та посилання на методи</a></span></li>
-			<li><span class="file"><a href="9.1.html">Лямбда-вираження</a></span></li>
-			<li><span class="file"><a href="9.2.html">Лямбди як параметри та результати методів</a></span></li>
-			<li><span class="file"><a href="9.3.html">Вбудовані функціональні інтерфейси</a></span></li>
-			<li><span class="file"><a href="3.12.html">Внутрішні та вкладені класи</a></span></li>
-			<li><span class="file"><a href="3.30.html">Анонімні класи</a></span></li>
-
-
-			<li><span class="file"><a href="3.25.html">Sealed-класи та інтерфейси</a></span></li>
-			<li><span class="file"><a href="3.26.html">Pattern матч. Патер типів</a></span></li>
-			<li><span class="file"><a href="3.27.html">Pattern матч. record-паттерн</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 5. Обробка винятків</span>
-		<ul>
-			<li><span class="file"><a href="2.10.html">Обробка винятків та конструкція try...catch...finally</a></span></li>
-			<li><span class="file"><a href="4.2.html">Класи винятків</a></span></li>
-			<li><span class="file"><a href="4.1.html">Оператори throws та throw</a></span></li>
-			<li><span class="file"><a href="4.3.html">Створення своїх виняткових класів</a></span></li>
-			<li><span class="file"><a href="4.4.html">Assert</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 6. Колекції</span>
-		<ul>
-			<li><span class="file"><a href="5.1.html">Типи колекцій. Інтерфейс Collection</a></span></li>
-			<li><span class="file"><a href="5.2.html">Клас ArrayList та інтерфейс List</a></span></li>
-			<li><span class="file"><a href="5.6.html">Інтерфейси Comparable та Comporator. Сортування</a></span></li>
-			<li><span class="file"><a href="5.7.html">Черги та стеки. Класи ArrayDeque та PriorityQueue</a></span></li>
-			<li><span class="file"><a href="5.3.html">Пов&#x27;язаний список LinkedList</a></span></li>
-			<li><span class="file"><a href="5.4.html">Інтерфейс Set та хеш-таблиці HashSet</a></span></li>
-			<li><span class="file"><a href="5.5.html">Дерева TreeSet та інтерфейси SortedSet та NavigableSet</a></span></li>
-			<li><span class="file"><a href="5.8.html">Словники. Інтерфейс Map та клас HashMap</a></span></li>
-			<li><span class="file"><a href="5.9.html">Інтерфейси SortedMap та NavigableMap. Клас TreeMap</a></span></li>
-			<li><span class="file"><a href="5.10.html">Ітератори. Iterator та Iterable</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 7. Потоки введення-виведення. Робота з файлами</span>
-		<ul>
-			<li><span class="file"><a href="6.1.html">Потоки введення-виведення</a></span></li>
-			<li><span class="file"><a href="6.3.html">Читання та запис файлів. FileInputStream та FileOutputStream</a></span></li>
-			<li><span class="file"><a href="6.2.html">Закриття потоків та конструкція try-з-ресурсами</a></span></li>
-			<li><span class="file"><a href="6.4.html">Класи ByteArrayInputStream та ByteArrayOutputStream</a></span></li>
-			<li><span class="file"><a href="6.5.html">Буферизовані потоки BufferedInputStream та BufferedOutputStream</a></span></li>
-			<li><span class="file"><a href="6.6.html">Форматований висновок. PrintStream та PrintWriter</a></span></li>
-			<li><span class="file"><a href="6.7.html">Класи DataOutputStream та DataInputStream</a></span></li>
-			<li><span class="file"><a href="6.8.html">Читання та запис текстових файлів</a></span></li>
-			<li><span class="file"><a href="6.9.html">Буферизація символьних потоків. BufferedReader та BufferedWriter</a></span></li>
-			<li><span class="file"><a href="6.10.html">Серіалізація об&#x27;єктів</a></span></li>
-			<li><span class="file"><a href="6.11.html">Клас File. Робота з файлами та каталогами</a></span></li>
-			<li><span class="file"><a href="6.12.html">Робота з ZIP-архівами</a></span></li>
-			<li><span class="file"><a href="6.13.html">Клас Console</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 8. Робота з рядками</span>
-		<ul>
-			<li><span class="file"><a href="7.1.html">Введення у рядки. Клас String</a></span></li>
-			<li><span class="file"><a href="7.2.html">Основні операції з рядками</a></span></li>
-			<li><span class="file"><a href="7.3.html">StringBuffer та StringBuilder</a></span></li>
-			<li><span class="file"><a href="7.4.html">Регулярні вирази</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 9. Багатопоточне програмування</span>
-		<ul>
-			<li><span class="file"><a href="8.1.html">Багатопоточне програмування та клас Thread</a></span></li>
-			<li><span class="file"><a href="8.2.html">Створення та виконання потоків</a></span></li>
-			<li><span class="file"><a href="8.11.html">Управління потоками</a></span></li>
-			<li><span class="file"><a href="8.4.html">Завершення та переривання потоку</a></span></li>
-			<li><span class="file"><a href="8.12.html">Віртуальні потоки</a></span></li>
-			<li><span class="file"><a href="8.3.html">Синхронізація потоків. Оператор synchronized</a></span></li>
-			<li><span class="file"><a href="8.5.html">Взаємодія потоків. Методи wait та notify</a></span></li>
-			<li><span class="file"><a href="8.6.html">Семафори</a></span></li>
-			<li><span class="file"><a href="8.7.html">Обмін між потоками. Клас Exchanger</a></span></li>
-			<li><span class="file"><a href="8.8.html">Клас Phaser</a></span></li>
-			<li><span class="file"><a href="8.9.html">Блокування. ReentrantLock</a></span></li>
-			<li><span class="file"><a href="8.10.html">Умови блокування</a></span></li>
-			<li><span class="file"><a href="8.16.html">Змінні volatile</a></span></li>
-			<li><span class="file"><a href="8.17.html">Атомарність та Atomics. Потокобезпека без блокувань</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Розділ 10. Асинхронність</span>
-		<ul>
-			<li><span class="file"><a href="8.13.html">Асинхронні задачі FutureTask. Callable та Future</a></span></li>
-			<li><span class="file"><a href="8.14.html">Executor – виконавець завдань</a></span></li>
-			<li><span class="file"><a href="8.15.html">Координація виконання асинхронних завдань</a></span></li>
-			<li><span class="file"><a href="8.18.html">Комплектувальнемайно і проміси. Обробка результату асинхронних задач</a></span></li>
-			<li><span class="file"><a href="8.19.html">CompletableFuture, обробка помилок та завершення асинхронних завдань</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Розділ 11. Stream API</span>
-		<ul>
-			<li><span class="file"><a href="10.1.html">Введення у Stream API</a></span></li>
-			<li><span class="file"><a href="10.2.html">Створення потоку даних</a></span></li>
-			<li><span class="file"><a href="10.3.html">Фільтрування, перебір елементів та відображення</a></span></li>
-			<li><span class="file"><a href="10.8.html">Сортування</a></span></li>
-			<li><span class="file"><a href="10.13.html">Отримання підтоку та об&#x27;єднання потоків</a></span></li>
-			<li><span class="file"><a href="10.4.html">Методи skip та limit</a></span></li>
-			<li><span class="file"><a href="10.11.html">Операції відомості</a></span></li>
-			<li><span class="file"><a href="10.5.html">Метод reduce</a></span></li>
-			<li><span class="file"><a href="10.12.html">Тип Optional</a></span></li>
-			<li><span class="file"><a href="10.6.html">Метод collect</a></span></li>
-			<li><span class="file"><a href="10.7.html">Угруповання</a></span></li>
-			<li><span class="file"><a href="10.9.html">Паралельні потоки</a></span></li>
-			<li><span class="file"><a href="10.10.html">Паралельні операції над масивами</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Розділ 12. Модульність</span>
-		<ul>
-			<li><span class="file"><a href="11.1.html">Створення модуля</a></span></li>
-			<li><span class="file"><a href="11.2.html">Залежні модулі</a></span></li>
-			<li><span class="file"><a href="11.3.html">Взаємодія між модулями. Експорт та імпорт</a></span></li>
-		</ul>
-	</li>
-	</li>
-	<li class="closed"><span class="folder">Розділ 13. Додаткові класи</span>
-		<ul>
-			<li><span class="file"><a href="12.1.html">Математичні обчислення та клас Math</a></span></li>
-			<li><span class="file"><a href="12.2.html">Великі числа BigInteger та BigDecimal</a></span></li>
-			<li><span class="file"><a href="12.3.html">Робота із датами. LocalDate</a></span></li>
-			<li><span class="file"><a href="12.4.html">Процеси. Process та ProcessBuilder</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 14. JAR-файли та підключення бібліотек та класів</span>
-		<ul>
-			<li><span class="file"><a href="13.1.html">Файли JAR, їх створення та виконання</a></span></li>
-			<li><span class="file"><a href="13.2.html">Створення та підключення бібліотеки JAR</a></span></li>
-			<li><span class="file"><a href="13.4.html">Модульний jar-файл</a></span></li>
-			<li><span class="file"><a href="13.3.html">Встановлення шляху до класів Java</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Розділ 15. Рефлексія</span>
-		<ul>
-			<li><span class="file"><a href="14.1.html">Введення у рефлексію. Клас Class</a></span></li>
-			<li><span class="file"><a href="14.2.html">Дослідження типів</a></span></li>
-			<li><span class="file"><a href="14.3.html">Поля класу та клас Field</a></span></li>
-			<li><span class="file"><a href="14.4.html">Модифікатори доступу та клас Modifier</a></span></li>
-			<li><span class="file"><a href="14.5.html">Клас Constructor та створення об&#x27;єктів</a></span></li>
-			<li><span class="file"><a href="14.6.html">Методи та клас Method</a></span></li>
-			<li><span class="file"><a href="14.7.html">Proxy (Проксі)</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 16. Інструкції</span>
-		<ul>
-			<li><span class="file"><a href="15.1.html">Введення в інструкції. Вбудовані інструкції</a></span></li>
-			<li><span class="file"><a href="15.2.html">Створення та застосування анотацій</a></span></li>
-			<li><span class="file"><a href="15.3.html">Обробка інструкцій під час виконання</a></span></li>
-		</ul>
-	</li>
-
-
-	<li class="closed"><span class="folder">Глава 17. Взаємодія із нативним кодом</span>
-		<ul>
-			<li><span class="file"><a href="16.1.html">Java Native Interface (JNI)</a></span></li>
-			<li><span class="file"><a href="16.2.html">Foreign Functions та Memory API</a></span></li>
-			<li><span class="file"><a href="16.3.html">Арена та сегменти пам&#x27;яті MemorySegment</a></span></li>
-			<li><span class="file"><a href="16.4.html">Компонування пам&#x27;яті MemoryLayout та робота з MemorySegment</a></span></li>
-			<li><span class="file"><a href="16.5.html">Складні дані та MemoryLayout</a></span></li>
-			<li><span class="file"><a href="16.6.html">Пошук та виклик зовнішніх функцій</a></span></li>
-			<li><span class="file"><a href="16.7.html">Нативні функції зворотного дзвінка</a></span></li>
-		</ul>
-	</li>
-</ul>   </div>
-</div>
-
-  <div class="item right">
-<div class="help" style="border: 0px;">
-    
-	<div class="help-item">
-		<div class="help-item-name"><a href="https://metanit.com/settings.html">Налаштування</a></div>
-	 </div>
-</div>
-			<div class="help">
-
-      <div class="help-header">Помощь сайту</div>
-
-       <div class="help-item">
-		<div class="help-item-name"><a href="https://yoomoney.ru/to/410011174743222" rel="nofollow">Допомога сайту</a></div>
-	 </div>
-       
-      <div class="help-item">
-		<div class="help-item-name">Юмани:</div>
-		<div class="help-item-req">410011174743222</div>
-	 </div>
-
-		<div class="help-item">
-			<div class="help-item-name">Номер карты:</div>
-			<div class="help-item-req">4048415020898850</div>
-		</div>
 
       </div>
 
-	
-	
-
-
-
-
   </div>
 </div>
 
-<div id="footer" style="padding-bottom:85px;">
-
-<div class="bootomLinks">
-<a href="https://vk.com/metanit" title="Присоединиться к группе вконтакте" rel="nofollow">Вконтакті</a>|
- <a href="https://t.me/devnull22" title="Подписаться на телеграм" rel="nofollow">Телеграм</a> | 
-<a href="https://metanit.com/donations.html" rel="nofollow">Донати/Допомога сайту</a>
-</div>
-<p>Contacts: metanit22@mail.ru</p>
-<p>Copyright © Євген Попов, metanit.com, 2026. Усі права захищені.</p>
-
-
-</div>
-
-</div>
-
-
-
-
-
-
-
-
-
-
-<script src='../../js/syntax16.js'></script>
-<script>
-// Syntax Highlighter
-if (typeof SyntaxHighlighter !== 'undefined') {
-    SyntaxHighlighter.all();
-}
-
-// Copy guard
-document.addEventListener('copy', (ev) => {
-    const et = ev.target;
-    if (et.type === 'textarea') {
-        ev.clipboardData.setData('text/plain', et.value.substring(et.selectionStart, et.selectionEnd).replace(/ /g, ' '));
-        ev.preventDefault();
-    }
-});
-
-// Mobile menu
-const faBars = document.querySelector('.fa-bars');
-if (faBars) {
-    faBars.addEventListener('click', () => {
-        const tree = document.querySelector('.item.left');
-        if (tree) {
-            tree.style.display = (tree.style.display === 'block') ? 'none' : 'block';
-        }
-    });
-}
-
-const menuButton = document.getElementById('menuButton');
-if (menuButton) {
-    menuButton.addEventListener('click', () => {
-        menuButton.classList.toggle('menu-opened');
-        const mainMenu = document.querySelector('.mainmenu');
-        if (mainMenu) mainMenu.classList.toggle('open');
-    });
-}
-
-// Search toggle
-const magGlass = document.getElementById('magnifying-glass');
-if (magGlass) {
-    magGlass.addEventListener('click', () => {
-        const search = document.getElementById('search');
-        if (search) search.classList.toggle('transp');
-    });
-}
-
-// Theme toggle
-const toggleTheme = document.getElementById('toggle-theme');
-if (toggleTheme) {
-    toggleTheme.addEventListener('click', () => {
-        if (document.documentElement.hasAttribute('theme')) {
-            document.documentElement.removeAttribute('theme');
-            document.cookie = 'theme=1;expires=Mon, 19 Feb 2001 12:00:00 UTC;path=/;';
-        } else {
-            document.documentElement.setAttribute('theme', 'dark');
-            var expire = new Date();
-            expire.setHours(expire.getHours() + 7);
-            document.cookie = 'theme=1;expires=' + expire.toUTCString() + ';path=/;';
-        }
-    });
-}
-
-// Share buttons
-const shareVK = document.querySelectorAll('.share .fa-vk');
-shareVK.forEach(e => e.addEventListener('click', () => window.open('http://vk.com/share.php?url=' + window.location.href, 'Поделиться в ВКОНТАКТЕ')));
-const shareTG = document.querySelectorAll('.share .fa-telegram');
-shareTG.forEach(e => e.addEventListener('click', () => window.open('tg://msg_url/url=' + window.location.href, 'Поделиться в Telegram')));
-const shareOK = document.querySelectorAll('.share .fa-odnoklassniki');
-shareOK.forEach(e => e.addEventListener('click', () => window.open('https://connect.ok.ru/offer?url=' + window.location.href, 'Поделиться в Одноклассниках')));
-
-// Folders
-const folders = document.getElementsByClassName('closed');
-for (let i = 0; i < folders.length; i++) {
-    folders[i].addEventListener('click', function (e) {
-        this.classList.toggle('closed');
-        this.classList.toggle('opened');
-    });
-}
-
-// Active Item Highlight
-const activePath = window.location.pathname.split('/').pop();
-const activeItem = document.querySelector(".file a[href*='" + activePath + "']");
-if (activeItem) {
-    activeItem.classList.add('aMItem');
-    activeItem.parentElement.classList.add('aMItem');
-    const activeFolder = activeItem.closest('li');
-    if (activeFolder) {
-        activeFolder.classList.remove('closed');
-        activeFolder.classList.add('opened');
-        const folderLabel = activeFolder.querySelector('.folder');
-        if (folderLabel) folderLabel.classList.add('aMItem');
-    }
-}
-
-// Settings
-const props = ['--main-font-size', '--main-font-family', '--menc-bg-color', '--container-bg-color', '--menu-bg-color', '--code-font-size', '--code-font-family', '--code-bgcolor', '--code-max-height'];
-for (let i = 0; i < props.length; i++) {
-    const propValue = localStorage.getItem(props[i]);
-    if (propValue !== null) document.documentElement.style.setProperty(props[i], propValue);
-}
-</script>
+<script src="../prism/prism.js"></script>
+<script src="../prism/prism-java.js"></script>
 </body>
 </html>

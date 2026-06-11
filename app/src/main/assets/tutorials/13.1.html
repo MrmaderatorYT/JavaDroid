@@ -1,133 +1,48 @@
 <!DOCTYPE html>
-<html  lang="ru">
+<html  lang="uk">
 <head>
-<title>Java | Файлы JAR, их создание и выполнение</title>
+<title>Java | Файли JAR, їх створення та виконання</title>
 <meta charset="utf-8" />
-<meta name="description" content="Файлы JAR (Java ARchive) и их роль в языке программирования Java, утилита jar и ее параметры, создание JAR-файлов, манифест файла, запуск jar-файла на выполнение">
+<meta name="description" content="Файлы JAR (Java ARchive) и их роль в языке программирования Java, утилита jar и її параметры, створення JAR-файлов, манифест файла, запуск jar-файла на выполнение">
 <meta name="viewport" content="width=device-width">
-<link href="../../style50.css@v=1.css" rel="stylesheet" type="text/css">
+
+<link href="../prism/prism.css" rel="stylesheet" />
 </head>
 <body>
 <div id="container">
-<header>
-<div id="header">
-<div id="logo">
-<a class="logoTitle" href="https://metanit.com/" title="На главную">METANIT.COM</a>
-<div class="logoDefinition">Сайт о программировании</div> 
-</div>
+<div class="item center menC">
+     <h1>Файли JAR, їх створення та виконання</h1><div class="date">Останнє оновлення: 21.09.2025</div>
 
-<div class="socbtns">
-<ul>
-<li><a title="Посмотреть меню" rel="nofollow" class="fa fa-lg fa-bars"></a></li>
-<li><a href="https://metanit.com/donations.html" title="Помощь сайту" rel="nofollow" style="color: var(--fa-usd-color);" class="fa fa-lg fa-usd"></a></li>
-<li><a href="https://vk.com/metanit" title="Группа в ВКонтакте" rel="nofollow" style="color: var(--fa-vk-color);" class="fa fa-lg fa-vk"></a></li>
-<li><a href="https://t.me/devnull22" title="Группа в Телеграмме"  class="fa fa-lg fa-tel" style="color: var(--fa-tel-color);"></a></li>
-<li><a href="https://metanit.com/android.html" title="Приложения андроид" rel="nofollow" style="color: var(--fa-android-color);" class="fa fa-lg fa-android"></a></li>
-<li><i id="toggle-theme" class="fa fa-lg fa-adjust"></i></li>
-</ul>
-</div>
+<p>При компиляции программа на мові Java компилируется в набор классов, которые определены в программе и которые повинні располагаться в определенных каталогов в соответствии с их пакетами. Рднако це усложняет распространение программы. 
+И чтобы программу на Java буво проще распространять, буви разработаны файлы <b>JAR</b> (Java ARchive або АрхивыJava). При цем <b>JAR-файл</b> может містятьь як файлы классов, 
+так и другие типы файлов, наприклад, изображения и звуковые файлы, которые можуть застосовуватися в программе.</p>
+<p>По сути <b>JAR</b>-файл - це способ об'єднати множество файлов в один, что упрощает их распространение и использование. JAR-файлы часто використовуються для упаковки библиотек, приложений и плагинов.</p>
 
-
-<div id="magnifying-glass"></div>
-
-<div class="menuButton" id="menuButton">
-	<span class="icon-bar"></span>
-    <span class="icon-bar"></span>
-    <span class="icon-bar"></span>
-</div>
-</div>
-
-<div id="search" class="transp">
-<form action="https://www.google.ru" id="cse-search-box">
-  <div>
-    <input type="hidden" name="cx" value="partner-pub-3716042175333627:1096498938" />
-    <input type="hidden" name="ie" value="UTF-8" />
-    <input type="text" name="q" />
-    <input type="submit" name="sa" value="Найти" />
-  </div>
-</form>
-</div>
-
-<div id="menu" class="menu">
-<ul class="mainmenu">
-    <li><a href="https://metanit.com/common/">Программирование</a></li>
-    <li><a href="https://metanit.com/assembler/">Ассемблер</a></li>
-   <li><a href="https://metanit.com/sharp/">C#</a></li>
-   <li><a href="https://metanit.com/java/">Java</a></li>
-   <li><a href="https://metanit.com/web/">WEB</a></li>
-   <li><a href="https://metanit.com/python/">Python</a></li>
-   <li><a href="https://metanit.com/c/">C</a></li>
-   <li><a href="https://metanit.com/cpp/">C++</a></li>
-   <li><a href="https://metanit.com/sql/">SQL</a></li>
-   <li><a href="https://metanit.com/nosql/mongodb/">MongoDB</a></li>
-   <li><a href="https://metanit.com/go/">Go</a></li>
-   <li><a href="https://metanit.com/visualbasic/">VB.NET</a></li>
-   <li><a href="https://metanit.com/swift/tutorial/">Swift</a></li>
-   <li><a href="https://metanit.com/kotlin/">Kotlin</a></li>
-   <li><a href="https://metanit.com/dart/">Dart</a></li>
-   <li><a href="https://metanit.com/php/">PHP</a></li>
-   <li><a href="https://metanit.com/rust/">Rust</a></li>
-   <li><a href="https://metanit.com/os/">Linux</a></li>
-   <li><a href="https://metanit.com/f/">F#</a></li>
-   <!--<li><a href="//metanit.com/lisp/tutorial/">Common Lisp</a></li>-->
-   <li><a href="https://metanit.com/hosting">Хостинг</a></li>
-</ul>
-</div>
-
-</header>
-<div class="outercontainer">
-<div class="innercontainer">
- 
-   <div class="item center menC">
-     <h1>Файлы JAR, их создание и выполнение</h1><div class="date">Последнее обновление: 21.09.2025</div>
-	<div class="socBlock">
-	<div class="share soctop">
-	<ul>
-	<li><a title="Поделиться в Вконтакте" rel="nofollow" class="fa fa-lg fa-vk"></a></li>
-	<li><a title="Поделиться в Телеграм" rel="nofollow" class="fa fa-lg fa-telegram"></a></li>
-	<li><a title="Поделиться в Одноклассниках" rel="nofollow" class="fa fa-lg fa-odnoklassniki"></a></li>
-	
-	</ul>
-	</div>
-	</div>
-
-	<div style="margin-top:23px;margin-left:5px;">
-		
-		
-		
-	</div>
-
-	
-<p>При компиляции программа на языке Java компилируется в набор классов, которые определены в программе и которые должны располагаться в определенных каталогов в соответствии с их пакетами. Рднако это усложняет распространение программы. 
-И чтобы программу на Java было проще распространять, были разработаны файлы <b>JAR</b> (Java ARchive или АрхивыJava). При этом <b>JAR-файл</b> может содержать как файлы классов, 
-так и другие типы файлов, например, изображения и звуковые файлы, которые могут применяться в программе.</p>
-<p>По сути <b>JAR</b>-файл - это способ объединить множество файлов в один, что упрощает их распространение и использование. JAR-файлы часто используются для упаковки библиотек, приложений и плагинов.</p>
-
-<p>JAR-файл использует формат ZIP для организации файлов и подкаталогов и содержит несколько файлов классов и подкаталогов в сжатом формате, что экономит место и повышает производительность. 
-То есть по сути JAR-файл - это zip-архив, и для просмотра его содержимого можно использовать любую утилиту ZIP. Если нам необходимо подключить в проект какую-то внешнюю библиотеку с нужной нам функциональностью, то обычно библиотека предоставляется в виде JAR-файла.</p>
-<p>Для работы с JAR-файлами применяется утилита <b>jar</b>, которая устанавливается в рамках JDK и располагается в каталоге <code>jdk/bin</code>. В общем случае эта команда имеет следующий формат:</p>
-<pre class="sh">
+<p>JAR-файл использует формат ZIP для организации файлов и подкаталогов и містить декілька файлов классов и подкаталогов в сжатом формате, что экономит место и повышает производительность. 
+То есть по сути JAR-файл - це zip-архив, и для просмотра его содержимого можна використовувати любую утилиту ZIP. Если нам необхідно подключить в проект якую-то внешнюю библиотеку с потрібной нам функциональностью, то обычно библиотека надаєся в виде JAR-файла.</p>
+<p>Для работы с JAR-файлами застосовується утилита <b>jar</b>, которая устанавливается в рамках JDK и располагается в каталоге <code>jdk/bin</code>. В общем случае эта команда имїїт следующий формат:</p>
+<pre class="line-numbers"><code class="language-none">
 jar options file1 file2 ... fileN
-</pre>
-<p>Команде <code>jar</code> сначала передаются опции (options), которые определяют выполняемые действия. А затем через пробел передаются файлы, над которыми надо произвести действия. 
+</code></pre>
+<p>Команде <code>jar</code> сначала передаются опции (options), которые определяют выполняемые действия. А затем через пробел передаются файлы, над которыми треба произвести действия. 
 Список применяемых параметров (они аналогичны параметрам команды tar в UNIX):</p>
 <ul>
-<li><p><span class="b">c</span>: создает новый или пустой архив и добавляет в него файлы. Если какие-либо из указанных имён файлов являются каталогами, программа jar обрабатывает их рекурсивно.</p></li>
+<li><p><span class="b">c</span>: створює новый або пустой архив и додає в него файлы. Если якие-або из указанных имен файлов є каталогами, программа jar обробляє их рекурсивно.</p></li>
 
-<li><p><span class="b">C</span>: временно изменяет каталог. Например, следующая команда изменяет подкаталог classdir для добавления файлов классов</p>
-<pre class="sh">
+<li><p><span class="b">C</span>: временно змінює каталог. Наприклад, следующая команда змінює подкаталог classdir для добавления файлов классов</p>
+<pre class="line-numbers"><code class="language-none">
 jar cvf jarFileName.jar -C classdir *.class
-</pre>
+</code></pre>
 </li>
-<li><p><span class="b">e</span>: создает точку входа в манифесте.</p></li>
+<li><p><span class="b">e</span>: створює точку входа в манифесте.</p></li>
 
-<li><p><span class="b">f</span>: устанавливает имя JAR-файла, которое передается в качестве второго аргумента командной строки.</p></li>
+<li><p><span class="b">f</span>: устанавливает имя JAR-файла, которое передаєся в качестве второго аргумента командного рядка.</p></li>
 
-<li><p><span class="b">i</span>: создает индексный файл (для ускорения поиска в большом архиве).</p></li>
+<li><p><span class="b">i</span>: створює индексный файл (для ускорения поиска в большом архиве).</p></li>
 
-<li><p><span class="b">m</span>: добавляет манифест в JAR-файл. У каждого архива есть манифест по умолчанию, но можно установить свой собственный.</p></li>
+<li><p><span class="b">m</span>: додає манифест в JAR-файл. У каждого архива есть манифест по умолчанию, но можна установить свой собственный.</p></li>
 
-<li><p><span class="b">M</span>: указывает, что не надо создаваит файл манифеста.</p></li>
+<li><p><span class="b">M</span>: указывает, что не треба создаваит файл манифеста.</p></li>
 
 <li><p><span class="b">t</span>: отображает оглавление.</p></li>
 
@@ -135,67 +50,61 @@ jar cvf jarFileName.jar -C classdir *.class
 
 <li><p><span class="b">v</span>: формирует подробный вывод.</p></li>
 
-<li><p><span class="b">x</span>: извлекает файлы. Если указано одно или несколько имён файлов, извлекаются только эти файлы. В противном случае извлекаются все файлы.</p></li>
+<li><p><span class="b">x</span>: извлекает файлы. Если указано одно або декілька имен файлов, извлекаются лише эти файлы. В противном случае извлекаются все файлы.</p></li>
 
 <li><p><span class="b">0</span>: сохраняет без сжатия ZIP.</p></li>
 </ul>
 
-<h3>Создание JAR-файлов</h3>
-<p>Наиболее распространённая команда для создания нового JAR-файла использует следующий синтаксис:</p>
-<pre class="sh">
+<h3>Створення JAR-файлов</h3>
+<p>Наиболїї распространенная команда для создания нового JAR-файла использует следующий синтаксис:</p>
+<pre class="line-numbers"><code class="language-none">
 jar cvf jarFileName file1 file2 ... fileN
-</pre>
-<p>Например, пусть у нас есть файл <span class="b">Program.java</span> с простеньким кодом:</p>
-<pre class="brush:java;">
+</code></pre>
+<p>Наприклад, пусть у нас есть файл <span class="b">Program.java</span> с простеньким кодом:</p>
+<pre class="line-numbers"><code class="language-java">
 class Program{
 
     public static void main(String[] args) {
         
-       System.out.println("Hello METANIT.COM");
+       System.out.println("Hello ");
     }
 }
-</pre>
-<p>Сначала скомпилируем файл с помощью компилятора <code>javac</code>:</p>
-<pre class="sh">
+</code></pre>
+<p>Сначала скомпилируем файл за допомогою компилятора <code>javac</code>:</p>
+<pre class="line-numbers"><code class="language-none">
 javac Program.java
-</pre>
-<p>В итоге компилируется файл <span class="b">Program.class</span>. Затем создадим из этого класса jar-файл:</p>
-<pre class="sh">
+</code></pre>
+<p>В итоге компилируется файл <span class="b">Program.class</span>. Затем создадим из цього класса jar-файл:</p>
+<pre class="line-numbers"><code class="language-none">
 jar cvf app.jar Program.class
-</pre>
-<p>В данном случае опция "cvf" фактически представляет объединение трех опций - "c", "v", и "f". В качестве имени выходного файла устанавливается "app.jar". Полный вывод команды:</p>
-<pre class="sh">
+</code></pre>
+<p>В данном случае опция "cvf" фактически представляє об'єднание трех опций - "c", "v", и "f". В качестве имени выходного файла устанавливается "app.jar". Полный вывод команды:</p>
+<pre class="line-numbers"><code class="language-none">
 eugene@Eugene:/workspace/java$ jar cvf app.jar Program.class
 added manifest
 adding: Program.class(in = 425) (out= 292)(deflated 31%)
 eugene@Eugene:/workspace/java$ 
-</pre>
-<p>И после выполнения команды в текущей папке появится файл "app.jar".</p>
-<p>Стои отметить, что мы можем передать конкретные файлы классов на создание архива:</p>
-<pre class="sh">
+</code></pre>
+<p>И после виконання команды в текущей папке появится файл "app.jar".</p>
+<p>Стои відзначити, что мы можемо передать конкретные файлы классов на створення архива:</p>
+<pre class="line-numbers"><code class="language-none">
 jar cvf app.jar Program.class Person.class Employee.class
-</pre>
-<p>Но если нам надо указать все класса, которые находятся в определенной папке, то мы можем использовать символ подстановки "*":</p>
-<pre class="sh">
+</code></pre>
+<p>Но якщо нам треба указать все класса, которые находятся в определенной папке, то мы можемо використовувати символ подстановки "*":</p>
+<pre class="line-numbers"><code class="language-none">
 jar cvf app.jar *.class
-</pre>
-<p>В данном случае в jar-архив добавляются все классы, которые находятся в текущей папке. Если классы располагаются в какой-то определенной папке, например, в папке "com/metanit", то надо указать полный путь к классам:</p>
-<pre class="sh">
-jar cvf app.jar com/metanit/Program.class com/metanit/Person.class com/metanit/Employee.class
+</code></pre>
+<p>В данном случае в jar-архив добавляются все классы, которые находятся в текущей папке. Если классы располагаются в якой-то определенной папке, наприклад, в папке "com/", то треба указать полный путь к классам:</p>
+<pre class="line-numbers"><code class="language-none">
+jar cvf app.jar com//Program.class com//Person.class com//Employee.class
 
-// или так 
-jar cvf app.jar com/metanit/*.class
-</pre>
-
-<div style="margin-top:23px;margin-left:5px;">
-
-<!-- Yandex.RTB R-A-201190-9 -->
-
-</div>
+// або так 
+jar cvf app.jar com//*.class
+</code></pre>
 
 <h3>Содержимое jar-файла</h3>
-<p>Распакуем этот файл с помощью любой программы, которая разархивирует файлы zip. Например, на Linux обычно в системе установлена утилита <b>unzip</b>:</p>
-<pre class="sh">
+<p>Распакуем цей файл за допомогою любой программы, которая разархивирует файлы zip. Наприклад, на Linux обычно в системе установлена утилита <b>unzip</b>:</p>
+<pre class="line-numbers"><code class="language-none">
 eugene@Eugene:/workspace/java$ unzip -l app.jar
 Archive:  app.jar
   Length      Date    Time    Name
@@ -206,8 +115,8 @@ Archive:  app.jar
 ---------                     -------
       487                     3 files
 eugene@Eugene:/workspace/java$ 
-</pre>
-<p>С помощью опции <code>-l</code> команде <code>unzip</code> указывается, что надо вывести содержимое архива на консоль. И в данном случае мы видим, что архив уже имеет некоторую структуру:</p>
+</code></pre>
+<p>С помощью опции <code>-l</code> команде <code>unzip</code> указывается, что треба вывести содержимое архива на консоль. И в данном случае мы видим, что архив вже имїїт деяку структуру:</p>
 <ul>
 <li><p>Папка <span class="b">META-INF</span></p>
 <ul>
@@ -216,521 +125,111 @@ eugene@Eugene:/workspace/java$
 </li>
 <li><p>Файл <span class="b">Program.class</span>: файл основного класса программы</p></li>
 </ul>
-<p>Таким образом, если мы распакуем jar-файл, то мы увидим, что он также содержит файл манифеста.</p>
+<p>Таким чином, якщо мы распакуем jar-файл, то мы увидим, что он також містить файл манифеста.</p>
 <h3>Запуск jar-файлов</h3>
-<p>Java позволяет напрямую запускать jar-файл как обычную программу. Для этого утилите <b>java</b> передается параметр <span class="b">-jar</span> и путь к jar-архиву. Например, запустим выше созданный файл <code>app.jar</code>:</p>
-<pre class="sh">
+<p>Java дозволяє напрямую запускать jar-файл як обычную программу. Для цього утилите <b>java</b> передаєся параметр <span class="b">-jar</span> и путь к jar-архиву. Наприклад, запустим выше створений файл <code>app.jar</code>:</p>
+<pre class="line-numbers"><code class="language-none">
 eugene@Eugene:/workspace/java$ java -jar app.jar
 no main manifest attribute, in app.jar
 eugene@Eugene:/workspace/java$ 
-</pre>
+</code></pre>
 
-<p>И мы видим, что java не запустила файл, так как в манифестве jar-архива отсутствует атрибут "Main-Class", о чем собственно говорит отображенное на консоли сообщение.</p>
+<p>И мы видим, что java не запустила файл, оскільки в манифестве jar-архива отсутствует атрибут "Main-Class", о чем собственно говорит отображенное на консоли сообщение.</p>
 
-
-<h2>Создание исполняемого файла jar</h2>
-<p>Однако, чтобы сделать jar-файл исполняемым, нам необязательно создавать или изменять манифест, для этого мы можем воспользоваться опцией "e" команды jar. В частности, выполним следующую команду:</p>
-<pre class="sh">
+<h2>Створення исполняемого файла jar</h2>
+<p>Однак, чтобы сделать jar-файл исполняемым, нам необязательно создавать або изменять манифест, для цього мы можемо воспользоваться опцией "e" команды jar. В частности, выполним следующую команду:</p>
+<pre class="line-numbers"><code class="language-none">
 jar cvfe app.jar Program Program.class
-</pre>
-<p>После названия jar-файла команде передается имя класса без расширения ".class", то есть в нашем случае Program. И таким образом, мы получим исполняемый jar, который мы сможем запустить с помощью 
+</code></pre>
+<p>После названия jar-файла команде передаєся имя класса без расширения ".class", то есть в нашем случае Program. И таким чином, мы получим исполняемый jar, який мы сможемо запустить за допомогою 
 команды <code>java -jar app.jar</code>:</p>
-<pre class="sh">
+<pre class="line-numbers"><code class="language-none">
 eugene@Eugene:/workspace/java$ java -jar app.jar
-Hello METANIT.COM
+Hello 
 eugene@Eugene:/workspace/java$ 
-</pre>
-<p>Стоит отметить, что имя класса указывается с учетом всех пакетов, в которых расположен данный класс. 
-Например, если бы класс Program располагался бы в пакете "com.metanit" (то есть полное имя класса было бы "com.metanit.Program"), то в качестве главного класса программы указывался бы <code>com.metanit.Program</code></p>
-<pre class="sh">
-jar cvfe app.jar com.metanit.Program com/metanit/Program.class
-</pre>
+</code></pre>
+<p>Варто відзначити, что имя класса указывается с учетом всех пакетів, в которых расположен данный класс. 
+Наприклад, якщо бы класс Program располагался бы в пакеті "com." (то есть полное имя класса буво бы "com..Program"), то в качестве главного класса программы указывался бы <code>com..Program</code></p>
+<pre class="line-numbers"><code class="language-none">
+jar cvfe app.jar com..Program com//Program.class
+</code></pre>
 
-<p>В зависимости от конфигурации операционной системы пользователи могут даже запускать приложение, дважды щелкнув значок JAR-файла.</p>
-<p>Например, в Windows установщик Java создаёт ассоциацию файла с расширением ".jar", которая запускает файл с помощью команды <code>javaw -jar</code>. 
+<p>В зависимости от конфигурации операционной системы пользователи можуть даже запускать приложение, дважды щелкнув значок JAR-файла.</p>
+<p>Наприклад, в Windows установщик Java створює ассоциацию файла с расширением ".jar", которая запускає файл за допомогою команды <code>javaw -jar</code>. 
 В отличие от команды <code>java</code>, команда <span class="b">javaw</span> не открывает окно оболочки.</p>
-<p>В Mac OS распознается расширение файла «.jar», и при двойном щелчке по JAR-файлу запускается программа Java, которая, в свою очередь, запускает jar-файл.</p>
+<p>В Mac OS распознается расширение файла «.jar», и при двойном щелчке по JAR-файлу запускаєся программа Java, которая, в свою очередь, запускає jar-файл.</p>
 
 <h2>Манифест jar-файла</h2>
-<p>Манифест представляет описание содержимого архива. У каждого архива есть свой манифест. Можно предоставить свой файл манифеста. Если мы его не предоставим, манифест создается по умолчанию.</p>
-<p>Файл манифеста называется <span class="b">MANIFEST.MF</span> и находится в JAR-файле в специальном подкаталоге <span class="b">META-INF</span>. По факту это текстовый файл, 
-который в самом минимальном виде содержит версию манифеста в виде параметра <code>Manifest-Version</code>:</p>
+<p>Манифест представляє описание содержимого архива. У каждого архива есть свой манифест. Можна предоставить свой файл манифеста. Если мы его не предоставим, манифест створюєся по умолчанию.</p>
+<p>Файл манифеста називається <span class="b">MANIFEST.MF</span> и находится в JAR-файле в специальном подкаталоге <span class="b">META-INF</span>. По факту це текстовый файл, 
+який в самом минимальном виде містить версию манифеста в виде параметра <code>Manifest-Version</code>:</p>
 <pre class="brush:js;">
 Manifest-Version: 1.0
 </pre>
-<p>Но также могут содержать и большее количество записей. Например, при компиляции в создаваемый манифест также обычно добавляется версия использованного JDK:</p>
+<p>Но також можуть містятьь и большїї количество записей. Наприклад, при компиляции в создаваемый манифест також обычно додаєся версия использованного JDK:</p>
 <pre class="brush:js;">
 Manifest-Version: 1.0
 Created-By: 25 (Oracle Corporation)
 </pre>
-<p>Записи манифеста группируются по разделам. Первый раздел называется основным - он применяется ко всему файлу. В целом даже для основного раздела имется большее количество атрибутов. 
-Все их можно посмотреть в <a href="https://docs.oracle.com/en/java/javase/21/docs/specs/jar/jar.html#jar-manifest" rel="nofollow">документации</a>. Отмечу основные из них:</p>
+<p>Записи манифеста группируются по разделам. Первый раздел називається основным - он застосовується ко всему файлу. В целом даже для основного раздела имется большїї количество атрибутов. 
+Все их можна посмотреть в <a href="https://docs.oracle.com/en/java/javase/21/docs/specs/jar/jar.html#jar-manifest" rel="nofollow">документации</a>. Отмечу основные из них:</p>
 <ul>
-<li><p><code>Manifest-Version</code>:  Определяет версию файла манифеста. Значение — допустимый номер версии.</p></li>
-<li><p><code>Created-By</code>:  Определяет версию и вендора реализации Java, на основе которой сгенерирован этот файл манифеста. Этот атрибут генерируется инструментом jar.</p></li>
-<li><p><code>Signature-Version</code>:  Определяет версию подписи JAR-файла. Значение должно быть допустимой строкой с номером версии.</p></li>
-<li><p><code>Class-Path</code>:  Значение этого атрибута указывает относительные URL-адреса библиотек, необходимых этому приложению. URL-адреса разделяются одним или несколькими пробелами. 
-Загрузчик классов приложения использует значение этого атрибута для построения своего внутреннего пути поиска. Подробнее см. в разделе «Атрибут Class-Path».</p></li>
-<li><p><code>Multi-Release</code>:  Этот атрибут определяет, является ли этот JAR-файл многорелизным. Если значение равно "true", регистр игнорируется, JAR-файл будет обработан средой выполнения Java и инструментами как многорелизный JAR-файл. В противном случае, если значение отлично от "true", этот атрибут игнорируется.</p></li>
-<li><p><code>Main-Class</code>:  Значение этого атрибута — имя основного класса приложения, который модуль запуска будет загружать при запуске. Имя класса указывается без расширения <code>.class</code>.</p></li>
+<li><p><code>Manifest-Version</code>:  Визначає версию файла манифеста. Значение — допустимый номер версии.</p></li>
+<li><p><code>Created-By</code>:  Визначає версию и вендора реализации Java, на основе которой сгенерирован цей файл манифеста. Цет атрибут генеруєся инструментом jar.</p></li>
+<li><p><code>Signature-Version</code>:  Визначає версию подписи JAR-файла. Значение повинно быть допустимой строкой с номером версии.</p></li>
+<li><p><code>Class-Path</code>:  Значение цього атрибута указывает относительные URL-адреса библиотек, необходимых цему приложению. URL-адреса разделяются одним або несколькими пробелами. 
+Загрузчик классов приложения использует значение цього атрибута для построения своего внутреннего пути поиска. Подробнїї см. в разделе «Атрибут Class-Path».</p></li>
+<li><p><code>Multi-Release</code>:  Цет атрибут определяет, є ли цей JAR-файл многорелизным. Если значение равно "true", регистр игнорируется, JAR-файл буде обработан средой виконання Java и инструментами як многорелизный JAR-файл. В противном случае, якщо значение отлично от "true", цей атрибут игнорируется.</p></li>
+<li><p><code>Main-Class</code>:  Значение цього атрибута — имя основного класса приложения, який модуль запуска буде загружать при запуске. Имя класса указывается без расширения <code>.class</code>.</p></li>
 </ul>
-<p>Например, атрибут <code>Main-Class</code> применяется для указания главного класса, который должен использоваться для запуска программы. Если мы хотим, чтобы jar-архив был исполняемым, то один из способов решения проблемы - указать этот атрибут в файле манифеста.</p>
-<h3>Создание и добавление манифеста</h3>
+<p>Наприклад, атрибут <code>Main-Class</code> застосовується для указания главного класса, який повинен використовуватися для запуска программы. Если мы хочемо, чтобы jar-архив був исполняемым, то один из способов решения проблемы - указать цей атрибут в файле манифеста.</p>
+<h3>Створення и добавление манифеста</h3>
 <p>Допустим, у нас есть простая программка в файле <span class="b">Program.java</span>:</p>
-<pre class="brush:java;">
+<pre class="line-numbers"><code class="language-java">
 class Program{
 
     public static void main(String[] args) {
         
-       System.out.println("Hello METANIT.COM");
+       System.out.println("Hello ");
     }
 }
-</pre>
+</code></pre>
 <p>Скомпилируем эту программу:</p>
-<pre class="sh">
+<pre class="line-numbers"><code class="language-none">
 javac Program.java
-</pre>
+</code></pre>
 <p>В итоге компилируется файл <span class="b">Program.class</span>.</p>
-<p>Затем создадим в той же папке текстовый файл <span class="b">manifest.mf</span>, который будет служить файлом манифеста и который будет иметь следующее содержимое:</p>
+<p>Затем создадим в той же папке текстовый файл <span class="b">manifest.mf</span>, який буде служить файлом манифеста и який буде иметь следующїї содержимое:</p>
 <pre class="brush:js;">
 Manifest-Version: 1.0
 Main-Class: Program
 </pre>
-<p>Здесь атрибуту "Main-Class" передаем название класса - Program без расширения <code>.class</code>. Стоит отметить, что имя класса указывается с учетом всех пакетов, в которых расположен данный класс. 
-Например, если бы класс Program располагался бы в пакете "com.metanit" (то есть полное имя класса было бы "com.metanit.Program"), то  указывался бы атрибут <code>Main-Class: com.metanit.Program</code></p>
-<p>Далее создадим из класса <span class="b">Program.class</span> и манифеста <span class="b">manifest.mf</span> jar-файл:</p>
-<pre class="sh">
+<p>Здесь атрибуту "Main-Class" передаем название класса - Program без расширения <code>.class</code>. Варто відзначити, что имя класса указывается с учетом всех пакетів, в которых расположен данный класс. 
+Наприклад, якщо бы класс Program располагался бы в пакеті "com." (то есть полное имя класса буво бы "com..Program"), то  указывался бы атрибут <code>Main-Class: com..Program</code></p>
+<p>Далїї создадим из класса <span class="b">Program.class</span> и манифеста <span class="b">manifest.mf</span> jar-файл:</p>
+<pre class="line-numbers"><code class="language-none">
 jar cfm app.jar manifest.mf Program.class
-</pre>
+</code></pre>
 
-<p>В итоге мы получим файл <span class="b">app.jar</span>. И поскольку мы указали в манифесте главный файл программы, мы можем запустить jar-файл на выполнение с помощью следующей команды <code>java -jar app.jar</code>:</p>
-<pre class="sh">
+<p>В итоге мы получим файл <span class="b">app.jar</span>. И поскольку мы указали в манифесте главный файл программы, мы можемо запустить jar-файл на выполнение за допомогою следующей команды <code>java -jar app.jar</code>:</p>
+<pre class="line-numbers"><code class="language-none">
 eugene@Eugene:/workspace/java$ java -jar app.jar
-Hello METANIT.COM
+Hello 
 eugene@Eugene:/workspace/java$ 
-</pre>
+</code></pre>
 <h3>Обновление манифеста</h3>
-<p>Также отмечу, что мы можем обновить файл манифеста. Чтобы обновить манифест существующего JAR-файла, достаточно поместить дополнения в текстовый файл и использовать следующую команду:</p>
-<pre class="sh">
-jar ufm app.jar manifest.mf</pre>
-	
+<p>Також отмечу, что мы можемо обновить файл манифеста. Щоб обновить манифест существующего JAR-файла, достаточно поместить дополнения в текстовый файл и використовувати следующую команду:</p>
+<pre class="line-numbers"><code class="language-none">
+jar ufm app.jar manifest.mf</code></pre>
 
-	<div style="margin-top:25px;">
-
-	
-	</div>
-
-	<div class="nav"><p><a href="12.4.html">Назад</a><a href="index.html">Содержание</a><a href="13.2.html">Вперед</a></p></div>
-	<div class="socBlock">
-	<div class="share soctop">
-	<ul>
-	<li><a title="Поделиться в Вконтакте" rel="nofollow" class="fa fa-lg fa-vk"></a></li>
-	<li><a title="Поделиться в Телеграм" rel="nofollow" class="fa fa-lg fa-telegram"></a></li>
-	<li><a title="Поделиться в Одноклассниках" rel="nofollow" class="fa fa-lg fa-odnoklassniki"></a></li>
-	
-	</ul>
-	</div>
-	</div>
   </div>
-
-	<div class="item left">
-     <ul id="browser" class="filetree"> 
-	<li class="closed"><span class="folder">Глава 1. Введение в Java</span>
-		<ul>
-			<li><span class="file"><a href="1.1.html">Что такое Java</a></span></li>
-			<li><span class="file"><a href="1.6.html">Установка JDK</a></span></li>
-			<li><span class="file"><a href="1.2.html">Первая программа на Java</a></span></li>
-			<li><span class="file"><a href="1.5.html">Первая программа в IntelliJ IDEA</a></span></li>
-			<li><span class="file"><a href="1.3.html">Первая программа в NetBeans</a></span></li>
-			<li><span class="file"><a href="1.4.html">Первая программа в Eclipse</a></span></li>
-			<li><span class="file"><a href="1.7.html">JShell</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 2. Основы программирования на Java</span>
-		<ul>
-			<li><span class="file"><a href="2.11.html">Структура программы</a></span></li>
-			<li><span class="file"><a href="2.1.html">Переменные и константы</a></span></li>
-			<li><span class="file"><a href="2.19.html">Литералы</a></span></li>
-			<li><span class="file"><a href="2.12.html">Типы данных</a></span></li>
-			<li><span class="file"><a href="2.9.html">Консольный ввод/вывод в Java</a></span></li>
-			<li><span class="file"><a href="2.3.html">Арифметические операции</a></span></li>
-			<li><span class="file"><a href="2.13.html">Поразрядные операции</a></span></li>
-			<li><span class="file"><a href="2.14.html">Условные выражения</a></span></li>
-			<li><span class="file"><a href="2.15.html">Операции присваивания и приоритет операций</a></span></li>
-			<li><span class="file"><a href="2.2.html">Преобразования базовых типов данных</a></span></li>
-			<li><span class="file"><a href="2.5.html">Условные конструкции</a></span></li>
-			<li><span class="file"><a href="2.6.html">Циклы</a></span></li>
-			<li><span class="file"><a href="2.4.html">Массивы</a></span></li>
-			<li><span class="file"><a href="2.20.html">Конструкция и выражение switch</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 3. Классы</span>
-		<ul>
-			<li><span class="file"><a href="3.1.html">Классы и объекты</a></span></li>
-
-
-			<li><span class="file"><a href="2.7.html">Методы</a></span></li>
-			<li><span class="file"><a href="2.16.html">Параметры методов</a></span></li>
-			<li><span class="file"><a href="3.14.html">Объекты как параметры методов</a></span></li>
-			<li><span class="file"><a href="2.17.html">Оператор return. Результат метода</a></span></li>
-			<li><span class="file"><a href="2.18.html">Перегрузка методов</a></span></li>
-			<li><span class="file"><a href="3.21.html">Конструкторы и инициализаторы</a></span></li>
-
-
-			<li><span class="file"><a href="3.4.html">Статические компоненты класса и модификатор static</a></span></li>
-			<li><span class="file"><a href="3.20.html">Область действия и время жизни переменных</a></span></li>
-			<li><span class="file"><a href="2.8.html">Рекурсивные функции</a></span></li>
-			<li><span class="file"><a href="3.2.html">Пакеты</a></span></li>
-			<li><span class="file"><a href="3.3.html">Модификаторы доступа</a></span></li>
-			<li><span class="file"><a href="3.19.html">Компактные файлы кода и метод main</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 4. Объектно-ориентированное программирование</span>
-		<ul>
-			<li><span class="file"><a href="3.22.html">Инкапсуляция</a></span></li>
-			<li><span class="file"><a href="3.5.html">Наследование</a></span></li>
-			<li><span class="file"><a href="3.23.html">Запрет наследования и переопределения методов</a></span></li>
-			<li><span class="file"><a href="3.24.html">Полиморфизм и динамическая диспетчеризация методов</a></span></li>
-			<li><span class="file"><a href="3.9.html">Класс Object и его методы</a></span></li>
-			<li><span class="file"><a href="3.6.html">Абстрактные классы</a></span></li>
-			<li><span class="file"><a href="3.10.html">Иерархия наследования и преобразование типов</a></span></li>
-
-			<li><span class="file"><a href="3.7.html">Интерфейсы</a></span></li>
-			<li><span class="file"><a href="3.28.html">Интерфейсы и полиморфизм</a></span></li>
-			<li><span class="file"><a href="3.29.html">Множественная реализация и наследование интерфейсов</a></span></li>
-			<li><span class="file"><a href="3.16.html">Интерфейсы в механизме обратного вызова</a></span></li>
-			<li><span class="file"><a href="3.8.html">Перечисления enum</a></span></li>
-			<li><span class="file"><a href="3.11.html">Обобщения (Generics)</a></span></li>
-			<li><span class="file"><a href="3.17.html">Ограничения обобщений</a></span></li>
-			<li><span class="file"><a href="3.15.html">Наследование и обобщения</a></span></li>
-			<li><span class="file"><a href="3.31.html">Type Erasure (Стирание типов)</a></span></li>
-			<li><span class="file"><a href="3.32.html">Подстановочные знаки wildcards в обобщениях</a></span></li>
-			<li><span class="file"><a href="3.13.html">Ссылочные типы и клонирование объектов</a></span></li>
-			<li><span class="file"><a href="3.18.html">Классы Records</a></span></li>
-			<li><span class="file"><a href="9.4.html">Функциональные интерфейсы и ссылки на методы</a></span></li>
-			<li><span class="file"><a href="9.1.html">Лямбда-выражения</a></span></li>
-			<li><span class="file"><a href="9.2.html">Лямбды как параметры и результаты методов</a></span></li>
-			<li><span class="file"><a href="9.3.html">Встроенные функциональные интерфейсы</a></span></li>
-			<li><span class="file"><a href="3.12.html">Внутренние и вложенные классы</a></span></li>
-			<li><span class="file"><a href="3.30.html">Анонимные классы</a></span></li>
-
-
-			<li><span class="file"><a href="3.25.html">Sealed-классы и интерфейсы</a></span></li>
-			<li><span class="file"><a href="3.26.html">Pattern мatching. Паттерн типов</a></span></li>
-			<li><span class="file"><a href="3.27.html">Pattern мatching. record-паттерн</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 5. Обработка исключений</span>
-		<ul>
-			<li><span class="file"><a href="2.10.html">Обработка исключений и конструкция try...catch...finally</a></span></li>
-			<li><span class="file"><a href="4.2.html">Классы исключений</a></span></li>
-			<li><span class="file"><a href="4.1.html">Операторы throws и throw</a></span></li>
-			<li><span class="file"><a href="4.3.html">Создание своих классов исключений</a></span></li>
-			<li><span class="file"><a href="4.4.html">Assert</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 6. Коллекции</span>
-		<ul>
-			<li><span class="file"><a href="5.1.html">Типы коллекций. Интерфейс Collection</a></span></li>
-			<li><span class="file"><a href="5.2.html">Класс ArrayList и интерфейс List</a></span></li>
-			<li><span class="file"><a href="5.6.html">Интерфейсы Comparable и Comporator. Сортировка</a></span></li>
-			<li><span class="file"><a href="5.7.html">Очереди и стеки. Классы ArrayDeque и PriorityQueue</a></span></li>
-			<li><span class="file"><a href="5.3.html">Связанный список LinkedList</a></span></li>
-			<li><span class="file"><a href="5.4.html">Интерфейс Set и хеш-таблицы HashSet</a></span></li>
-			<li><span class="file"><a href="5.5.html">Деревья TreeSet и интерфейсы SortedSet и NavigableSet</a></span></li>
-			<li><span class="file"><a href="5.8.html">Словари. Интерфейс Map и класс HashMap</a></span></li>
-			<li><span class="file"><a href="5.9.html">Интерфейсы SortedMap и NavigableMap. Класс TreeMap</a></span></li>
-			<li><span class="file"><a href="5.10.html">Итераторы. Iterator и Iterable</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 7. Потоки ввода-вывода. Работа с файлами</span>
-		<ul>
-			<li><span class="file"><a href="6.1.html">Потоки ввода-вывода</a></span></li>
-			<li><span class="file"><a href="6.3.html">Чтение и запись файлов. FileInputStream и FileOutputStream</a></span></li>
-			<li><span class="file"><a href="6.2.html">Закрытие потоков и конструкция try-с-ресурсами</a></span></li>
-			<li><span class="file"><a href="6.4.html">Классы ByteArrayInputStream и ByteArrayOutputStream</a></span></li>
-			<li><span class="file"><a href="6.5.html">Буферизованные потоки BufferedInputStream и BufferedOutputStream</a></span></li>
-			<li><span class="file"><a href="6.6.html">Форматируемый вывод. PrintStream и PrintWriter</a></span></li>
-			<li><span class="file"><a href="6.7.html">Классы DataOutputStream и DataInputStream</a></span></li>
-			<li><span class="file"><a href="6.8.html">Чтение и запись текстовых файлов</a></span></li>
-			<li><span class="file"><a href="6.9.html">Буферизация символьных потоков. BufferedReader и BufferedWriter</a></span></li>
-			<li><span class="file"><a href="6.10.html">Сериализация объектов</a></span></li>
-			<li><span class="file"><a href="6.11.html">Класс File. Работа с файлами и каталогами</a></span></li>
-			<li><span class="file"><a href="6.12.html">Работа с ZIP-архивами</a></span></li>
-			<li><span class="file"><a href="6.13.html">Класс Console</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 8. Работа со строками</span>
-		<ul>
-			<li><span class="file"><a href="7.1.html">Введение в строки. Класс String</a></span></li>
-			<li><span class="file"><a href="7.2.html">Основные операции со строками</a></span></li>
-			<li><span class="file"><a href="7.3.html">StringBuffer и StringBuilder</a></span></li>
-			<li><span class="file"><a href="7.4.html">Регулярные выражения</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 9. Многопоточное программирование</span>
-		<ul>
-			<li><span class="file"><a href="8.1.html">Многопоточное программирование и класс Thread</a></span></li>
-			<li><span class="file"><a href="8.2.html">Создание и выполнение потоков</a></span></li>
-			<li><span class="file"><a href="8.11.html">Управление потоками</a></span></li>
-			<li><span class="file"><a href="8.4.html">Завершение и прерывание потока</a></span></li>
-			<li><span class="file"><a href="8.12.html">Виртуальные потоки</a></span></li>
-			<li><span class="file"><a href="8.3.html">Синхронизация потоков. Оператор synchronized</a></span></li>
-			<li><span class="file"><a href="8.5.html">Взаимодействие потоков. Методы wait и notify</a></span></li>
-			<li><span class="file"><a href="8.6.html">Семафоры</a></span></li>
-			<li><span class="file"><a href="8.7.html">Обмен между потоками. Класс Exchanger</a></span></li>
-			<li><span class="file"><a href="8.8.html">Класс Phaser</a></span></li>
-			<li><span class="file"><a href="8.9.html">Блокировки. ReentrantLock</a></span></li>
-			<li><span class="file"><a href="8.10.html">Условия в блокировках</a></span></li>
-			<li><span class="file"><a href="8.16.html">Переменные volatile</a></span></li>
-			<li><span class="file"><a href="8.17.html">Атомарность и Atomics. Потокобезопасность без блокировок</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 10. Асинхронность</span>
-		<ul>
-			<li><span class="file"><a href="8.13.html">Асинхронные задачи FutureTask. Callable и Future</a></span></li>
-			<li><span class="file"><a href="8.14.html">Executor - исполнитель задач</a></span></li>
-			<li><span class="file"><a href="8.15.html">Координация выполнения асинхронных задач</a></span></li>
-			<li><span class="file"><a href="8.18.html">CompletableFuture и промисы. Обработка результата асинхронных задач</a></span></li>
-			<li><span class="file"><a href="8.19.html">CompletableFuture, обработка ошибок и завершения асинхронных задач</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 11. Stream API</span>
-		<ul>
-			<li><span class="file"><a href="10.1.html">Введение в Stream API</a></span></li>
-			<li><span class="file"><a href="10.2.html">Создание потока данных</a></span></li>
-			<li><span class="file"><a href="10.3.html">Фильтрация, перебор элементов и отображение</a></span></li>
-			<li><span class="file"><a href="10.8.html">Сортировка</a></span></li>
-			<li><span class="file"><a href="10.13.html">Получение подпотока и объединение потоков</a></span></li>
-			<li><span class="file"><a href="10.4.html">Методы skip и limit</a></span></li>
-			<li><span class="file"><a href="10.11.html">Операции сведения</a></span></li>
-			<li><span class="file"><a href="10.5.html">Метод reduce</a></span></li>
-			<li><span class="file"><a href="10.12.html">Тип Optional</a></span></li>
-			<li><span class="file"><a href="10.6.html">Метод collect</a></span></li>
-			<li><span class="file"><a href="10.7.html">Группировка</a></span></li>
-			<li><span class="file"><a href="10.9.html">Параллельные потоки</a></span></li>
-			<li><span class="file"><a href="10.10.html">Параллельные операции над массивами</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 12. Модульность</span>
-		<ul>
-			<li><span class="file"><a href="11.1.html">Создание модуля</a></span></li>
-			<li><span class="file"><a href="11.2.html">Зависимые модули</a></span></li>
-			<li><span class="file"><a href="11.3.html">Взаимодействие между модулями. Экспорт и импорт</a></span></li>
-		</ul>
-	</li>
-	</li>
-	<li class="closed"><span class="folder">Глава 13. Дополнительные классы</span>
-		<ul>
-			<li><span class="file"><a href="12.1.html">Математические вычисления и класс Math</a></span></li>
-			<li><span class="file"><a href="12.2.html">Большие числа BigInteger и BigDecimal</a></span></li>
-			<li><span class="file"><a href="12.3.html">Работа с датами. LocalDate</a></span></li>
-			<li><span class="file"><a href="12.4.html">Процессы. Process и ProcessBuilder</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 14. JAR-файлы и подключение библиотек и классов</span>
-		<ul>
-			<li><span class="file"><a href="13.1.html">Файлы JAR, их создание и выполнение</a></span></li>
-			<li><span class="file"><a href="13.2.html">Создание и подключение библиотеки JAR</a></span></li>
-			<li><span class="file"><a href="13.4.html">Модульный jar-файл</a></span></li>
-			<li><span class="file"><a href="13.3.html">Установка пути к классам Java</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 15. Рефлексия</span>
-		<ul>
-			<li><span class="file"><a href="14.1.html">Введение в рефлексию. Класс Class</a></span></li>
-			<li><span class="file"><a href="14.2.html">Исследование типов</a></span></li>
-			<li><span class="file"><a href="14.3.html">Поля класса и класс Field</a></span></li>
-			<li><span class="file"><a href="14.4.html">Модификаторы доступа и класс Modifier</a></span></li>
-			<li><span class="file"><a href="14.5.html">Класс Constructor и cоздание объектов</a></span></li>
-			<li><span class="file"><a href="14.6.html">Методы и класс Method</a></span></li>
-			<li><span class="file"><a href="14.7.html">Proxy (Прокси)</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 16. Аннотации</span>
-		<ul>
-			<li><span class="file"><a href="15.1.html">Введение в аннотации. Встроенные аннотации</a></span></li>
-			<li><span class="file"><a href="15.2.html">Создание и применение аннотаций</a></span></li>
-			<li><span class="file"><a href="15.3.html">Обработка аннотаций во время выполнения</a></span></li>
-		</ul>
-	</li>
-
-
-	<li class="closed"><span class="folder">Глава 17. Взаимодействие с нативным кодом</span>
-		<ul>
-			<li><span class="file"><a href="16.1.html">Java Native Interface (JNI)</a></span></li>
-			<li><span class="file"><a href="16.2.html">Foreign Functions и Memory API</a></span></li>
-			<li><span class="file"><a href="16.3.html">Арена и сегменты памяти MemorySegment</a></span></li>
-			<li><span class="file"><a href="16.4.html">Компоновка памяти MemoryLayout и работа с MemorySegment</a></span></li>
-			<li><span class="file"><a href="16.5.html">Сложные данные и MemoryLayout</a></span></li>
-			<li><span class="file"><a href="16.6.html">Поиск и вызов внешних функций</a></span></li>
-			<li><span class="file"><a href="16.7.html">Нативные функции обратного вызова</a></span></li>
-		</ul>
-	</li>
-</ul>   </div>
-</div>
-
-  <div class="item right">
-<div class="help" style="border: 0px;">
-    
-	<div class="help-item">
-		<div class="help-item-name"><a href="https://metanit.com/settings.html">Настройки</a></div>
-	 </div>
-</div>
-			<div class="help">
-
-      <div class="help-header">Помощь сайту</div>
-
-       <div class="help-item">
-		<div class="help-item-name"><a href="https://yoomoney.ru/to/410011174743222" rel="nofollow">Помощь сайту</a></div>
-	 </div>
-       
-      <div class="help-item">
-		<div class="help-item-name">Юмани:</div>
-		<div class="help-item-req">410011174743222</div>
-	 </div>
-
-		<div class="help-item">
-			<div class="help-item-name">Номер карты:</div>
-			<div class="help-item-req">4048415020898850</div>
-		</div>
 
       </div>
 
-	
-	
-
-
-
-
   </div>
 </div>
 
-<div id="footer" style="padding-bottom:85px;">
-
-<div class="bootomLinks">
-<a href="https://vk.com/metanit" title="Присоединиться к группе вконтакте" rel="nofollow">
-Вконтакте</a>|
- <a href="https://t.me/devnull22" title="Подписаться на телеграм" rel="nofollow">
-Телеграм</a> | 
-<a href="https://metanit.com/donations.html" rel="nofollow">Донаты/Помощь сайту</a>
-</div>
-<p>Contacts: metanit22@mail.ru</p>
-<p>Copyright &copy; Евгений Попов, metanit.com, 2026. Все права защищены.</p>
-
-
-</div>
-
-</div>
-
-
-
-
-
-
-
-
-
-
-<script src='../../js/syntax16.js'></script>
-<script>
-// Syntax Highlighter
-if (typeof SyntaxHighlighter !== 'undefined') {
-    SyntaxHighlighter.all();
-}
-
-// Copy guard
-document.addEventListener('copy', (ev) => {
-    const et = ev.target;
-    if (et.type === 'textarea') {
-        ev.clipboardData.setData('text/plain', et.value.substring(et.selectionStart, et.selectionEnd).replace(/ /g, ' '));
-        ev.preventDefault();
-    }
-});
-
-// Mobile menu
-const faBars = document.querySelector('.fa-bars');
-if (faBars) {
-    faBars.addEventListener('click', () => {
-        const tree = document.querySelector('.item.left');
-        if (tree) {
-            tree.style.display = (tree.style.display === 'block') ? 'none' : 'block';
-        }
-    });
-}
-
-const menuButton = document.getElementById('menuButton');
-if (menuButton) {
-    menuButton.addEventListener('click', () => {
-        menuButton.classList.toggle('menu-opened');
-        const mainMenu = document.querySelector('.mainmenu');
-        if (mainMenu) mainMenu.classList.toggle('open');
-    });
-}
-
-// Search toggle
-const magGlass = document.getElementById('magnifying-glass');
-if (magGlass) {
-    magGlass.addEventListener('click', () => {
-        const search = document.getElementById('search');
-        if (search) search.classList.toggle('transp');
-    });
-}
-
-// Theme toggle
-const toggleTheme = document.getElementById('toggle-theme');
-if (toggleTheme) {
-    toggleTheme.addEventListener('click', () => {
-        if (document.documentElement.hasAttribute('theme')) {
-            document.documentElement.removeAttribute('theme');
-            document.cookie = 'theme=1;expires=Mon, 19 Feb 2001 12:00:00 UTC;path=/;';
-        } else {
-            document.documentElement.setAttribute('theme', 'dark');
-            var expire = new Date();
-            expire.setHours(expire.getHours() + 7);
-            document.cookie = 'theme=1;expires=' + expire.toUTCString() + ';path=/;';
-        }
-    });
-}
-
-// Share buttons
-const shareVK = document.querySelectorAll('.share .fa-vk');
-shareVK.forEach(e => e.addEventListener('click', () => window.open('http://vk.com/share.php?url=' + window.location.href, 'Поделиться в ВКОНТАКТЕ')));
-const shareTG = document.querySelectorAll('.share .fa-telegram');
-shareTG.forEach(e => e.addEventListener('click', () => window.open('tg://msg_url/url=' + window.location.href, 'Поделиться в Telegram')));
-const shareOK = document.querySelectorAll('.share .fa-odnoklassniki');
-shareOK.forEach(e => e.addEventListener('click', () => window.open('https://connect.ok.ru/offer?url=' + window.location.href, 'Поделиться в Одноклассниках')));
-
-// Folders
-const folders = document.getElementsByClassName('closed');
-for (let i = 0; i < folders.length; i++) {
-    folders[i].addEventListener('click', function (e) {
-        this.classList.toggle('closed');
-        this.classList.toggle('opened');
-    });
-}
-
-// Active Item Highlight
-const activePath = window.location.pathname.split('/').pop();
-const activeItem = document.querySelector(".file a[href*='" + activePath + "']");
-if (activeItem) {
-    activeItem.classList.add('aMItem');
-    activeItem.parentElement.classList.add('aMItem');
-    const activeFolder = activeItem.closest('li');
-    if (activeFolder) {
-        activeFolder.classList.remove('closed');
-        activeFolder.classList.add('opened');
-        const folderLabel = activeFolder.querySelector('.folder');
-        if (folderLabel) folderLabel.classList.add('aMItem');
-    }
-}
-
-// Settings
-const props = ['--main-font-size', '--main-font-family', '--menc-bg-color', '--container-bg-color', '--menu-bg-color', '--code-font-size', '--code-font-family', '--code-bgcolor', '--code-max-height'];
-for (let i = 0; i < props.length; i++) {
-    const propValue = localStorage.getItem(props[i]);
-    if (propValue !== null) document.documentElement.style.setProperty(props[i], propValue);
-}
-</script>
+<script src="../prism/prism.js"></script>
+<script src="../prism/prism-java.js"></script>
 </body>
 </html>

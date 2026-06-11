@@ -1,154 +1,69 @@
 <!DOCTYPE html>
-<html  lang="ru">
+<html  lang="uk">
 <head>
-<title>Java | Поиск и вызов внешних функций</title>
+<title>Java | Пошук та виклик зовнішніх функцій</title>
 <meta charset="utf-8" />
-<meta name="description" content="Поиск и вызов внешних функций в Foreign Functions и Memory API в языке программирования Java, типы Linker, MethodHandle, FunctionDescriptor, получение дескриптора функций и методов, downcallHandle, SymbolLookup.libraryLookup">
+<meta name="description" content="Пошук та виклик зовнішніх функцій в Foreign Functions та Memory API в языке программирования Java, типы Linker, MethodHandle, FunctionDescriptor, получение дескриптора функций и методів, downcallHandle, SymbolLookup.libraryLookup">
 <meta name="viewport" content="width=device-width">
-<link href="../../style50.css@v=1.css" rel="stylesheet" type="text/css">
+
+<link href="../prism/prism.css" rel="stylesheet" />
 </head>
 <body>
 <div id="container">
-<header>
-<div id="header">
-<div id="logo">
-<a class="logoTitle" href="https://metanit.com/" title="На главную">METANIT.COM</a>
-<div class="logoDefinition">Сайт о программировании</div> 
-</div>
+<div class="item center menC">
+     <h1>Пошук та виклик зовнішніх функцій</h1><div class="date">Останнє оновлення: 21.12.2025</div>
 
-<div class="socbtns">
-<ul>
-<li><a title="Посмотреть меню" rel="nofollow" class="fa fa-lg fa-bars"></a></li>
-<li><a href="https://metanit.com/donations.html" title="Помощь сайту" rel="nofollow" style="color: var(--fa-usd-color);" class="fa fa-lg fa-usd"></a></li>
-<li><a href="https://vk.com/metanit" title="Группа в ВКонтакте" rel="nofollow" style="color: var(--fa-vk-color);" class="fa fa-lg fa-vk"></a></li>
-<li><a href="https://t.me/devnull22" title="Группа в Телеграмме"  class="fa fa-lg fa-tel" style="color: var(--fa-tel-color);"></a></li>
-<li><a href="https://metanit.com/android.html" title="Приложения андроид" rel="nofollow" style="color: var(--fa-android-color);" class="fa fa-lg fa-android"></a></li>
-<li><i id="toggle-theme" class="fa fa-lg fa-adjust"></i></li>
-</ul>
-</div>
-
-
-<div id="magnifying-glass"></div>
-
-<div class="menuButton" id="menuButton">
-	<span class="icon-bar"></span>
-    <span class="icon-bar"></span>
-    <span class="icon-bar"></span>
-</div>
-</div>
-
-<div id="search" class="transp">
-<form action="https://www.google.ru" id="cse-search-box">
-  <div>
-    <input type="hidden" name="cx" value="partner-pub-3716042175333627:1096498938" />
-    <input type="hidden" name="ie" value="UTF-8" />
-    <input type="text" name="q" />
-    <input type="submit" name="sa" value="Найти" />
-  </div>
-</form>
-</div>
-
-<div id="menu" class="menu">
-<ul class="mainmenu">
-    <li><a href="https://metanit.com/common/">Программирование</a></li>
-    <li><a href="https://metanit.com/assembler/">Ассемблер</a></li>
-   <li><a href="https://metanit.com/sharp/">C#</a></li>
-   <li><a href="https://metanit.com/java/">Java</a></li>
-   <li><a href="https://metanit.com/web/">WEB</a></li>
-   <li><a href="https://metanit.com/python/">Python</a></li>
-   <li><a href="https://metanit.com/c/">C</a></li>
-   <li><a href="https://metanit.com/cpp/">C++</a></li>
-   <li><a href="https://metanit.com/sql/">SQL</a></li>
-   <li><a href="https://metanit.com/nosql/mongodb/">MongoDB</a></li>
-   <li><a href="https://metanit.com/go/">Go</a></li>
-   <li><a href="https://metanit.com/visualbasic/">VB.NET</a></li>
-   <li><a href="https://metanit.com/swift/tutorial/">Swift</a></li>
-   <li><a href="https://metanit.com/kotlin/">Kotlin</a></li>
-   <li><a href="https://metanit.com/dart/">Dart</a></li>
-   <li><a href="https://metanit.com/php/">PHP</a></li>
-   <li><a href="https://metanit.com/rust/">Rust</a></li>
-   <li><a href="https://metanit.com/os/">Linux</a></li>
-   <li><a href="https://metanit.com/f/">F#</a></li>
-   <!--<li><a href="//metanit.com/lisp/tutorial/">Common Lisp</a></li>-->
-   <li><a href="https://metanit.com/hosting">Хостинг</a></li>
-</ul>
-</div>
-
-</header>
-<div class="outercontainer">
-<div class="innercontainer">
- 
-   <div class="item center menC">
-     <h1>Поиск и вызов внешних функций</h1><div class="date">Последнее обновление: 21.12.2025</div>
-	<div class="socBlock">
-	<div class="share soctop">
-	<ul>
-	<li><a title="Поделиться в Вконтакте" rel="nofollow" class="fa fa-lg fa-vk"></a></li>
-	<li><a title="Поделиться в Телеграм" rel="nofollow" class="fa fa-lg fa-telegram"></a></li>
-	<li><a title="Поделиться в Одноклассниках" rel="nofollow" class="fa fa-lg fa-odnoklassniki"></a></li>
-	
-	</ul>
-	</div>
-	</div>
-
-	<div style="margin-top:23px;margin-left:5px;">
-		
-		
-		
-	</div>
-
-	
-<p>Для поиска библиотечных функций языка Си и их подготовке для вызова в API FFM применяется класс <span class="b">java.lang.foreign.Linker</span>. Для создания линкера, связанного с текущей нативной платформой ОС применяется 
+<p>Для поиска библиотечных функций языка Си и их подготовке для вызова в API FFM застосовується класс <span class="b">java.lang.foreign.Linker</span>. Для создания линкера, связанного с текущей нативной платформой ОС застосовується 
 статический метод <span class="b">Linker.nativeLinker()</span>:</p>
-<pre class="brush:java;">Linker linker = Linker.nativeLinker();</pre>
-<p>Фактически, часть "поиска" делегируется экземпляру <span class="b">SymbolLookup</span>, который определяется с помощью метода <code>defaultLookup()</code> линкера:</p>
-<pre class="brush:java;">
+<pre class="line-numbers"><code class="language-java">Linker linker = Linker.nativeLinker();</code></pre>
+<p>Фактически, часть "поиска" делегируется экземпляру <span class="b">SymbolLookup</span>, який определяется за допомогою метода <code>defaultLookup()</code> линкера:</p>
+<pre class="line-numbers"><code class="language-java">
 Linker linker = Linker.nativeLinker();
 SymbolLookup stdlib = linker.defaultLookup();
-</pre>
-<p>Библиотеки, о которых знает поиск по умолчанию, зависят от платформы. В Linux это libc и libm. Этот поиск достаточен для таких известных функций, как printf и malloc.</p>
-<p>Для использования со специализированной библиотекой (или своей) в метод <code>SymbolLookup.libraryLookup()</code> передается путь к файлу библиотеки (в виде строки или объекта <code>Path</code>) и арена:</p>
-<pre class="brush:java;">
+</code></pre>
+<p>Библиотеки, о которых знает поиск по умолчанию, зависят от платформы. В Linux це libc и libm. Цет поиск достаточен для таких известных функций, як printf и malloc.</p>
+<p>Для использования со специализированной библиотекой (или своей) в метод <code>SymbolLookup.libraryLookup()</code> передаєся путь к файлу библиотеки (в виде строки або об'єкта <code>Path</code>) и арена:</p>
+<pre class="line-numbers"><code class="language-java">
 SymbolLookup somelib = SymbolLookup.libraryLookup("/lib/x86_64-linux-gnu/libsxxx.so", arena);
-</pre>
+</code></pre>
 <p>Метод <code>libraryLookup</code> загружает библиотеку. А когда арена закрывается, библиотека выгружается.</p>
 
 <h3>Поиск функций</h3>
-<p>Получив объект <code>SymbolLookup</code>, мы можем перейти к поиску функций. Для этого <code>SymbolLookup</code> предоставляет два метода:</p>
+<p>Получив об'єкт <code>SymbolLookup</code>, мы можемо перейти к поиску функций. Для цього <code>SymbolLookup</code> надає два метода:</p>
 <ul>
-<li><p><code>Optional&lt;MemorySegment&gt; find(String name)</code>: возвращает адрес символа с заданным именем</p></li>
-<li><p><code>MemorySegment findOrThrow(String name)</code>: возвращает адрес символа с заданным именем или генерирует исключение, если функция не найдена</p></li>
+<li><p><code>Optional&lt;MemorySegment&gt; find(String name)</code>: повертає адрес символа с заданным именем</p></li>
+<li><p><code>MemorySegment findOrThrow(String name)</code>: повертає адрес символа с заданным именем або генерує исключение, якщо функция не найдена</p></li>
 </ul>
-<p>В обоих случаях указатель на полученную функцию возвращается через объект <code>MemorySegment</code>, работа с которым была рассмотрена в предыдущеихз статьях. Например, поиск функции <code>printf</code>:</p>
-<pre class="brush:java;">
+<p>В обоих случаях указатель на полученную функцию повертаєся через об'єкт <code>MemorySegment</code>, работа с которым бува рассмотрена в предыдущеихз статьях. Наприклад, поиск функції <code>printf</code>:</p>
+<pre class="line-numbers"><code class="language-java">
 Linker linker = Linker.nativeLinker();
 SymbolLookup stdlib = linker.defaultLookup();
 MemorySegment printf_addr = stdlib.findOrThrow("printf");
-</pre>
-<h3>Дескриптор функции/метода</h3>
-<p>Получив адрес вызываемой функции, можн создать дескриптор метода для ее вызова. <span class="b">Дескриптор метода</span> - это объект, через который можно передавать аргументы, вызывать метод и 
+</code></pre>
+<h3>Дескриптор функції/метода</h3>
+<p>Получив адрес вызываемой функції, можн создать дескриптор метода для її вызова. <span class="b">Дескриптор метода</span> - це об'єкт, через який можна передавать аргументы, вызывать метод и 
 получать возвращаемое значение.</p>
-<p>Дескриптор метода представляет тип <span class="b">MethodHandle</span>. Для его создания линкер - объект <code>Linker</code> предоставляет метода <span class="b">downcallHandle()</span></p>
+<p>Дескриптор метода представляє тип <span class="b">MethodHandle</span>. Для его создания линкер - об'єкт <code>Linker</code> надає метода <span class="b">downcallHandle()</span></p>
 <ul>
 <li><p><code>downcallHandle(FunctionDescriptor function, Linker.Option... options)</code></p>
-<p>Создает дескриптор метода, используемый для вызова внешней функции с заданной сигнатурой</p></li>
+<p>Створює дескриптор метода, используемый для вызова внешней функції с заданной сигнатурой</p></li>
 <li><p><code>downcallHandle(MemorySegment address, FunctionDescriptor function, Linker.Option... options)</code></p>
-<p>Создает дескриптор метода, используемый для вызова внешней функции с заданной сигнатурой и адресом</p></li>
+<p>Створює дескриптор метода, используемый для вызова внешней функції с заданной сигнатурой и адресом</p></li>
 </ul>
 
-<p>Этот метод принимает до трех параметров:</p>
+<p>Цет метод приймає до трех параметров:</p>
 <ul>
-<li><p><code>address</code>: сегмент памяти, базовый адрес которого совпадает с адресом вызываемой внешней функции</p></li>
-<li><p><code>function</code>: дескриптор вызываемой внешней функции</p></li>
-<li><p><code>options</code>: параметры линкера, связанные с этим запросом на компоновку</p></li>
+<li><p><code>address</code>: сегмент памяти, базовый адрес которого совпадает с адресом вызываемой внешней функції</p></li>
+<li><p><code>function</code>: дескриптор вызываемой внешней функції</p></li>
+<li><p><code>options</code>: параметры линкера, связанные с цим запросом на компоновку</p></li>
 </ul>
-<p>Ключевой здесь параметр - это десткриптор функции, представленный интерфейсом <span class="b">FunctionDescriptor</span>. Для определения этого объекта обычно применяется статический метод 
+<p>Ключевой здесь параметр - це десткриптор функції, представленный інтерфейсом <span class="b">FunctionDescriptor</span>. Для определения цього об'єкта обычно застосовується статический метод 
 <code>FunctionDescriptor.of</code></p>
-<pre class="brush:java;">FunctionDescriptor.of(MemoryLayout resLayout, MemoryLayout... argLayouts)</pre>
-<p>Его первый параметр представляет компоновку памяти типа результата функции, а второй параметр - компоновки памяти для параметров функции.</p>
+<pre class="line-numbers"><code class="language-java">FunctionDescriptor.of(MemoryLayout resLayout, MemoryLayout... argLayouts)</code></pre>
+<p>Его первый параметр представляє компоновку памяти типу результата функції, а второй параметр - компоновки памяти для параметров функції.</p>
 
-<p>Например, получим десткриптор метода для функции <code>printf</code>:</p>
-<pre class="brush:java;">
+<p>Наприклад, получим десткриптор метода для функції <code>printf</code>:</p>
+<pre class="line-numbers"><code class="language-java">
 import java.lang.foreign.*;
 import java.lang.invoke.*;
 
@@ -160,28 +75,28 @@ public class Program {
         Linker linker = Linker.nativeLinker();
         // получаем стандартную библиотеку
         SymbolLookup stdlib = linker.defaultLookup();
-        // получаем адрес функции printf
+        // получаем адрес функції printf
         MemorySegment printf_addr = stdlib.findOrThrow("printf");
-        // дескриптор функции printf
+        // дескриптор функції printf
         FunctionDescriptor printf_desc = FunctionDescriptor.of(ValueLayout.JAVA_INT, ValueLayout.ADDRESS);
-        // дескриптор метода для функции printf
+        // дескриптор метода для функції printf
         MethodHandle printf = linker.downcallHandle(printf_addr, printf_desc);
         System.out.println(printf);     // MethodHandle(MemorySegment)int
     }
 }
-</pre>
-<p>При передаче указателя в функцию C или получении результата указателя используется <code>ValueLayout.ADDRESS</code>. Тип блока памяти не имеет значения. Кроме того, необходимо точно указать тип 
-возвращаемого значения функции и типы параметров. Если предоставить неверную информацию, виртуальная машина может завершиться с ошибкой.</p>
-<p>Так, функция <code>printf</code> в C возвращает целое число <code>int</code>, а в качестве параметра принимает строку (по сути указатель на символы), поэтому ее дескриптор имеет форму</p>
-<pre class="brush:java;">FunctionDescriptor.of(ValueLayout.JAVA_INT, ValueLayout.ADDRESS)</pre>
-<h3>Вызов функции</h3>
-<p>Получив дескриптор метода, наконец мы можем вызвать функцию. Для этого у типа <code>MethodHandle</code> применяется метод <span class="b">invoke()</span></p>
-<pre class="brush:java;">public final Object invoke(Object... args) throws Throwable</pre>
-<p>В качестве аргументов в вызов метода передаются значения для параметров внешней функции. ПРи этом параметры должны соответствовать типам языка Си, а не Java. Например, мы не можем написать так:</p>
-<pre class="brush:java;">printf.invoke("Hello");</pre>
-<p>Хотя, казалось бы функция <code>printf()</code> принимает строку. Однако это должна быть строка языка Си. Соответственно нам надо сконвертировать строку Java в строку Си (UTF-8). 
-Пример такого преобразования и вызова функции <code>printf</code>:</p>
-<pre class="brush:java;">
+</code></pre>
+<p>При передаче указателя в функцию C або получении результата указателя використовується <code>ValueLayout.ADDRESS</code>. Тип блока памяти не имїїт значения. Крім того, необхідно точно указать тип 
+возвращаемого значения функції и типы параметров. Если предоставить неверную информацию, виртуальная машина может завершиться с ошибкой.</p>
+<p>Так, функция <code>printf</code> в C повертає целое число <code>int</code>, а в качестве параметра приймає строку (по сути указатель на символы), поцему її дескриптор имїїт форму</p>
+<pre class="line-numbers"><code class="language-java">FunctionDescriptor.of(ValueLayout.JAVA_INT, ValueLayout.ADDRESS)</code></pre>
+<h3>Вызов функції</h3>
+<p>Получив дескриптор метода, наконец мы можемо вызвать функцию. Для цього у типу <code>MethodHandle</code> застосовується метод <span class="b">invoke()</span></p>
+<pre class="line-numbers"><code class="language-java">public final Object invoke(Object... args) throws Throwable</code></pre>
+<p>В качестве аргументов в вызов метода передаются значения для параметров внешней функції. ПРи цем параметры повинні соответствовать типум языка Си, а не Java. Наприклад, мы не можемо написать так:</p>
+<pre class="line-numbers"><code class="language-java">printf.invoke("Hello");</code></pre>
+<p>Хотя, казалось бы функция <code>printf()</code> приймає строку. Однак це повинна быть строка языка Си. Соответственно нам треба сконвертировать строку Java в строку Си (UTF-8). 
+Пример такого преобразования и вызова функції <code>printf</code>:</p>
+<pre class="line-numbers"><code class="language-java">
 import java.lang.foreign.*;
 import java.lang.invoke.*;
 
@@ -194,37 +109,37 @@ public class Program {
         // получаем стандартную библиотеку
         SymbolLookup stdlib = linker.defaultLookup();
 
-        // получаем адрес функции printf
+        // получаем адрес функції printf
         MemorySegment printf_addr = stdlib.findOrThrow("printf");
-        // дескриптор функции printf
+        // дескриптор функції printf
         FunctionDescriptor printf_desc = FunctionDescriptor.of(ValueLayout.JAVA_INT, ValueLayout.ADDRESS);
-        // дескриптор метода для функции printf
+        // дескриптор метода для функції printf
         MethodHandle printf = linker.downcallHandle(printf_addr, printf_desc);
 
         // создаем арену
         try (Arena arena = Arena.ofConfined()) {
             
             // строка для вывода
-            String str = "Hello METANIT.COM\n";
+            String str = "Hello \n";
             // преобразуем строку Java в строку UTF-8
             MemorySegment str_seg = arena.allocateFrom(str);
 
             // вызываем функцию printf и получаем результат
-            int char_count = (int) printf.invoke(str_seg);  // Hello METANIT.COM
+            int char_count = (int) printf.invoke(str_seg);  // Hello 
             
             System.out.println("Длина строки: " + char_count + " символов");  // Длина строки: 18 символов
         }
     }
 }
-</pre>
-<h4>Возвращаемый тип void</h4>
-<p>Отдельно стоит сказать про функции, который возвращают <span class="b">void</span>. В этом случае для определения дескриптора функции применяется метод <span class="b">FunctionDescriptor.ofVoid</span></p>
-<pre class="brush:java;">
+</code></pre>
+<h4>Підзвращаемый тип void</h4>
+<p>Отдельно варто сказать про функції, який повертають <span class="b">void</span>. В цем случае для определения дескриптора функції застосовується метод <span class="b">FunctionDescriptor.ofVoid</span></p>
+<pre class="line-numbers"><code class="language-java">
 FunctionDescriptor ofVoid(MemoryLayout... argLayouts)
-</pre>
-<p>В качестве параметров методу также передаются значения, которые передаются вызываемой внешней функции. Указатель на <code>void</code> (<code>void*</code>), как и все указатели, представляют тип <code>ValueLayout.ADDRESS</code>. 
-Например, получим дескрипторы методов для функций <code>malloc</code> (выделение памяти) и <code>free</code> (освобождение памяти)</p>
-<pre class="brush:java;">
+</code></pre>
+<p>В качестве параметров методу також передаются значения, которые передаются вызываемой внешней функції. Указатель на <code>void</code> (<code>void*</code>), як и все указатели, представляють тип <code>ValueLayout.ADDRESS</code>. 
+Наприклад, получим дескрипторы методів для функций <code>malloc</code> (выделение памяти) и <code>free</code> (освобождение памяти)</p>
+<pre class="line-numbers"><code class="language-java">
 import java.lang.foreign.*;
 import java.lang.invoke.*;
 
@@ -237,14 +152,13 @@ public class Program {
         // получаем стандартную библиотеку
         SymbolLookup stdlib = linker.defaultLookup();
 
-        // получаем адрес функции malloc
+        // получаем адрес функції malloc
         MemorySegment mallocAddr = stdlib.findOrThrow("malloc");
         // void* malloc(size_t)
         MethodHandle mallocHandle = linker.downcallHandle(mallocAddr, FunctionDescriptor.of(ValueLayout.ADDRESS, ValueLayout.JAVA_LONG));
         System.out.println(mallocHandle);   // MethodHandle(long)MemorySegment
 
-
-        // получаем адрес функции free
+        // получаем адрес функції free
         MemorySegment freeAddr = stdlib.findOrThrow("free");
         // void free(void *ptr)
         MethodHandle freeHandle = linker.downcallHandle(freeAddr, FunctionDescriptor.ofVoid(ValueLayout.ADDRESS));
@@ -252,426 +166,16 @@ public class Program {
 
     }
 }
-</pre>
+</code></pre>
 
-	
-
-	<div style="margin-top:25px;">
-
-	
-	</div>
-
-	<div class="nav"><p><a href="16.5.html">Назад</a><a href="index.html">Содержание</a><a href="16.7.html">Вперед</a></p></div>
-	<div class="socBlock">
-	<div class="share soctop">
-	<ul>
-	<li><a title="Поделиться в Вконтакте" rel="nofollow" class="fa fa-lg fa-vk"></a></li>
-	<li><a title="Поделиться в Телеграм" rel="nofollow" class="fa fa-lg fa-telegram"></a></li>
-	<li><a title="Поделиться в Одноклассниках" rel="nofollow" class="fa fa-lg fa-odnoklassniki"></a></li>
-	
-	</ul>
-	</div>
-	</div>
   </div>
-
-	<div class="item left">
-     <ul id="browser" class="filetree"> 
-	<li class="closed"><span class="folder">Глава 1. Введение в Java</span>
-		<ul>
-			<li><span class="file"><a href="1.1.html">Что такое Java</a></span></li>
-			<li><span class="file"><a href="1.6.html">Установка JDK</a></span></li>
-			<li><span class="file"><a href="1.2.html">Первая программа на Java</a></span></li>
-			<li><span class="file"><a href="1.5.html">Первая программа в IntelliJ IDEA</a></span></li>
-			<li><span class="file"><a href="1.3.html">Первая программа в NetBeans</a></span></li>
-			<li><span class="file"><a href="1.4.html">Первая программа в Eclipse</a></span></li>
-			<li><span class="file"><a href="1.7.html">JShell</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 2. Основы программирования на Java</span>
-		<ul>
-			<li><span class="file"><a href="2.11.html">Структура программы</a></span></li>
-			<li><span class="file"><a href="2.1.html">Переменные и константы</a></span></li>
-			<li><span class="file"><a href="2.19.html">Литералы</a></span></li>
-			<li><span class="file"><a href="2.12.html">Типы данных</a></span></li>
-			<li><span class="file"><a href="2.9.html">Консольный ввод/вывод в Java</a></span></li>
-			<li><span class="file"><a href="2.3.html">Арифметические операции</a></span></li>
-			<li><span class="file"><a href="2.13.html">Поразрядные операции</a></span></li>
-			<li><span class="file"><a href="2.14.html">Условные выражения</a></span></li>
-			<li><span class="file"><a href="2.15.html">Операции присваивания и приоритет операций</a></span></li>
-			<li><span class="file"><a href="2.2.html">Преобразования базовых типов данных</a></span></li>
-			<li><span class="file"><a href="2.5.html">Условные конструкции</a></span></li>
-			<li><span class="file"><a href="2.6.html">Циклы</a></span></li>
-			<li><span class="file"><a href="2.4.html">Массивы</a></span></li>
-			<li><span class="file"><a href="2.20.html">Конструкция и выражение switch</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 3. Классы</span>
-		<ul>
-			<li><span class="file"><a href="3.1.html">Классы и объекты</a></span></li>
-
-
-			<li><span class="file"><a href="2.7.html">Методы</a></span></li>
-			<li><span class="file"><a href="2.16.html">Параметры методов</a></span></li>
-			<li><span class="file"><a href="3.14.html">Объекты как параметры методов</a></span></li>
-			<li><span class="file"><a href="2.17.html">Оператор return. Результат метода</a></span></li>
-			<li><span class="file"><a href="2.18.html">Перегрузка методов</a></span></li>
-			<li><span class="file"><a href="3.21.html">Конструкторы и инициализаторы</a></span></li>
-
-
-			<li><span class="file"><a href="3.4.html">Статические компоненты класса и модификатор static</a></span></li>
-			<li><span class="file"><a href="3.20.html">Область действия и время жизни переменных</a></span></li>
-			<li><span class="file"><a href="2.8.html">Рекурсивные функции</a></span></li>
-			<li><span class="file"><a href="3.2.html">Пакеты</a></span></li>
-			<li><span class="file"><a href="3.3.html">Модификаторы доступа</a></span></li>
-			<li><span class="file"><a href="3.19.html">Компактные файлы кода и метод main</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 4. Объектно-ориентированное программирование</span>
-		<ul>
-			<li><span class="file"><a href="3.22.html">Инкапсуляция</a></span></li>
-			<li><span class="file"><a href="3.5.html">Наследование</a></span></li>
-			<li><span class="file"><a href="3.23.html">Запрет наследования и переопределения методов</a></span></li>
-			<li><span class="file"><a href="3.24.html">Полиморфизм и динамическая диспетчеризация методов</a></span></li>
-			<li><span class="file"><a href="3.9.html">Класс Object и его методы</a></span></li>
-			<li><span class="file"><a href="3.6.html">Абстрактные классы</a></span></li>
-			<li><span class="file"><a href="3.10.html">Иерархия наследования и преобразование типов</a></span></li>
-
-			<li><span class="file"><a href="3.7.html">Интерфейсы</a></span></li>
-			<li><span class="file"><a href="3.28.html">Интерфейсы и полиморфизм</a></span></li>
-			<li><span class="file"><a href="3.29.html">Множественная реализация и наследование интерфейсов</a></span></li>
-			<li><span class="file"><a href="3.16.html">Интерфейсы в механизме обратного вызова</a></span></li>
-			<li><span class="file"><a href="3.8.html">Перечисления enum</a></span></li>
-			<li><span class="file"><a href="3.11.html">Обобщения (Generics)</a></span></li>
-			<li><span class="file"><a href="3.17.html">Ограничения обобщений</a></span></li>
-			<li><span class="file"><a href="3.15.html">Наследование и обобщения</a></span></li>
-			<li><span class="file"><a href="3.31.html">Type Erasure (Стирание типов)</a></span></li>
-			<li><span class="file"><a href="3.32.html">Подстановочные знаки wildcards в обобщениях</a></span></li>
-			<li><span class="file"><a href="3.13.html">Ссылочные типы и клонирование объектов</a></span></li>
-			<li><span class="file"><a href="3.18.html">Классы Records</a></span></li>
-			<li><span class="file"><a href="9.4.html">Функциональные интерфейсы и ссылки на методы</a></span></li>
-			<li><span class="file"><a href="9.1.html">Лямбда-выражения</a></span></li>
-			<li><span class="file"><a href="9.2.html">Лямбды как параметры и результаты методов</a></span></li>
-			<li><span class="file"><a href="9.3.html">Встроенные функциональные интерфейсы</a></span></li>
-			<li><span class="file"><a href="3.12.html">Внутренние и вложенные классы</a></span></li>
-			<li><span class="file"><a href="3.30.html">Анонимные классы</a></span></li>
-
-
-			<li><span class="file"><a href="3.25.html">Sealed-классы и интерфейсы</a></span></li>
-			<li><span class="file"><a href="3.26.html">Pattern мatching. Паттерн типов</a></span></li>
-			<li><span class="file"><a href="3.27.html">Pattern мatching. record-паттерн</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 5. Обработка исключений</span>
-		<ul>
-			<li><span class="file"><a href="2.10.html">Обработка исключений и конструкция try...catch...finally</a></span></li>
-			<li><span class="file"><a href="4.2.html">Классы исключений</a></span></li>
-			<li><span class="file"><a href="4.1.html">Операторы throws и throw</a></span></li>
-			<li><span class="file"><a href="4.3.html">Создание своих классов исключений</a></span></li>
-			<li><span class="file"><a href="4.4.html">Assert</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 6. Коллекции</span>
-		<ul>
-			<li><span class="file"><a href="5.1.html">Типы коллекций. Интерфейс Collection</a></span></li>
-			<li><span class="file"><a href="5.2.html">Класс ArrayList и интерфейс List</a></span></li>
-			<li><span class="file"><a href="5.6.html">Интерфейсы Comparable и Comporator. Сортировка</a></span></li>
-			<li><span class="file"><a href="5.7.html">Очереди и стеки. Классы ArrayDeque и PriorityQueue</a></span></li>
-			<li><span class="file"><a href="5.3.html">Связанный список LinkedList</a></span></li>
-			<li><span class="file"><a href="5.4.html">Интерфейс Set и хеш-таблицы HashSet</a></span></li>
-			<li><span class="file"><a href="5.5.html">Деревья TreeSet и интерфейсы SortedSet и NavigableSet</a></span></li>
-			<li><span class="file"><a href="5.8.html">Словари. Интерфейс Map и класс HashMap</a></span></li>
-			<li><span class="file"><a href="5.9.html">Интерфейсы SortedMap и NavigableMap. Класс TreeMap</a></span></li>
-			<li><span class="file"><a href="5.10.html">Итераторы. Iterator и Iterable</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 7. Потоки ввода-вывода. Работа с файлами</span>
-		<ul>
-			<li><span class="file"><a href="6.1.html">Потоки ввода-вывода</a></span></li>
-			<li><span class="file"><a href="6.3.html">Чтение и запись файлов. FileInputStream и FileOutputStream</a></span></li>
-			<li><span class="file"><a href="6.2.html">Закрытие потоков и конструкция try-с-ресурсами</a></span></li>
-			<li><span class="file"><a href="6.4.html">Классы ByteArrayInputStream и ByteArrayOutputStream</a></span></li>
-			<li><span class="file"><a href="6.5.html">Буферизованные потоки BufferedInputStream и BufferedOutputStream</a></span></li>
-			<li><span class="file"><a href="6.6.html">Форматируемый вывод. PrintStream и PrintWriter</a></span></li>
-			<li><span class="file"><a href="6.7.html">Классы DataOutputStream и DataInputStream</a></span></li>
-			<li><span class="file"><a href="6.8.html">Чтение и запись текстовых файлов</a></span></li>
-			<li><span class="file"><a href="6.9.html">Буферизация символьных потоков. BufferedReader и BufferedWriter</a></span></li>
-			<li><span class="file"><a href="6.10.html">Сериализация объектов</a></span></li>
-			<li><span class="file"><a href="6.11.html">Класс File. Работа с файлами и каталогами</a></span></li>
-			<li><span class="file"><a href="6.12.html">Работа с ZIP-архивами</a></span></li>
-			<li><span class="file"><a href="6.13.html">Класс Console</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 8. Работа со строками</span>
-		<ul>
-			<li><span class="file"><a href="7.1.html">Введение в строки. Класс String</a></span></li>
-			<li><span class="file"><a href="7.2.html">Основные операции со строками</a></span></li>
-			<li><span class="file"><a href="7.3.html">StringBuffer и StringBuilder</a></span></li>
-			<li><span class="file"><a href="7.4.html">Регулярные выражения</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 9. Многопоточное программирование</span>
-		<ul>
-			<li><span class="file"><a href="8.1.html">Многопоточное программирование и класс Thread</a></span></li>
-			<li><span class="file"><a href="8.2.html">Создание и выполнение потоков</a></span></li>
-			<li><span class="file"><a href="8.11.html">Управление потоками</a></span></li>
-			<li><span class="file"><a href="8.4.html">Завершение и прерывание потока</a></span></li>
-			<li><span class="file"><a href="8.12.html">Виртуальные потоки</a></span></li>
-			<li><span class="file"><a href="8.3.html">Синхронизация потоков. Оператор synchronized</a></span></li>
-			<li><span class="file"><a href="8.5.html">Взаимодействие потоков. Методы wait и notify</a></span></li>
-			<li><span class="file"><a href="8.6.html">Семафоры</a></span></li>
-			<li><span class="file"><a href="8.7.html">Обмен между потоками. Класс Exchanger</a></span></li>
-			<li><span class="file"><a href="8.8.html">Класс Phaser</a></span></li>
-			<li><span class="file"><a href="8.9.html">Блокировки. ReentrantLock</a></span></li>
-			<li><span class="file"><a href="8.10.html">Условия в блокировках</a></span></li>
-			<li><span class="file"><a href="8.16.html">Переменные volatile</a></span></li>
-			<li><span class="file"><a href="8.17.html">Атомарность и Atomics. Потокобезопасность без блокировок</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 10. Асинхронность</span>
-		<ul>
-			<li><span class="file"><a href="8.13.html">Асинхронные задачи FutureTask. Callable и Future</a></span></li>
-			<li><span class="file"><a href="8.14.html">Executor - исполнитель задач</a></span></li>
-			<li><span class="file"><a href="8.15.html">Координация выполнения асинхронных задач</a></span></li>
-			<li><span class="file"><a href="8.18.html">CompletableFuture и промисы. Обработка результата асинхронных задач</a></span></li>
-			<li><span class="file"><a href="8.19.html">CompletableFuture, обработка ошибок и завершения асинхронных задач</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 11. Stream API</span>
-		<ul>
-			<li><span class="file"><a href="10.1.html">Введение в Stream API</a></span></li>
-			<li><span class="file"><a href="10.2.html">Создание потока данных</a></span></li>
-			<li><span class="file"><a href="10.3.html">Фильтрация, перебор элементов и отображение</a></span></li>
-			<li><span class="file"><a href="10.8.html">Сортировка</a></span></li>
-			<li><span class="file"><a href="10.13.html">Получение подпотока и объединение потоков</a></span></li>
-			<li><span class="file"><a href="10.4.html">Методы skip и limit</a></span></li>
-			<li><span class="file"><a href="10.11.html">Операции сведения</a></span></li>
-			<li><span class="file"><a href="10.5.html">Метод reduce</a></span></li>
-			<li><span class="file"><a href="10.12.html">Тип Optional</a></span></li>
-			<li><span class="file"><a href="10.6.html">Метод collect</a></span></li>
-			<li><span class="file"><a href="10.7.html">Группировка</a></span></li>
-			<li><span class="file"><a href="10.9.html">Параллельные потоки</a></span></li>
-			<li><span class="file"><a href="10.10.html">Параллельные операции над массивами</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 12. Модульность</span>
-		<ul>
-			<li><span class="file"><a href="11.1.html">Создание модуля</a></span></li>
-			<li><span class="file"><a href="11.2.html">Зависимые модули</a></span></li>
-			<li><span class="file"><a href="11.3.html">Взаимодействие между модулями. Экспорт и импорт</a></span></li>
-		</ul>
-	</li>
-	</li>
-	<li class="closed"><span class="folder">Глава 13. Дополнительные классы</span>
-		<ul>
-			<li><span class="file"><a href="12.1.html">Математические вычисления и класс Math</a></span></li>
-			<li><span class="file"><a href="12.2.html">Большие числа BigInteger и BigDecimal</a></span></li>
-			<li><span class="file"><a href="12.3.html">Работа с датами. LocalDate</a></span></li>
-			<li><span class="file"><a href="12.4.html">Процессы. Process и ProcessBuilder</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 14. JAR-файлы и подключение библиотек и классов</span>
-		<ul>
-			<li><span class="file"><a href="13.1.html">Файлы JAR, их создание и выполнение</a></span></li>
-			<li><span class="file"><a href="13.2.html">Создание и подключение библиотеки JAR</a></span></li>
-			<li><span class="file"><a href="13.4.html">Модульный jar-файл</a></span></li>
-			<li><span class="file"><a href="13.3.html">Установка пути к классам Java</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 15. Рефлексия</span>
-		<ul>
-			<li><span class="file"><a href="14.1.html">Введение в рефлексию. Класс Class</a></span></li>
-			<li><span class="file"><a href="14.2.html">Исследование типов</a></span></li>
-			<li><span class="file"><a href="14.3.html">Поля класса и класс Field</a></span></li>
-			<li><span class="file"><a href="14.4.html">Модификаторы доступа и класс Modifier</a></span></li>
-			<li><span class="file"><a href="14.5.html">Класс Constructor и cоздание объектов</a></span></li>
-			<li><span class="file"><a href="14.6.html">Методы и класс Method</a></span></li>
-			<li><span class="file"><a href="14.7.html">Proxy (Прокси)</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 16. Аннотации</span>
-		<ul>
-			<li><span class="file"><a href="15.1.html">Введение в аннотации. Встроенные аннотации</a></span></li>
-			<li><span class="file"><a href="15.2.html">Создание и применение аннотаций</a></span></li>
-			<li><span class="file"><a href="15.3.html">Обработка аннотаций во время выполнения</a></span></li>
-		</ul>
-	</li>
-
-
-	<li class="closed"><span class="folder">Глава 17. Взаимодействие с нативным кодом</span>
-		<ul>
-			<li><span class="file"><a href="16.1.html">Java Native Interface (JNI)</a></span></li>
-			<li><span class="file"><a href="16.2.html">Foreign Functions и Memory API</a></span></li>
-			<li><span class="file"><a href="16.3.html">Арена и сегменты памяти MemorySegment</a></span></li>
-			<li><span class="file"><a href="16.4.html">Компоновка памяти MemoryLayout и работа с MemorySegment</a></span></li>
-			<li><span class="file"><a href="16.5.html">Сложные данные и MemoryLayout</a></span></li>
-			<li><span class="file"><a href="16.6.html">Поиск и вызов внешних функций</a></span></li>
-			<li><span class="file"><a href="16.7.html">Нативные функции обратного вызова</a></span></li>
-		</ul>
-	</li>
-</ul>   </div>
-</div>
-
-  <div class="item right">
-<div class="help" style="border: 0px;">
-    
-	<div class="help-item">
-		<div class="help-item-name"><a href="https://metanit.com/settings.html">Настройки</a></div>
-	 </div>
-</div>
-			<div class="help">
-
-      <div class="help-header">Помощь сайту</div>
-
-       <div class="help-item">
-		<div class="help-item-name"><a href="https://yoomoney.ru/to/410011174743222" rel="nofollow">Помощь сайту</a></div>
-	 </div>
-       
-      <div class="help-item">
-		<div class="help-item-name">Юмани:</div>
-		<div class="help-item-req">410011174743222</div>
-	 </div>
-
-		<div class="help-item">
-			<div class="help-item-name">Номер карты:</div>
-			<div class="help-item-req">4048415020898850</div>
-		</div>
 
       </div>
 
-	
-	
-
-
-
-
   </div>
 </div>
 
-<div id="footer" style="padding-bottom:85px;">
-
-<div class="bootomLinks">
-<a href="https://vk.com/metanit" title="Присоединиться к группе вконтакте" rel="nofollow">
-Вконтакте</a>|
- <a href="https://t.me/devnull22" title="Подписаться на телеграм" rel="nofollow">
-Телеграм</a> | 
-<a href="https://metanit.com/donations.html" rel="nofollow">Донаты/Помощь сайту</a>
-</div>
-<p>Contacts: metanit22@mail.ru</p>
-<p>Copyright &copy; Евгений Попов, metanit.com, 2026. Все права защищены.</p>
-
-
-</div>
-
-</div>
-
-
-
-
-
-
-
-
-
-
-<script src='../../js/syntax16.js'></script>
-<script>
-// Syntax Highlighter
-if (typeof SyntaxHighlighter !== 'undefined') {
-    SyntaxHighlighter.all();
-}
-
-// Copy guard
-document.addEventListener('copy', (ev) => {
-    const et = ev.target;
-    if (et.type === 'textarea') {
-        ev.clipboardData.setData('text/plain', et.value.substring(et.selectionStart, et.selectionEnd).replace(/ /g, ' '));
-        ev.preventDefault();
-    }
-});
-
-// Mobile menu
-const faBars = document.querySelector('.fa-bars');
-if (faBars) {
-    faBars.addEventListener('click', () => {
-        const tree = document.querySelector('.item.left');
-        if (tree) {
-            tree.style.display = (tree.style.display === 'block') ? 'none' : 'block';
-        }
-    });
-}
-
-const menuButton = document.getElementById('menuButton');
-if (menuButton) {
-    menuButton.addEventListener('click', () => {
-        menuButton.classList.toggle('menu-opened');
-        const mainMenu = document.querySelector('.mainmenu');
-        if (mainMenu) mainMenu.classList.toggle('open');
-    });
-}
-
-// Search toggle
-const magGlass = document.getElementById('magnifying-glass');
-if (magGlass) {
-    magGlass.addEventListener('click', () => {
-        const search = document.getElementById('search');
-        if (search) search.classList.toggle('transp');
-    });
-}
-
-// Theme toggle
-const toggleTheme = document.getElementById('toggle-theme');
-if (toggleTheme) {
-    toggleTheme.addEventListener('click', () => {
-        if (document.documentElement.hasAttribute('theme')) {
-            document.documentElement.removeAttribute('theme');
-            document.cookie = 'theme=1;expires=Mon, 19 Feb 2001 12:00:00 UTC;path=/;';
-        } else {
-            document.documentElement.setAttribute('theme', 'dark');
-            var expire = new Date();
-            expire.setHours(expire.getHours() + 7);
-            document.cookie = 'theme=1;expires=' + expire.toUTCString() + ';path=/;';
-        }
-    });
-}
-
-// Share buttons
-const shareVK = document.querySelectorAll('.share .fa-vk');
-shareVK.forEach(e => e.addEventListener('click', () => window.open('http://vk.com/share.php?url=' + window.location.href, 'Поделиться в ВКОНТАКТЕ')));
-const shareTG = document.querySelectorAll('.share .fa-telegram');
-shareTG.forEach(e => e.addEventListener('click', () => window.open('tg://msg_url/url=' + window.location.href, 'Поделиться в Telegram')));
-const shareOK = document.querySelectorAll('.share .fa-odnoklassniki');
-shareOK.forEach(e => e.addEventListener('click', () => window.open('https://connect.ok.ru/offer?url=' + window.location.href, 'Поделиться в Одноклассниках')));
-
-// Folders
-const folders = document.getElementsByClassName('closed');
-for (let i = 0; i < folders.length; i++) {
-    folders[i].addEventListener('click', function (e) {
-        this.classList.toggle('closed');
-        this.classList.toggle('opened');
-    });
-}
-
-// Active Item Highlight
-const activePath = window.location.pathname.split('/').pop();
-const activeItem = document.querySelector(".file a[href*='" + activePath + "']");
-if (activeItem) {
-    activeItem.classList.add('aMItem');
-    activeItem.parentElement.classList.add('aMItem');
-    const activeFolder = activeItem.closest('li');
-    if (activeFolder) {
-        activeFolder.classList.remove('closed');
-        activeFolder.classList.add('opened');
-        const folderLabel = activeFolder.querySelector('.folder');
-        if (folderLabel) folderLabel.classList.add('aMItem');
-    }
-}
-
-// Settings
-const props = ['--main-font-size', '--main-font-family', '--menc-bg-color', '--container-bg-color', '--menu-bg-color', '--code-font-size', '--code-font-family', '--code-bgcolor', '--code-max-height'];
-for (let i = 0; i < props.length; i++) {
-    const propValue = localStorage.getItem(props[i]);
-    if (propValue !== null) document.documentElement.style.setProperty(props[i], propValue);
-}
-</script>
+<script src="../prism/prism.js"></script>
+<script src="../prism/prism-java.js"></script>
 </body>
 </html>

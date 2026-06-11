@@ -1,151 +1,64 @@
 <!DOCTYPE html>
-<html  lang="ru">
+<html  lang="uk">
 <head>
-<title>Java | Виртуальные потоки</title>
+<title>Java | Віртуальні потоки</title>
 <meta charset="utf-8" />
-<meta name="description" content="Виртуальные потоки в языке программирования Java, отличие от платформенных потоков, методы Thread.startVirtualThread и Thread.Builder.OfVirtual.ofVirtual">
+<meta name="description" content="Віртуальні потоки в языке программирования Java, отличие от платформенных потоков, методы Thread.startVirtualThread и Thread.Builder.OfVirtual.ofVirtual">
 <meta name="viewport" content="width=device-width">
-<link href="../../style50.css@v=1.css" rel="stylesheet" type="text/css">
+
+<link href="../prism/prism.css" rel="stylesheet" />
 </head>
 <body>
 <div id="container">
-<header>
-<div id="header">
-<div id="logo">
-<a class="logoTitle" href="https://metanit.com/" title="На главную">METANIT.COM</a>
-<div class="logoDefinition">Сайт о программировании</div> 
-</div>
+<div class="item center menC">
+     <h1>Віртуальні потоки</h1><div class="date">Останнє оновлення: 16.10.2025</div>
 
-<div class="socbtns">
-<ul>
-<li><a title="Посмотреть меню" rel="nofollow" class="fa fa-lg fa-bars"></a></li>
-<li><a href="https://metanit.com/donations.html" title="Помощь сайту" rel="nofollow" style="color: var(--fa-usd-color);" class="fa fa-lg fa-usd"></a></li>
-<li><a href="https://vk.com/metanit" title="Группа в ВКонтакте" rel="nofollow" style="color: var(--fa-vk-color);" class="fa fa-lg fa-vk"></a></li>
-<li><a href="https://t.me/devnull22" title="Группа в Телеграмме"  class="fa fa-lg fa-tel" style="color: var(--fa-tel-color);"></a></li>
-<li><a href="https://metanit.com/android.html" title="Приложения андроид" rel="nofollow" style="color: var(--fa-android-color);" class="fa fa-lg fa-android"></a></li>
-<li><i id="toggle-theme" class="fa fa-lg fa-adjust"></i></li>
-</ul>
-</div>
+<p>По умолчанию поток Java виконується в потоке платформы, предоставляемом операционной системой, в которой виконується виртуальная машина Java. 
+Для многих рабочих нагрузок це приемлемое решение. Однак потоки платформы не є легковесными. На створення потока платформы выделяется множество ресурсов и времени. 
+Це ограничивает количество потоков платформы, которые может обработать процессор. А приложениях с интенсивной нагрузкой це становится узким местом, ограничивая производительность приложения. 
+Так, нередко программа выполняет такие операции, которые можуть занять продолжительное час, наприклад, обращение к сетевым ресурсам, чтение-запись файлов, обращение к базе данных и т.д. 
+Такие операции можуть серьезно нагрузить приложение. Особенно це актуально в высоконагрвженных веб-приложениях, которые повинні быть готовы обслуживать тысячи запросов в секунду, и 
+где продолжительные операции можуть блокировать інтерфейс пользователя и негативно 
+повлиять на опыт пользователей. В случае с обычными потоками платформы при выполнении продолжительных операций поток просто бы блокировался на час виконання операции. 
+<span class="b">Віртуальні потоки</span> представляють решение цей проблемы.</p>
 
-
-<div id="magnifying-glass"></div>
-
-<div class="menuButton" id="menuButton">
-	<span class="icon-bar"></span>
-    <span class="icon-bar"></span>
-    <span class="icon-bar"></span>
-</div>
-</div>
-
-<div id="search" class="transp">
-<form action="https://www.google.ru" id="cse-search-box">
-  <div>
-    <input type="hidden" name="cx" value="partner-pub-3716042175333627:1096498938" />
-    <input type="hidden" name="ie" value="UTF-8" />
-    <input type="text" name="q" />
-    <input type="submit" name="sa" value="Найти" />
-  </div>
-</form>
-</div>
-
-<div id="menu" class="menu">
-<ul class="mainmenu">
-    <li><a href="https://metanit.com/common/">Программирование</a></li>
-    <li><a href="https://metanit.com/assembler/">Ассемблер</a></li>
-   <li><a href="https://metanit.com/sharp/">C#</a></li>
-   <li><a href="https://metanit.com/java/">Java</a></li>
-   <li><a href="https://metanit.com/web/">WEB</a></li>
-   <li><a href="https://metanit.com/python/">Python</a></li>
-   <li><a href="https://metanit.com/c/">C</a></li>
-   <li><a href="https://metanit.com/cpp/">C++</a></li>
-   <li><a href="https://metanit.com/sql/">SQL</a></li>
-   <li><a href="https://metanit.com/nosql/mongodb/">MongoDB</a></li>
-   <li><a href="https://metanit.com/go/">Go</a></li>
-   <li><a href="https://metanit.com/visualbasic/">VB.NET</a></li>
-   <li><a href="https://metanit.com/swift/tutorial/">Swift</a></li>
-   <li><a href="https://metanit.com/kotlin/">Kotlin</a></li>
-   <li><a href="https://metanit.com/dart/">Dart</a></li>
-   <li><a href="https://metanit.com/php/">PHP</a></li>
-   <li><a href="https://metanit.com/rust/">Rust</a></li>
-   <li><a href="https://metanit.com/os/">Linux</a></li>
-   <li><a href="https://metanit.com/f/">F#</a></li>
-   <!--<li><a href="//metanit.com/lisp/tutorial/">Common Lisp</a></li>-->
-   <li><a href="https://metanit.com/hosting">Хостинг</a></li>
-</ul>
-</div>
-
-</header>
-<div class="outercontainer">
-<div class="innercontainer">
- 
-   <div class="item center menC">
-     <h1>Виртуальные потоки</h1><div class="date">Последнее обновление: 16.10.2025</div>
-	<div class="socBlock">
-	<div class="share soctop">
-	<ul>
-	<li><a title="Поделиться в Вконтакте" rel="nofollow" class="fa fa-lg fa-vk"></a></li>
-	<li><a title="Поделиться в Телеграм" rel="nofollow" class="fa fa-lg fa-telegram"></a></li>
-	<li><a title="Поделиться в Одноклассниках" rel="nofollow" class="fa fa-lg fa-odnoklassniki"></a></li>
-	
-	</ul>
-	</div>
-	</div>
-
-	<div style="margin-top:23px;margin-left:5px;">
-		
-		
-		
-	</div>
-
-	
-<p>По умолчанию поток Java выполняется в потоке платформы, предоставляемом операционной системой, в которой выполняется виртуальная машина Java. 
-Для многих рабочих нагрузок это приемлемое решение. Однако потоки платформы не являются легковесными. На создание потока платформы выделяется множество ресурсов и времени. 
-Это ограничивает количество потоков платформы, которые может обработать процессор. А приложениях с интенсивной нагрузкой это становится узким местом, ограничивая производительность приложения. 
-Так, нередко программа выполняет такие операции, которые могут занять продолжительное время, например, обращение к сетевым ресурсам, чтение-запись файлов, обращение к базе данных и т.д. 
-Такие операции могут серьезно нагрузить приложение. Особенно это актуально в высоконагруженных веб-приложениях, которые должны быть готовы обслуживать тысячи запросов в секунду, и 
-где продолжительные операции могут блокировать интерфейс пользователя и негативно 
-повлиять на опыт пользователей. В случае с обычными потоками платформы при выполнении продолжительных операций поток просто бы блокировался на время выполнения операции. 
-<span class="b">Виртуальные потоки</span> представляют решение этой проблемы.</p>
-
-
-<p><span class="b">Виртуальные потоки</span>  — это легковесные потоки, управляемые виртуальной машиной Java (JVM), а не операционной системой. Виртуальным потокам обычно требуется мало ресурсов, и одна виртуальная машина Java может 
-поддерживать миллионы виртуальных потоков. Виртуальные потоки подходят для выполнения задач, которые большую часть времени блокируются, например, операции ввода-вывода - обращение к файлам, к базе данных, операции отправки сетевых запросов.  Однако виртуальные потоки не предназначены для длительных операций, интенсивно использующих процессор.</p>
+<p><span class="b">Віртуальні потоки</span>  — це легковесные потоки, управляемые виртуальной машиной Java (JVM), а не операционной системой. Виртуальным потокам обычно требуется мало ресурсов, и одна виртуальная машина Java может 
+поддерживать миллионы виртуальных потоков. Віртуальні потоки подходят для виконання задач, которые большую часть времени блокуються, наприклад, операции ввода-вывода - обращение к файлам, к базе данных, операции отправки сетевых запросов.  Однак виртуальные потоки не призначенийы для длительных операций, интенсивно использующих процессор.</p>
 
 <p>
-Как работает виртуальный поток? Виртуальный поток прикрепляется к потоку платформы и начинает выполнять некоторый код. То есть для выполнения виртуального потока все равно нужен платформенный поток, который в 
-данном случае еще нызвается потоком-носителем (carrier), так как условно "несет" в себе виртуальный поток. Когда код виртуального потока вызывает блокирующую операцию (например, чтение файла), JVM не блокирует несущий платформенный поток, к которому прикреплен виртуальный. 
-Вместо этого среда выполнения открепляет виртуальный поток с несущего потока платформы и сохраняет его состояние в куче, пока выполняется блокирующая операция  (например, чтение файла).
-В это время несущий поток платформы освобождается и может выполнять другие виртуальные потоки, другие действия. Как только блокирующая операция завершается (например, чтение файла завершено), 
-JVM снова прикрепляет виртуальный поток обратно на доступный поток платформы для продолжения выполнения. Этот механизм позволяет эффективно утилизировать системные ресурсы, так как платформенные потоки не простаивают в ожидании, а постоянно выполняют полезную работу.</p>
+Как работает виртуальный поток? Виртуальный поток прикрепляется к потоку платформы и начинает выполнять неякий код. То есть для виконання виртуального потока все равно нвжен платформенный поток, який в 
+данном случае ще нызвается потоком-носителем (carrier), оскільки условно "несет" в себе виртуальный поток. Когда код виртуального потока вызывает блокирующую операцию (наприклад, чтение файла), JVM не блокує несущий платформенный поток, к которому прикреплен виртуальный. 
+Вместо цього среда виконання открепляет виртуальный поток с несущего потока платформы и сохраняет его состояние в куче, поки виконується блокирующая операция  (наприклад, чтение файла).
+В це час несущий поток платформы звільняєся и может выполнять другие виртуальные потоки, другие действия. Как лише блокирующая операция завершуєся (наприклад, чтение файла завершено), 
+JVM снова прикрепляет виртуальный поток обратно на доступный поток платформы для проповинения виконання. Цет механизм дозволяє эффективно утилизировать системные ресурсы, оскільки платформенные потоки не простаивают в ожидании, а постоянно выполняют полезную работу.</p>
 
-
-<p>В общем случае это выглядит так. Например, приходит запрос к веб-приложению, и для обработки запроса надо считать файл. Для обработки запроса запускается виртуальный поток, который прикрепляется к потоку платформы. 
-Далее этот поток видит, что надо считать файл, соответственно запускается операция чтения файла, которая может занять долгое время. Виртуальный поток ждет, пока будет считан файл, и открепляется от 
-потока платформы, к которому он был прикреплен и в рамках которого он выполнялся. Однако поток платформы не ждет завершения чтения файла, а переключается на выполнение другой работы (при ее наличие) - к нему может быть прикрпелен другой виртуальный поток. 
-А когда файл будет считан, виртуальный поток возобновляет обработку и для этого снова прикрепляется к потоку платформы. Таким образом, приложение может более эффективно использовать ресурсы процессора, представленные 
+<p>В общем случае це выглядит так. Наприклад, приходит запрос к веб-приложению, и для обработки запроса треба считать файл. Для обработки запроса запускаєся виртуальный поток, який прикрепляется к потоку платформы. 
+Далїї цей поток видит, что треба считать файл, соответственно запускаєся операция чтения файла, которая может занять долгое час. Виртуальный поток ждет, поки буде считан файл, и открепляется от 
+потока платформы, к которому он був прикреплен и в рамках которого он выполнялся. Однак поток платформы не ждет завершения чтения файла, а переключается на выполнение другой работы (при її наличие) - к нему может быть прикрпелен другой виртуальный поток. 
+А когда файл буде считан, виртуальный поток возобновляет обработку и для цього снова прикрепляется к потоку платформы. Таким чином, приложение может болїї эффективно використовувати ресурсы процессора, представленные 
 потоками платформы.</p>
 
 <p>Основные преимущества виртуальных потоков</p>
 <ul>
-<li><p><span class="b">Масштабируемость</span>: поскольку виртуальные потоки очень легковесны (занимают всего несколько сотен байт памяти по сравнению с мегабайтами для платформенных потоков), можно создавать миллионы таких потоков без существенной нагрузки на систему.</p></li>
-<li><p><span class="b">Простота кода</span>: виртуальные потоки позволяют писать код в привычном стиле, используя тот же API</p></li>
-<li><p><span class="b">Совместимость</span>: виртуальные потоки являются реализацией класса <code>java.lang.Thread</code>, что обеспечивает их совместимость с существующим кодом и библиотеками, которые 
+<li><p><span class="b">Масштабируемость</span>: поскольку виртуальные потоки очень легковесны (занимают всего декілька сотен байт памяти по сравнению с мегабайтами для платформенных потоков), можна создавать миллионы таких потоков без существенной нагрузки на систему.</p></li>
+<li><p><span class="b">Простота кода</span>: виртуальные потоки дозволяють писать код в привычном стиле, используя тот же API</p></li>
+<li><p><span class="b">Совместимость</span>: виртуальные потоки є реализацией класса <code>java.lang.Thread</code>, что забезпечує их совместимость с существующим кодом и библиотеками, которые 
 работают с потоками.</p></li>
 </ul>
 
-<h3>Создание виртуального потока</h3>
-<p>Виртуальные потоки имеют тот же API, что и потоки платформы. Для создания виртуальных потоков можно использовать ряд способов:</p>
+<h3>Створення виртуального потока</h3>
+<p>Віртуальні потоки имеют тот же API, что и потоки платформы. Для создания виртуальных потоков можна використовувати ряд способов:</p>
 <ul>
-<li><p>С помощью статического метода <b>Thread.startVirtualThread(Runnable task)</b>, в который передается выполняемая задача <code>Runnable</code></p></li>
-<li><p>С помощью статического метода <b>Thread.Builder.OfVirtual.ofVirtual()</b>, который создает строитель виртуального потока / фабрики потока</p></li>
+<li><p>С помощью статического метода <b>Thread.startVirtualThread(Runnable task)</b>, в який передаєся выполняемая задача <code>Runnable</code></p></li>
+<li><p>С помощью статического метода <b>Thread.Builder.OfVirtual.ofVirtual()</b>, який створює строитель виртуального потока / фабрики потока</p></li>
 </ul>
-<p>Рассмотрим оба этих способа.</p>
+<p>Рассмотрим оба цих способа.</p>
 <h4>Метод Thread.startVirtualThread</h4>
-<p>Самый простой способ создать и запустить виртуальный поток представляет статический метод <b>Thread.startVirtualThread()</b>, в который передается 
-объект <code>Runnable</code>:</p>
-<pre class="brush:java;">public static Thread startVirtualThread(Runnable task)</pre>
+<p>Самый простой способ создать и запустить виртуальный поток представляє статический метод <b>Thread.startVirtualThread()</b>, в який передаєся 
+об'єкт <code>Runnable</code>:</p>
+<pre class="line-numbers"><code class="language-java">public static Thread startVirtualThread(Runnable task)</code></pre>
 <p>Простейший пример:</p>
-<pre class="brush:java;">
+<pre class="line-numbers"><code class="language-java">
 class Program{
 
     public static void main(String[] args) {
@@ -161,16 +74,16 @@ class Program{
         System.out.println("Main thread finished...");
     }
 }
-</pre>
-<p>В данном случае в виртуальном потоке просто выводим сообщение на консоль. Однако вполне возможно при выполнении программы мы не увидим этого сообщения:</p>
-<pre class="sh">
+</code></pre>
+<p>В данном случае в виртуальном потоке просто выводим сообщение на консоль. Однак вполне возможна при выполнении программы мы не увидим цього сообщения:</p>
+<pre class="line-numbers"><code class="language-none">
 Main thread started...
 Main thread finished...
-</pre>
-<p>По подобному консольному выводу не видно, чтобы виртуальный поток выполнялся. Все потому что, в отличие от платформенных потоков виртуальные потоки по умолчанию определяются как потоки-демоны, 
-которые выполняются в фоновом режиме. Однако поскольку виртуальные потоки используют тот же API, что и обычные, мы можем вызвать метод <code>join()</code>, 
+</code></pre>
+<p>По подобному консольному выводу не видно, чтобы виртуальный поток выполнялся. Все потому что, в отличие от платформенных потоков виртуальные потоки по умолчанию визначаються як потоки-демоны, 
+которые выполняются в фоновом режиме. Однак поскольку виртуальные потоки используют тот же API, что и обычные, мы можемо вызвать метод <code>join()</code>, 
 чтобы дождаться завершения виртуального потока:</p>
-<pre class="brush:java;">
+<pre class="line-numbers"><code class="language-java">
 class Program{
 
     public static void main(String[] args) {
@@ -192,39 +105,33 @@ class Program{
         System.out.println("Main thread finished...");
     }
 }
-</pre>
+</code></pre>
 <p>И теперь мы получим следующий консольный вывод:</p>
-<pre class="sh">
+<pre class="line-numbers"><code class="language-none">
 Main thread started...
 Hello from a virtual thread
 Main thread finished...
-</pre>
-
-<div style="margin-top:23px;margin-left:5px;">
-
-<!-- Yandex.RTB R-A-201190-9 -->
-
-</div>
+</code></pre>
 
 <h4>Метод ofVirtual()</h4>
-<p>Метод <code>ofVirtual()</code> возвращает строитель виртуального потока, который позволяет выполнить более тонкую настройку:</p>
-<pre class="brush:java;">public static Thread.Builder.OfVirtual ofVirtual()</pre>
-<p>Сам строитель представляет объект типа <b>Thread.Builder.OfVirtual</b>, у которого мы можем вызвать ряд методов:</p>
+<p>Метод <code>ofVirtual()</code> повертає строитель виртуального потока, який дозволяє выполнить болїї тонкую настройку:</p>
+<pre class="line-numbers"><code class="language-java">public static Thread.Builder.OfVirtual ofVirtual()</code></pre>
+<p>Сам строитель представляє об'єкт типу <b>Thread.Builder.OfVirtual</b>, у которого мы можемо вызвать ряд методів:</p>
 <ul>
 <li><p><code>Thread.Builder.OfVirtual name(String name)</code></p>
 <p>Устанавливает имя для потока</p></li>
 <li><p><code>Thread.Builder.OfVirtual name(String prefix, long start)</code></p>
-<p>Также устанавливает имя для потока и плюс принимает значение счетчика, которое добавляется к имени потока</p></li>
+<p>Також устанавливает имя для потока и плюс приймає значение счетчика, которое додаєся к имени потока</p></li>
 <li><p><code>Thread start(Runnable task)</code></p>
-<p>Запускает виртуальный поток, возвращая его в виде объекта Thread</p></li>
+<p>Запускає виртуальный поток, возвращая его в виде об'єкта Thread</p></li>
 <li><p><code>Thread unstarted(Runnable task)</code></p>
-<p>Создает новый поток, но без его запуска. Для планирования выполнения потока у объекта Thread необходимо явным образом вызвать метод <code>start()</code>.</p></li>
+<p>Створює новый поток, но без его запуска. Для планирования виконання потока у об'єкта Thread необхідно явным чином вызвать метод <code>start()</code>.</p></li>
 <li><p><code>ThreadFactory factory()</code></p>
-<p>Возвращает фабрику создания потоков в виде объекта <code>ThreadFactory</code></p></li>
+<p>Повертає фабрику создания потоков в виде об'єкта <code>ThreadFactory</code></p></li>
 </ul>
 
-<p>Используем этот метод для создания потока:</p>
-<pre class="brush:java;">
+<p>Используем цей метод для создания потока:</p>
+<pre class="line-numbers"><code class="language-java">
 class Program{
 
     public static void main(String[] args) {
@@ -248,15 +155,15 @@ class Program{
         System.out.println("Main thread finished...");
     }
 }
-</pre>
+</code></pre>
 <p>Консольный вывод:</p>
-<pre class="sh">
+<pre class="line-numbers"><code class="language-none">
 Main thread started...
 Hello from MyTask
 Main thread finished...
-</pre>
-<p>Или можно сначала создать, а потом отдельно запустить:</p>
-<pre class="brush:java;">
+</code></pre>
+<p>Или можна сначала создать, а потом отдельно запустить:</p>
+<pre class="line-numbers"><code class="language-java">
 class Program{
 
     public static void main(String[] args) {
@@ -278,16 +185,16 @@ class Program{
         System.out.println("Main thread finished...");
     }
 }
-</pre>
+</code></pre>
 <h4>Особенности свойств виртуального потока</h4>
 
-<p>Для виртуальных потоков метод <code>isVirtual()</code> возвращает <code>true</code></p>
-<p>Стоит отметить, что по умолчанию у виртуальных потоков нет имени потока. Метод <code>getName()</code> возвращает пустую строку, если имя потока не задано. 
-Поэтому если необходимо разграничить несколько потоков на основе имени, следует для них устанавливать имя явным образом.</p>
+<p>Для виртуальных потоков метод <code>isVirtual()</code> повертає <code>true</code></p>
+<p>Варто відзначити, что по умолчанию у виртуальных потоков нет имени потока. Метод <code>getName()</code> повертає пустую строку, якщо имя потока не задано. 
+Тому якщо необхідно разграничить декілька потоков на основе имени, йде для них устанавливать имя явным чином.</p>
 
-<p>Виртуальные потоки являются потоками-демонами и, следовательно, не препятствуют началу последовательности завершения работы. Поэтому для них метод <code>isDaemon()</code> возвращает <code>true</code></p>
-<p>Виртуальные потоки имеют фиксированный приоритет потока, который нельзя изменить. Посмотрим на эти свойства потока:</p>
-<pre class="brush:java;">
+<p>Віртуальні потоки є потоками-демонами и, следовательно, не препятствуют началу последовательности завершения работы. Тому для них метод <code>isDaemon()</code> повертає <code>true</code></p>
+<p>Віртуальні потоки имеют фиксированный приоритет потока, який нельзя изменить. Посмотрим на эти свойства потока:</p>
+<pre class="line-numbers"><code class="language-java">
 class Program{
 
     public static void main(String[] args) {
@@ -298,7 +205,7 @@ class Program{
 
             Thread t = Thread.currentThread(); // получаем текущий поток
 
-            System.out.println("Name: " + t.getName()); // если имя не задано, то t.getName() вернет пустую строку
+            System.out.println("Name: " + t.getName()); // якщо имя не задано, то t.getName() вернет пустую строку
             System.out.println("Is Vitual: " + t.isVirtual());
             System.out.println("Is Daemon: " + t.isDaemon());
             System.out.println("Priority: " + t.getPriority());
@@ -316,447 +223,37 @@ class Program{
         System.out.println("Main thread finished...");
     }
 }
-</pre>
+</code></pre>
 <p>Консольный вывод:</p>
-<pre class="sh">
+<pre class="line-numbers"><code class="language-none">
 Main thread started...
 Name: 
 Is Vitual: true
 Is Daemon: true
 Priority 5
 Main thread finished...
-</pre>
-<h3>Когда стоит и не стоит использовать виртуальные потоки?</h3>
+</code></pre>
+<h3>Когда варто и не варто використовувати виртуальные потоки?</h3>
 <p>Идеальные кандидаты для использования виртуальных потоков:</p>
 <ul>
-<li><p><span class="b">I/O-bound задачи</span> (работа с подсистемой ввода-вывода): приложения с большим количеством блокирующих операций ввода-вывода, такие как веб-серверы, микросервисы, приложения для работы с базами данных</p></li>
-<li><p><span class="b">Высоконагруженные системы</span>: системы, которым необходимо обрабатывать тысячи или миллионы одновременных подключений</p></li>
+<li><p><span class="b">I/O-bound задачи</span> (работа с подсистемой ввода-вывода): приложения с большим количеством блокирующих операций ввода-вывода, такие як веб-серверы, микросервисы, приложения для работы с базами данных</p></li>
+<li><p><span class="b">Высоконагрвженные системы</span>: системы, которым необхідно обробляти тысячи або миллионы одновременных подключений</p></li>
 </ul>
 <p>Когда лучше воздержаться от виртуальных потоков:</p>
 <ul>
-<li><p><span class="b">CPU-bound задачи</span>: для задач, интенсивно использующих процессор (например, сложные математические вычисления, обработка больших объемов данных в памяти), преимущества виртуальных потоков не так заметны. В этом случае количество потоков должно быть соизмеримо с количеством ядер процессора, и классические платформенные потоки подойдут лучше</p></li>
-<li><p><span class="b">Работа с synchronized-блоками</span>: длительное удержание блокировок в <b>synchronized</b>-блоках (рассматриваются в следующих статьях) может "прибить" (pin) виртуальный поток к его несущему платформенному потоку, что не позволит последнему выполнять другие задачи и может привести к снижению производительности, поэтому следует с осторожностью использовать синхронизацию с <b>synchronized</b></p></li>
-<li><p><span class="b">Вызовы нативных методов (JNI)</span>: аналогично <code>synchronized</code>, вызовы нативного кода могут блокировать несущий поток</p></li>
+<li><p><span class="b">CPU-bound задачи</span>: для задач, интенсивно использующих процессор (наприклад, сложные математические вычисления, обработка больших обсягов данных в памяти), преимущества виртуальных потоков не так заметны. В цем случае количество потоков повинно быть соизмеримо с количеством ядер процессора, и классические платформенные потоки подойдут лучше</p></li>
+<li><p><span class="b">Работа с synchronized-блоками</span>: длительное удержание блокировок в <b>synchronized</b>-блоках (рассматриваются в следующих статьях) может "прибить" (pin) виртуальный поток к его несущему платформенному потоку, что не позволит последнему выполнять другие задачи и может привести к снижению производительности, поцему йде с осторожностью використовувати синхронизацию с <b>synchronized</b></p></li>
+<li><p><span class="b">Вызовы нативных методів (JNI)</span>: аналогично <code>synchronized</code>, вызовы нативного кода можуть блокировать несущий поток</p></li>
 </ul>
 
-	
-
-	<div style="margin-top:25px;">
-
-	
-	</div>
-
-	<div class="nav"><p><a href="8.4.html">Назад</a><a href="index.html">Содержание</a><a href="8.3.html">Вперед</a></p></div>
-	<div class="socBlock">
-	<div class="share soctop">
-	<ul>
-	<li><a title="Поделиться в Вконтакте" rel="nofollow" class="fa fa-lg fa-vk"></a></li>
-	<li><a title="Поделиться в Телеграм" rel="nofollow" class="fa fa-lg fa-telegram"></a></li>
-	<li><a title="Поделиться в Одноклассниках" rel="nofollow" class="fa fa-lg fa-odnoklassniki"></a></li>
-	
-	</ul>
-	</div>
-	</div>
   </div>
-
-	<div class="item left">
-     <ul id="browser" class="filetree"> 
-	<li class="closed"><span class="folder">Глава 1. Введение в Java</span>
-		<ul>
-			<li><span class="file"><a href="1.1.html">Что такое Java</a></span></li>
-			<li><span class="file"><a href="1.6.html">Установка JDK</a></span></li>
-			<li><span class="file"><a href="1.2.html">Первая программа на Java</a></span></li>
-			<li><span class="file"><a href="1.5.html">Первая программа в IntelliJ IDEA</a></span></li>
-			<li><span class="file"><a href="1.3.html">Первая программа в NetBeans</a></span></li>
-			<li><span class="file"><a href="1.4.html">Первая программа в Eclipse</a></span></li>
-			<li><span class="file"><a href="1.7.html">JShell</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 2. Основы программирования на Java</span>
-		<ul>
-			<li><span class="file"><a href="2.11.html">Структура программы</a></span></li>
-			<li><span class="file"><a href="2.1.html">Переменные и константы</a></span></li>
-			<li><span class="file"><a href="2.19.html">Литералы</a></span></li>
-			<li><span class="file"><a href="2.12.html">Типы данных</a></span></li>
-			<li><span class="file"><a href="2.9.html">Консольный ввод/вывод в Java</a></span></li>
-			<li><span class="file"><a href="2.3.html">Арифметические операции</a></span></li>
-			<li><span class="file"><a href="2.13.html">Поразрядные операции</a></span></li>
-			<li><span class="file"><a href="2.14.html">Условные выражения</a></span></li>
-			<li><span class="file"><a href="2.15.html">Операции присваивания и приоритет операций</a></span></li>
-			<li><span class="file"><a href="2.2.html">Преобразования базовых типов данных</a></span></li>
-			<li><span class="file"><a href="2.5.html">Условные конструкции</a></span></li>
-			<li><span class="file"><a href="2.6.html">Циклы</a></span></li>
-			<li><span class="file"><a href="2.4.html">Массивы</a></span></li>
-			<li><span class="file"><a href="2.20.html">Конструкция и выражение switch</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 3. Классы</span>
-		<ul>
-			<li><span class="file"><a href="3.1.html">Классы и объекты</a></span></li>
-
-
-			<li><span class="file"><a href="2.7.html">Методы</a></span></li>
-			<li><span class="file"><a href="2.16.html">Параметры методов</a></span></li>
-			<li><span class="file"><a href="3.14.html">Объекты как параметры методов</a></span></li>
-			<li><span class="file"><a href="2.17.html">Оператор return. Результат метода</a></span></li>
-			<li><span class="file"><a href="2.18.html">Перегрузка методов</a></span></li>
-			<li><span class="file"><a href="3.21.html">Конструкторы и инициализаторы</a></span></li>
-
-
-			<li><span class="file"><a href="3.4.html">Статические компоненты класса и модификатор static</a></span></li>
-			<li><span class="file"><a href="3.20.html">Область действия и время жизни переменных</a></span></li>
-			<li><span class="file"><a href="2.8.html">Рекурсивные функции</a></span></li>
-			<li><span class="file"><a href="3.2.html">Пакеты</a></span></li>
-			<li><span class="file"><a href="3.3.html">Модификаторы доступа</a></span></li>
-			<li><span class="file"><a href="3.19.html">Компактные файлы кода и метод main</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 4. Объектно-ориентированное программирование</span>
-		<ul>
-			<li><span class="file"><a href="3.22.html">Инкапсуляция</a></span></li>
-			<li><span class="file"><a href="3.5.html">Наследование</a></span></li>
-			<li><span class="file"><a href="3.23.html">Запрет наследования и переопределения методов</a></span></li>
-			<li><span class="file"><a href="3.24.html">Полиморфизм и динамическая диспетчеризация методов</a></span></li>
-			<li><span class="file"><a href="3.9.html">Класс Object и его методы</a></span></li>
-			<li><span class="file"><a href="3.6.html">Абстрактные классы</a></span></li>
-			<li><span class="file"><a href="3.10.html">Иерархия наследования и преобразование типов</a></span></li>
-
-			<li><span class="file"><a href="3.7.html">Интерфейсы</a></span></li>
-			<li><span class="file"><a href="3.28.html">Интерфейсы и полиморфизм</a></span></li>
-			<li><span class="file"><a href="3.29.html">Множественная реализация и наследование интерфейсов</a></span></li>
-			<li><span class="file"><a href="3.16.html">Интерфейсы в механизме обратного вызова</a></span></li>
-			<li><span class="file"><a href="3.8.html">Перечисления enum</a></span></li>
-			<li><span class="file"><a href="3.11.html">Обобщения (Generics)</a></span></li>
-			<li><span class="file"><a href="3.17.html">Ограничения обобщений</a></span></li>
-			<li><span class="file"><a href="3.15.html">Наследование и обобщения</a></span></li>
-			<li><span class="file"><a href="3.31.html">Type Erasure (Стирание типов)</a></span></li>
-			<li><span class="file"><a href="3.32.html">Подстановочные знаки wildcards в обобщениях</a></span></li>
-			<li><span class="file"><a href="3.13.html">Ссылочные типы и клонирование объектов</a></span></li>
-			<li><span class="file"><a href="3.18.html">Классы Records</a></span></li>
-			<li><span class="file"><a href="9.4.html">Функциональные интерфейсы и ссылки на методы</a></span></li>
-			<li><span class="file"><a href="9.1.html">Лямбда-выражения</a></span></li>
-			<li><span class="file"><a href="9.2.html">Лямбды как параметры и результаты методов</a></span></li>
-			<li><span class="file"><a href="9.3.html">Встроенные функциональные интерфейсы</a></span></li>
-			<li><span class="file"><a href="3.12.html">Внутренние и вложенные классы</a></span></li>
-			<li><span class="file"><a href="3.30.html">Анонимные классы</a></span></li>
-
-
-			<li><span class="file"><a href="3.25.html">Sealed-классы и интерфейсы</a></span></li>
-			<li><span class="file"><a href="3.26.html">Pattern мatching. Паттерн типов</a></span></li>
-			<li><span class="file"><a href="3.27.html">Pattern мatching. record-паттерн</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 5. Обработка исключений</span>
-		<ul>
-			<li><span class="file"><a href="2.10.html">Обработка исключений и конструкция try...catch...finally</a></span></li>
-			<li><span class="file"><a href="4.2.html">Классы исключений</a></span></li>
-			<li><span class="file"><a href="4.1.html">Операторы throws и throw</a></span></li>
-			<li><span class="file"><a href="4.3.html">Создание своих классов исключений</a></span></li>
-			<li><span class="file"><a href="4.4.html">Assert</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 6. Коллекции</span>
-		<ul>
-			<li><span class="file"><a href="5.1.html">Типы коллекций. Интерфейс Collection</a></span></li>
-			<li><span class="file"><a href="5.2.html">Класс ArrayList и интерфейс List</a></span></li>
-			<li><span class="file"><a href="5.6.html">Интерфейсы Comparable и Comporator. Сортировка</a></span></li>
-			<li><span class="file"><a href="5.7.html">Очереди и стеки. Классы ArrayDeque и PriorityQueue</a></span></li>
-			<li><span class="file"><a href="5.3.html">Связанный список LinkedList</a></span></li>
-			<li><span class="file"><a href="5.4.html">Интерфейс Set и хеш-таблицы HashSet</a></span></li>
-			<li><span class="file"><a href="5.5.html">Деревья TreeSet и интерфейсы SortedSet и NavigableSet</a></span></li>
-			<li><span class="file"><a href="5.8.html">Словари. Интерфейс Map и класс HashMap</a></span></li>
-			<li><span class="file"><a href="5.9.html">Интерфейсы SortedMap и NavigableMap. Класс TreeMap</a></span></li>
-			<li><span class="file"><a href="5.10.html">Итераторы. Iterator и Iterable</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 7. Потоки ввода-вывода. Работа с файлами</span>
-		<ul>
-			<li><span class="file"><a href="6.1.html">Потоки ввода-вывода</a></span></li>
-			<li><span class="file"><a href="6.3.html">Чтение и запись файлов. FileInputStream и FileOutputStream</a></span></li>
-			<li><span class="file"><a href="6.2.html">Закрытие потоков и конструкция try-с-ресурсами</a></span></li>
-			<li><span class="file"><a href="6.4.html">Классы ByteArrayInputStream и ByteArrayOutputStream</a></span></li>
-			<li><span class="file"><a href="6.5.html">Буферизованные потоки BufferedInputStream и BufferedOutputStream</a></span></li>
-			<li><span class="file"><a href="6.6.html">Форматируемый вывод. PrintStream и PrintWriter</a></span></li>
-			<li><span class="file"><a href="6.7.html">Классы DataOutputStream и DataInputStream</a></span></li>
-			<li><span class="file"><a href="6.8.html">Чтение и запись текстовых файлов</a></span></li>
-			<li><span class="file"><a href="6.9.html">Буферизация символьных потоков. BufferedReader и BufferedWriter</a></span></li>
-			<li><span class="file"><a href="6.10.html">Сериализация объектов</a></span></li>
-			<li><span class="file"><a href="6.11.html">Класс File. Работа с файлами и каталогами</a></span></li>
-			<li><span class="file"><a href="6.12.html">Работа с ZIP-архивами</a></span></li>
-			<li><span class="file"><a href="6.13.html">Класс Console</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 8. Работа со строками</span>
-		<ul>
-			<li><span class="file"><a href="7.1.html">Введение в строки. Класс String</a></span></li>
-			<li><span class="file"><a href="7.2.html">Основные операции со строками</a></span></li>
-			<li><span class="file"><a href="7.3.html">StringBuffer и StringBuilder</a></span></li>
-			<li><span class="file"><a href="7.4.html">Регулярные выражения</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 9. Многопоточное программирование</span>
-		<ul>
-			<li><span class="file"><a href="8.1.html">Многопоточное программирование и класс Thread</a></span></li>
-			<li><span class="file"><a href="8.2.html">Создание и выполнение потоков</a></span></li>
-			<li><span class="file"><a href="8.11.html">Управление потоками</a></span></li>
-			<li><span class="file"><a href="8.4.html">Завершение и прерывание потока</a></span></li>
-			<li><span class="file"><a href="8.12.html">Виртуальные потоки</a></span></li>
-			<li><span class="file"><a href="8.3.html">Синхронизация потоков. Оператор synchronized</a></span></li>
-			<li><span class="file"><a href="8.5.html">Взаимодействие потоков. Методы wait и notify</a></span></li>
-			<li><span class="file"><a href="8.6.html">Семафоры</a></span></li>
-			<li><span class="file"><a href="8.7.html">Обмен между потоками. Класс Exchanger</a></span></li>
-			<li><span class="file"><a href="8.8.html">Класс Phaser</a></span></li>
-			<li><span class="file"><a href="8.9.html">Блокировки. ReentrantLock</a></span></li>
-			<li><span class="file"><a href="8.10.html">Условия в блокировках</a></span></li>
-			<li><span class="file"><a href="8.16.html">Переменные volatile</a></span></li>
-			<li><span class="file"><a href="8.17.html">Атомарность и Atomics. Потокобезопасность без блокировок</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 10. Асинхронность</span>
-		<ul>
-			<li><span class="file"><a href="8.13.html">Асинхронные задачи FutureTask. Callable и Future</a></span></li>
-			<li><span class="file"><a href="8.14.html">Executor - исполнитель задач</a></span></li>
-			<li><span class="file"><a href="8.15.html">Координация выполнения асинхронных задач</a></span></li>
-			<li><span class="file"><a href="8.18.html">CompletableFuture и промисы. Обработка результата асинхронных задач</a></span></li>
-			<li><span class="file"><a href="8.19.html">CompletableFuture, обработка ошибок и завершения асинхронных задач</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 11. Stream API</span>
-		<ul>
-			<li><span class="file"><a href="10.1.html">Введение в Stream API</a></span></li>
-			<li><span class="file"><a href="10.2.html">Создание потока данных</a></span></li>
-			<li><span class="file"><a href="10.3.html">Фильтрация, перебор элементов и отображение</a></span></li>
-			<li><span class="file"><a href="10.8.html">Сортировка</a></span></li>
-			<li><span class="file"><a href="10.13.html">Получение подпотока и объединение потоков</a></span></li>
-			<li><span class="file"><a href="10.4.html">Методы skip и limit</a></span></li>
-			<li><span class="file"><a href="10.11.html">Операции сведения</a></span></li>
-			<li><span class="file"><a href="10.5.html">Метод reduce</a></span></li>
-			<li><span class="file"><a href="10.12.html">Тип Optional</a></span></li>
-			<li><span class="file"><a href="10.6.html">Метод collect</a></span></li>
-			<li><span class="file"><a href="10.7.html">Группировка</a></span></li>
-			<li><span class="file"><a href="10.9.html">Параллельные потоки</a></span></li>
-			<li><span class="file"><a href="10.10.html">Параллельные операции над массивами</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 12. Модульность</span>
-		<ul>
-			<li><span class="file"><a href="11.1.html">Создание модуля</a></span></li>
-			<li><span class="file"><a href="11.2.html">Зависимые модули</a></span></li>
-			<li><span class="file"><a href="11.3.html">Взаимодействие между модулями. Экспорт и импорт</a></span></li>
-		</ul>
-	</li>
-	</li>
-	<li class="closed"><span class="folder">Глава 13. Дополнительные классы</span>
-		<ul>
-			<li><span class="file"><a href="12.1.html">Математические вычисления и класс Math</a></span></li>
-			<li><span class="file"><a href="12.2.html">Большие числа BigInteger и BigDecimal</a></span></li>
-			<li><span class="file"><a href="12.3.html">Работа с датами. LocalDate</a></span></li>
-			<li><span class="file"><a href="12.4.html">Процессы. Process и ProcessBuilder</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 14. JAR-файлы и подключение библиотек и классов</span>
-		<ul>
-			<li><span class="file"><a href="13.1.html">Файлы JAR, их создание и выполнение</a></span></li>
-			<li><span class="file"><a href="13.2.html">Создание и подключение библиотеки JAR</a></span></li>
-			<li><span class="file"><a href="13.4.html">Модульный jar-файл</a></span></li>
-			<li><span class="file"><a href="13.3.html">Установка пути к классам Java</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 15. Рефлексия</span>
-		<ul>
-			<li><span class="file"><a href="14.1.html">Введение в рефлексию. Класс Class</a></span></li>
-			<li><span class="file"><a href="14.2.html">Исследование типов</a></span></li>
-			<li><span class="file"><a href="14.3.html">Поля класса и класс Field</a></span></li>
-			<li><span class="file"><a href="14.4.html">Модификаторы доступа и класс Modifier</a></span></li>
-			<li><span class="file"><a href="14.5.html">Класс Constructor и cоздание объектов</a></span></li>
-			<li><span class="file"><a href="14.6.html">Методы и класс Method</a></span></li>
-			<li><span class="file"><a href="14.7.html">Proxy (Прокси)</a></span></li>
-		</ul>
-	</li>
-	<li class="closed"><span class="folder">Глава 16. Аннотации</span>
-		<ul>
-			<li><span class="file"><a href="15.1.html">Введение в аннотации. Встроенные аннотации</a></span></li>
-			<li><span class="file"><a href="15.2.html">Создание и применение аннотаций</a></span></li>
-			<li><span class="file"><a href="15.3.html">Обработка аннотаций во время выполнения</a></span></li>
-		</ul>
-	</li>
-
-
-	<li class="closed"><span class="folder">Глава 17. Взаимодействие с нативным кодом</span>
-		<ul>
-			<li><span class="file"><a href="16.1.html">Java Native Interface (JNI)</a></span></li>
-			<li><span class="file"><a href="16.2.html">Foreign Functions и Memory API</a></span></li>
-			<li><span class="file"><a href="16.3.html">Арена и сегменты памяти MemorySegment</a></span></li>
-			<li><span class="file"><a href="16.4.html">Компоновка памяти MemoryLayout и работа с MemorySegment</a></span></li>
-			<li><span class="file"><a href="16.5.html">Сложные данные и MemoryLayout</a></span></li>
-			<li><span class="file"><a href="16.6.html">Поиск и вызов внешних функций</a></span></li>
-			<li><span class="file"><a href="16.7.html">Нативные функции обратного вызова</a></span></li>
-		</ul>
-	</li>
-</ul>   </div>
-</div>
-
-  <div class="item right">
-<div class="help" style="border: 0px;">
-    
-	<div class="help-item">
-		<div class="help-item-name"><a href="https://metanit.com/settings.html">Настройки</a></div>
-	 </div>
-</div>
-			<div class="help">
-
-      <div class="help-header">Помощь сайту</div>
-
-       <div class="help-item">
-		<div class="help-item-name"><a href="https://yoomoney.ru/to/410011174743222" rel="nofollow">Помощь сайту</a></div>
-	 </div>
-       
-      <div class="help-item">
-		<div class="help-item-name">Юмани:</div>
-		<div class="help-item-req">410011174743222</div>
-	 </div>
-
-		<div class="help-item">
-			<div class="help-item-name">Номер карты:</div>
-			<div class="help-item-req">4048415020898850</div>
-		</div>
 
       </div>
 
-	
-	
-
-
-
-
   </div>
 </div>
 
-<div id="footer" style="padding-bottom:85px;">
-
-<div class="bootomLinks">
-<a href="https://vk.com/metanit" title="Присоединиться к группе вконтакте" rel="nofollow">
-Вконтакте</a>|
- <a href="https://t.me/devnull22" title="Подписаться на телеграм" rel="nofollow">
-Телеграм</a> | 
-<a href="https://metanit.com/donations.html" rel="nofollow">Донаты/Помощь сайту</a>
-</div>
-<p>Contacts: metanit22@mail.ru</p>
-<p>Copyright &copy; Евгений Попов, metanit.com, 2026. Все права защищены.</p>
-
-
-</div>
-
-</div>
-
-
-
-
-
-
-
-
-
-
-<script src='../../js/syntax16.js'></script>
-<script>
-// Syntax Highlighter
-if (typeof SyntaxHighlighter !== 'undefined') {
-    SyntaxHighlighter.all();
-}
-
-// Copy guard
-document.addEventListener('copy', (ev) => {
-    const et = ev.target;
-    if (et.type === 'textarea') {
-        ev.clipboardData.setData('text/plain', et.value.substring(et.selectionStart, et.selectionEnd).replace(/ /g, ' '));
-        ev.preventDefault();
-    }
-});
-
-// Mobile menu
-const faBars = document.querySelector('.fa-bars');
-if (faBars) {
-    faBars.addEventListener('click', () => {
-        const tree = document.querySelector('.item.left');
-        if (tree) {
-            tree.style.display = (tree.style.display === 'block') ? 'none' : 'block';
-        }
-    });
-}
-
-const menuButton = document.getElementById('menuButton');
-if (menuButton) {
-    menuButton.addEventListener('click', () => {
-        menuButton.classList.toggle('menu-opened');
-        const mainMenu = document.querySelector('.mainmenu');
-        if (mainMenu) mainMenu.classList.toggle('open');
-    });
-}
-
-// Search toggle
-const magGlass = document.getElementById('magnifying-glass');
-if (magGlass) {
-    magGlass.addEventListener('click', () => {
-        const search = document.getElementById('search');
-        if (search) search.classList.toggle('transp');
-    });
-}
-
-// Theme toggle
-const toggleTheme = document.getElementById('toggle-theme');
-if (toggleTheme) {
-    toggleTheme.addEventListener('click', () => {
-        if (document.documentElement.hasAttribute('theme')) {
-            document.documentElement.removeAttribute('theme');
-            document.cookie = 'theme=1;expires=Mon, 19 Feb 2001 12:00:00 UTC;path=/;';
-        } else {
-            document.documentElement.setAttribute('theme', 'dark');
-            var expire = new Date();
-            expire.setHours(expire.getHours() + 7);
-            document.cookie = 'theme=1;expires=' + expire.toUTCString() + ';path=/;';
-        }
-    });
-}
-
-// Share buttons
-const shareVK = document.querySelectorAll('.share .fa-vk');
-shareVK.forEach(e => e.addEventListener('click', () => window.open('http://vk.com/share.php?url=' + window.location.href, 'Поделиться в ВКОНТАКТЕ')));
-const shareTG = document.querySelectorAll('.share .fa-telegram');
-shareTG.forEach(e => e.addEventListener('click', () => window.open('tg://msg_url/url=' + window.location.href, 'Поделиться в Telegram')));
-const shareOK = document.querySelectorAll('.share .fa-odnoklassniki');
-shareOK.forEach(e => e.addEventListener('click', () => window.open('https://connect.ok.ru/offer?url=' + window.location.href, 'Поделиться в Одноклассниках')));
-
-// Folders
-const folders = document.getElementsByClassName('closed');
-for (let i = 0; i < folders.length; i++) {
-    folders[i].addEventListener('click', function (e) {
-        this.classList.toggle('closed');
-        this.classList.toggle('opened');
-    });
-}
-
-// Active Item Highlight
-const activePath = window.location.pathname.split('/').pop();
-const activeItem = document.querySelector(".file a[href*='" + activePath + "']");
-if (activeItem) {
-    activeItem.classList.add('aMItem');
-    activeItem.parentElement.classList.add('aMItem');
-    const activeFolder = activeItem.closest('li');
-    if (activeFolder) {
-        activeFolder.classList.remove('closed');
-        activeFolder.classList.add('opened');
-        const folderLabel = activeFolder.querySelector('.folder');
-        if (folderLabel) folderLabel.classList.add('aMItem');
-    }
-}
-
-// Settings
-const props = ['--main-font-size', '--main-font-family', '--menc-bg-color', '--container-bg-color', '--menu-bg-color', '--code-font-size', '--code-font-family', '--code-bgcolor', '--code-max-height'];
-for (let i = 0; i < props.length; i++) {
-    const propValue = localStorage.getItem(props[i]);
-    if (propValue !== null) document.documentElement.style.setProperty(props[i], propValue);
-}
-</script>
+<script src="../prism/prism.js"></script>
+<script src="../prism/prism-java.js"></script>
 </body>
 </html>
