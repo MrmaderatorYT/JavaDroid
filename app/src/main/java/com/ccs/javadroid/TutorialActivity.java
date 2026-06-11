@@ -136,7 +136,7 @@ public class TutorialActivity extends AppCompatActivity {
                 playgroundEditor.setEditable(true);
             }
 
-            String styledHtml = injectDarkThemeStyles(rawHtml);
+            String styledHtml = injectThemeStyles(rawHtml);
             wvTheory.loadDataWithBaseURL("file:///android_asset/tutorials/", styledHtml, "text/html", "UTF-8", null);
 
         } catch (Exception e) {
@@ -145,13 +145,22 @@ public class TutorialActivity extends AppCompatActivity {
         }
     }
 
-    private String injectDarkThemeStyles(String htmlContent) {
+    private String injectThemeStyles(String htmlContent) {
+        String hexBg = String.format("#%06X", (0xFFFFFF & theme.bg));
+        String hexText = String.format("#%06X", (0xFFFFFF & theme.text));
+        String hexTextDim = String.format("#%06X", (0xFFFFFF & theme.textDim));
+        String hexAccent = String.format("#%06X", (0xFFFFFF & theme.accent));
+        String hexKeyword = String.format("#%06X", (0xFFFFFF & theme.editorKeyword));
+        String hexString = String.format("#%06X", (0xFFFFFF & theme.editorString));
+        
         String styleOverride = "<style>"
-                + "body { background-color: #1E1E20; color: #DFE1E5; font-family: sans-serif; padding: 16px; line-height: 1.6; }\n"
-                + "h1, h2, h3 { color: #FFFFFF; }\n"
-                + "a { color: #3574F0; text-decoration: none; }\n"
-                + "pre { background-color: #2B2D30; padding: 12px; border-radius: 4px; overflow-x: auto; color: #A9B7C6; }\n"
+                + "body { background-color: " + hexBg + "; color: " + hexText + "; font-family: sans-serif; padding: 16px; line-height: 1.6; }\n"
+                + "h1, h2, h3 { color: " + hexText + "; }\n"
+                + "a { color: " + hexAccent + "; text-decoration: none; }\n"
+                + "pre { background-color: " + (theme.dark ? "#2B2D30" : "#F5F5F5") + "; padding: 12px; border-radius: 4px; overflow-x: auto; color: " + hexText + "; }\n"
                 + "code { font-family: monospace; }\n"
+                + ".keyword { color: " + hexKeyword + "; }\n"
+                + ".string { color: " + hexString + "; }\n"
                 + ".nav, .socBlock, header, footer, .socbtns, #header, #footer { display: none !important; }\n"
                 + "</style>";
         return htmlContent.replace("</head>", styleOverride + "</head>");
