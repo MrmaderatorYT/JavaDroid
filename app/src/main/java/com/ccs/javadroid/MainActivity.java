@@ -694,6 +694,9 @@ public class MainActivity extends AppCompatActivity {
             } else if (name.endsWith(".sh") || name.endsWith(".bash")) {
                 ed.setEditorLanguage(new BashLanguage());
                 return;
+            } else if (name.endsWith(".kt")) {
+                ed.setEditorLanguage(new KotlinLanguage());
+                return;
             }
         }
         ed.setEditorLanguage(new JavaDroidLanguage(this, projectManager.getProjectDir()));
