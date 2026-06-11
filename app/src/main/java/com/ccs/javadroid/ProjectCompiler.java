@@ -329,7 +329,7 @@ public final class ProjectCompiler {
                 
                 D8Command.Builder b = D8Command.builder()
                         .setOutput(dexDir.toPath(), OutputMode.DexIndexed)
-                        .setDisableDesugaring(true);
+                        .setMinApiLevel(android.os.Build.VERSION.SDK_INT);
                 b.addLibraryFiles(androidJar.toPath());
                 for (File j : depJars) b.addLibraryFiles(j.toPath());
                 for (java.nio.file.Path c : classes) b.addProgramFiles(c);
@@ -582,7 +582,7 @@ public final class ProjectCompiler {
                 .addProgramFiles(classFile.toPath())
                 .addLibraryFiles(androidJar.toPath())
                 .setOutput(dexDir.toPath(), OutputMode.DexIndexed)
-                .setDisableDesugaring(true)
+                .setMinApiLevel(android.os.Build.VERSION.SDK_INT)
                 .build());
     }
 

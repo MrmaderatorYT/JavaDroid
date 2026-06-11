@@ -17,8 +17,8 @@ android {
         applicationId 'com.ccs.javadroid'
         minSdk 26
         targetSdk 35
-        versionCode 4
-        versionName '1.2.1'
+        versionCode 5
+        versionName '1.3.0'
 
         ndk {
             abiFilters 'arm64-v8a', 'armeabi-v7a', 'x86_64', 'x86'
@@ -80,7 +80,7 @@ dependencies {
     implementation 'io.github.Rosemoe.sora-editor:editor:0.23.6'
     implementation 'io.github.Rosemoe.sora-editor:language-java:0.23.6'
 
-    implementation 'org.eclipse.jdt:ecj:3.22.0'
+    implementation 'org.eclipse.jdt:ecj:3.35.0'
     implementation 'com.android.tools:r8:8.2.33'
 
     implementation 'androidx.documentfile:documentfile:1.0.1'

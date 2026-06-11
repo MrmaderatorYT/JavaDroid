@@ -532,12 +532,11 @@ public class SettingsActivity extends AppCompatActivity {
         section.addView(label(getString(R.string.settings_java_target)));
         final String[] codes = { AppPreferences.JAVA_8, AppPreferences.JAVA_11,
                 AppPreferences.JAVA_17, AppPreferences.JAVA_21 };
-        final String soon = getString(R.string.soon);
         String[] labels = {
                 "Java 8",
-                "Java 11 (" + soon + ")",
-                "Java 17 (" + soon + ")",
-                "Java 21 (" + soon + ")"
+                "Java 11",
+                "Java 17",
+                "Java 21"
         };
         Spinner sp = newSpinner(labels);
         int sel = 0;
@@ -547,13 +546,7 @@ public class SettingsActivity extends AppCompatActivity {
         sp.setSelection(sel);
         sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position != 0) {
-                    Toast.makeText(SettingsActivity.this, "Java " + (position == 1 ? "11" : position == 2 ? "17" : "21") + " - " + soon, Toast.LENGTH_SHORT).show();
-                    sp.setSelection(0);
-                    prefs.setJavaTarget(codes[0]);
-                } else {
-                    prefs.setJavaTarget(codes[position]);
-                }
+                prefs.setJavaTarget(codes[position]);
             }
             @Override public void onNothingSelected(AdapterView<?> parent) {}
         });
