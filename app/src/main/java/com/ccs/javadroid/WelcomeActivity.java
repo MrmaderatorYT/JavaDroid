@@ -224,6 +224,21 @@ public class WelcomeActivity extends AppCompatActivity {
         btnNewProject.setOnClickListener(v -> showNewMavenProjectDialog());
         btnOpenProject.setOnClickListener(v -> showOpenFolderDialog());
         btnCloneRepo.setOnClickListener(v -> Toast.makeText(this, R.string.soon, Toast.LENGTH_SHORT).show());
+
+        View sidebarCustomize = findViewById(R.id.sidebarCustomize);
+        if (sidebarCustomize != null) {
+            sidebarCustomize.setOnClickListener(v -> Toast.makeText(this, R.string.soon_in_development, Toast.LENGTH_SHORT).show());
+        }
+
+        View sidebarPlugins = findViewById(R.id.sidebarPlugins);
+        if (sidebarPlugins != null) {
+            sidebarPlugins.setOnClickListener(v -> Toast.makeText(this, R.string.soon_in_development, Toast.LENGTH_SHORT).show());
+        }
+
+        View sidebarLearn = findViewById(R.id.sidebarLearn);
+        if (sidebarLearn != null) {
+            sidebarLearn.setOnClickListener(v -> Toast.makeText(this, R.string.soon_in_development, Toast.LENGTH_SHORT).show());
+        }
     }
 
     private final SharedPreferences.OnSharedPreferenceChangeListener themeChangeListener = (sharedPreferences, key) -> {

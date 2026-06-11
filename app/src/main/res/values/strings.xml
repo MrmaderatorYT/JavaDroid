@@ -141,6 +141,7 @@
     <string name="settings_reset_confirm">All UI, font and compiler preferences will be reset. Project files are kept.</string>
     <string name="settings_reset_done">Defaults restored</string>
     <string name="soon">soon</string>
+    <string name="soon_in_development">Coming soon in development</string>
 
     <!-- New features -->
     <string name="menu_open_file">Open file…</string>

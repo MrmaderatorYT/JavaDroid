@@ -133,6 +133,7 @@
     <string name="settings_reset_confirm">Se restablecerán interfaz, fuente y compilador. Los archivos del proyecto se conservan.</string>
     <string name="settings_reset_done">Valores restaurados</string>
     <string name="soon">pronto</string>
+    <string name="soon_in_development">Próximamente en desarrollo</string>
 
     <string name="menu_open_file">Abrir archivo…</string>
     <string name="menu_save_as">Guardar como…</string>

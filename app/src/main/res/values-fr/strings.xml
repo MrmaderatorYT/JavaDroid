@@ -134,6 +134,7 @@
     <string name="settings_reset_confirm">Toutes les préférences d’interface, de police et du compilateur seront réinitialisées. Les fichiers du projet sont conservés.</string>
     <string name="settings_reset_done">Valeurs par défaut restaurées</string>
     <string name="soon">bientôt</string>
+    <string name="soon_in_development">Bientôt en développement</string>
 
     <string name="menu_open_file">Ouvrir un fichier…</string>
     <string name="menu_save_as">Enregistrer sous…</string>

@@ -134,6 +134,7 @@
     <string name="settings_reset_confirm">Alle UI-, Schrift- und Compiler-Einstellungen werden zurückgesetzt. Projektdateien bleiben erhalten.</string>
     <string name="settings_reset_done">Standardeinstellungen wiederhergestellt</string>
     <string name="soon">bald</string>
+    <string name="soon_in_development">In Kürze in Entwicklung</string>
 
     <string name="menu_open_file">Datei öffnen…</string>
     <string name="menu_save_as">Speichern unter…</string>

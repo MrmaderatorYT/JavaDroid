@@ -133,6 +133,7 @@
     <string name="settings_reset_confirm">Wszystkie ustawienia interfejsu, czcionki i kompilatora zostaną zresetowane. Pliki projektu pozostają.</string>
     <string name="settings_reset_done">Przywrócono domyślne</string>
     <string name="soon">wkrótce</string>
+    <string name="soon_in_development">Wkrótce w rozwoju</string>
 
     <string name="menu_open_file">Otwórz plik…</string>
     <string name="menu_save_as">Zapisz jako…</string>

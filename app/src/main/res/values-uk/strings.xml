@@ -135,6 +135,7 @@
     <string name="settings_reset_confirm">Усі налаштування інтерфейсу, шрифту та компілятора будуть скинуті. Файли проєкту збережуться.</string>
     <string name="settings_reset_done">Типові налаштування відновлено</string>
     <string name="soon">скоро</string>
+    <string name="soon_in_development">Скоро в розробці</string>
 
     <!-- New features -->
     <string name="menu_open_file">Відкрити файл…</string>
