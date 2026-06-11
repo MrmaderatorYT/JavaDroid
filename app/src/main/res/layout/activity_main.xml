@@ -215,12 +215,50 @@
                 android:paddingEnd="6dp" />
         </HorizontalScrollView>
 
-        <!-- ── CODE EDITOR ── -->
-        <io.github.rosemoe.sora.widget.CodeEditor
-            android:id="@+id/editor"
+        <!-- ── EDITORS CONTAINER (SPLIT) ── -->
+        <LinearLayout
+            android:id="@+id/editorsContainer"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="3" />
+            android:layout_weight="3"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/wrapperEditor1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:padding="1dp">
+
+                <io.github.rosemoe.sora.widget.CodeEditor
+                    android:id="@+id/editor"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
+
+            <View
+                android:id="@+id/editorDivider"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/idea_separator"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/wrapperEditor2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:padding="1dp"
+                android:visibility="gone">
+
+                <io.github.rosemoe.sora.widget.CodeEditor
+                    android:id="@+id/editor2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
+        </LinearLayout>
 
         <!-- Editor / Console divider -->
         <View

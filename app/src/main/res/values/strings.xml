@@ -18,6 +18,7 @@
     <string name="menu_clear_console">Clear Console</string>
     <string name="menu_copy_console">Copy console</string>
     <string name="menu_share_file">Share current file</string>
+    <string name="menu_split_screen">Split Screen</string>
 
     <!-- Main layout -->
     <string name="drawer_project_label">PROJECT</string>

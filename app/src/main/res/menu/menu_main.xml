@@ -117,4 +117,8 @@
         android:id="@+id/action_create_cpp_module"
         android:title="@string/menu_create_cpp_module"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_split_screen"
+        android:title="@string/menu_split_screen"
+        app:showAsAction="never" />
 </menu>

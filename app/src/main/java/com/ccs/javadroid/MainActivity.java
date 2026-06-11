@@ -57,6 +57,15 @@ public class MainActivity extends AppCompatActivity {
     // ── Views ──────────────────────────────────────────────
     private DrawerLayout  drawerLayout;
     private CodeEditor    editor;
+    private CodeEditor    editor2;
+    private CodeEditor    activeEditor;
+    private LinearLayout  editorsContainer;
+    private View          editorDivider;
+    private LinearLayout  wrapperEditor1;
+    private LinearLayout  wrapperEditor2;
+    private FileTab       leftTab;
+    private FileTab       rightTab;
+    private boolean       isSplitActive = false;
     private RecyclerView  tabsRecycler;
     private RecyclerView  fileTreeRecycler;
     private LinearLayout  findBar;
@@ -215,6 +224,12 @@ public class MainActivity extends AppCompatActivity {
     private void bindViews() {
         drawerLayout     = findViewById(R.id.drawerLayout);
         editor           = findViewById(R.id.editor);
+        editor2          = findViewById(R.id.editor2);
+        editorsContainer = findViewById(R.id.editorsContainer);
+        editorDivider    = findViewById(R.id.editorDivider);
+        wrapperEditor1   = findViewById(R.id.wrapperEditor1);
+        wrapperEditor2   = findViewById(R.id.wrapperEditor2);
+        activeEditor     = editor;
         tabsRecycler     = findViewById(R.id.tabsRecycler);
         fileTreeRecycler = findViewById(R.id.fileTreeRecycler);
         findBar          = findViewById(R.id.findBar);
@@ -259,6 +274,8 @@ public class MainActivity extends AppCompatActivity {
         if (toolbarTitle != null) toolbarTitle.setTextColor(theme.text);
         if (tabsBar != null)      tabsBar.setBackgroundColor(theme.toolbar);
         if (tabBorder != null)    tabBorder.setBackgroundColor(theme.accent);
+        if (editorDivider != null) editorDivider.setBackgroundColor(theme.separator);
+        updateActiveEditorBorders();
         if (bottomTabsBar != null) bottomTabsBar.setBackgroundColor(theme.toolbar);
         if (statusBar != null)    statusBar.setBackgroundColor(theme.statusBar);
         if (consoleScroll != null) consoleScroll.setBackgroundColor(theme.consoleBg);
@@ -363,14 +380,14 @@ public class MainActivity extends AppCompatActivity {
             btn.setFocusable(true);
 
             btn.setOnClickListener(v -> {
-                if (editor != null && editor.isEditable()) {
+                if (activeEditor != null && activeEditor.isEditable()) {
                     if ("Tab".equals(symbol)) {
                         int tabSize = appPrefs.getTabSize();
                         StringBuilder spaces = new StringBuilder();
                         for (int i = 0; i < tabSize; i++) spaces.append(" ");
-                        editor.insertText(spaces.toString(), spaces.length());
+                        activeEditor.insertText(spaces.toString(), spaces.length());
                     } else {
-                        editor.insertText(symbol, symbol.length());
+                        activeEditor.insertText(symbol, symbol.length());
                     }
                 }
             });
@@ -435,31 +452,94 @@ public class MainActivity extends AppCompatActivity {
         if (btnNewFile != null) btnNewFile.setOnClickListener(v -> showNewFileDialog());
     }
 
-    private void setupEditor() {
-        editor.setEditorLanguage(new JavaDroidLanguage(this, null));
-        EditorSettingsApplier.apply(editor, appPrefs, theme);
-        editor.setEditable(false);
+    private void saveEditorToTab(CodeEditor ed, FileTab tab) {
+        if (tab == null || tab.file == null) return;
+        try {
+            projectManager.writeFile(tab.file, ed.getText().toString());
+            tab.isModified = false;
+        } catch (IOException e) {
+            Toast.makeText(this, getString(R.string.toast_save_failed, e.getMessage()), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void updateActiveEditorBorders() {
+        if (!isSplitActive) {
+            wrapperEditor1.setBackgroundColor(android.graphics.Color.TRANSPARENT);
+            wrapperEditor2.setBackgroundColor(android.graphics.Color.TRANSPARENT);
+            return;
+        }
+        int activeColor = theme != null ? theme.accent : 0xFF4A86C8;
+        int inactiveColor = theme != null ? theme.separator : 0xFF515151;
+        wrapperEditor1.setBackgroundColor(activeEditor == editor ? activeColor : inactiveColor);
+        wrapperEditor2.setBackgroundColor(activeEditor == editor2 ? activeColor : inactiveColor);
+    }
+
+    private void setActiveEditor(CodeEditor ed) {
+        if (activeEditor == ed) return;
+        activeEditor = ed;
+        updateActiveEditorBorders();
+
+        FileTab currentTab = (ed == editor) ? leftTab : rightTab;
+        if (currentTab != null) {
+            int idx = tabsAdapter.getTabs().indexOf(currentTab);
+            if (idx >= 0 && idx != tabsAdapter.getActiveIndex()) {
+                tabsAdapter.setActiveIndex(idx);
+                updateStatusFileName(currentTab.file);
+                fileTreeAdapter.setActiveFile(currentTab.file);
+            }
+        }
+    }
+
+    private void configureEditor(final CodeEditor ed) {
+        ed.setEditorLanguage(new JavaDroidLanguage(this, null));
+        EditorSettingsApplier.apply(ed, appPrefs, theme);
+        ed.setEditable(false);
 
         // Cursor position → status bar
-        statusLineCol.setText(getString(R.string.status_line, 1, 1));
-        editor.subscribeEvent(SelectionChangeEvent.class, (event, sub) -> {
+        ed.subscribeEvent(io.github.rosemoe.sora.event.SelectionChangeEvent.class, (event, sub) -> {
+            if (activeEditor != ed) return;
             int ln  = event.getLeft().line + 1;
             int col = event.getLeft().column + 1;
             runOnUiThread(() -> statusLineCol.setText(getString(R.string.status_line, ln, col)));
         });
 
         // Content change → mark tab as modified + auto-save (if enabled)
-        editor.subscribeEvent(ContentChangeEvent.class, (event, sub) -> {
+        ed.subscribeEvent(io.github.rosemoe.sora.event.ContentChangeEvent.class, (event, sub) -> {
             if (isProgrammaticChange) return;
-            int idx = tabsAdapter.getActiveIndex();
+            FileTab tab = (ed == editor) ? leftTab : rightTab;
+            if (tab == null) return;
+            int idx = tabsAdapter.getTabs().indexOf(tab);
             if (idx >= 0) runOnUiThread(() -> {
                 tabsAdapter.markModified(idx, true);
                 if (appPrefs.isAutoSave()) {
-                    saveCurrentToActiveTab();
+                    saveEditorToTab(ed, tab);
                     tabsAdapter.markModified(idx, false);
                 }
             });
         });
+
+        // Focus changes
+        ed.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                setActiveEditor(ed);
+            }
+        });
+
+        // Touch listener to capture focus switches instantly
+        ed.setOnTouchListener((v, event) -> {
+            if (activeEditor != ed) {
+                ed.requestFocus();
+                setActiveEditor(ed);
+            }
+            return false;
+        });
+    }
+
+    private void setupEditor() {
+        statusLineCol.setText(getString(R.string.status_line, 1, 1));
+        configureEditor(editor);
+        configureEditor(editor2);
+        updateActiveEditorBorders();
     }
 
     private void setupFindBar() {
@@ -481,8 +561,8 @@ public class MainActivity extends AppCompatActivity {
             String query = etFind.getText().toString();
             String repl  = etReplace.getText().toString();
             if (query.isEmpty()) return;
-            String newContent = editor.getText().toString().replace(query, repl);
-            editor.setText(newContent);
+            String newContent = activeEditor.getText().toString().replace(query, repl);
+            activeEditor.setText(newContent);
             lastSearchOffset = -1;
             int idx = tabsAdapter.getActiveIndex();
             if (idx >= 0) tabsAdapter.markModified(idx, true);
@@ -542,7 +622,7 @@ public class MainActivity extends AppCompatActivity {
         bytecodeRefreshRunning = true;
         saveCurrentToActiveTab();
         bytecodeOutput.setText(getString(R.string.bytecode_compiling));
-        final String source = editor.getText() != null ? editor.getText().toString() : "";
+        final String source = activeEditor.getText() != null ? activeEditor.getText().toString() : "";
         final File javaFile = tab.file;
         new Thread(() -> {
             try {
@@ -581,9 +661,9 @@ public class MainActivity extends AppCompatActivity {
             if (item.file != null && item.file.exists()) {
                 openFile(item.file);
                 switchBottomPanel(PANEL_RUN);
-                editor.postDelayed(() -> {
+                activeEditor.postDelayed(() -> {
                     if (item.line > 0) {
-                        editor.setSelectionRegion(item.line - 1, 0, item.line - 1, 0);
+                        activeEditor.setSelectionRegion(item.line - 1, 0, item.line - 1, 0);
                     }
                 }, 120);
             }
@@ -591,27 +671,32 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void applyEditorLanguage(File file) {
+        applyEditorLanguage(file, activeEditor);
+    }
+
+    private void applyEditorLanguage(File file, CodeEditor ed) {
+        if (ed == null) return;
         if (file != null) {
             String name = file.getName().toLowerCase(java.util.Locale.ROOT);
             if (name.endsWith(".cpp") || name.endsWith(".c") || name.endsWith(".h") 
                     || name.endsWith(".hpp") || name.endsWith(".cc") || name.endsWith(".cxx")) {
-                editor.setEditorLanguage(new CppLanguage());
+                ed.setEditorLanguage(new CppLanguage());
                 return;
             } else if (name.endsWith(".xml")) {
-                editor.setEditorLanguage(new XmlLanguage());
+                ed.setEditorLanguage(new XmlLanguage());
                 return;
             } else if (name.endsWith(".gradle")) {
-                editor.setEditorLanguage(new GradleLanguage());
+                ed.setEditorLanguage(new GradleLanguage());
                 return;
             } else if (name.endsWith(".json")) {
-                editor.setEditorLanguage(new JsonLanguage());
+                ed.setEditorLanguage(new JsonLanguage());
                 return;
             } else if (name.endsWith(".sh") || name.endsWith(".bash")) {
-                editor.setEditorLanguage(new BashLanguage());
+                ed.setEditorLanguage(new BashLanguage());
                 return;
             }
         }
-        editor.setEditorLanguage(new JavaDroidLanguage(this, projectManager.getProjectDir()));
+        ed.setEditorLanguage(new JavaDroidLanguage(this, projectManager.getProjectDir()));
     }
 
     private void setupProject(boolean isRestoringState) {
@@ -674,7 +759,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         refreshProblemsMergedAsync();
-        editor.setEditorLanguage(new JavaDroidLanguage(this, projectManager.getProjectDir()));
+        activeEditor.setEditorLanguage(new JavaDroidLanguage(this, projectManager.getProjectDir()));
     }
 
     private void initLiveProblemsScheduler() {
@@ -682,7 +767,7 @@ public class MainActivity extends AppCompatActivity {
                 new LiveProblemsScheduler.Sources() {
                     @Override
                     public String getEditorText() {
-                        return editor.getText() != null ? editor.getText().toString() : "";
+                        return activeEditor.getText() != null ? activeEditor.getText().toString() : "";
                     }
 
                     @Override
@@ -712,7 +797,7 @@ public class MainActivity extends AppCompatActivity {
 
     /** ECJ (активний файл) + static (проєкт); з диска для інших файлів. */
     private void refreshProblemsMergedAsync() {
-        final String text = editor.getText() != null ? editor.getText().toString() : "";
+        final String text = activeEditor.getText() != null ? activeEditor.getText().toString() : "";
         FileTab tab = tabsAdapter.getActiveTab();
         final File active = (tab != null && tab.file != null && tab.file.getName().endsWith(".java"))
                 ? tab.file
@@ -828,8 +913,8 @@ public class MainActivity extends AppCompatActivity {
         else if (id == R.id.action_save)          { saveCurrentFile();      return true; }
         else if (id == R.id.action_find)          { toggleFindBar();        return true; }
         else if (id == R.id.action_bytecode)      { switchBottomPanel(PANEL_BYTECODE); return true; }
-        else if (id == R.id.action_undo)          { editor.undo();          return true; }
-        else if (id == R.id.action_redo)          { editor.redo();          return true; }
+        else if (id == R.id.action_undo)          { activeEditor.undo();          return true; }
+        else if (id == R.id.action_redo)          { activeEditor.redo();          return true; }
         else if (id == R.id.action_new_file)         { showNewFileDialog();       return true; }
         else if (id == R.id.action_new_maven_project){ showNewMavenProjectDialog(); return true; }
         else if (id == R.id.action_sync_deps)        { syncDependencies();        return true; }
@@ -846,6 +931,7 @@ public class MainActivity extends AppCompatActivity {
         else if (id == R.id.action_export_project)   { exportProjectAsZip(); return true; }
         else if (id == R.id.action_git)              { openGit(); return true; }
         else if (id == R.id.action_create_cpp_module) { showCreateCppModuleDialog(); return true; }
+        else if (id == R.id.action_split_screen)      { toggleSplitScreen(); return true; }
         return super.onOptionsItemSelected(item);
     }
 
@@ -872,13 +958,19 @@ public class MainActivity extends AppCompatActivity {
             int idx = tabsAdapter.getTabs().size() - 1;
             tabsAdapter.setActiveIndex(idx);
             isProgrammaticChange = true;
-            editor.setText(content);
+            activeEditor.setText(content);
             isProgrammaticChange = false;
-            applyEditorLanguage(file);
-            editor.setEditable(true);
+            applyEditorLanguage(file, activeEditor);
+            activeEditor.setEditable(true);
             tabsRecycler.scrollToPosition(idx);
             updateStatusFileName(file);
             fileTreeAdapter.setActiveFile(file);
+            
+            if (activeEditor == editor) {
+                leftTab = tab;
+            } else {
+                rightTab = tab;
+            }
             refreshProblemsMergedAsync();
         } catch (IOException e) {
             Toast.makeText(this, getString(R.string.error_cannot_open, e.getMessage()), Toast.LENGTH_SHORT).show();
@@ -893,14 +985,20 @@ public class MainActivity extends AppCompatActivity {
             String content = projectManager.readFile(tab.file);
             tabsAdapter.setActiveIndex(index);
             isProgrammaticChange = true;
-            editor.setText(content);
+            activeEditor.setText(content);
             isProgrammaticChange = false;
-            applyEditorLanguage(tab.file);
-            editor.setEditable(true);
+            applyEditorLanguage(tab.file, activeEditor);
+            activeEditor.setEditable(true);
             tabsAdapter.markModified(index, false);
             tabsRecycler.scrollToPosition(index);
             updateStatusFileName(tab.file);
             fileTreeAdapter.setActiveFile(tab.file);
+            
+            if (activeEditor == editor) {
+                leftTab = tab;
+            } else {
+                rightTab = tab;
+            }
             refreshProblemsMergedAsync();
         } catch (IOException e) {
             Toast.makeText(this, getString(R.string.error_cannot_read, e.getMessage()), Toast.LENGTH_SHORT).show();
@@ -924,37 +1022,142 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void doCloseTab(int index) {
+        FileTab tabBeingClosed = tabsAdapter.getTabs().get(index);
         int active = tabsAdapter.getActiveIndex();
         tabsAdapter.removeTab(index);
 
         if (tabsAdapter.getTabs().isEmpty()) {
             isProgrammaticChange = true;
             editor.setText("");
+            editor2.setText("");
             isProgrammaticChange = false;
             editor.setEditable(false);
+            editor2.setEditable(false);
+            leftTab = null;
+            rightTab = null;
             statusFileName.setText("");
             fileTreeAdapter.setActiveFile(null);
             return;
         }
 
+        if (leftTab == tabBeingClosed) leftTab = null;
+        if (rightTab == tabBeingClosed) rightTab = null;
+
         int next = (index < active) ? active - 1
                  : (index == active) ? Math.min(index, tabsAdapter.getTabs().size() - 1)
                  : active;
 
-        // Load the next tab without saving (we already removed it)
         FileTab tab = tabsAdapter.getTabs().get(next);
         try {
             tabsAdapter.setActiveIndex(next);
             isProgrammaticChange = true;
-            editor.setText(projectManager.readFile(tab.file));
+            activeEditor.setText(projectManager.readFile(tab.file));
             isProgrammaticChange = false;
-            applyEditorLanguage(tab.file);
-            editor.setEditable(true);
+            applyEditorLanguage(tab.file, activeEditor);
+            activeEditor.setEditable(true);
             tabsRecycler.scrollToPosition(next);
             updateStatusFileName(tab.file);
             fileTreeAdapter.setActiveFile(tab.file);
+            
+            if (activeEditor == editor) {
+                leftTab = tab;
+            } else {
+                rightTab = tab;
+            }
         } catch (IOException e) {
             Toast.makeText(this, getString(R.string.error_cannot_read, e.getMessage()), Toast.LENGTH_SHORT).show();
+        }
+
+        if (isSplitActive) {
+            if (leftTab == null && !tabsAdapter.getTabs().isEmpty()) {
+                leftTab = tabsAdapter.getTabs().get(0);
+                try {
+                    isProgrammaticChange = true;
+                    editor.setText(projectManager.readFile(leftTab.file));
+                    isProgrammaticChange = false;
+                    applyEditorLanguage(leftTab.file, editor);
+                    editor.setEditable(true);
+                } catch (IOException ignored) {}
+            }
+            if (rightTab == null && !tabsAdapter.getTabs().isEmpty()) {
+                rightTab = tabsAdapter.getTabs().get(0);
+                try {
+                    isProgrammaticChange = true;
+                    editor2.setText(projectManager.readFile(rightTab.file));
+                    isProgrammaticChange = false;
+                    applyEditorLanguage(rightTab.file, editor2);
+                    editor2.setEditable(true);
+                } catch (IOException ignored) {}
+            }
+        }
+    }
+
+    private void toggleSplitScreen() {
+        isSplitActive = !isSplitActive;
+        if (isSplitActive) {
+            editorDivider.setVisibility(View.VISIBLE);
+            wrapperEditor2.setVisibility(View.VISIBLE);
+            editor2.setVisibility(View.VISIBLE);
+
+            FileTab activeTab = tabsAdapter.getActiveTab();
+            FileTab secTab = null;
+            if (tabsAdapter.getTabs().size() > 1) {
+                int activeIndex = tabsAdapter.getActiveIndex();
+                int secIndex = (activeIndex + 1) % tabsAdapter.getTabs().size();
+                secTab = tabsAdapter.getTabs().get(secIndex);
+            } else if (activeTab != null) {
+                secTab = activeTab;
+            }
+
+            leftTab = activeTab;
+            rightTab = secTab;
+
+            if (secTab != null) {
+                try {
+                    isProgrammaticChange = true;
+                    editor2.setText(projectManager.readFile(secTab.file));
+                    isProgrammaticChange = false;
+                    applyEditorLanguage(secTab.file, editor2);
+                    editor2.setEditable(true);
+                } catch (IOException e) {
+                    editor2.setText("");
+                    editor2.setEditable(false);
+                }
+            } else {
+                editor2.setText("");
+                editor2.setEditable(false);
+            }
+
+            if (activeTab != null) {
+                applyEditorLanguage(activeTab.file, editor);
+            }
+
+            activeEditor = editor2;
+            editor2.requestFocus();
+        } else {
+            if (rightTab != null) {
+                saveEditorToTab(editor2, rightTab);
+            }
+
+            editorDivider.setVisibility(View.GONE);
+            wrapperEditor2.setVisibility(View.GONE);
+            editor2.setVisibility(View.GONE);
+
+            leftTab = tabsAdapter.getActiveTab();
+            rightTab = null;
+            activeEditor = editor;
+            editor.requestFocus();
+        }
+        updateActiveEditorBorders();
+
+        int activeIdx = tabsAdapter.getActiveIndex();
+        if (activeIdx >= 0) {
+            tabsAdapter.setActiveIndex(activeIdx);
+            FileTab activeTab = tabsAdapter.getActiveTab();
+            if (activeTab != null) {
+                updateStatusFileName(activeTab.file);
+                fileTreeAdapter.setActiveFile(activeTab.file);
+            }
         }
     }
 
@@ -966,17 +1169,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void saveTab(int index) {
-        if (index != tabsAdapter.getActiveIndex()) return;
         FileTab tab = tabsAdapter.getTabs().get(index);
+        CodeEditor targetEd = null;
+        if (tab == leftTab) targetEd = editor;
+        else if (tab == rightTab) targetEd = editor2;
+        if (targetEd == null) targetEd = activeEditor;
+
         try {
             if (appPrefs.isFormatOnSave() && tab.file.getName().endsWith(".java")) {
-                String currentText = editor.getText().toString();
+                String currentText = targetEd.getText().toString();
                 String formatted = JavaFormatter.format(currentText, appPrefs.getTabSize());
                 if (!formatted.equals(currentText)) {
-                    editor.setText(formatted);
+                    targetEd.setText(formatted);
                 }
             }
-            projectManager.writeFile(tab.file, editor.getText().toString());
+            projectManager.writeFile(tab.file, targetEd.getText().toString());
             tabsAdapter.markModified(index, false);
         } catch (IOException e) {
             Toast.makeText(this, getString(R.string.toast_save_failed, e.getMessage()), Toast.LENGTH_SHORT).show();
@@ -987,12 +1194,7 @@ public class MainActivity extends AppCompatActivity {
         int idx = tabsAdapter.getActiveIndex();
         if (idx < 0 || tabsAdapter.getTabs().isEmpty()) return;
         FileTab tab = tabsAdapter.getTabs().get(idx);
-        try {
-            projectManager.writeFile(tab.file, editor.getText().toString());
-            tab.isModified = false;
-        } catch (IOException e) {
-            Toast.makeText(this, getString(R.string.toast_save_failed, e.getMessage()), Toast.LENGTH_SHORT).show();
-        }
+        saveEditorToTab(activeEditor, tab);
     }
 
     private void formatCurrentFile() {
@@ -1004,12 +1206,12 @@ public class MainActivity extends AppCompatActivity {
         if (!tab.file.getName().endsWith(".java")) {
             return;
         }
-        String currentText = editor.getText() != null ? editor.getText().toString() : "";
+        String currentText = activeEditor.getText() != null ? activeEditor.getText().toString() : "";
         if (currentText.isEmpty()) return;
 
         String formatted = JavaFormatter.format(currentText, appPrefs.getTabSize());
         if (!formatted.equals(currentText)) {
-            editor.setText(formatted);
+            activeEditor.setText(formatted);
             int idx = tabsAdapter.getActiveIndex();
             if (idx >= 0) {
                 tabsAdapter.markModified(idx, true);
@@ -1092,7 +1294,7 @@ public class MainActivity extends AppCompatActivity {
         switchBottomPanel(PANEL_RUN);
         appendConsole(getString(R.string.console_running_file, activeTab.file.getName()), theme.textDim);
 
-        ProjectCompiler.runSingleSource(this, editor.getText().toString(), activeTab.file,
+        ProjectCompiler.runSingleSource(this, activeEditor.getText().toString(), activeTab.file,
                 new ProjectCompiler.Callback() {
                     @Override
                     public void onProgress(String msg) {
@@ -1311,7 +1513,7 @@ public class MainActivity extends AppCompatActivity {
                                     int activeIdx = tabsAdapter.indexOfFile(appJavaFile);
                                     if (activeIdx >= 0 && activeIdx == tabsAdapter.getActiveIndex()) {
                                         isProgrammaticChange = true;
-                                        editor.setText(updatedJava);
+                                        activeEditor.setText(updatedJava);
                                         isProgrammaticChange = false;
                                     }
                                 }
@@ -1393,7 +1595,7 @@ public class MainActivity extends AppCompatActivity {
         String query = etFind.getText().toString();
         if (query.isEmpty()) return;
 
-        String fullText  = editor.getText().toString();
+        String fullText  = activeEditor.getText().toString();
         String textLower = fullText.toLowerCase();
         String queryLow  = query.toLowerCase();
 
@@ -1416,7 +1618,7 @@ public class MainActivity extends AppCompatActivity {
 
         int[] s = offsetToLineCol(fullText, foundIdx);
         int[] e = offsetToLineCol(fullText, foundIdx + query.length());
-        editor.setSelectionRegion(s[0], s[1], e[0], e[1]);
+        activeEditor.setSelectionRegion(s[0], s[1], e[0], e[1]);
     }
 
     private void performReplace() {
@@ -1424,14 +1626,14 @@ public class MainActivity extends AppCompatActivity {
         String repl  = etReplace.getText().toString();
         if (query.isEmpty() || lastSearchOffset < 0) return;
 
-        String text = editor.getText().toString();
+        String text = activeEditor.getText().toString();
         int end = lastSearchOffset + query.length();
         if (end > text.length()) return;
 
         if (text.substring(lastSearchOffset, end).equalsIgnoreCase(query)) {
             String newText = text.substring(0, lastSearchOffset) + repl
                            + text.substring(end);
-            editor.setText(newText);
+            activeEditor.setText(newText);
             int idx = tabsAdapter.getActiveIndex();
             if (idx >= 0) tabsAdapter.markModified(idx, true);
             lastSearchOffset = -1;
@@ -1691,7 +1893,7 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         String content = projectManager.readFile(activeTab.file);
                         isProgrammaticChange = true;
-                        editor.setText(content);
+                        activeEditor.setText(content);
                         isProgrammaticChange = false;
                     } catch (IOException ignored) {}
                 }
@@ -1783,7 +1985,7 @@ public class MainActivity extends AppCompatActivity {
     private void writeCurrentEditorToUri(Uri uri) {
         try (OutputStream os = getContentResolver().openOutputStream(uri)) {
             if (os == null) throw new IOException("Cannot open output");
-            os.write(editor.getText().toString().getBytes(StandardCharsets.UTF_8));
+            os.write(activeEditor.getText().toString().getBytes(StandardCharsets.UTF_8));
             String name = displayName(uri);
             Toast.makeText(this, getString(R.string.toast_export_done,
                     name != null ? name : uri.toString()), Toast.LENGTH_SHORT).show();
@@ -1946,7 +2148,7 @@ public class MainActivity extends AppCompatActivity {
                         try {
                             String content = projectManager.readFile(activeTab.file);
                             isProgrammaticChange = true;
-                            editor.setText(content);
+                            activeEditor.setText(content);
                             isProgrammaticChange = false;
                         } catch (Exception e) {
                             Toast.makeText(MainActivity.this, getString(R.string.error_cannot_read, e.getMessage()), Toast.LENGTH_SHORT).show();
