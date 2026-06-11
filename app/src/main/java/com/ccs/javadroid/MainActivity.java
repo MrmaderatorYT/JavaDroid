@@ -591,7 +591,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void applyEditorLanguage(File file) {
-        // Для .xml зараз той самий рушій, що й для Java (окремий XML-lexer недоступний у цій версії артефактів).
+        if (file != null) {
+            String name = file.getName().toLowerCase(java.util.Locale.ROOT);
+            if (name.endsWith(".cpp") || name.endsWith(".c") || name.endsWith(".h") 
+                    || name.endsWith(".hpp") || name.endsWith(".cc") || name.endsWith(".cxx")) {
+                editor.setEditorLanguage(new CppLanguage());
+                return;
+            }
+        }
         editor.setEditorLanguage(new JavaDroidLanguage(this, projectManager.getProjectDir()));
     }
 
