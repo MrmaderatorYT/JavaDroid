@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html  lang="ru">
+<head>
+<title>Java | Підстановочні знаки wildcards в узагальненнях</title>
+<meta charset="utf-8" />
+<meta name="description" content="Подстановочные знаки wildcards в обобщениях generics в языке программирования Java, метасимвол ? и выражения "? extends Type" и "? super Type", ограничения Supertype Bounds">
+<meta name="viewport" content="width=device-width">
+<link href="../../style50.css@v=1.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<div id="container">
+<header>
+<div id="header">
+<div id="logo">
+<a class="logoTitle" href="https://metanit.com/" title="На главную">METANIT.COM</a>
+<div class="logoDefinition">Сайт о программировании</div> 
+</div>
+
+<div class="socbtns">
+<ul>
+<li><a title="Посмотреть меню" rel="nofollow" class="fa fa-lg fa-bars"></a></li>
+<li><a href="https://metanit.com/donations.html" title="Помощь сайту" rel="nofollow" style="color: var(--fa-usd-color);" class="fa fa-lg fa-usd"></a></li>
+<li><a href="https://vk.com/metanit" title="Группа в ВКонтакте" rel="nofollow" style="color: var(--fa-vk-color);" class="fa fa-lg fa-vk"></a></li>
+<li><a href="https://t.me/devnull22" title="Группа в Телеграмме"  class="fa fa-lg fa-tel" style="color: var(--fa-tel-color);"></a></li>
+<li><a href="https://metanit.com/android.html" title="Приложения андроид" rel="nofollow" style="color: var(--fa-android-color);" class="fa fa-lg fa-android"></a></li>
+<li><i id="toggle-theme" class="fa fa-lg fa-adjust"></i></li>
+</ul>
+</div>
+
+
+<div id="magnifying-glass"></div>
+
+<div class="menuButton" id="menuButton">
+	<span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+</div>
+</div>
+
+<div id="search" class="transp">
+<form action="https://www.google.ru" id="cse-search-box">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3716042175333627:1096498938" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" />
+    <input type="submit" name="sa" value="Найти" />
+  </div>
+</form>
+</div>
+
+<div id="menu" class="menu">
+<ul class="mainmenu">
+    <li><a href="https://metanit.com/common/">Програмування</a></li>
+    <li><a href="https://metanit.com/assembler/">Асемблер</a></li>
+   <li><a href="https://metanit.com/sharp/">C#</a></li>
+   <li><a href="https://metanit.com/java/">Java</a></li>
+   <li><a href="https://metanit.com/web/">WEB</a></li>
+   <li><a href="https://metanit.com/python/">Python</a></li>
+   <li><a href="https://metanit.com/c/">C</a></li>
+   <li><a href="https://metanit.com/cpp/">C++</a></li>
+   <li><a href="https://metanit.com/sql/">SQL</a></li>
+   <li><a href="https://metanit.com/nosql/mongodb/">MongoDB</a></li>
+   <li><a href="https://metanit.com/go/">Go</a></li>
+   <li><a href="https://metanit.com/visualbasic/">VB.NET</a></li>
+   <li><a href="https://metanit.com/swift/tutorial/">Swift</a></li>
+   <li><a href="https://metanit.com/kotlin/">Kotlin</a></li>
+   <li><a href="https://metanit.com/dart/">Dart</a></li>
+   <li><a href="https://metanit.com/php/">PHP</a></li>
+   <li><a href="https://metanit.com/rust/">Rust</a></li>
+   <li><a href="https://metanit.com/os/">Linux</a></li>
+   <li><a href="https://metanit.com/f/">F#</a></li>
+   <!--<li><a href="//metanit.com/lisp/tutorial/">Common Lisp</a></li>-->
+   <li><a href="https://metanit.com/hosting">Хостинг</a></li>
+</ul>
+</div>
+
+</header>
+<div class="outercontainer">
+<div class="innercontainer">
+ 
+   <div class="item center menC">
+     <h1>Підстановочні знаки wildcards в узагальненнях</h1><div class="date">Последнее обновление: 10.10.2025</div>
+	<div class="socBlock">
+	<div class="share soctop">
+	<ul>
+	<li><a title="Поделиться в Вконтакте" rel="nofollow" class="fa fa-lg fa-vk"></a></li>
+	<li><a title="Поделиться в Телеграм" rel="nofollow" class="fa fa-lg fa-telegram"></a></li>
+	<li><a title="Поделиться в Одноклассниках" rel="nofollow" class="fa fa-lg fa-odnoklassniki"></a></li>
+	
+	</ul>
+	</div>
+	</div>
+
+	<div style="margin-top:23px;margin-left:5px;">
+		
+		
+		
+	</div>
+
+	
+<p>В языке Java обобщения играют важную роль в обеспечении безопасности типов и создании гибкого кода. 
+Однако, при работе с наследованием и обобщениями могут возникать сложности. Именно здесь на помощь приходят <b>wildcards</b> (подстановочные знаки или метасимволы), предоставляя мощный инструмент 
+для работы с неизвестными типами.</p>
+
+
+<p>В контексте обобщений wildcard или подстановочный знак представляет представляет неизвестный тип и обозначается с помощью вопросительного знака <b>?</b>. 
+Он позволяет создавать более гибкий функционал, который может работать с различными типами данных.</p>
+<p>Існує три види підстановочних знаків різних цілей:</p>
+<ul>
+<li><p><span class="b">Необмежений Wildcard</span> (<code>?</code>)</p></li>
+<li><p><span class="b">Wildcard, обмежений &quot;згори&quot;</span> (ограниченный базовым классом) (<code>? extends Type</code>)</p></li>
+<li><p><span class="b">Wildcard, обмежений &quot;знизу&quot;</span> (ограниченный производным классом) (<code>? super Type</code>)</p></li>
+</ul>
+<p>Розглянемо ці типи підстановочних знаків та сценарії їх використання з прикладу наступного класу Person:</p>
+<pre class="brush:java;">
+class Person&lt;T&gt;{
+
+    private T id;
+    private String name;
+
+    T getId(){ return id; }
+    void setId(T id){ this.id = id; }
+
+    String getName() { return name; }
+
+    Person(T id, String name){
+
+        this.id = id;
+        this.name = name;
+    }
+}
+</pre>
+<p>Тип Person является обобщенный и типизирован параметром <code>T</code>, который предоставляет тип для поля id.</p>
+
+<p>Але передусім подивимося ситуацію, де підстановочні знаки можуть допомогти:</p>
+<pre class="brush:java;">
+public class Program{
+       
+    public static void main(String[] args) {
+           
+        Person&lt;Object&gt; bob = new Person&lt;&gt;(2.0, "Bob");
+        Person&lt;Integer&gt; tom = new Person&lt;&gt;(1, "Tom");
+        Person&lt;String&gt; sam = new Person&lt;&gt;("F-456", "Sam");
+
+        printPersonInfo(bob);
+        printPersonInfo(tom); // ! ОШибка:  tom - НЕ представляет тип Person&lt;Object&gt;
+        printPersonInfo(sam); // ! ОШибка:  sam - НЕ представляет тип Person&lt;Object&gt;
+    }
+
+    static void printPersonInfo(Person&lt;Object&gt; person) {
+
+        System.out.print("Name: " + person.getName());
+        Object id = person.getId();
+        System.out.println(";  Id: " + id);
+    }
+}
+</pre>
+<p>При попытке компиляции этой программы мы столкнемся с ошибками. Почему? Здесь метод <code>printPersonInfo()</code> в качестве параметра принимает объект типа <code>Person&lt;Object&gt;</code>. Типизация типом <code>Object</code> казалось бы охватит все возможные ситуации 
+для поля id, в том числе когда это поле представляет типы <code>Integer</code> и <code>String</code> (как наследника класса <code>Object</code>). Однако в реальности мы сможем передать в этот метод объекты Person, 
+которые типизирированы типами, отличными от <code>Object</code>:</p>
+<pre class="brush:java;">
+Person&lt;Integer&gt; tom = new Person&lt;&gt;(1, "Tom");
+Person&lt;String&gt; sam = new Person&lt;&gt;("F-456", "Sam");
+
+printPersonInfo(tom); // ! ОШибка:  tom - НЕ представляет тип Person&lt;Object&gt;
+printPersonInfo(sam); // ! ОШибка:  sam - НЕ представляет тип Person&lt;Object&gt;
+</pre>
+<p>І підстановочні символи wildcard дозволяють вирішити цю проблему.</p>
+<h3>Необмежений Wildcard (?)</h3>
+<p>Необмежений wildcard (Unbounded Wildcard) використовується, коли потрібно працювати з узагальненим типом, де конкретний тип невідомий чи важливий. Такий знак підстановки фактично позначає &quot;будь-який тип&quot;. 
+Такий тип значень підстановки може бути корисним, коли логіка вашого методу не залежить від конкретного типу, що використовується в узагальненні.</p>
+<p>Розглянемо такий приклад:</p>
+<pre class="brush:java;">
+public class Program{
+       
+    public static void main(String[] args) {
+           
+        // Пример использования:
+        Person&lt;Integer&gt; tom = new Person&lt;&gt;(123, "Tom");
+        Person&lt;String&gt; bob = new Person&lt;&gt;("A-456", "Bob");
+
+        printPersonInfo(tom);   // Name: Tom;  Id: 123
+        System.out.println();
+        printPersonInfo(bob);   // Name: Bob;  Id: A-456
+    }
+    static void printPersonInfo(Person&lt;?&gt; person) {
+        // Мы можем безопасно вызывать методы, не связанные с дженериком
+        System.out.print("Name: " + person.getName());
+        
+        // Мы можем получить id, но компилятор будет рассматривать его как Object
+        Object id = person.getId();
+        System.out.println(";  Id: " + id);
+    }
+}
+</pre>
+<p>В данном случае определен метод <code>printPersonInfo</code>, который просто выводит информацию о человеке. Обратите внимание на тип его параметра:</p>
+<pre class="brush:java;">Person&lt;?&gt; person</pre>
+<p>То есть параметр <code>person</code> представляет класс Person, но каким типом типизирован этот класс, неважно. Поскольку здесь нам не важен тип его поля <code>id</code> - мы просто выводим его на консоль. В этом случае 
+используется строковое представление поля id. Поэтому в этот метод мы можем передать объекты класса Person, типизированные различными типами, например, Integer или String:</p>
+<pre class="brush:java;">
+Person&lt;Integer&gt; tom = new Person&lt;&gt;(123, "Tom");
+Person&lt;String&gt; bob = new Person&lt;&gt;("A-456", "Bob");
+
+printPersonInfo(tom);   // Name: Tom;  Id: 123
+printPersonInfo(bob);   // Name: Bob;  Id: A-456
+</pre>
+<p>Но поскольку компилятор здесь не знает, какой именно тип ожидает объект <code>Person&lt;?&gt;</code>, мы не можем выполнять ряд операций с полем id, например, установить его с помощью метода <code>setId()</code>:</p>
+<pre class="brush:java;">
+public class Program{
+       
+    public static void main(String[] args) {
+           
+        // Пример использования:
+        Person&lt;Integer&gt; tom = new Person&lt;&gt;(123, "Tom");
+        changePerson(tom, 25);
+    }
+    static void changePerson(Person&lt;?&gt; person, Object id) {
+
+        person.setId(id); // ! ошибка
+    }
+}
+</pre>
+<p>Здесь при попытке установить id через вызов <code>person.setId(id)</code> мы полуим ошибку во время компиляции.</p>
+
+<div style="margin-top:23px;margin-left:5px;">
+
+<!-- Yandex.RTB R-A-201190-9 -->
+
+</div>
+
+<h3>Wildcard, обмежений базовим класом (? extends Type)</h3>
+<p>Wildcard, обмежений &quot;згори&quot; або обмежений базовим класом, означає &quot;будь-який тип, який представляє даний базовий клас або його похідний клас. Задається у вигляді наступного виразу:</p>
+<pre class="brush:java;">? extends Type</pre>
+<p>Тобто тип повинен представляти похідний від Type тип або сам Type</p>
+<p>&quot;Зверху&quot;? Тому що в ієрархії типів базові типи розташовуються вгорі. 
+Object) відсікаються.</p>
+<p>Проте ми можемо написати так:</p>
+<p>Например, определим метод, который работает только с теми объектами Person, у которых поле <code>id</code> представляет число, например, <code>Integer</code>, <code>Double</code>. 
+Отличительная особенность встроенных числовых типов в Java в том, что они наследуются от базового класса <b>Number</b>. Поэтому мы можем использовать тип <code>Number</code> в качестве ограничения сверху:</p>
+<pre class="brush:java;">
+public class Program{
+       
+    public static void main(String[] args) {
+           
+        Person&lt;Integer&gt; tom = new Person&lt;&gt;(10, "Tom");
+        Person&lt;Double&gt; bob = new Person&lt;&gt;(25.5, "Bob");
+
+        processNumericId(tom);      // Id as double: 10.0
+        processNumericId(bob);      // Id as double: 25.5
+    }
+
+    static void processNumericId(Person&lt;? extends Number&gt; person) {
+        // Мы можем безопасно "прочитать" id как Number
+        Number id = person.getId();
+        System.out.println("Id as double: " + id.doubleValue());
+    }
+}
+</pre>
+<p>Здесь метод <code>processNumericId()</code> принимает объект Person, который типизирован типом NUmber или его наследниками:</p>
+<pre class="brush:java;">void processNumericId(Person&lt;? extends Number&gt; person) </pre>
+<p>Благодаря этому компилятор внутри метода будет рассматривать поле id (которое имеет тип T) как поле типа <code>Number</code>. Поэтому мы сможем внутри метода работать с id как с объектом типа Number, например, 
+вызвать его метод <code>doubleValue()</code> для получения id в виде double.</p>
+<p>Також ми не можемо встановити id, навіть якщо використовувати об&#x27;єкт Number:</p>
+<pre class="brush:java;">
+public static void main(String[] args) {
+           
+    Person&lt;String&gt; sam = new Person&lt;&gt;("A-456", "Sam");
+    Person&lt;Object&gt; alice = new Person&lt;&gt;(123, "Alice");
+
+    processNumericId(sam);      // ! Ошибка
+    processNumericId(alice);    // ! Ошибка
+}
+</pre>
+<p>В первом случае (<code>processNumericId(sam)</code>) объект Person типизирован типом <code>String</code>, а <code>String</code> не входит в иерархию типа <code>Number</code>. Поэтому получаем ошибку.</p>
+<p>Во втором случае (<code>processNumericId(alice)</code>) объект Person типизирован типом <code>Object</code>. Однако в иерархии типов тип <code>Object</code> располагается выше типа <code>Number</code> 
+(является его базовым классом). Поэтому также получаем ошибку.</p>
+<p></p>
+<pre class="brush:java;">
+static void setNumericId(Person&lt;? extends Number&gt; person, Number id) {
+        
+    person.setId(id);  // ! Ошибка
+}
+</pre>
+<p>Компилятор не знает, что именно ожидает объект — <code>Integer</code> или <code>Double</code>, поэтому не позволит установить какое-либо конкретное значение.</p>
+
+<h3>Wildcard з обмеженням похідним типом (?super Type)</h3>
+
+<p>Wildcard, ограниченный "снизу" или ограниченный производным типом, означает "любой тип, который представляет данный тип или его базовый тип. Под базовым типом понимается любой тип, 
+который расположен выше по иерархии (например, для типа <code>Integer</code> - это <code>Number</code> (прямой базовый тип) и <code>Object</code> (непрямой базовый тип)). Задается в виде следующего выражения:</p>
+<pre class="brush:java;">? super Type</pre>
+<p>Тобто тип повинен представляти сам Type або його базовий тип (супертип). Тому всі типи-спадкоємці від самого Type у разі відсікаються.</p>
+<p>Допустим, нам нужен метод для обновления <code>id</code>, который представлять тип <code>Integer</code>, либо его базовый класс (<code>Number</code>, <code>Object</code>). В этом случае мы можем установить ограничение снизу в виде типа <code>Integer</code>:</p>
+<pre class="brush:java;">
+public class Program{
+       
+    public static void main(String[] args) {
+           
+        Person&lt;Integer&gt; pInt = new Person&lt;&gt;(1, "Tom");
+        Person&lt;Number&gt; pNum = new Person&lt;&gt;(2.0, "Bob");
+        Person&lt;Object&gt; pObj = new Person&lt;&gt;("F-456", "Sam");
+
+        setIntegerId(pInt, 100); // OK
+        setIntegerId(pNum, 200); // OK
+        setIntegerId(pObj, 300); // OK
+
+        // проверка
+        System.out.println("pInt Id: " + pInt.getId()); // pInt Id: 100
+        System.out.println("pNum Id: " + pNum.getId()); // pNum Id: 200
+        System.out.println("pObj Id: " + pObj.getId()); // pObj Id: 300
+    }
+    static void setIntegerId(Person&lt;? super Integer&gt; person, int newId) {
+        // Мы можем безопасно "записать" Integer,
+        // так как любой супертип Integer сможет его принять.
+        person.setId(newId);
+    }
+}
+</pre>
+<p>Здесь определен метод <code>setIntegerId()</code>, который получает объект Person и новое значение id для установки. Такой метод сможет работать с типами <code>Person&lt;Integer&gt;</code>, <code>Person&lt;Number&gt;</code> и <code>Person&lt;Object&gt;</code>.</p>
+<p>Однако при чтении (например, при вызове <code>getId()</code>) мы можем быть уверены только в том, что получим <code>Object</code>, так как неизвестно, какой именно супертип используется (<code>Integer</code>, <code>Number</code> или <code>Object</code>):</p>
+<pre class="brush:java;">
+public class Program{
+       
+    public static void main(String[] args) {
+           
+        Person&lt;Integer&gt; pInt = new Person&lt;&gt;(1, "Tom");
+        Person&lt;Number&gt; pNum = new Person&lt;&gt;(2.0, "Bob");
+        Person&lt;Object&gt; pObj = new Person&lt;&gt;("F-456", "Sam");
+
+        printPersonId(pInt);
+        printPersonId(pNum);
+        printPersonId(pObj);
+    }
+
+    static void printPersonId(Person&lt;? super Integer&gt; person) {
+
+        // Здесь id - это Object
+        Object id = person.getId();
+
+        // Integer id = person.getId();  // так мы не можем написать
+
+        System.out.println(id); 
+    }
+}
+</pre>
+<h3>Принцип PECS Producer extends</h3>
+<p>Принцип <b>PECS</b> (Producer Extends, Consumer Super) представляет простое правило помогает запомнить, когда какой wildcard использовать:</p>
+<ul>
+<li><p><span class="b">постачає</span>: объект <span class="b">Consumer super</span> данные (операции чтения, как в <code>getId()</code>). В этом случае случае используется <code>? extends Type</code></p></li>
+<li><p><span class="b">споживає</span>: объект <span class="b">Назад</span> данные (операции записи, как в <code>setId()</code>). В этом случае случае используется <code>? super Type</code></p></li>
+</ul>
+	
+
+	<div style="margin-top:25px;">
+
+	
+	</div>
+
+	<div class="nav"><p><a href="3.31.html">Зміст</a><a href="index.html">Вперед</a><a href="3.13.html">Глава 1. Введення у Java</a></p></div>
+	<div class="socBlock">
+	<div class="share soctop">
+	<ul>
+	<li><a title="Поделиться в Вконтакте" rel="nofollow" class="fa fa-lg fa-vk"></a></li>
+	<li><a title="Поделиться в Телеграм" rel="nofollow" class="fa fa-lg fa-telegram"></a></li>
+	<li><a title="Поделиться в Одноклассниках" rel="nofollow" class="fa fa-lg fa-odnoklassniki"></a></li>
+	
+	</ul>
+	</div>
+	</div>
+  </div>
+
+	<div class="item left">
+     <ul id="browser" class="filetree"> 
+	<li class="closed"><span class="folder">Що таке Java</span>
+		<ul>
+			<li><span class="file"><a href="1.1.html">Встановлення JDK</a></span></li>
+			<li><span class="file"><a href="1.6.html">Перша програма Java</a></span></li>
+			<li><span class="file"><a href="1.2.html">Перша програма у IntelliJ IDEA</a></span></li>
+			<li><span class="file"><a href="1.5.html">Перша програма у NetBeans</a></span></li>
+			<li><span class="file"><a href="1.3.html">Перша програма у Eclipse</a></span></li>
+			<li><span class="file"><a href="1.4.html">JShell</a></span></li>
+			<li><span class="file"><a href="1.7.html">Глава 2. Основи програмування Java</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Структура програми</span>
+		<ul>
+			<li><span class="file"><a href="2.11.html">Змінні та константи</a></span></li>
+			<li><span class="file"><a href="2.1.html">Літерали</a></span></li>
+			<li><span class="file"><a href="2.19.html">Типи даних</a></span></li>
+			<li><span class="file"><a href="2.12.html">Консольне введення/виведення в Java</a></span></li>
+			<li><span class="file"><a href="2.9.html">Арифметичні операції</a></span></li>
+			<li><span class="file"><a href="2.3.html">Порозрядні операції</a></span></li>
+			<li><span class="file"><a href="2.13.html">Умовні вирази</a></span></li>
+			<li><span class="file"><a href="2.14.html">Операції присвоєння та пріоритет операцій</a></span></li>
+			<li><span class="file"><a href="2.15.html">Перетворення базових типів даних</a></span></li>
+			<li><span class="file"><a href="2.2.html">Умовні конструкції</a></span></li>
+			<li><span class="file"><a href="2.5.html">Цикли</a></span></li>
+			<li><span class="file"><a href="2.6.html">Масиви</a></span></li>
+			<li><span class="file"><a href="2.4.html">Конструкція та вираз switch</a></span></li>
+			<li><span class="file"><a href="2.20.html">Розділ 3. Класи</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Класи та об&#x27;єкти</span>
+		<ul>
+			<li><span class="file"><a href="3.1.html">Методи</a></span></li>
+
+
+			<li><span class="file"><a href="2.7.html">Параметри методів</a></span></li>
+			<li><span class="file"><a href="2.16.html">Об&#x27;єкти як параметри методів</a></span></li>
+			<li><span class="file"><a href="3.14.html">Оператор return. Результат методу</a></span></li>
+			<li><span class="file"><a href="2.17.html">Перевантаження методів</a></span></li>
+			<li><span class="file"><a href="2.18.html"></a></span></li>
+			<li><span class="file"><a href="3.21.html">Конструктори та ініціалізатори</a></span></li>
+
+
+			<li><span class="file"><a href="3.4.html">Статичні компоненти класу та модифікатор static</a></span></li>
+			<li><span class="file"><a href="3.20.html">Область дії та час життя змінних</a></span></li>
+			<li><span class="file"><a href="2.8.html">Рекурсивні функції</a></span></li>
+			<li><span class="file"><a href="3.2.html">Пакети</a></span></li>
+			<li><span class="file"><a href="3.3.html">Модифікатори доступу</a></span></li>
+			<li><span class="file"><a href="3.19.html">Компактні файли коду та метод main</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 4. Об&#x27;єктно-орієнтоване програмування</span>
+		<ul>
+			<li><span class="file"><a href="3.22.html">Інкапсуляція</a></span></li>
+			<li><span class="file"><a href="3.5.html">Успадкування</a></span></li>
+			<li><span class="file"><a href="3.23.html">Заборона наслідування та перевизначення методів</a></span></li>
+			<li><span class="file"><a href="3.24.html">Поліморфізм та динамічна диспетчеризація методів</a></span></li>
+			<li><span class="file"><a href="3.9.html">Клас Object та його методи</a></span></li>
+			<li><span class="file"><a href="3.6.html">Абстрактні класи</a></span></li>
+			<li><span class="file"><a href="3.10.html">Ієрархія успадкування та перетворення типів</a></span></li>
+
+			<li><span class="file"><a href="3.7.html">Інтерфейси</a></span></li>
+			<li><span class="file"><a href="3.28.html">Інтерфейси та поліморфізм</a></span></li>
+			<li><span class="file"><a href="3.29.html">Множинна реалізація та успадкування інтерфейсів</a></span></li>
+			<li><span class="file"><a href="3.16.html">Інтерфейси у механізмі зворотного виклику</a></span></li>
+			<li><span class="file"><a href="3.8.html">Перерахування enum</a></span></li>
+			<li><span class="file"><a href="3.11.html">Узагальнення (Generics)</a></span></li>
+			<li><span class="file"><a href="3.17.html">Обмеження узагальнень</a></span></li>
+			<li><span class="file"><a href="3.15.html">Спадкування та узагальнення</a></span></li>
+			<li><span class="file"><a href="3.31.html">Type Erasure (Стирання типів)</a></span></li>
+			<li><span class="file"><a href="3.32.html">Підстановочні знаки wildcards в узагальненнях</a></span></li>
+			<li><span class="file"><a href="3.13.html">Посилальні типи та клонування об&#x27;єктів</a></span></li>
+			<li><span class="file"><a href="3.18.html">Класи Records</a></span></li>
+			<li><span class="file"><a href="9.4.html">Функціональні інтерфейси та посилання на методи</a></span></li>
+			<li><span class="file"><a href="9.1.html">Лямбда-вираження</a></span></li>
+			<li><span class="file"><a href="9.2.html">Лямбди як параметри та результати методів</a></span></li>
+			<li><span class="file"><a href="9.3.html">Вбудовані функціональні інтерфейси</a></span></li>
+			<li><span class="file"><a href="3.12.html">Внутрішні та вкладені класи</a></span></li>
+			<li><span class="file"><a href="3.30.html">Анонімні класи</a></span></li>
+
+
+			<li><span class="file"><a href="3.25.html">Sealed-класи та інтерфейси</a></span></li>
+			<li><span class="file"><a href="3.26.html">Pattern матч. Патер типів</a></span></li>
+			<li><span class="file"><a href="3.27.html">Pattern матч. record-паттерн</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 5. Обробка винятків</span>
+		<ul>
+			<li><span class="file"><a href="2.10.html">Обробка винятків та конструкція try...catch...finally</a></span></li>
+			<li><span class="file"><a href="4.2.html">Класи винятків</a></span></li>
+			<li><span class="file"><a href="4.1.html">Оператори throws та throw</a></span></li>
+			<li><span class="file"><a href="4.3.html">Створення своїх виняткових класів</a></span></li>
+			<li><span class="file"><a href="4.4.html">Assert</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 6. Колекції</span>
+		<ul>
+			<li><span class="file"><a href="5.1.html">Типи колекцій. Інтерфейс Collection</a></span></li>
+			<li><span class="file"><a href="5.2.html">Клас ArrayList та інтерфейс List</a></span></li>
+			<li><span class="file"><a href="5.6.html">Інтерфейси Comparable та Comporator. Сортування</a></span></li>
+			<li><span class="file"><a href="5.7.html">Черги та стеки. Класи ArrayDeque та PriorityQueue</a></span></li>
+			<li><span class="file"><a href="5.3.html">Пов&#x27;язаний список LinkedList</a></span></li>
+			<li><span class="file"><a href="5.4.html">Інтерфейс Set та хеш-таблиці HashSet</a></span></li>
+			<li><span class="file"><a href="5.5.html">Дерева TreeSet та інтерфейси SortedSet та NavigableSet</a></span></li>
+			<li><span class="file"><a href="5.8.html">Словники. Інтерфейс Map та клас HashMap</a></span></li>
+			<li><span class="file"><a href="5.9.html">Інтерфейси SortedMap та NavigableMap. Клас TreeMap</a></span></li>
+			<li><span class="file"><a href="5.10.html">Ітератори. Iterator та Iterable</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 7. Потоки введення-виведення. Робота з файлами</span>
+		<ul>
+			<li><span class="file"><a href="6.1.html">Потоки введення-виведення</a></span></li>
+			<li><span class="file"><a href="6.3.html">Читання та запис файлів. FileInputStream та FileOutputStream</a></span></li>
+			<li><span class="file"><a href="6.2.html">Закриття потоків та конструкція try-з-ресурсами</a></span></li>
+			<li><span class="file"><a href="6.4.html">Класи ByteArrayInputStream та ByteArrayOutputStream</a></span></li>
+			<li><span class="file"><a href="6.5.html">Буферизовані потоки BufferedInputStream та BufferedOutputStream</a></span></li>
+			<li><span class="file"><a href="6.6.html">Форматований висновок. PrintStream та PrintWriter</a></span></li>
+			<li><span class="file"><a href="6.7.html">Класи DataOutputStream та DataInputStream</a></span></li>
+			<li><span class="file"><a href="6.8.html">Читання та запис текстових файлів</a></span></li>
+			<li><span class="file"><a href="6.9.html">Буферизація символьних потоків. BufferedReader та BufferedWriter</a></span></li>
+			<li><span class="file"><a href="6.10.html">Серіалізація об&#x27;єктів</a></span></li>
+			<li><span class="file"><a href="6.11.html">Клас File. Робота з файлами та каталогами</a></span></li>
+			<li><span class="file"><a href="6.12.html">Робота з ZIP-архівами</a></span></li>
+			<li><span class="file"><a href="6.13.html">Клас Console</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 8. Робота з рядками</span>
+		<ul>
+			<li><span class="file"><a href="7.1.html">Введення у рядки. Клас String</a></span></li>
+			<li><span class="file"><a href="7.2.html">Основні операції з рядками</a></span></li>
+			<li><span class="file"><a href="7.3.html">StringBuffer та StringBuilder</a></span></li>
+			<li><span class="file"><a href="7.4.html">Регулярні вирази</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 9. Багатопоточне програмування</span>
+		<ul>
+			<li><span class="file"><a href="8.1.html">Багатопоточне програмування та клас Thread</a></span></li>
+			<li><span class="file"><a href="8.2.html">Створення та виконання потоків</a></span></li>
+			<li><span class="file"><a href="8.11.html">Управління потоками</a></span></li>
+			<li><span class="file"><a href="8.4.html">Завершення та переривання потоку</a></span></li>
+			<li><span class="file"><a href="8.12.html">Віртуальні потоки</a></span></li>
+			<li><span class="file"><a href="8.3.html">Синхронізація потоків. Оператор synchronized</a></span></li>
+			<li><span class="file"><a href="8.5.html">Взаємодія потоків. Методи wait та notify</a></span></li>
+			<li><span class="file"><a href="8.6.html">Семафори</a></span></li>
+			<li><span class="file"><a href="8.7.html">Обмін між потоками. Клас Exchanger</a></span></li>
+			<li><span class="file"><a href="8.8.html">Клас Phaser</a></span></li>
+			<li><span class="file"><a href="8.9.html">Блокування. ReentrantLock</a></span></li>
+			<li><span class="file"><a href="8.10.html">Умови блокування</a></span></li>
+			<li><span class="file"><a href="8.16.html">Змінні volatile</a></span></li>
+			<li><span class="file"><a href="8.17.html">Атомарність та Atomics. Потокобезпека без блокувань</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Розділ 10. Асинхронність</span>
+		<ul>
+			<li><span class="file"><a href="8.13.html">Асинхронні задачі FutureTask. Callable та Future</a></span></li>
+			<li><span class="file"><a href="8.14.html">Executor – виконавець завдань</a></span></li>
+			<li><span class="file"><a href="8.15.html">Координація виконання асинхронних завдань</a></span></li>
+			<li><span class="file"><a href="8.18.html">Комплектувальнемайно і проміси. Обробка результату асинхронних задач</a></span></li>
+			<li><span class="file"><a href="8.19.html">CompletableFuture, обробка помилок та завершення асинхронних завдань</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Розділ 11. Stream API</span>
+		<ul>
+			<li><span class="file"><a href="10.1.html">Введення у Stream API</a></span></li>
+			<li><span class="file"><a href="10.2.html">Створення потоку даних</a></span></li>
+			<li><span class="file"><a href="10.3.html">Фільтрування, перебір елементів та відображення</a></span></li>
+			<li><span class="file"><a href="10.8.html">Сортування</a></span></li>
+			<li><span class="file"><a href="10.13.html">Отримання підтоку та об&#x27;єднання потоків</a></span></li>
+			<li><span class="file"><a href="10.4.html">Методи skip та limit</a></span></li>
+			<li><span class="file"><a href="10.11.html">Операції відомості</a></span></li>
+			<li><span class="file"><a href="10.5.html">Метод reduce</a></span></li>
+			<li><span class="file"><a href="10.12.html">Тип Optional</a></span></li>
+			<li><span class="file"><a href="10.6.html">Метод collect</a></span></li>
+			<li><span class="file"><a href="10.7.html">Угруповання</a></span></li>
+			<li><span class="file"><a href="10.9.html">Паралельні потоки</a></span></li>
+			<li><span class="file"><a href="10.10.html">Паралельні операції над масивами</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Розділ 12. Модульність</span>
+		<ul>
+			<li><span class="file"><a href="11.1.html">Створення модуля</a></span></li>
+			<li><span class="file"><a href="11.2.html">Залежні модулі</a></span></li>
+			<li><span class="file"><a href="11.3.html">Взаємодія між модулями. Експорт та імпорт</a></span></li>
+		</ul>
+	</li>
+	</li>
+	<li class="closed"><span class="folder">Розділ 13. Додаткові класи</span>
+		<ul>
+			<li><span class="file"><a href="12.1.html">Математичні обчислення та клас Math</a></span></li>
+			<li><span class="file"><a href="12.2.html">Великі числа BigInteger та BigDecimal</a></span></li>
+			<li><span class="file"><a href="12.3.html">Робота із датами. LocalDate</a></span></li>
+			<li><span class="file"><a href="12.4.html">Процеси. Process та ProcessBuilder</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 14. JAR-файли та підключення бібліотек та класів</span>
+		<ul>
+			<li><span class="file"><a href="13.1.html">Файли JAR, їх створення та виконання</a></span></li>
+			<li><span class="file"><a href="13.2.html">Створення та підключення бібліотеки JAR</a></span></li>
+			<li><span class="file"><a href="13.4.html">Модульний jar-файл</a></span></li>
+			<li><span class="file"><a href="13.3.html">Встановлення шляху до класів Java</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Розділ 15. Рефлексія</span>
+		<ul>
+			<li><span class="file"><a href="14.1.html">Введення у рефлексію. Клас Class</a></span></li>
+			<li><span class="file"><a href="14.2.html">Дослідження типів</a></span></li>
+			<li><span class="file"><a href="14.3.html">Поля класу та клас Field</a></span></li>
+			<li><span class="file"><a href="14.4.html">Модифікатори доступу та клас Modifier</a></span></li>
+			<li><span class="file"><a href="14.5.html">Клас Constructor та створення об&#x27;єктів</a></span></li>
+			<li><span class="file"><a href="14.6.html">Методи та клас Method</a></span></li>
+			<li><span class="file"><a href="14.7.html">Proxy (Проксі)</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 16. Інструкції</span>
+		<ul>
+			<li><span class="file"><a href="15.1.html">Введення в інструкції. Вбудовані інструкції</a></span></li>
+			<li><span class="file"><a href="15.2.html">Створення та застосування анотацій</a></span></li>
+			<li><span class="file"><a href="15.3.html">Обробка інструкцій під час виконання</a></span></li>
+		</ul>
+	</li>
+
+
+	<li class="closed"><span class="folder">Глава 17. Взаємодія із нативним кодом</span>
+		<ul>
+			<li><span class="file"><a href="16.1.html">Java Native Interface (JNI)</a></span></li>
+			<li><span class="file"><a href="16.2.html">Foreign Functions та Memory API</a></span></li>
+			<li><span class="file"><a href="16.3.html">Арена та сегменти пам&#x27;яті MemorySegment</a></span></li>
+			<li><span class="file"><a href="16.4.html">Компонування пам&#x27;яті MemoryLayout та робота з MemorySegment</a></span></li>
+			<li><span class="file"><a href="16.5.html">Складні дані та MemoryLayout</a></span></li>
+			<li><span class="file"><a href="16.6.html">Пошук та виклик зовнішніх функцій</a></span></li>
+			<li><span class="file"><a href="16.7.html">Нативні функції зворотного дзвінка</a></span></li>
+		</ul>
+	</li>
+</ul>   </div>
+</div>
+
+  <div class="item right">
+<div class="help" style="border: 0px;">
+    
+	<div class="help-item">
+		<div class="help-item-name"><a href="https://metanit.com/settings.html">Налаштування</a></div>
+	 </div>
+</div>
+			<div class="help">
+
+      <div class="help-header">Помощь сайту</div>
+
+       <div class="help-item">
+		<div class="help-item-name"><a href="https://yoomoney.ru/to/410011174743222" rel="nofollow">Допомога сайту</a></div>
+	 </div>
+       
+      <div class="help-item">
+		<div class="help-item-name">Юмани:</div>
+		<div class="help-item-req">410011174743222</div>
+	 </div>
+
+		<div class="help-item">
+			<div class="help-item-name">Номер карты:</div>
+			<div class="help-item-req">4048415020898850</div>
+		</div>
+
+      </div>
+
+	
+	
+
+
+
+
+  </div>
+</div>
+
+<div id="footer" style="padding-bottom:85px;">
+
+<div class="bootomLinks">
+<a href="https://vk.com/metanit" title="Присоединиться к группе вконтакте" rel="nofollow">Вконтакті</a>|
+ <a href="https://t.me/devnull22" title="Подписаться на телеграм" rel="nofollow">Телеграм</a> | 
+<a href="https://metanit.com/donations.html" rel="nofollow">Донати/Допомога сайту</a>
+</div>
+<p>Contacts: metanit22@mail.ru</p>
+<p>Copyright © Євген Попов, metanit.com, 2026. Усі права захищені.</p>
+
+
+</div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+<script src='../../js/syntax16.js'></script>
+<script>
+// Syntax Highlighter
+if (typeof SyntaxHighlighter !== 'undefined') {
+    SyntaxHighlighter.all();
+}
+
+// Copy guard
+document.addEventListener('copy', (ev) => {
+    const et = ev.target;
+    if (et.type === 'textarea') {
+        ev.clipboardData.setData('text/plain', et.value.substring(et.selectionStart, et.selectionEnd).replace(/ /g, ' '));
+        ev.preventDefault();
+    }
+});
+
+// Mobile menu
+const faBars = document.querySelector('.fa-bars');
+if (faBars) {
+    faBars.addEventListener('click', () => {
+        const tree = document.querySelector('.item.left');
+        if (tree) {
+            tree.style.display = (tree.style.display === 'block') ? 'none' : 'block';
+        }
+    });
+}
+
+const menuButton = document.getElementById('menuButton');
+if (menuButton) {
+    menuButton.addEventListener('click', () => {
+        menuButton.classList.toggle('menu-opened');
+        const mainMenu = document.querySelector('.mainmenu');
+        if (mainMenu) mainMenu.classList.toggle('open');
+    });
+}
+
+// Search toggle
+const magGlass = document.getElementById('magnifying-glass');
+if (magGlass) {
+    magGlass.addEventListener('click', () => {
+        const search = document.getElementById('search');
+        if (search) search.classList.toggle('transp');
+    });
+}
+
+// Theme toggle
+const toggleTheme = document.getElementById('toggle-theme');
+if (toggleTheme) {
+    toggleTheme.addEventListener('click', () => {
+        if (document.documentElement.hasAttribute('theme')) {
+            document.documentElement.removeAttribute('theme');
+            document.cookie = 'theme=1;expires=Mon, 19 Feb 2001 12:00:00 UTC;path=/;';
+        } else {
+            document.documentElement.setAttribute('theme', 'dark');
+            var expire = new Date();
+            expire.setHours(expire.getHours() + 7);
+            document.cookie = 'theme=1;expires=' + expire.toUTCString() + ';path=/;';
+        }
+    });
+}
+
+// Share buttons
+const shareVK = document.querySelectorAll('.share .fa-vk');
+shareVK.forEach(e => e.addEventListener('click', () => window.open('http://vk.com/share.php?url=' + window.location.href, 'Поделиться в ВКОНТАКТЕ')));
+const shareTG = document.querySelectorAll('.share .fa-telegram');
+shareTG.forEach(e => e.addEventListener('click', () => window.open('tg://msg_url/url=' + window.location.href, 'Поделиться в Telegram')));
+const shareOK = document.querySelectorAll('.share .fa-odnoklassniki');
+shareOK.forEach(e => e.addEventListener('click', () => window.open('https://connect.ok.ru/offer?url=' + window.location.href, 'Поделиться в Одноклассниках')));
+
+// Folders
+const folders = document.getElementsByClassName('closed');
+for (let i = 0; i < folders.length; i++) {
+    folders[i].addEventListener('click', function (e) {
+        this.classList.toggle('closed');
+        this.classList.toggle('opened');
+    });
+}
+
+// Active Item Highlight
+const activePath = window.location.pathname.split('/').pop();
+const activeItem = document.querySelector(".file a[href*='" + activePath + "']");
+if (activeItem) {
+    activeItem.classList.add('aMItem');
+    activeItem.parentElement.classList.add('aMItem');
+    const activeFolder = activeItem.closest('li');
+    if (activeFolder) {
+        activeFolder.classList.remove('closed');
+        activeFolder.classList.add('opened');
+        const folderLabel = activeFolder.querySelector('.folder');
+        if (folderLabel) folderLabel.classList.add('aMItem');
+    }
+}
+
+// Settings
+const props = ['--main-font-size', '--main-font-family', '--menc-bg-color', '--container-bg-color', '--menu-bg-color', '--code-font-size', '--code-font-family', '--code-bgcolor', '--code-max-height'];
+for (let i = 0; i < props.length; i++) {
+    const propValue = localStorage.getItem(props[i]);
+    if (propValue !== null) document.documentElement.style.setProperty(props[i], propValue);
+}
+</script>
+</body>
+</html>

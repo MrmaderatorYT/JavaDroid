@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html  lang="ru">
+<head>
+<title>Java | Асинхронные задачи FutureTask. Callable и Future</title>
+<meta charset="utf-8" />
+<meta name="description" content="Возвращение результата из потока в языке программирования Java, асинхронная задача FutureTask, интерфейсы Callable и Future, отмена задачи">
+<meta name="viewport" content="width=device-width">
+<link href="../../style50.css@v=1.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<div id="container">
+<header>
+<div id="header">
+<div id="logo">
+<a class="logoTitle" href="https://metanit.com/" title="На главную">METANIT.COM</a>
+<div class="logoDefinition">Сайт о программировании</div> 
+</div>
+
+<div class="socbtns">
+<ul>
+<li><a title="Посмотреть меню" rel="nofollow" class="fa fa-lg fa-bars"></a></li>
+<li><a href="https://metanit.com/donations.html" title="Помощь сайту" rel="nofollow" style="color: var(--fa-usd-color);" class="fa fa-lg fa-usd"></a></li>
+<li><a href="https://vk.com/metanit" title="Группа в ВКонтакте" rel="nofollow" style="color: var(--fa-vk-color);" class="fa fa-lg fa-vk"></a></li>
+<li><a href="https://t.me/devnull22" title="Группа в Телеграмме"  class="fa fa-lg fa-tel" style="color: var(--fa-tel-color);"></a></li>
+<li><a href="https://metanit.com/android.html" title="Приложения андроид" rel="nofollow" style="color: var(--fa-android-color);" class="fa fa-lg fa-android"></a></li>
+<li><i id="toggle-theme" class="fa fa-lg fa-adjust"></i></li>
+</ul>
+</div>
+
+
+<div id="magnifying-glass"></div>
+
+<div class="menuButton" id="menuButton">
+	<span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+</div>
+</div>
+
+<div id="search" class="transp">
+<form action="https://www.google.ru" id="cse-search-box">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3716042175333627:1096498938" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" />
+    <input type="submit" name="sa" value="Найти" />
+  </div>
+</form>
+</div>
+
+<div id="menu" class="menu">
+<ul class="mainmenu">
+    <li><a href="https://metanit.com/common/">Программирование</a></li>
+    <li><a href="https://metanit.com/assembler/">Ассемблер</a></li>
+   <li><a href="https://metanit.com/sharp/">C#</a></li>
+   <li><a href="https://metanit.com/java/">Java</a></li>
+   <li><a href="https://metanit.com/web/">WEB</a></li>
+   <li><a href="https://metanit.com/python/">Python</a></li>
+   <li><a href="https://metanit.com/c/">C</a></li>
+   <li><a href="https://metanit.com/cpp/">C++</a></li>
+   <li><a href="https://metanit.com/sql/">SQL</a></li>
+   <li><a href="https://metanit.com/nosql/mongodb/">MongoDB</a></li>
+   <li><a href="https://metanit.com/go/">Go</a></li>
+   <li><a href="https://metanit.com/visualbasic/">VB.NET</a></li>
+   <li><a href="https://metanit.com/swift/tutorial/">Swift</a></li>
+   <li><a href="https://metanit.com/kotlin/">Kotlin</a></li>
+   <li><a href="https://metanit.com/dart/">Dart</a></li>
+   <li><a href="https://metanit.com/php/">PHP</a></li>
+   <li><a href="https://metanit.com/rust/">Rust</a></li>
+   <li><a href="https://metanit.com/os/">Linux</a></li>
+   <li><a href="https://metanit.com/f/">F#</a></li>
+   <!--<li><a href="//metanit.com/lisp/tutorial/">Common Lisp</a></li>-->
+   <li><a href="https://metanit.com/hosting">Хостинг</a></li>
+</ul>
+</div>
+
+</header>
+<div class="outercontainer">
+<div class="innercontainer">
+ 
+   <div class="item center menC">
+     <h1>Асинхронные задачи FutureTask. Callable и Future</h1><div class="date">Последнее обновление: 18.10.2025</div>
+	<div class="socBlock">
+	<div class="share soctop">
+	<ul>
+	<li><a title="Поделиться в Вконтакте" rel="nofollow" class="fa fa-lg fa-vk"></a></li>
+	<li><a title="Поделиться в Телеграм" rel="nofollow" class="fa fa-lg fa-telegram"></a></li>
+	<li><a title="Поделиться в Одноклассниках" rel="nofollow" class="fa fa-lg fa-odnoklassniki"></a></li>
+	
+	</ul>
+	</div>
+	</div>
+
+	<div style="margin-top:23px;margin-left:5px;">
+		
+		
+		
+	</div>
+
+	
+<p>Метод <code>run()</code> интрефейcа <code>Runnable</code>, который выполняется потоком, не возвращает никакого результата и просто выполняет некоторые действия. Однако иногда в потоке необходимо выполнять действия, 
+которые производят некоторый результат. И после завершения необходимо получить из потока этот результат и использовать его каким-то образом. Для этой задачи язык Java предоставляет интерфейсы <b>Callable</b> и  <b>Future</b>, которые определены в пакете  <b>java.util.concurrent</b>.</p>
+<p><b>Callable</b> представляет некоторое действие, которое возвращает некоторый результат. Этот интерфейс имеет параметр типа и один метод - <b>call()</b>, который возвращает значение этого типа:</p>
+<pre class="brush:java;">
+public interface Callable&lt;V&gt;{
+
+   V call() throws Exception;
+}
+</pre>
+<p>То есть, грубо говоря, мы запускаем в потоке объект этого интерфейса, а результат метода <code>call()</code> - это и будет то значение, которое мы получим из потока.</p>
+<p>Интерфейс <b>Future</b> представляет результат асинхронной задачи. Используя объект <b>Future</b>, можно получить результат, например, в результате выполнения метода <code>call()</code> 
+интерфейса <code>Callable</code>. Причем <b>Future</b> позволяет получить результат именно тогда, когда он будет готов.</p>
+<p>Этот интерфейс предоставляет функционал для проверки завершения вычисления, ожидания его завершения и получения результата:</p>
+<ul>
+<li><p><code>boolean cancel(boolean mayInterruptIfRunning)</code></p><p>Пытается отменить выполнение задачи</p></li>
+<li><p><code>default Throwable exceptionNow()</code></p><p>Возвращает исключение, сгенерированное задачей, без ожидания</p></li>
+<li><p><code>V get()</code></p><p>При необходимости ожидает завершения задачи, а затем извлекает его результат</p></li>
+<li><p><code>V get(long timeout, TimeUnit unit)</code></p><p>При необходимости ожидает завершения задачи не более заданного времени, а затем извлекает ее результат, если он доступен</p></li>
+<li><p><code>boolean isCancelled()</code></p><p>Возвращает <code>true</code>, если задача была отменена до ее нормального завершения</p></li>
+<li><p><code>boolean isDone()</code></p><p>Возвращает <code>true</code>, если задача завершена</p></li>
+<li><p><code>default V resultNow()</code></p><p>Возвращает вычисленный результат без ожидания, неблокирующий вариант метода <code>get()</code></p></li>
+<li><p><code>default Future.State state()</code></p><p>Возвращает состояние задачи. Представляет перечисление <code>Future.State</code> со следующими константами:</p>
+<ul>
+<li><p><code>CANCELLED</code>: задача отменена.</p></li>
+<li><p><code>FAILED</code>: задача завершилась неудачно, сгенерировав исключение.</p></li>
+<li><p><code>RUNNING</code>: задача выполняется и еще не завершена.</p></li>
+<li><p><code>SUCCESS</code>: задача успешно завершена.</p></li>
+</ul>
+</li>
+</ul>
+<h3>FutureTask</h3>
+<p>Один из способов запуска асинхронных задач в виде Callable и Future представляет класс <b>FutureTask</b>. Этот класс представляет асинхронную задачу, которую можно отменить. 
+Этот класс предоставляет базовую встроенную реализацию интерфейса <code>Future</code> с методами для запуска и отмены вычисления, запроса на завершение вычисления и получения результата вычисления.</p>
+<p>Кроме того, поскольку <b>FutureTask</b> реализует <code>Runnable</code>, то объекты <code>FutureTask</code> могут быть использованы для создания потоков.</p>
+<p>Обычно <code>FutureTask</code> применяется для обертки объекта <code>Callable</code> или <code>Runnable</code> для запуска задачи, которая должна быть выполнена в будущем. Для этого класс предоставляет пару конструкторов:</p>
+<ul>
+<li><p><code>FutureTask(Runnable runnable, V result)</code></p>
+<p>Создает FutureTask, который при запуске выполнит указанный Runnable и обеспечит возврат указанного результата методом get при успешном завершении.</p></li>
+<li><p><code>FutureTask(Callable&lt;V&gt; callable)</code></p>
+<p>Создает FutureTask, который при запуске выполнит указанный Callable.</p></li>
+</ul>
+<p>Функциональность класса <code>FutureTask</code> реализуется следующими методами:</p>
+<ul>
+<li><p><code>boolean cancel(boolean mayInterruptIfRunning)</code></p><p>Пытается отменить выполнение задачи</p></li>
+<li><p><code>Throwable exceptionNow()</code></p><p>Возвращает исключение, сгенерированное задачей</p></li>
+<li><p><code>V get()</code></p><p>При необходимости ожидает завершения задачи и возвращает результат задачи</p></li>
+<li><p><code>V get(long timeout, TimeUnit unit)</code></p><p>При необходимости ожидает завершения задачи не более заданного времени, а затем извлекает его результат, если он доступен</p></li>
+<li><p><code>boolean isCancelled()</code></p><p>Возвращает true, если задача была отменена до ее нормального завершения</p></li>
+<li><p><code>boolean isDone()</code></p><p>Возвращает true, если задача завершена</p></li>
+<li><p><code>V resultNow()</code></p><p>Возвращает результат задачи без ожидания ее завершения</p></li>
+<li><p><code>void run()</code></p><p>Устанавливает используемый объект Future в качестве результата задачи, если только она не была отменена</p></li>
+<li><p><code>Future.State state()</code></p><p>Возвращает состояние задачи</p></li>
+</ul>
+<p>Ключевым является метод <code>get()</code>, который блокирует выполнение, если задача еще не завершена. И после завершения возвращает ее результат. Посмотрим на примере:</p>
+<pre class="brush:java;">
+import java.util.concurrent.*;
+
+class Program{
+
+    public static void main(String[] args) {
+         
+        System.out.println("Main thread started...");
+
+        int number = 5;  // исходное число для вычисления факториала
+
+        // определяем задачу, которая вычисляет факториал
+        Callable&lt;Integer&gt; task = () -&gt; {
+
+            int n = number;     // копируем число, чтобы не изменять его
+            int result = 1;
+            while(n &gt; 0) result *= n--;
+            return result;  // возвращаем результат задачи
+        };
+
+        // определяем задачу, которая будет выполнена в будущем
+        var futureTask = new FutureTask&lt;Integer&gt;(task);
+        // создаем и запускаем поток
+        var t = new Thread(futureTask); // futureTask - это объект Runnable
+        t.start();
+
+        // здесь могут быть какие-либо другие операции метода main
+        // которые должны выполняться одновременно с futureTask
+        System.out.println("Main thread works...");
+
+        try{
+            // ожидаем выполнения задачи
+            Integer factorial = futureTask.get();
+            System.out.printf("factorial of %d is %d\n", number, factorial);
+        }
+        catch(Exception ex){ 
+            System.out.println(ex.getMessage()); 
+        }
+
+        System.out.println("Main thread finished...");
+    }
+}
+</pre>
+<p>Консольный вывод программы:</p>
+<pre class="sh">
+Main thread started...
+Main thread works...
+factorial of 5 is 120
+Main thread finished...
+</pre>
+
+<div style="margin-top:23px;margin-left:5px;">
+
+<!-- Yandex.RTB R-A-201190-9 -->
+
+</div>
+
+<p>Разберем эту программу. Прежде всего определяем задачу <code>Callable</code>, которая будет выполняться, в виде лямбда-выражения (мы можем так сделать, потому что Callable имеет только один метод):</p>
+<pre class="brush:java;">
+Callable&lt;Integer&gt; task = () -&gt; {
+
+    int n = number;     // копируем число, чтобы не изменять его
+    int result = 1;
+    while(n &gt; 0) result *= n--;
+    return result;  // возвращаем результат задачи
+};
+</pre>
+<p>Здесь простейший код выполнения факториала для числа number, которое определено во внешнем коде (лямбда-выражения могут обращаться в нешним переменным). В конце лямбда-выражение возвращает результат - значение переменной 
+result.</p>
+<p>Далее определяем задачу, которая будет выполнена в будущем - объект <b>FutureTask</b>, передавая в его конструктор выше определенную задачу Callable:</p>
+<pre class="brush:java;">
+var futureTask = new FutureTask&lt;Integer&gt;(task);
+</pre>
+<p>Поскольку задача возвращает значение типа <code>int</code>, преобразуемое в <code>Integer</code>, объект <code>FutureTask</code> (как и <code>Callable</code>) типизируется типом <code>Integer</code></p>
+<p>Далее для выполнения задачи создаем и запускаем поток:</p>
+<pre class="brush:java;">
+var t = new Thread(futureTask); // futureTask - это объект Runnable
+t.start();
+</pre>
+<p>Поскольку объект <code>FutureTask</code> реализует интерфейс <code>Runnable</code>, то мы можем передать его в конструктор класса Thread.</p>
+<p>Пока дочерний поток t выполняет свою задачу - вычисляет факториала, основной поток также может выполнять некоторые действия. В данном случае для примера просто выводим сообщение на консоль:</p>
+<pre class="brush:java;">
+System.out.println("Main thread works...");
+</pre>
+<p>Затем для получения результата задачи у FutureTask вызываем метод <code>get()</code></p>
+<pre class="brush:java;">
+try{
+    // ожидаем выполнения задачи
+    Integer factorial = futureTask.get();
+    System.out.printf("factorial of %d is %d\n", number, factorial);
+}
+catch(Exception ex){ 
+    System.out.println(ex.getMessage()); 
+}
+</pre>
+<p>Этот метод генерирует ряд исключений, поэтому оборачиваем его вызов в конструкцию <code>try..cath</code>. В итоге с помощью метода <code>get()</code> мы получим результат и выведем его на консоль.</p>
+<p>Стоит отметить, что при вызове метода <code>get()</code></p>
+<pre class="brush:java;">Integer factorial = futureTask.get();</pre>
+<p>Главный поток - метод main приостанавливает выполнение и ждет получения результата (либо пока не произовдет ошибка)</p>
+
+
+<h3>Генерация и обработка ошибки</h3>
+<p>Но выше определенный способ вычисления факториала имеет большой недостаток - если переданное число будет меньше 1, то задача возвратит число 1, что будет неправильно: для вычисления факториала число должно быть больше 0. 
+И мы можем предупредить эту ситуацию, сгенерировав ошибку. И стоит отметить, что при метод <code>call()</code> интерфейса <code>Callable</code> уже в своем определение предусматривает возможную генерацию ошибки:</p>
+<pre class="brush:java;">V call() throws Exception;</pre>
+<p>И также стоит отметить, что если FutureTask генерирует исключение, то оно имеет тип <b>ExecutionException</b>. Перехватывая исключения этого типа, мы можем понять, что исключение произошло в методе <code>call</code> 
+при выполнении FutureTask.</p>
+<p>Например, сгенерируем ошибку, если входное значение для факториала меньше 1:</p>
+<pre class="brush:java;">
+import java.util.concurrent.*;
+
+class Program{
+
+    public static void main(String[] args) {
+         
+        System.out.println("Main thread started...");
+
+        int number = -5;  // исходное число для вычисления факториала
+        try{
+            // определяем задачу, которая вычисляет факториал
+            Callable&lt;Integer&gt; task = () -&gt; {
+
+                // если число меньше 1, генерируем исключение
+                if(number &lt; 1) throw new Exception("Number must be greater than 0");
+                int n = number;     // копируем число, чтобы не изменять его
+                int result = 1;
+                while(n &gt; 0) result *= n--;
+                return result;  // возвращаем результат задачи
+            };
+
+            var futureTask = new FutureTask&lt;Integer&gt;(task);
+            var t = new Thread(futureTask);
+            t.start();
+
+            System.out.println("Main thread works...");
+       
+            // ожидаем выполнения задачи
+            Integer factorial = futureTask.get();
+            System.out.printf("factorial of %d is %d\n", number, factorial);
+        }
+        // перехватываем ошибки выполнения FutureTask
+        catch(ExecutionException ex){
+
+            System.out.println("Factorial error: " + ex.getMessage());
+        }
+        // перехватываем все остальные ошибки
+        catch(Exception ex){ 
+            System.out.println(ex.getMessage()); 
+        }
+
+        System.out.println("Main thread finished...");
+    }
+}
+</pre>
+<p>Здесь перед вычислением факториала проверяем число и при необходимости генерируем ошибку:</p>
+<pre class="brush:java;">
+if(number &lt; 1) throw new Exception("Number must be greater than 0");
+</pre>
+<p>Для обработки ошибки выполнения во FutureTask определяем специальный блок <code>catch</code>:</p>
+<pre class="brush:java;">
+catch(ExecutionException ex){
+
+    System.out.println("Factorial error: " + ex.getMessage());
+}
+</pre>
+<p>И поскольку здесь для вычисления факториала передается заведомо некорректное число - -5, то мы столкнемся с ошибкой:</p>
+<pre class="sh">
+Main thread started...
+Main thread works...
+Factorial error: java.lang.Exception: Number must be greater than 0
+Main thread finished...
+</pre>
+<p>Стоит отметить, что информацию о возникшем исключении мы можем получить и из объекта FutureTask через метод <b>exceptionNow()</b>. Например:</p>
+<pre class="brush:java;">
+import java.util.concurrent.*;
+
+class Program{
+
+    public static void main(String[] args) {
+         
+        System.out.println("Main thread started...");
+
+        int number = -5;  // исходное число для вычисления факториала
+
+        FutureTask&lt;Integer&gt; futureTask = null;  // определяем задачу
+
+        try{
+            ..............................................
+
+            futureTask = new FutureTask&lt;Integer&gt;(task);
+
+            ..............................................
+        }
+        // перехватываем ошибки выполнения FutureTask
+        catch(ExecutionException ex){
+
+            var ex = futureTask.exceptionNow();  // получаем исключение
+            System.out.println("Factorial error: " + ex.getMessage());
+        }
+        // перехватываем все остальные ошибки
+        catch(Exception ex){ 
+            System.out.println(ex.getMessage()); 
+        }
+
+        System.out.println("Main thread finished...");
+    }
+}
+</pre>
+<p>Это может быть полезно, когда у нас несколько объектов FutureTask, и каждый из которых может сгенерировать исключения, которые надо как-то разграничить.</p>
+<h3>Отмена задач</h3>
+<p>Одним из достоинств интерфейса Future является то, что подобную задачу можно отменять. Для этого предназначен метод <b>cancel()</b>:</p>
+<pre class="brush:java;">
+boolean cancel(boolean mayInterruptIfRunning)
+</pre>
+<p>Если задача уже запущена, то параметр <code>mayInterruptIfRunning</code> определяет, прерывается ли поток задачи.
+Возвращаемое значение: <code>false</code>, если задачу нельзя отменить (обычно потому, что она уже завершена), или <code>true</code>, если можно отменить. Но данный результат 
+не обязательно указывает, отменена ли задача - для этой цели у Future используется метод <b>isCancelled()</b>.</p>
+<p>Этот метод не действует, если задача уже завершена или отменена или не может быть отменена по какой-либо другой причине. В противном случае, если эта задача не запустилась при вызове отмены, 
+эта задача никогда не должна запускаться.</p>
+<p>Рассмотрим небольшой пример:</p>
+<pre class="brush:java;">
+import java.util.concurrent.*;
+
+class Program{
+
+    public static void main(String[] args) {
+         
+        System.out.println("Main thread started...");
+
+        int number = 5;  // исходное число для вычисления факториала
+
+        try{
+            // определяем задачу, которая вычисляет факториал
+            Callable&lt;Integer&gt; task = () -&gt; {
+
+                if(number &lt; 1) throw new Exception("Number must be greater than 0");
+                int n = number;     // копируем число, чтобы не изменять его
+                int result = 1;
+                while(n &gt; 0) {
+
+                    result *= n--;
+                    System.out.printf("[Factorial execution] result = %d   n = %d\n", result, n);
+                    Thread.sleep(200);
+                }
+                return result;
+            };
+
+            var futureTask = new FutureTask&lt;Integer&gt;(task);
+            // создаем и запускаем поток
+            var t = new Thread(futureTask);
+            t.start();
+
+            System.out.println("Main thread works...");
+            Thread.sleep(300); // имитируем работу, чтобы futureTask успела немного поработать
+
+            // в конце отменяем задачу
+            futureTask.cancel(true);
+
+            // проверяем отмену задачи
+            if(futureTask.isCancelled()) System.out.println("Factorial execution cancelled...");
+        }
+        catch(Exception ex){ 
+            System.out.println(ex.getMessage()); 
+        }
+
+        System.out.println("Main thread finished...");
+    }
+}
+</pre>
+<p>Здесь для демонстрации в коде задачи Callable делаем небольшую задержку в 200 миллисекунд:</p>
+<pre class="brush:java;">
+while(n &gt; 0) {
+
+    result *= n--;
+    System.out.printf("[Factorial execution] result = %d   n = %d\n", result, n);
+    Thread.sleep(200);
+}
+</pre>
+<p>В основном потоке main останавливаем задачу, причем в прекращением работы потока, и проверяем ее статус остановки:</p>
+<pre class="brush:java;">
+// отменяем задачу
+futureTask.cancel(true);
+
+// проверяем отмену задачи
+if(futureTask.isCancelled()) System.out.println("Factorial execution cancelled...");
+</pre>
+<p>Консольный вывод программы:</p>
+<pre class="sh">
+Main thread started...
+Main thread works...
+[Factorial execution] result = 5   n = 4
+[Factorial execution] result = 20   n = 3
+Factorial execution cancelled...
+Main thread finished...
+</pre>
+<p>Здесь мы видим, что после двух итераций цикла в задаче факториала задача была отменена и прекратила свое выполнение.</p>
+
+	
+
+	<div style="margin-top:25px;">
+
+	
+	</div>
+
+	<div class="nav"><p><a href="8.12.html">Назад</a><a href="index.html">Содержание</a><a href="8.14.html">Вперед</a></p></div>
+	<div class="socBlock">
+	<div class="share soctop">
+	<ul>
+	<li><a title="Поделиться в Вконтакте" rel="nofollow" class="fa fa-lg fa-vk"></a></li>
+	<li><a title="Поделиться в Телеграм" rel="nofollow" class="fa fa-lg fa-telegram"></a></li>
+	<li><a title="Поделиться в Одноклассниках" rel="nofollow" class="fa fa-lg fa-odnoklassniki"></a></li>
+	
+	</ul>
+	</div>
+	</div>
+  </div>
+
+	<div class="item left">
+     <ul id="browser" class="filetree"> 
+	<li class="closed"><span class="folder">Глава 1. Введение в Java</span>
+		<ul>
+			<li><span class="file"><a href="1.1.html">Что такое Java</a></span></li>
+			<li><span class="file"><a href="1.6.html">Установка JDK</a></span></li>
+			<li><span class="file"><a href="1.2.html">Первая программа на Java</a></span></li>
+			<li><span class="file"><a href="1.5.html">Первая программа в IntelliJ IDEA</a></span></li>
+			<li><span class="file"><a href="1.3.html">Первая программа в NetBeans</a></span></li>
+			<li><span class="file"><a href="1.4.html">Первая программа в Eclipse</a></span></li>
+			<li><span class="file"><a href="1.7.html">JShell</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 2. Основы программирования на Java</span>
+		<ul>
+			<li><span class="file"><a href="2.11.html">Структура программы</a></span></li>
+			<li><span class="file"><a href="2.1.html">Переменные и константы</a></span></li>
+			<li><span class="file"><a href="2.19.html">Литералы</a></span></li>
+			<li><span class="file"><a href="2.12.html">Типы данных</a></span></li>
+			<li><span class="file"><a href="2.9.html">Консольный ввод/вывод в Java</a></span></li>
+			<li><span class="file"><a href="2.3.html">Арифметические операции</a></span></li>
+			<li><span class="file"><a href="2.13.html">Поразрядные операции</a></span></li>
+			<li><span class="file"><a href="2.14.html">Условные выражения</a></span></li>
+			<li><span class="file"><a href="2.15.html">Операции присваивания и приоритет операций</a></span></li>
+			<li><span class="file"><a href="2.2.html">Преобразования базовых типов данных</a></span></li>
+			<li><span class="file"><a href="2.5.html">Условные конструкции</a></span></li>
+			<li><span class="file"><a href="2.6.html">Циклы</a></span></li>
+			<li><span class="file"><a href="2.4.html">Массивы</a></span></li>
+			<li><span class="file"><a href="2.20.html">Конструкция и выражение switch</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 3. Классы</span>
+		<ul>
+			<li><span class="file"><a href="3.1.html">Классы и объекты</a></span></li>
+
+
+			<li><span class="file"><a href="2.7.html">Методы</a></span></li>
+			<li><span class="file"><a href="2.16.html">Параметры методов</a></span></li>
+			<li><span class="file"><a href="3.14.html">Объекты как параметры методов</a></span></li>
+			<li><span class="file"><a href="2.17.html">Оператор return. Результат метода</a></span></li>
+			<li><span class="file"><a href="2.18.html">Перегрузка методов</a></span></li>
+			<li><span class="file"><a href="3.21.html">Конструкторы и инициализаторы</a></span></li>
+
+
+			<li><span class="file"><a href="3.4.html">Статические компоненты класса и модификатор static</a></span></li>
+			<li><span class="file"><a href="3.20.html">Область действия и время жизни переменных</a></span></li>
+			<li><span class="file"><a href="2.8.html">Рекурсивные функции</a></span></li>
+			<li><span class="file"><a href="3.2.html">Пакеты</a></span></li>
+			<li><span class="file"><a href="3.3.html">Модификаторы доступа</a></span></li>
+			<li><span class="file"><a href="3.19.html">Компактные файлы кода и метод main</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 4. Объектно-ориентированное программирование</span>
+		<ul>
+			<li><span class="file"><a href="3.22.html">Инкапсуляция</a></span></li>
+			<li><span class="file"><a href="3.5.html">Наследование</a></span></li>
+			<li><span class="file"><a href="3.23.html">Запрет наследования и переопределения методов</a></span></li>
+			<li><span class="file"><a href="3.24.html">Полиморфизм и динамическая диспетчеризация методов</a></span></li>
+			<li><span class="file"><a href="3.9.html">Класс Object и его методы</a></span></li>
+			<li><span class="file"><a href="3.6.html">Абстрактные классы</a></span></li>
+			<li><span class="file"><a href="3.10.html">Иерархия наследования и преобразование типов</a></span></li>
+
+			<li><span class="file"><a href="3.7.html">Интерфейсы</a></span></li>
+			<li><span class="file"><a href="3.28.html">Интерфейсы и полиморфизм</a></span></li>
+			<li><span class="file"><a href="3.29.html">Множественная реализация и наследование интерфейсов</a></span></li>
+			<li><span class="file"><a href="3.16.html">Интерфейсы в механизме обратного вызова</a></span></li>
+			<li><span class="file"><a href="3.8.html">Перечисления enum</a></span></li>
+			<li><span class="file"><a href="3.11.html">Обобщения (Generics)</a></span></li>
+			<li><span class="file"><a href="3.17.html">Ограничения обобщений</a></span></li>
+			<li><span class="file"><a href="3.15.html">Наследование и обобщения</a></span></li>
+			<li><span class="file"><a href="3.31.html">Type Erasure (Стирание типов)</a></span></li>
+			<li><span class="file"><a href="3.32.html">Подстановочные знаки wildcards в обобщениях</a></span></li>
+			<li><span class="file"><a href="3.13.html">Ссылочные типы и клонирование объектов</a></span></li>
+			<li><span class="file"><a href="3.18.html">Классы Records</a></span></li>
+			<li><span class="file"><a href="9.4.html">Функциональные интерфейсы и ссылки на методы</a></span></li>
+			<li><span class="file"><a href="9.1.html">Лямбда-выражения</a></span></li>
+			<li><span class="file"><a href="9.2.html">Лямбды как параметры и результаты методов</a></span></li>
+			<li><span class="file"><a href="9.3.html">Встроенные функциональные интерфейсы</a></span></li>
+			<li><span class="file"><a href="3.12.html">Внутренние и вложенные классы</a></span></li>
+			<li><span class="file"><a href="3.30.html">Анонимные классы</a></span></li>
+
+
+			<li><span class="file"><a href="3.25.html">Sealed-классы и интерфейсы</a></span></li>
+			<li><span class="file"><a href="3.26.html">Pattern мatching. Паттерн типов</a></span></li>
+			<li><span class="file"><a href="3.27.html">Pattern мatching. record-паттерн</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 5. Обработка исключений</span>
+		<ul>
+			<li><span class="file"><a href="2.10.html">Обработка исключений и конструкция try...catch...finally</a></span></li>
+			<li><span class="file"><a href="4.2.html">Классы исключений</a></span></li>
+			<li><span class="file"><a href="4.1.html">Операторы throws и throw</a></span></li>
+			<li><span class="file"><a href="4.3.html">Создание своих классов исключений</a></span></li>
+			<li><span class="file"><a href="4.4.html">Assert</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 6. Коллекции</span>
+		<ul>
+			<li><span class="file"><a href="5.1.html">Типы коллекций. Интерфейс Collection</a></span></li>
+			<li><span class="file"><a href="5.2.html">Класс ArrayList и интерфейс List</a></span></li>
+			<li><span class="file"><a href="5.6.html">Интерфейсы Comparable и Comporator. Сортировка</a></span></li>
+			<li><span class="file"><a href="5.7.html">Очереди и стеки. Классы ArrayDeque и PriorityQueue</a></span></li>
+			<li><span class="file"><a href="5.3.html">Связанный список LinkedList</a></span></li>
+			<li><span class="file"><a href="5.4.html">Интерфейс Set и хеш-таблицы HashSet</a></span></li>
+			<li><span class="file"><a href="5.5.html">Деревья TreeSet и интерфейсы SortedSet и NavigableSet</a></span></li>
+			<li><span class="file"><a href="5.8.html">Словари. Интерфейс Map и класс HashMap</a></span></li>
+			<li><span class="file"><a href="5.9.html">Интерфейсы SortedMap и NavigableMap. Класс TreeMap</a></span></li>
+			<li><span class="file"><a href="5.10.html">Итераторы. Iterator и Iterable</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 7. Потоки ввода-вывода. Работа с файлами</span>
+		<ul>
+			<li><span class="file"><a href="6.1.html">Потоки ввода-вывода</a></span></li>
+			<li><span class="file"><a href="6.3.html">Чтение и запись файлов. FileInputStream и FileOutputStream</a></span></li>
+			<li><span class="file"><a href="6.2.html">Закрытие потоков и конструкция try-с-ресурсами</a></span></li>
+			<li><span class="file"><a href="6.4.html">Классы ByteArrayInputStream и ByteArrayOutputStream</a></span></li>
+			<li><span class="file"><a href="6.5.html">Буферизованные потоки BufferedInputStream и BufferedOutputStream</a></span></li>
+			<li><span class="file"><a href="6.6.html">Форматируемый вывод. PrintStream и PrintWriter</a></span></li>
+			<li><span class="file"><a href="6.7.html">Классы DataOutputStream и DataInputStream</a></span></li>
+			<li><span class="file"><a href="6.8.html">Чтение и запись текстовых файлов</a></span></li>
+			<li><span class="file"><a href="6.9.html">Буферизация символьных потоков. BufferedReader и BufferedWriter</a></span></li>
+			<li><span class="file"><a href="6.10.html">Сериализация объектов</a></span></li>
+			<li><span class="file"><a href="6.11.html">Класс File. Работа с файлами и каталогами</a></span></li>
+			<li><span class="file"><a href="6.12.html">Работа с ZIP-архивами</a></span></li>
+			<li><span class="file"><a href="6.13.html">Класс Console</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 8. Работа со строками</span>
+		<ul>
+			<li><span class="file"><a href="7.1.html">Введение в строки. Класс String</a></span></li>
+			<li><span class="file"><a href="7.2.html">Основные операции со строками</a></span></li>
+			<li><span class="file"><a href="7.3.html">StringBuffer и StringBuilder</a></span></li>
+			<li><span class="file"><a href="7.4.html">Регулярные выражения</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 9. Многопоточное программирование</span>
+		<ul>
+			<li><span class="file"><a href="8.1.html">Многопоточное программирование и класс Thread</a></span></li>
+			<li><span class="file"><a href="8.2.html">Создание и выполнение потоков</a></span></li>
+			<li><span class="file"><a href="8.11.html">Управление потоками</a></span></li>
+			<li><span class="file"><a href="8.4.html">Завершение и прерывание потока</a></span></li>
+			<li><span class="file"><a href="8.12.html">Виртуальные потоки</a></span></li>
+			<li><span class="file"><a href="8.3.html">Синхронизация потоков. Оператор synchronized</a></span></li>
+			<li><span class="file"><a href="8.5.html">Взаимодействие потоков. Методы wait и notify</a></span></li>
+			<li><span class="file"><a href="8.6.html">Семафоры</a></span></li>
+			<li><span class="file"><a href="8.7.html">Обмен между потоками. Класс Exchanger</a></span></li>
+			<li><span class="file"><a href="8.8.html">Класс Phaser</a></span></li>
+			<li><span class="file"><a href="8.9.html">Блокировки. ReentrantLock</a></span></li>
+			<li><span class="file"><a href="8.10.html">Условия в блокировках</a></span></li>
+			<li><span class="file"><a href="8.16.html">Переменные volatile</a></span></li>
+			<li><span class="file"><a href="8.17.html">Атомарность и Atomics. Потокобезопасность без блокировок</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 10. Асинхронность</span>
+		<ul>
+			<li><span class="file"><a href="8.13.html">Асинхронные задачи FutureTask. Callable и Future</a></span></li>
+			<li><span class="file"><a href="8.14.html">Executor - исполнитель задач</a></span></li>
+			<li><span class="file"><a href="8.15.html">Координация выполнения асинхронных задач</a></span></li>
+			<li><span class="file"><a href="8.18.html">CompletableFuture и промисы. Обработка результата асинхронных задач</a></span></li>
+			<li><span class="file"><a href="8.19.html">CompletableFuture, обработка ошибок и завершения асинхронных задач</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 11. Stream API</span>
+		<ul>
+			<li><span class="file"><a href="10.1.html">Введение в Stream API</a></span></li>
+			<li><span class="file"><a href="10.2.html">Создание потока данных</a></span></li>
+			<li><span class="file"><a href="10.3.html">Фильтрация, перебор элементов и отображение</a></span></li>
+			<li><span class="file"><a href="10.8.html">Сортировка</a></span></li>
+			<li><span class="file"><a href="10.13.html">Получение подпотока и объединение потоков</a></span></li>
+			<li><span class="file"><a href="10.4.html">Методы skip и limit</a></span></li>
+			<li><span class="file"><a href="10.11.html">Операции сведения</a></span></li>
+			<li><span class="file"><a href="10.5.html">Метод reduce</a></span></li>
+			<li><span class="file"><a href="10.12.html">Тип Optional</a></span></li>
+			<li><span class="file"><a href="10.6.html">Метод collect</a></span></li>
+			<li><span class="file"><a href="10.7.html">Группировка</a></span></li>
+			<li><span class="file"><a href="10.9.html">Параллельные потоки</a></span></li>
+			<li><span class="file"><a href="10.10.html">Параллельные операции над массивами</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 12. Модульность</span>
+		<ul>
+			<li><span class="file"><a href="11.1.html">Создание модуля</a></span></li>
+			<li><span class="file"><a href="11.2.html">Зависимые модули</a></span></li>
+			<li><span class="file"><a href="11.3.html">Взаимодействие между модулями. Экспорт и импорт</a></span></li>
+		</ul>
+	</li>
+	</li>
+	<li class="closed"><span class="folder">Глава 13. Дополнительные классы</span>
+		<ul>
+			<li><span class="file"><a href="12.1.html">Математические вычисления и класс Math</a></span></li>
+			<li><span class="file"><a href="12.2.html">Большие числа BigInteger и BigDecimal</a></span></li>
+			<li><span class="file"><a href="12.3.html">Работа с датами. LocalDate</a></span></li>
+			<li><span class="file"><a href="12.4.html">Процессы. Process и ProcessBuilder</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 14. JAR-файлы и подключение библиотек и классов</span>
+		<ul>
+			<li><span class="file"><a href="13.1.html">Файлы JAR, их создание и выполнение</a></span></li>
+			<li><span class="file"><a href="13.2.html">Создание и подключение библиотеки JAR</a></span></li>
+			<li><span class="file"><a href="13.4.html">Модульный jar-файл</a></span></li>
+			<li><span class="file"><a href="13.3.html">Установка пути к классам Java</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 15. Рефлексия</span>
+		<ul>
+			<li><span class="file"><a href="14.1.html">Введение в рефлексию. Класс Class</a></span></li>
+			<li><span class="file"><a href="14.2.html">Исследование типов</a></span></li>
+			<li><span class="file"><a href="14.3.html">Поля класса и класс Field</a></span></li>
+			<li><span class="file"><a href="14.4.html">Модификаторы доступа и класс Modifier</a></span></li>
+			<li><span class="file"><a href="14.5.html">Класс Constructor и cоздание объектов</a></span></li>
+			<li><span class="file"><a href="14.6.html">Методы и класс Method</a></span></li>
+			<li><span class="file"><a href="14.7.html">Proxy (Прокси)</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 16. Аннотации</span>
+		<ul>
+			<li><span class="file"><a href="15.1.html">Введение в аннотации. Встроенные аннотации</a></span></li>
+			<li><span class="file"><a href="15.2.html">Создание и применение аннотаций</a></span></li>
+			<li><span class="file"><a href="15.3.html">Обработка аннотаций во время выполнения</a></span></li>
+		</ul>
+	</li>
+
+
+	<li class="closed"><span class="folder">Глава 17. Взаимодействие с нативным кодом</span>
+		<ul>
+			<li><span class="file"><a href="16.1.html">Java Native Interface (JNI)</a></span></li>
+			<li><span class="file"><a href="16.2.html">Foreign Functions и Memory API</a></span></li>
+			<li><span class="file"><a href="16.3.html">Арена и сегменты памяти MemorySegment</a></span></li>
+			<li><span class="file"><a href="16.4.html">Компоновка памяти MemoryLayout и работа с MemorySegment</a></span></li>
+			<li><span class="file"><a href="16.5.html">Сложные данные и MemoryLayout</a></span></li>
+			<li><span class="file"><a href="16.6.html">Поиск и вызов внешних функций</a></span></li>
+			<li><span class="file"><a href="16.7.html">Нативные функции обратного вызова</a></span></li>
+		</ul>
+	</li>
+</ul>   </div>
+</div>
+
+  <div class="item right">
+<div class="help" style="border: 0px;">
+    
+	<div class="help-item">
+		<div class="help-item-name"><a href="https://metanit.com/settings.html">Настройки</a></div>
+	 </div>
+</div>
+			<div class="help">
+
+      <div class="help-header">Помощь сайту</div>
+
+       <div class="help-item">
+		<div class="help-item-name"><a href="https://yoomoney.ru/to/410011174743222" rel="nofollow">Помощь сайту</a></div>
+	 </div>
+       
+      <div class="help-item">
+		<div class="help-item-name">Юмани:</div>
+		<div class="help-item-req">410011174743222</div>
+	 </div>
+
+		<div class="help-item">
+			<div class="help-item-name">Номер карты:</div>
+			<div class="help-item-req">4048415020898850</div>
+		</div>
+
+      </div>
+
+	
+	
+
+
+
+
+  </div>
+</div>
+
+<div id="footer" style="padding-bottom:85px;">
+
+<div class="bootomLinks">
+<a href="https://vk.com/metanit" title="Присоединиться к группе вконтакте" rel="nofollow">
+Вконтакте</a>|
+ <a href="https://t.me/devnull22" title="Подписаться на телеграм" rel="nofollow">
+Телеграм</a> | 
+<a href="https://metanit.com/donations.html" rel="nofollow">Донаты/Помощь сайту</a>
+</div>
+<p>Contacts: metanit22@mail.ru</p>
+<p>Copyright &copy; Евгений Попов, metanit.com, 2026. Все права защищены.</p>
+
+
+</div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+<script src='../../js/syntax16.js'></script>
+<script>
+// Syntax Highlighter
+if (typeof SyntaxHighlighter !== 'undefined') {
+    SyntaxHighlighter.all();
+}
+
+// Copy guard
+document.addEventListener('copy', (ev) => {
+    const et = ev.target;
+    if (et.type === 'textarea') {
+        ev.clipboardData.setData('text/plain', et.value.substring(et.selectionStart, et.selectionEnd).replace(/ /g, ' '));
+        ev.preventDefault();
+    }
+});
+
+// Mobile menu
+const faBars = document.querySelector('.fa-bars');
+if (faBars) {
+    faBars.addEventListener('click', () => {
+        const tree = document.querySelector('.item.left');
+        if (tree) {
+            tree.style.display = (tree.style.display === 'block') ? 'none' : 'block';
+        }
+    });
+}
+
+const menuButton = document.getElementById('menuButton');
+if (menuButton) {
+    menuButton.addEventListener('click', () => {
+        menuButton.classList.toggle('menu-opened');
+        const mainMenu = document.querySelector('.mainmenu');
+        if (mainMenu) mainMenu.classList.toggle('open');
+    });
+}
+
+// Search toggle
+const magGlass = document.getElementById('magnifying-glass');
+if (magGlass) {
+    magGlass.addEventListener('click', () => {
+        const search = document.getElementById('search');
+        if (search) search.classList.toggle('transp');
+    });
+}
+
+// Theme toggle
+const toggleTheme = document.getElementById('toggle-theme');
+if (toggleTheme) {
+    toggleTheme.addEventListener('click', () => {
+        if (document.documentElement.hasAttribute('theme')) {
+            document.documentElement.removeAttribute('theme');
+            document.cookie = 'theme=1;expires=Mon, 19 Feb 2001 12:00:00 UTC;path=/;';
+        } else {
+            document.documentElement.setAttribute('theme', 'dark');
+            var expire = new Date();
+            expire.setHours(expire.getHours() + 7);
+            document.cookie = 'theme=1;expires=' + expire.toUTCString() + ';path=/;';
+        }
+    });
+}
+
+// Share buttons
+const shareVK = document.querySelectorAll('.share .fa-vk');
+shareVK.forEach(e => e.addEventListener('click', () => window.open('http://vk.com/share.php?url=' + window.location.href, 'Поделиться в ВКОНТАКТЕ')));
+const shareTG = document.querySelectorAll('.share .fa-telegram');
+shareTG.forEach(e => e.addEventListener('click', () => window.open('tg://msg_url/url=' + window.location.href, 'Поделиться в Telegram')));
+const shareOK = document.querySelectorAll('.share .fa-odnoklassniki');
+shareOK.forEach(e => e.addEventListener('click', () => window.open('https://connect.ok.ru/offer?url=' + window.location.href, 'Поделиться в Одноклассниках')));
+
+// Folders
+const folders = document.getElementsByClassName('closed');
+for (let i = 0; i < folders.length; i++) {
+    folders[i].addEventListener('click', function (e) {
+        this.classList.toggle('closed');
+        this.classList.toggle('opened');
+    });
+}
+
+// Active Item Highlight
+const activePath = window.location.pathname.split('/').pop();
+const activeItem = document.querySelector(".file a[href*='" + activePath + "']");
+if (activeItem) {
+    activeItem.classList.add('aMItem');
+    activeItem.parentElement.classList.add('aMItem');
+    const activeFolder = activeItem.closest('li');
+    if (activeFolder) {
+        activeFolder.classList.remove('closed');
+        activeFolder.classList.add('opened');
+        const folderLabel = activeFolder.querySelector('.folder');
+        if (folderLabel) folderLabel.classList.add('aMItem');
+    }
+}
+
+// Settings
+const props = ['--main-font-size', '--main-font-family', '--menc-bg-color', '--container-bg-color', '--menu-bg-color', '--code-font-size', '--code-font-family', '--code-bgcolor', '--code-max-height'];
+for (let i = 0; i < props.length; i++) {
+    const propValue = localStorage.getItem(props[i]);
+    if (propValue !== null) document.documentElement.style.setProperty(props[i], propValue);
+}
+</script>
+</body>
+</html>

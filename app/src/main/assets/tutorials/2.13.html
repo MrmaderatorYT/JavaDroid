@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html  lang="ru">
+<head>
+<title>Java | Порозрядні операції</title>
+<meta charset="utf-8" />
+<meta name="description" content="Поразрядные операции в языке программирования Java, поразрядное сложение и умножение, инверсия, сдвиг разрядов вправо и влево">
+<meta name="viewport" content="width=device-width">
+<link href="../../style50.css@v=1.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<div id="container">
+<header>
+<div id="header">
+<div id="logo">
+<a class="logoTitle" href="https://metanit.com/" title="На главную">METANIT.COM</a>
+<div class="logoDefinition">Сайт о программировании</div> 
+</div>
+
+<div class="socbtns">
+<ul>
+<li><a title="Посмотреть меню" rel="nofollow" class="fa fa-lg fa-bars"></a></li>
+<li><a href="https://metanit.com/donations.html" title="Помощь сайту" rel="nofollow" style="color: var(--fa-usd-color);" class="fa fa-lg fa-usd"></a></li>
+<li><a href="https://vk.com/metanit" title="Группа в ВКонтакте" rel="nofollow" style="color: var(--fa-vk-color);" class="fa fa-lg fa-vk"></a></li>
+<li><a href="https://t.me/devnull22" title="Группа в Телеграмме"  class="fa fa-lg fa-tel" style="color: var(--fa-tel-color);"></a></li>
+<li><a href="https://metanit.com/android.html" title="Приложения андроид" rel="nofollow" style="color: var(--fa-android-color);" class="fa fa-lg fa-android"></a></li>
+<li><i id="toggle-theme" class="fa fa-lg fa-adjust"></i></li>
+</ul>
+</div>
+
+
+<div id="magnifying-glass"></div>
+
+<div class="menuButton" id="menuButton">
+	<span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+</div>
+</div>
+
+<div id="search" class="transp">
+<form action="https://www.google.ru" id="cse-search-box">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3716042175333627:1096498938" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" />
+    <input type="submit" name="sa" value="Найти" />
+  </div>
+</form>
+</div>
+
+<div id="menu" class="menu">
+<ul class="mainmenu">
+    <li><a href="https://metanit.com/common/">Програмування</a></li>
+    <li><a href="https://metanit.com/assembler/">Асемблер</a></li>
+   <li><a href="https://metanit.com/sharp/">C#</a></li>
+   <li><a href="https://metanit.com/java/">Java</a></li>
+   <li><a href="https://metanit.com/web/">WEB</a></li>
+   <li><a href="https://metanit.com/python/">Python</a></li>
+   <li><a href="https://metanit.com/c/">C</a></li>
+   <li><a href="https://metanit.com/cpp/">C++</a></li>
+   <li><a href="https://metanit.com/sql/">SQL</a></li>
+   <li><a href="https://metanit.com/nosql/mongodb/">MongoDB</a></li>
+   <li><a href="https://metanit.com/go/">Go</a></li>
+   <li><a href="https://metanit.com/visualbasic/">VB.NET</a></li>
+   <li><a href="https://metanit.com/swift/tutorial/">Swift</a></li>
+   <li><a href="https://metanit.com/kotlin/">Kotlin</a></li>
+   <li><a href="https://metanit.com/dart/">Dart</a></li>
+   <li><a href="https://metanit.com/php/">PHP</a></li>
+   <li><a href="https://metanit.com/rust/">Rust</a></li>
+   <li><a href="https://metanit.com/os/">Linux</a></li>
+   <li><a href="https://metanit.com/f/">F#</a></li>
+   <!--<li><a href="//metanit.com/lisp/tutorial/">Common Lisp</a></li>-->
+   <li><a href="https://metanit.com/hosting">Хостинг</a></li>
+</ul>
+</div>
+
+</header>
+<div class="outercontainer">
+<div class="innercontainer">
+ 
+   <div class="item center menC">
+     <h2>Порозрядні операції</h2><div class="date">Последнее обновление: 16.09.2025</div>
+	<div class="socBlock">
+	<div class="share soctop">
+	<ul>
+	<li><a title="Поделиться в Вконтакте" rel="nofollow" class="fa fa-lg fa-vk"></a></li>
+	<li><a title="Поделиться в Телеграм" rel="nofollow" class="fa fa-lg fa-telegram"></a></li>
+	<li><a title="Поделиться в Одноклассниках" rel="nofollow" class="fa fa-lg fa-odnoklassniki"></a></li>
+	
+	</ul>
+	</div>
+	</div>
+
+	<div style="margin-top:23px;margin-left:5px;">
+		
+		
+		
+	</div>
+
+	<p>Порозрядні операції виконуються над окремими розрядами чи бітами чисел. У цих операціях як операнди можуть виступати тільки цілі числа.</p>
+<p>Кожне число має певну двійкову виставу. Наприклад, число 4 у двійковій системі 100, а число 5 - 101 і так далі.</p>
+<p>Наприклад, візьмемо такі перемінні:</p>
+<pre class="brush:java;">
+byte b = 7;		// 0000 0111
+short s = 7;	// 0000 0000 0000 0111
+</pre>
+<p>Тип byte занимает 1 байт или 8 бит, соответственно представлен 8 разрядами. Поэтому значение переменной b в двоичном коде будет 
+равно <code>00000111</code>. Тип short занимает в памяти 2 байта или 16 бит, поэтому число данного типа будет представлено 
+16 разрядами. И в данном случае переменная s в двоичной системе будет иметь значение <code>0000 0000 0000 0111</code>.</p>
+<p>Для спрощення розуміння ми можемо використати двійковий запис чисел. Наприклад:</p>
+<pre class="brush:java;">
+class Program{
+
+    public static void main(String[] args) {  
+
+        byte b = 0b0000_0111;               // 7
+        short s = 0b0000_0000_0000_0111;	// 7
+        System.out.println("byte b = " + b);        // byte b = 7
+        System.out.println("short s = " + s);       // short s = 7
+    }
+}
+</pre>
+<p>Для записи чисел со знаком в Java применяется <span class="b">додатковий код</span> (two's complement), при котором 
+старший разряд является знаковым. Если его значение равно 0, то число положительное, и его двоичное представление не отличается 
+от представления беззнакового числа. Например, 0000 0001 в десятичной системе 1.</p>
+<img src="pics/twoscomplement.png" alt="Двоичное представление чисел в Java" />
+<p>Якщо старший розряд дорівнює 1, ми маємо справу з негативним числом. Наприклад, 1111 1111 у десятковій системі становить -1. 
+Відповідно, 1111 0011 становить -13.</p>
+<p>Розглянемо такий приклад:</p>
+<pre class="brush:java;">
+class Program{
+
+    public static void main(String[] args) {  
+
+        int num = 0b1111_1111_1111_1111_1111_1111_1111_1110;               // -2
+
+        System.out.println("num = " + num);        // num = -2
+    }
+}
+</pre>
+<p>Здесь переменная num представляет значение <code>0b1111_1111_1111_1111_1111_1111_1111_1110</code> - все единицы, кроме последнего нуля (формальное первого нуля), что представляет -2. 
+Но получим из него положительное число - 2. Сначала инвертируем число - 
+все единицы сделаем нулями, а все нули - единицами:</p>
+<pre class="brush:java;">
+// ~ - операция инверсии
+~ 0b1111_1111_1111_1111_1111_1111_1111_1110
+= 
+  0b0000_0000_0000_0000_0000_0000_0000_0001
+</pre>
+<p>І далі додаємо 1:</p>
+<pre class="brush:java;">
+0b0000_0000_0000_0000_0000_0000_0000_0001
++                                       
+                                        1
+=
+0b0000_0000_0000_0000_0000_0000_0000_0010
+</pre>
+<p>Число 10<sub>2</sub> в десятичной системе равно 2.</p>
+<h3>Логічні операції</h3>
+<p>Логічні операції над числами представляють порозрядні операції. У даному випадку числа розглядаються в двійковому поданні, наприклад, 2 у двійковій системі 
+дорівнює 10 і має два розряди, число 7 - 111 і має три розряди.</p>
+<ul>
+<li><p><code>&amp; (логическое умножение)</code></p><p>Множення проводиться порозрядно, і якщо в обох операндів значення розрядів дорівнює 1, 
+то операція повертає 1, інакше повертається число 0. Наприклад:</p>
+<pre class="brush:java;">
+ int a1 = 2; //010
+ int b1 = 5;//101
+ System.out.println(a1&amp;b1); // результат 0
+            
+int a2 = 4; //100
+int b2 = 5; //101
+System.out.println(a2 &amp; b2); // результат 4
+</pre>
+<p>У першому випадку ми два числа 2 і 5. 2 у двійковому вигляді представляє число 010, а 5 - 101. Порозрядне множення чисел (0*1, 1*0, 0*1) дає результат 000.</p>
+<p>У другому випадку у нас замість двійки число 4, яке має у першому розряді 1, так само як і у числа 5, тому тут результатом операції 
+(1*1, 0*0, 0 *1) = 100 буде число 4 у десятковому форматі.</p></li>
+<li><p><code>|</code> (логическое сложение)</p><p>Ця операція також проводиться за двійковими розрядами, але тепер повертається одиниця, 
+якщо хоча б одного числа в даному розряді є одиниця (операція &quot;логічне АБО&quot;). Наприклад:</p>
+<pre class="brush:java;">
+int a1 = 2; //010
+int b1 = 5;//101
+System.out.println(a1|b1); // результат 7 - 111
+int a2 = 4; //100
+int b2 = 5;//101
+System.out.println(a2 | b2); // результат 5 - 101
+</pre></li>
+<li><p><code>^</code> (логическое исключающее ИЛИ)</p><p>Також цю операцію називають XOR, нерідко її застосовують простого шифрування:</p>
+<pre class="brush:java;">
+int number = 45; // 1001 Значение, которое надо зашифровать - в двоичной форме 101101
+int key = 102; //Ключ шифрования - в двоичной системе 1100110
+int encrypt = number ^ key; //Результатом будет число 1001011 или 75
+System.out.println("Зашифрованное число: " +encrypt);
+
+int decrypt = encrypt ^ key; // Результатом будет исходное число 45
+System.out.println("Расшифрованное число: " + decrypt);
+</pre>
+<p>Тут також виконуються порозрядні операції. Якщо значення поточного розряду в обох чисел різні, то повертається 1, інакше повертається 0. 
+Наприклад, результатом виразу 9^5 буде число 12. Щоб розшифрувати число, ми застосовуємо зворотну операцію до результату.</p></li>
+<li><p><code>~</code> (логическое отрицание или инверсия)</p><p>Порозрядна операція, яка інвертує всі розряди числа: якщо значення розряду дорівнює 1, 
+то воно стає рівним нулю, і навпаки.</p>
+<pre class="brush:java;">
+byte a = 12;                 // 0000 1100     
+System.out.println(~a);		//  1111 0011   или -13
+</pre></li>
+</ul>
+<h3>Операции сдвига</h3>
+<p>Операции сдвига также производятся над разрядами чисел. Сдвиг может происходить вправо и влево.</p>
+<ul>
+<li><p><code>a&lt;&lt;b</code> - сдвигает число a влево на b разрядов. Например, выражение <code>4&lt;&lt;1</code> сдвигает число 4 (которое в двоичном 
+представлении 100) на один разряд влево, в результате получается число 1000 или число 8 в десятичном представлении.</p></li>
+<li><p><code>a&gt;&gt;b</code> - смещает число a вправо на b разрядов. Например, <code>16&gt;&gt;1</code> сдвигает число 16 
+(которое в двоичной системе 10000) на один разряд вправо, то есть в итоге получается 1000 или число 8 в десятичном представлении.</p></li>
+<li><p><code>a&gt;&gt;&gt;b</code> - в отличие от предыдущих типов сдвигов данная операция представляет беззнаковый сдвиг - сдвигает число a вправо на b разрядов. 
+Например, выражение <code>-8&gt;&gt;&gt;2</code> будет равно 1073741822.</p></li>
+</ul>
+<p>Таким образом, если исходное число, которое надо сдвинуть в ту или другую сторону, делится на два, то фактически получается умножение или деление на два. 
+Поэтому подобную операцию можно использовать вместо непосредственного умножения или деления на два, так как операция сдвига на аппаратном уровне менее дорогостоящая операция 
+в отличие от операции деления или умножения.</p>
+<p>Таким образом, если исходное число, которое надо сдвинуть в ту или другую строну, делится на два, то фактически получается умножение или деление на два. 
+Поэтому подобную операцию можно использовать вместо непосредственного умножения или деления на два. Например:</p>
+<pre class="brush:java;">
+class Program{
+
+    public static void main(String[] args) {  
+
+        int a = 16; // в двоичной форме 10000
+        int b = 2; // в двоичной форме 00010
+        int c = a &lt;&lt; b; // Сдвиг числа 10000 влево на 2 разряда, равно 1000000 или 64 в десятичной системе
+        
+        System.out.println("с: " + c);    // 64
+        
+        int d = a &gt;&gt; b; // Сдвиг числа 10000 вправо на 2 разряда, равно 100 или 4 в десятичной системе
+        System.out.println("d: " + d);     // 4
+    }
+}
+</pre>
+<p>При этом числа, которые участвую в операциях, необязательно должны быть кратны 2:</p>
+<pre class="brush:java;">
+class Program{
+
+    public static void main(String[] args) {  
+
+        int a = 22; // в двоичной форме 10110
+        int b = 2; // в двоичной форме
+        int c = a &lt;&lt; b; // Сдвиг числа 10110 влево на 2 разряда, равно 1011000 или 88 в десятичной системе
+
+        System.out.println("с: " + c);    // 88
+
+        int d = a &gt;&gt; b; // Сдвиг числа 10110 вправо на 2 разряда, равно 101 или 5 в десятичной системе
+        System.out.println("d: " + d);     // 5
+    }
+}
+</pre>
+
+<div style="margin-top:23px;margin-left:5px;">
+
+<!-- Yandex.RTB R-A-201190-9 -->
+
+</div>
+
+
+<h3>Пример практического применения операций</h3>
+<p>Многие недооценивают поразрядные операции, не понимают, для чего они нужны. Тем не менее они могут помочь в решении ряда задач. Прежде всего они позволяют нам манипулировать 
+данными на уровне отдельных битов. Один из примеров. У нас есть три числа, которые находятся в диапазоне от 0 до 3:</p>
+<pre class="brush:java;">
+int value1 = 3;  // 0b0000_0011
+int value2 = 2;  // 0b0000_0010
+int value3 = 1;  // 0b0000_0001
+</pre>
+<p>Мы знаем, что значения этих чисел не будут больше 3, и нам нужно эти данные максимально сжать. Мы можем три числа сохранить в одно число. И в этом нам помогут поразрядные операции.</p>
+<pre class="brush:java;">
+class Program{
+
+    public static void main(String[] args) {  
+
+        int value1 = 3;  // 0b0000_0011
+        int value2 = 2;  // 0b0000_0010
+        int value3 = 1;  // 0b0000_0001
+        int result = 0b0000_0000;
+        // сохраняем в result значения из value1
+        result = result | value1; // 0b0000_0011
+        // сдвигаем разряды в result на 2 разряда влево
+        result = result &lt;&lt; 2;   // 0b0000_1100
+        // сохраняем в result значения из value2
+        result = result | value2;  // 0b0000_1110
+        // сдвигаем разряды в result на 2 разряда влево
+        result = result &lt;&lt; 2;   // 0b0011_1000
+        // сохраняем в result значения из value3
+        result = result | value3;  // 0b0011_1001
+
+        System.out.println(result);  // 57
+    }
+}
+</pre>
+<p>Разберем этот код. Сначала определяем все сохраняемые числа value1, value2, value3. Для хранения результата определена переменная result, которая по умолчанию равна 0. Для большей наглядности 
+ей присвоено значение в бинарном формате:</p>
+<pre class="brush:java;">int result = 0b0000_0000;</pre>
+<p>Сохраняем первое число в result:</p>
+<pre class="brush:java;">
+result = result | value1; // 0b0000_0011
+</pre>
+<p>Здесь мы имеем дело с логической операцией поразрядного сложения - если один из соответствующих разрядов равен 1, то результирующий разряд тоже будет равен 1. То есть фактически</p>
+<pre class="brush:java;">
+0b0000_0000
++
+0b0000_0011
+=
+0b0000_0011
+</pre>
+<p>Итак, первое число сохранили в result. Мы будем сохранять числа по порядку. То есть сначала в result будет идти первое число, затем второе и далее третье. Поэтому сдвигаем число result на два разряда влево (наши числа занимают в памяти не более двух разрядов):</p>
+<pre class="brush:java;">
+result = result &lt;&lt; 2;   // 0b0000_1100
+</pre>
+<p>То есть фактически</p>
+<pre class="brush:java;">
+0b0000_0011 &lt;&lt; 2 =
+0b0000_1100
+</pre>
+<p>Далее повторяем логическую операцию сложения, сохраняем второе число:</p>
+<pre class="brush:java;">result = result | value2;  // 0b0000_1110</pre>
+<p>что эквивалентно</p>
+<pre class="brush:java;">
+0b0000_1100
++
+0b0000_0010
+=
+0b0000_1110
+</pre>
+<p>Далее повторяем сдвиг на два разряда влево и сохраняем третье число. В итоге мы получим в двоичном представлении число <code>0b0011_1001</code>. В десятично системе это число равно 57. 
+Но это не имеет значения, потому что нам важны конкретные биты числа. Стоит отметить, что мы сохранили в одно число три числа, и в переменной result еще есть сводобное место. 
+Причем в реальности не важно, сколько именно битов надо сохранить. В данном случае для примера сохраняем лишь два бита.</p>
+<p>Для восстановления данных прибегнем к обратному порядку:</p>
+<pre class="brush:java;">
+class Program{
+
+    public static void main(String[] args) {  
+
+        int result = 0b0011_1001;
+        // обратное получение данных
+        int newValue3 = result & 0b000_0011;
+        // сдвигаем данные на 2 разряда вправо
+        result = result &gt;&gt; 2;
+        int newValue2 = result & 0b000_0011;
+        // сдвигаем данные на 2 разряда вправо
+        result = result &gt;&gt; 2;
+        int newValue1 = result & 0b000_0011;
+        System.out.println(newValue1);    // 3
+        System.out.println(newValue2);   // 2
+        System.out.println(newValue3);   // 1
+    }
+}
+</pre>
+<p>Получаем числа в порядке, обратном тому, в котором они были сохранены. Поскольку мы знаем, что каждое сохраненное число занимает лишь два разряда, то по сути нам надо получить 
+лишь последние два бита. Для этого применяем битовую маску <code>0b000_0011</code> и операцию логического умножения, которая возвращает 1, если каждый из двух соответствующих разрядов равен 1. 
+То есть операция </p>
+<pre class="brush:java;">int newValue3 = result & 0b000_0011;</pre>
+<p>эквивалентна</p>
+<pre class="brush:java;">
+0b0011_1001
+*
+0b0000_0011
+=
+0b0000_0001
+</pre>
+<p>Таким образом, последнее число равно 0b0000_0001 или 1 в десятичной системе</p>
+<p>Стоит отметить, что если мы точно знаем структуру данных, то мы легко можем составить битовую маску, чтобы получить нужно число:</p>
+<pre class="brush:java;">
+result = 0b0011_1001;
+int recreatedValue1 = (result & 0b0011_0000) &gt;&gt; 4;
+System.out.println(recreatedValue1);
+</pre>
+<p>Здесь получаем первое число, которое, как мы знаем, занимает в числе биты 4 и 5. Для этого применяем умножение на битовую маску 0b0011_0000. И затем сдвигаем число на 4 разряда вправо.</p>
+<pre class="brush:java;">
+0b0011_1001
+*
+0b0011_0000
+=
+0b0011_0000
+&gt;&gt; 4
+=
+0b0000_0011
+</pre>
+<p>Аналогично, если мы точно знаем структуру, по которой сохраняются данные, то мы могли бы сохранить данные сразу в нужное место в числе result:</p>
+<pre class="brush:java;">
+class Program{
+
+    public static void main(String[] args) {  
+
+        int value1 = 3;  // 0b0000_0011
+        int value2 = 2;  // 0b0000_0010
+        int value3 = 1;  // 0b0000_0001
+        int result = 0b0000_0000;
+        // сохраняем в result значения из value1
+        result = result | (value1 &lt;&lt; 4);
+        // сохраняем в result значения из value2
+        result = result | (value2 &lt;&lt; 2);
+        // сохраняем в result значения из value3
+        result = result | value3;  // 0b0011_1001
+
+        System.out.println(result);  // 57
+    }
+}
+</pre>
+
+	
+
+	<div style="margin-top:25px;">
+
+	
+	</div>
+
+	<div class="nav"><p><a href="2.3.html">Назад</a><a href="index.html">Содержание</a><a href="2.14.html">Вперед</a></p></div>
+	<div class="socBlock">
+	<div class="share soctop">
+	<ul>
+	<li><a title="Поделиться в Вконтакте" rel="nofollow" class="fa fa-lg fa-vk"></a></li>
+	<li><a title="Поделиться в Телеграм" rel="nofollow" class="fa fa-lg fa-telegram"></a></li>
+	<li><a title="Поделиться в Одноклассниках" rel="nofollow" class="fa fa-lg fa-odnoklassniki"></a></li>
+	
+	</ul>
+	</div>
+	</div>
+  </div>
+
+	<div class="item left">
+     <ul id="browser" class="filetree"> 
+	<li class="closed"><span class="folder">Глава 1. Введение в Java</span>
+		<ul>
+			<li><span class="file"><a href="1.1.html">Что такое Java</a></span></li>
+			<li><span class="file"><a href="1.6.html">Установка JDK</a></span></li>
+			<li><span class="file"><a href="1.2.html">Первая программа на Java</a></span></li>
+			<li><span class="file"><a href="1.5.html">Первая программа в IntelliJ IDEA</a></span></li>
+			<li><span class="file"><a href="1.3.html">Первая программа в NetBeans</a></span></li>
+			<li><span class="file"><a href="1.4.html">Первая программа в Eclipse</a></span></li>
+			<li><span class="file"><a href="1.7.html">JShell</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 2. Основы программирования на Java</span>
+		<ul>
+			<li><span class="file"><a href="2.11.html">Структура программы</a></span></li>
+			<li><span class="file"><a href="2.1.html">Переменные и константы</a></span></li>
+			<li><span class="file"><a href="2.19.html">Литералы</a></span></li>
+			<li><span class="file"><a href="2.12.html">Типы данных</a></span></li>
+			<li><span class="file"><a href="2.9.html">Консольный ввод/вывод в Java</a></span></li>
+			<li><span class="file"><a href="2.3.html">Арифметические операции</a></span></li>
+			<li><span class="file"><a href="2.13.html">Поразрядные операции</a></span></li>
+			<li><span class="file"><a href="2.14.html">Умовні вирази</a></span></li>
+			<li><span class="file"><a href="2.15.html">Операції присвоєння та пріоритет операцій</a></span></li>
+			<li><span class="file"><a href="2.2.html">Перетворення базових типів даних</a></span></li>
+			<li><span class="file"><a href="2.5.html">Умовні конструкції</a></span></li>
+			<li><span class="file"><a href="2.6.html">Цикли</a></span></li>
+			<li><span class="file"><a href="2.4.html">Масиви</a></span></li>
+			<li><span class="file"><a href="2.20.html">Конструкція та вираз switch</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Розділ 3. Класи</span>
+		<ul>
+			<li><span class="file"><a href="3.1.html">Класи та об&#x27;єкти</a></span></li>
+
+
+			<li><span class="file"><a href="2.7.html">Методи</a></span></li>
+			<li><span class="file"><a href="2.16.html">Параметри методів</a></span></li>
+			<li><span class="file"><a href="3.14.html">Об&#x27;єкти як параметри методів</a></span></li>
+			<li><span class="file"><a href="2.17.html">Оператор return. Результат методу</a></span></li>
+			<li><span class="file"><a href="2.18.html">Навантаження методів</a></span></li>
+			<li><span class="file"><a href="3.21.html">Конструктори та ініціалізатори</a></span></li>
+
+
+			<li><span class="file"><a href="3.4.html">Статичні компоненти класу та модифікатор static</a></span></li>
+			<li><span class="file"><a href="3.20.html">Область дії та час життя змінних</a></span></li>
+			<li><span class="file"><a href="2.8.html">Рекурсивні функції</a></span></li>
+			<li><span class="file"><a href="3.2.html">Пакети</a></span></li>
+			<li><span class="file"><a href="3.3.html">Модифікатори доступу</a></span></li>
+			<li><span class="file"><a href="3.19.html">Компактні файли коду та метод main</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 4. Об&#x27;єктно-орієнтоване програмування</span>
+		<ul>
+			<li><span class="file"><a href="3.22.html">Інкапсуляція</a></span></li>
+			<li><span class="file"><a href="3.5.html">Успадкування</a></span></li>
+			<li><span class="file"><a href="3.23.html">Заборона наслідування та перевизначення методів</a></span></li>
+			<li><span class="file"><a href="3.24.html">Поліморфізм та динамічна диспетчеризація методів</a></span></li>
+			<li><span class="file"><a href="3.9.html">Клас Object та його методи</a></span></li>
+			<li><span class="file"><a href="3.6.html">Абстрактні класи</a></span></li>
+			<li><span class="file"><a href="3.10.html">Ієрархія успадкування та перетворення типів</a></span></li>
+
+			<li><span class="file"><a href="3.7.html">Інтерфейси</a></span></li>
+			<li><span class="file"><a href="3.28.html">Інтерфейси та поліморфізм</a></span></li>
+			<li><span class="file"><a href="3.29.html">Множинна реалізація та успадкування інтерфейсів</a></span></li>
+			<li><span class="file"><a href="3.16.html">Інтерфейси у механізмі зворотного виклику</a></span></li>
+			<li><span class="file"><a href="3.8.html">Перерахування enum</a></span></li>
+			<li><span class="file"><a href="3.11.html">Узагальнення (Generics)</a></span></li>
+			<li><span class="file"><a href="3.17.html">Обмеження узагальнень</a></span></li>
+			<li><span class="file"><a href="3.15.html">Спадкування та узагальнення</a></span></li>
+			<li><span class="file"><a href="3.31.html">Type Erasure (Стирання типів)</a></span></li>
+			<li><span class="file"><a href="3.32.html">Підстановочні знаки wildcards в узагальненнях</a></span></li>
+			<li><span class="file"><a href="3.13.html">Посилальні типи та клонування об&#x27;єктів</a></span></li>
+			<li><span class="file"><a href="3.18.html">Класи Records</a></span></li>
+			<li><span class="file"><a href="9.4.html">Функціональні інтерфейси та посилання на методи</a></span></li>
+			<li><span class="file"><a href="9.1.html">Лямбда-вираження</a></span></li>
+			<li><span class="file"><a href="9.2.html">Лямбди як параметри та результати методів</a></span></li>
+			<li><span class="file"><a href="9.3.html">Вбудовані функціональні інтерфейси</a></span></li>
+			<li><span class="file"><a href="3.12.html">Внутрішні та вкладені класи</a></span></li>
+			<li><span class="file"><a href="3.30.html">Анонімні класи</a></span></li>
+
+
+			<li><span class="file"><a href="3.25.html">Sealed-класи та інтерфейси</a></span></li>
+			<li><span class="file"><a href="3.26.html">Pattern матч. Патер типів</a></span></li>
+			<li><span class="file"><a href="3.27.html">Pattern матч. record-паттерн</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 5. Обробка винятків</span>
+		<ul>
+			<li><span class="file"><a href="2.10.html">Обробка винятків та конструкція try...catch...finally</a></span></li>
+			<li><span class="file"><a href="4.2.html">Класи винятків</a></span></li>
+			<li><span class="file"><a href="4.1.html">Оператори throws та throw</a></span></li>
+			<li><span class="file"><a href="4.3.html">Створення своїх виняткових класів</a></span></li>
+			<li><span class="file"><a href="4.4.html">Assert</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 6. Колекції</span>
+		<ul>
+			<li><span class="file"><a href="5.1.html">Типи колекцій. Інтерфейс Collection</a></span></li>
+			<li><span class="file"><a href="5.2.html">Клас ArrayList та інтерфейс List</a></span></li>
+			<li><span class="file"><a href="5.6.html">Інтерфейси Comparable та Comporator. Сортування</a></span></li>
+			<li><span class="file"><a href="5.7.html">Черги та стеки. Класи ArrayDeque та PriorityQueue</a></span></li>
+			<li><span class="file"><a href="5.3.html">Пов&#x27;язаний список LinkedList</a></span></li>
+			<li><span class="file"><a href="5.4.html">Інтерфейс Set та хеш-таблиці HashSet</a></span></li>
+			<li><span class="file"><a href="5.5.html">Дерева TreeSet та інтерфейси SortedSet та NavigableSet</a></span></li>
+			<li><span class="file"><a href="5.8.html">Словники. Інтерфейс Map та клас HashMap</a></span></li>
+			<li><span class="file"><a href="5.9.html">Інтерфейси SortedMap та NavigableMap. Клас TreeMap</a></span></li>
+			<li><span class="file"><a href="5.10.html">Ітератори. Iterator та Iterable</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 7. Потоки введення-виведення. Робота з файлами</span>
+		<ul>
+			<li><span class="file"><a href="6.1.html">Потоки введення-виведення</a></span></li>
+			<li><span class="file"><a href="6.3.html">Читання та запис файлів. FileInputStream та FileOutputStream</a></span></li>
+			<li><span class="file"><a href="6.2.html">Закриття потоків та конструкція try-з-ресурсами</a></span></li>
+			<li><span class="file"><a href="6.4.html">Класи ByteArrayInputStream та ByteArrayOutputStream</a></span></li>
+			<li><span class="file"><a href="6.5.html">Буферизовані потоки BufferedInputStream та BufferedOutputStream</a></span></li>
+			<li><span class="file"><a href="6.6.html">Форматований висновок. PrintStream та PrintWriter</a></span></li>
+			<li><span class="file"><a href="6.7.html">Класи DataOutputStream та DataInputStream</a></span></li>
+			<li><span class="file"><a href="6.8.html">Читання та запис текстових файлів</a></span></li>
+			<li><span class="file"><a href="6.9.html">Буферизація символьних потоків. BufferedReader та BufferedWriter</a></span></li>
+			<li><span class="file"><a href="6.10.html">Серіалізація об&#x27;єктів</a></span></li>
+			<li><span class="file"><a href="6.11.html">Клас File. Робота з файлами та каталогами</a></span></li>
+			<li><span class="file"><a href="6.12.html">Робота з ZIP-архівами</a></span></li>
+			<li><span class="file"><a href="6.13.html">Клас Console</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 8. Робота з рядками</span>
+		<ul>
+			<li><span class="file"><a href="7.1.html">Введення у рядки. Клас String</a></span></li>
+			<li><span class="file"><a href="7.2.html">Основні операції з рядками</a></span></li>
+			<li><span class="file"><a href="7.3.html">StringBuffer та StringBuilder</a></span></li>
+			<li><span class="file"><a href="7.4.html">Регулярні вирази</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 9. Багатопоточне програмування</span>
+		<ul>
+			<li><span class="file"><a href="8.1.html">Багатопоточне програмування та клас Thread</a></span></li>
+			<li><span class="file"><a href="8.2.html">Створення та виконання потоків</a></span></li>
+			<li><span class="file"><a href="8.11.html">Управління потоками</a></span></li>
+			<li><span class="file"><a href="8.4.html">Завершення та переривання потоку</a></span></li>
+			<li><span class="file"><a href="8.12.html">Віртуальні потоки</a></span></li>
+			<li><span class="file"><a href="8.3.html">Синхронізація потоків. Оператор synchronized</a></span></li>
+			<li><span class="file"><a href="8.5.html">Взаємодія потоків. Методи wait та notify</a></span></li>
+			<li><span class="file"><a href="8.6.html">Семафори</a></span></li>
+			<li><span class="file"><a href="8.7.html">Обмін між потоками. Клас Exchanger</a></span></li>
+			<li><span class="file"><a href="8.8.html">Клас Phaser</a></span></li>
+			<li><span class="file"><a href="8.9.html">Блокування. ReentrantLock</a></span></li>
+			<li><span class="file"><a href="8.10.html">Умови блокування</a></span></li>
+			<li><span class="file"><a href="8.16.html">Змінні volatile</a></span></li>
+			<li><span class="file"><a href="8.17.html">Атомарність та Atomics. Потокобезпека без блокувань</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Розділ 10. Асинхронність</span>
+		<ul>
+			<li><span class="file"><a href="8.13.html">Асинхронні задачі FutureTask. Callable та Future</a></span></li>
+			<li><span class="file"><a href="8.14.html">Executor – виконавець завдань</a></span></li>
+			<li><span class="file"><a href="8.15.html">Координація виконання асинхронних завдань</a></span></li>
+			<li><span class="file"><a href="8.18.html">Комплектувальнемайно і проміси. Обробка результату асинхронних задач</a></span></li>
+			<li><span class="file"><a href="8.19.html">CompletableFuture, обробка помилок та завершення асинхронних завдань</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Розділ 11. Stream API</span>
+		<ul>
+			<li><span class="file"><a href="10.1.html">Введення у Stream API</a></span></li>
+			<li><span class="file"><a href="10.2.html">Створення потоку даних</a></span></li>
+			<li><span class="file"><a href="10.3.html">Фільтрування, перебір елементів та відображення</a></span></li>
+			<li><span class="file"><a href="10.8.html">Сортування</a></span></li>
+			<li><span class="file"><a href="10.13.html">Отримання підтоку та об&#x27;єднання потоків</a></span></li>
+			<li><span class="file"><a href="10.4.html">Методи skip та limit</a></span></li>
+			<li><span class="file"><a href="10.11.html">Операції відомості</a></span></li>
+			<li><span class="file"><a href="10.5.html">Метод reduce</a></span></li>
+			<li><span class="file"><a href="10.12.html">Тип Optional</a></span></li>
+			<li><span class="file"><a href="10.6.html">Метод collect</a></span></li>
+			<li><span class="file"><a href="10.7.html">Угруповання</a></span></li>
+			<li><span class="file"><a href="10.9.html">Паралельні потоки</a></span></li>
+			<li><span class="file"><a href="10.10.html">Паралельні операції над масивами</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Розділ 12. Модульність</span>
+		<ul>
+			<li><span class="file"><a href="11.1.html">Створення модуля</a></span></li>
+			<li><span class="file"><a href="11.2.html">Залежні модулі</a></span></li>
+			<li><span class="file"><a href="11.3.html">Взаємодія між модулями. Експорт та імпорт</a></span></li>
+		</ul>
+	</li>
+	</li>
+	<li class="closed"><span class="folder">Розділ 13. Додаткові класи</span>
+		<ul>
+			<li><span class="file"><a href="12.1.html">Математичні обчислення та клас Math</a></span></li>
+			<li><span class="file"><a href="12.2.html">Великі числа BigInteger та BigDecimal</a></span></li>
+			<li><span class="file"><a href="12.3.html">Робота із датами. LocalDate</a></span></li>
+			<li><span class="file"><a href="12.4.html">Процеси. Process та ProcessBuilder</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 14. JAR-файли та підключення бібліотек та класів</span>
+		<ul>
+			<li><span class="file"><a href="13.1.html">Файли JAR, їх створення та виконання</a></span></li>
+			<li><span class="file"><a href="13.2.html">Створення та підключення бібліотеки JAR</a></span></li>
+			<li><span class="file"><a href="13.4.html">Модульний jar-файл</a></span></li>
+			<li><span class="file"><a href="13.3.html">Встановлення шляху до класів Java</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Розділ 15. Рефлексія</span>
+		<ul>
+			<li><span class="file"><a href="14.1.html">Введення у рефлексію. Клас Class</a></span></li>
+			<li><span class="file"><a href="14.2.html">Дослідження типів</a></span></li>
+			<li><span class="file"><a href="14.3.html">Поля класу та клас Field</a></span></li>
+			<li><span class="file"><a href="14.4.html">Модифікатори доступу та клас Modifier</a></span></li>
+			<li><span class="file"><a href="14.5.html">Клас Constructor та створення об&#x27;єктів</a></span></li>
+			<li><span class="file"><a href="14.6.html">Методи та клас Method</a></span></li>
+			<li><span class="file"><a href="14.7.html">Proxy (Проксі)</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 16. Інструкції</span>
+		<ul>
+			<li><span class="file"><a href="15.1.html">Введення в інструкції. Вбудовані інструкції</a></span></li>
+			<li><span class="file"><a href="15.2.html">Створення та застосування анотацій</a></span></li>
+			<li><span class="file"><a href="15.3.html">Обробка інструкцій під час виконання</a></span></li>
+		</ul>
+	</li>
+
+
+	<li class="closed"><span class="folder">Глава 17. Взаємодія із нативним кодом</span>
+		<ul>
+			<li><span class="file"><a href="16.1.html">Java Native Interface (JNI)</a></span></li>
+			<li><span class="file"><a href="16.2.html">Foreign Functions та Memory API</a></span></li>
+			<li><span class="file"><a href="16.3.html">Арена та сегменти пам&#x27;яті MemorySegment</a></span></li>
+			<li><span class="file"><a href="16.4.html">Компонування пам&#x27;яті MemoryLayout та робота з MemorySegment</a></span></li>
+			<li><span class="file"><a href="16.5.html">Складні дані та MemoryLayout</a></span></li>
+			<li><span class="file"><a href="16.6.html">Пошук та виклик зовнішніх функцій</a></span></li>
+			<li><span class="file"><a href="16.7.html">Нативні функції зворотного дзвінка</a></span></li>
+		</ul>
+	</li>
+</ul>   </div>
+</div>
+
+  <div class="item right">
+<div class="help" style="border: 0px;">
+    
+	<div class="help-item">
+		<div class="help-item-name"><a href="https://metanit.com/settings.html">Налаштування</a></div>
+	 </div>
+</div>
+			<div class="help">
+
+      <div class="help-header">Помощь сайту</div>
+
+       <div class="help-item">
+		<div class="help-item-name"><a href="https://yoomoney.ru/to/410011174743222" rel="nofollow">Допомога сайту</a></div>
+	 </div>
+       
+      <div class="help-item">
+		<div class="help-item-name">Юмани:</div>
+		<div class="help-item-req">410011174743222</div>
+	 </div>
+
+		<div class="help-item">
+			<div class="help-item-name">Номер карты:</div>
+			<div class="help-item-req">4048415020898850</div>
+		</div>
+
+      </div>
+
+	
+	
+
+
+
+
+  </div>
+</div>
+
+<div id="footer" style="padding-bottom:85px;">
+
+<div class="bootomLinks">
+<a href="https://vk.com/metanit" title="Присоединиться к группе вконтакте" rel="nofollow">Вконтакті</a>|
+ <a href="https://t.me/devnull22" title="Подписаться на телеграм" rel="nofollow">Телеграм</a> | 
+<a href="https://metanit.com/donations.html" rel="nofollow">Донати/Допомога сайту</a>
+</div>
+<p>Contacts: metanit22@mail.ru</p>
+<p>Copyright © Євген Попов, metanit.com, 2026. Усі права захищені.</p>
+
+
+</div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+<script src='../../js/syntax16.js'></script>
+<script>
+// Syntax Highlighter
+if (typeof SyntaxHighlighter !== 'undefined') {
+    SyntaxHighlighter.all();
+}
+
+// Copy guard
+document.addEventListener('copy', (ev) => {
+    const et = ev.target;
+    if (et.type === 'textarea') {
+        ev.clipboardData.setData('text/plain', et.value.substring(et.selectionStart, et.selectionEnd).replace(/ /g, ' '));
+        ev.preventDefault();
+    }
+});
+
+// Mobile menu
+const faBars = document.querySelector('.fa-bars');
+if (faBars) {
+    faBars.addEventListener('click', () => {
+        const tree = document.querySelector('.item.left');
+        if (tree) {
+            tree.style.display = (tree.style.display === 'block') ? 'none' : 'block';
+        }
+    });
+}
+
+const menuButton = document.getElementById('menuButton');
+if (menuButton) {
+    menuButton.addEventListener('click', () => {
+        menuButton.classList.toggle('menu-opened');
+        const mainMenu = document.querySelector('.mainmenu');
+        if (mainMenu) mainMenu.classList.toggle('open');
+    });
+}
+
+// Search toggle
+const magGlass = document.getElementById('magnifying-glass');
+if (magGlass) {
+    magGlass.addEventListener('click', () => {
+        const search = document.getElementById('search');
+        if (search) search.classList.toggle('transp');
+    });
+}
+
+// Theme toggle
+const toggleTheme = document.getElementById('toggle-theme');
+if (toggleTheme) {
+    toggleTheme.addEventListener('click', () => {
+        if (document.documentElement.hasAttribute('theme')) {
+            document.documentElement.removeAttribute('theme');
+            document.cookie = 'theme=1;expires=Mon, 19 Feb 2001 12:00:00 UTC;path=/;';
+        } else {
+            document.documentElement.setAttribute('theme', 'dark');
+            var expire = new Date();
+            expire.setHours(expire.getHours() + 7);
+            document.cookie = 'theme=1;expires=' + expire.toUTCString() + ';path=/;';
+        }
+    });
+}
+
+// Share buttons
+const shareVK = document.querySelectorAll('.share .fa-vk');
+shareVK.forEach(e => e.addEventListener('click', () => window.open('http://vk.com/share.php?url=' + window.location.href, 'Поделиться в ВКОНТАКТЕ')));
+const shareTG = document.querySelectorAll('.share .fa-telegram');
+shareTG.forEach(e => e.addEventListener('click', () => window.open('tg://msg_url/url=' + window.location.href, 'Поделиться в Telegram')));
+const shareOK = document.querySelectorAll('.share .fa-odnoklassniki');
+shareOK.forEach(e => e.addEventListener('click', () => window.open('https://connect.ok.ru/offer?url=' + window.location.href, 'Поделиться в Одноклассниках')));
+
+// Folders
+const folders = document.getElementsByClassName('closed');
+for (let i = 0; i < folders.length; i++) {
+    folders[i].addEventListener('click', function (e) {
+        this.classList.toggle('closed');
+        this.classList.toggle('opened');
+    });
+}
+
+// Active Item Highlight
+const activePath = window.location.pathname.split('/').pop();
+const activeItem = document.querySelector(".file a[href*='" + activePath + "']");
+if (activeItem) {
+    activeItem.classList.add('aMItem');
+    activeItem.parentElement.classList.add('aMItem');
+    const activeFolder = activeItem.closest('li');
+    if (activeFolder) {
+        activeFolder.classList.remove('closed');
+        activeFolder.classList.add('opened');
+        const folderLabel = activeFolder.querySelector('.folder');
+        if (folderLabel) folderLabel.classList.add('aMItem');
+    }
+}
+
+// Settings
+const props = ['--main-font-size', '--main-font-family', '--menc-bg-color', '--container-bg-color', '--menu-bg-color', '--code-font-size', '--code-font-family', '--code-bgcolor', '--code-max-height'];
+for (let i = 0; i < props.length; i++) {
+    const propValue = localStorage.getItem(props[i]);
+    if (propValue !== null) document.documentElement.style.setProperty(props[i], propValue);
+}
+</script>
+</body>
+</html>

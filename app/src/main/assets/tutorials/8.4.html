@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html  lang="ru">
+<head>
+<title>Java | Завершение и прерывание потока</title>
+<meta charset="utf-8" />
+<meta name="description" content="Завершение и прерывание потоков в языке программирования Java, отслеживание состояния булевой переменной, методы interrupt и isInterrupted, исключение InterruptedException">
+<meta name="viewport" content="width=device-width">
+<link href="../../style50.css@v=1.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<div id="container">
+<header>
+<div id="header">
+<div id="logo">
+<a class="logoTitle" href="https://metanit.com/" title="На главную">METANIT.COM</a>
+<div class="logoDefinition">Сайт о программировании</div> 
+</div>
+
+<div class="socbtns">
+<ul>
+<li><a title="Посмотреть меню" rel="nofollow" class="fa fa-lg fa-bars"></a></li>
+<li><a href="https://metanit.com/donations.html" title="Помощь сайту" rel="nofollow" style="color: var(--fa-usd-color);" class="fa fa-lg fa-usd"></a></li>
+<li><a href="https://vk.com/metanit" title="Группа в ВКонтакте" rel="nofollow" style="color: var(--fa-vk-color);" class="fa fa-lg fa-vk"></a></li>
+<li><a href="https://t.me/devnull22" title="Группа в Телеграмме"  class="fa fa-lg fa-tel" style="color: var(--fa-tel-color);"></a></li>
+<li><a href="https://metanit.com/android.html" title="Приложения андроид" rel="nofollow" style="color: var(--fa-android-color);" class="fa fa-lg fa-android"></a></li>
+<li><i id="toggle-theme" class="fa fa-lg fa-adjust"></i></li>
+</ul>
+</div>
+
+
+<div id="magnifying-glass"></div>
+
+<div class="menuButton" id="menuButton">
+	<span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+</div>
+</div>
+
+<div id="search" class="transp">
+<form action="https://www.google.ru" id="cse-search-box">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3716042175333627:1096498938" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" />
+    <input type="submit" name="sa" value="Найти" />
+  </div>
+</form>
+</div>
+
+<div id="menu" class="menu">
+<ul class="mainmenu">
+    <li><a href="https://metanit.com/common/">Программирование</a></li>
+    <li><a href="https://metanit.com/assembler/">Ассемблер</a></li>
+   <li><a href="https://metanit.com/sharp/">C#</a></li>
+   <li><a href="https://metanit.com/java/">Java</a></li>
+   <li><a href="https://metanit.com/web/">WEB</a></li>
+   <li><a href="https://metanit.com/python/">Python</a></li>
+   <li><a href="https://metanit.com/c/">C</a></li>
+   <li><a href="https://metanit.com/cpp/">C++</a></li>
+   <li><a href="https://metanit.com/sql/">SQL</a></li>
+   <li><a href="https://metanit.com/nosql/mongodb/">MongoDB</a></li>
+   <li><a href="https://metanit.com/go/">Go</a></li>
+   <li><a href="https://metanit.com/visualbasic/">VB.NET</a></li>
+   <li><a href="https://metanit.com/swift/tutorial/">Swift</a></li>
+   <li><a href="https://metanit.com/kotlin/">Kotlin</a></li>
+   <li><a href="https://metanit.com/dart/">Dart</a></li>
+   <li><a href="https://metanit.com/php/">PHP</a></li>
+   <li><a href="https://metanit.com/rust/">Rust</a></li>
+   <li><a href="https://metanit.com/os/">Linux</a></li>
+   <li><a href="https://metanit.com/f/">F#</a></li>
+   <!--<li><a href="//metanit.com/lisp/tutorial/">Common Lisp</a></li>-->
+   <li><a href="https://metanit.com/hosting">Хостинг</a></li>
+</ul>
+</div>
+
+</header>
+<div class="outercontainer">
+<div class="innercontainer">
+ 
+   <div class="item center menC">
+     <h1>Завершение и прерывание потока</h1><div class="date">Последнее обновление: 16.10.2025</div>
+	<div class="socBlock">
+	<div class="share soctop">
+	<ul>
+	<li><a title="Поделиться в Вконтакте" rel="nofollow" class="fa fa-lg fa-vk"></a></li>
+	<li><a title="Поделиться в Телеграм" rel="nofollow" class="fa fa-lg fa-telegram"></a></li>
+	<li><a title="Поделиться в Одноклассниках" rel="nofollow" class="fa fa-lg fa-odnoklassniki"></a></li>
+	
+	</ul>
+	</div>
+	</div>
+
+	<div style="margin-top:23px;margin-left:5px;">
+		
+		
+		
+	</div>
+
+	<p>Примеры потоков в прошлых статьях представляли поток как последовательный набор операций. То есть поток по сути представлял последовательность инструкций, которые последовательно выполнялись одна за другой. 
+А после выполнения последней операции завершался и поток. Однако нередко имеет место и другая организация потока в виде бесконечного цикла. Например, поток сервера в бесконечном 
+цикле прослушивает определенный порт на предмет получения данных. И в этом случае мы также можем предусмотреть механизм завершения потока. </p>
+<h3>Завершение потока</h3>
+<p>Распространенный способ завершения потока представляет опрос логической переменной. И если она равна, например, false, то поток завершает бесконечный цикл и заканчивает свое выполнение.</p>
+<p>Определим следующий класс потока:</p>
+<pre class="brush:java;">
+class MyTask implements Runnable {
+      
+    private boolean isActive;
+      
+    void disable(){ isActive=false; }
+      
+    MyTask(){ isActive = true; }
+      
+    public void run(){
+          
+        String taskName = Thread.currentThread().getName();
+
+        System.out.printf("%s started... \n", taskName);
+
+        int counter = 1; // счетчик циклов
+
+        while(isActive){
+
+            System.out.println("Loop " + counter++);
+
+            try{
+                Thread.sleep(400);
+            }
+            catch(InterruptedException _){
+                
+                System.out.printf("%s interrupted... \n", taskName);
+            }
+        }
+        System.out.printf("%s finished... \n", taskName);
+    }
+}
+</pre>
+<p>Переменная <code>isActive</code> указывает на активность потока: пока эта переменная равна <code>true</code>, поток будет продолжать работать. Но с помощью метода <code>disable()</code> 
+мы можем сбросить состояние этой переменной в <code>false</code> и таким образом завершить поток.</p>
+<p>Теперь используем этот класс:</p>
+<pre class="brush:java;">
+class Program{
+
+    public static void main(String[] args) {
+         
+        System.out.println("Main thread started...");
+
+        // создаем и запускаем поток
+        var myTask = new MyTask();
+        new Thread(myTask,"MyTask").start();
+            
+        try{
+            Thread.sleep(1100);
+                
+            myTask.disable();  // завершаем поток
+            
+            Thread.sleep(1000);
+        }
+        catch(InterruptedException e){
+            System.out.println("Main thread interrupted...");
+        }
+        System.out.println("Main thread finished...");
+    }
+}
+class MyTask implements Runnable {
+      
+    private boolean isActive;
+      
+    void disable(){ isActive=false; }
+      
+    MyTask(){ isActive = true; }
+      
+    public void run(){
+          
+        String taskName = Thread.currentThread().getName();
+
+        System.out.printf("%s started... \n", taskName);
+
+        int counter=1; // счетчик циклов
+        while(isActive){
+            System.out.println("Loop " + counter++);
+            try{
+                Thread.sleep(400);
+            }
+            catch(InterruptedException _){
+                
+                System.out.printf("%s interrupted... \n", taskName);
+            }
+        }
+        System.out.printf("%s finished... \n", taskName);
+    }
+}
+</pre>
+<p>Итак, вначале запускается дочерний поток:</p>
+<pre class="brush:java;">
+var myTask = new MyTask();
+new Thread(myTask,"MyTask").start();
+</pre>
+<p>Затем на 1100 миллисекунд останавливаем главный поток "Main thread" и 
+потом вызываем метод <code>disable()</code>, который переключает в потоке флаг <code>isActive</code>, и дочерний поток завершается.</p>
+<pre class="brush:java;">myTask.disable();  // завершаем поток</pre>
+
+<p>Консольный вывод программы:</p>
+<pre class="sh">
+Main thread started...
+MyTask started... 
+Loop 1
+Loop 2
+Loop 3
+MyTask finished... 
+Main thread finished...
+</pre>
+<div style="margin-top:23px;margin-left:5px;">
+
+<!-- Yandex.RTB R-A-201190-9 -->
+
+</div>
+
+<h3>Прерывание потока и метод interrupt</h3>
+<p>В языке Java нельзя принудительно завершить поток. Однако с помощью метода <b>interrupt()</b> можно направить запроса на прерывание потока. 
+При вызове метода <code>interrupt()</code> для потока устанавливается статус <b>INTERRUPTED</b>.</p>
+<p>При выполнении работы с помощью метода <b>isInterrupted()</b> поток может периодически проверять, был ли он прерван, и, если прерван, завершать выполняемую работу:</p>
+<pre class="brush:java;">
+// пока поток не прерван
+while (!Thread.currentThread().isInterrupted()){
+
+    // делаем некоторую работу
+}
+</pre>
+<p>Однако, если поток заблокирован, он не может проверить статус с помощью вызова <code>isInterrupted()</code>. Такая ситуация, например, возникает, когда метод <code>interrupt()</code> вызывается для потока, который блокируется вызовом <code>sleep()</code> (а также ряд других, например, методом <code>wait()</code>). 
+В этом случае блокирующий вызов (например, <code>sleep()</code>) завершается исключением <code>InterruptedException</code>. 
+Существуют блокирующие вызовы ввода-вывода, которые не могут быть прерваны. Тогда при завершении операции ввода-вывода также генерируется исключение <code>InterruptedException</code>. И в этом случае мы можем 
+в коде потока обрабатывать исключение:</p>
+<pre class="brush:java;">
+Runnable r = () -&gt; {   // действия потока
+    try  {
+
+        // если действия в цикле, в качестве условия проверяем isInterrupted()
+        while (!Thread.currentThread().isInterrupted()) {
+            
+            // выполняемые действия
+        }
+    }
+    catch (InterruptedException ex){
+
+        // обрабатываем исключение прерывания потока
+    }
+
+    // какие-то завершающие действия при необходимости
+};
+</pre>
+<p>Хотя, если поток прерван, он не обязан завершаться - он может продолжать работать. Но гораздо чаще поток просто интерпретирует прерывание как запрос на завершение. Например, проэмулируем данную ситуацию:</p>
+<pre class="brush:java;">
+class MyTask implements Runnable {
+
+    public void run(){
+         
+        String name = Thread.currentThread().getName();  // получаем имя текущего потока
+
+        try{
+            
+            System.out.println(name + " started...");
+
+            while(!Thread.currentThread().isInterrupted()){
+
+                System.out.println(name + " works");
+
+                Thread.sleep(1000); // приостанавливаем поток на 1000 миллисекунд
+            }
+        }
+        catch(InterruptedException ex){
+
+            System.out.println(ex.getMessage());
+        }
+        System.out.println(name + " finished...");
+    }
+} 
+
+public class Program {
+  
+    public static void main(String[] args) {
+          
+        System.out.println("Main thread started...");
+
+        // определяем поток
+        var t = new Thread(new MyTask(), "MyTask");
+        // запускаем поток
+        t.start();
+        
+        try{
+            // делаем небольшую задержку, чтобы дочерний поток MyTask успел немного отработать
+            Thread.sleep(2000);
+        }
+        catch(InterruptedException ex){
+            System.out.println(ex.getMessage());
+        }
+
+        // прерываем поток
+        t.interrupt();
+        
+        System.out.println("Main thread finished...");
+    }
+}
+</pre>
+<p>В методе <code>run()</code> класса MyTask в цикле <code>while</code> проверяем результат метода <code>isInterupted()</code>:</p>
+<pre class="brush:java;">
+try{
+            
+    .........................
+
+    while(!Thread.currentThread().isInterrupted()){
+
+        System.out.println(name + " works");
+        Thread.sleep(1000); // приостанавливаем поток на 1000 миллисекунд
+    }
+}
+catch(InterruptedException ex){
+
+    System.out.println(ex.getMessage());
+}
+</pre>
+<p>В цикле делаем задержку на 1 секунду с помощью <code>Thread.sleep()</code>. Однако если во время этой задержки во вне будет вызван метод <code>interrupt()</code> для этого потока, то мы столкнемся с 
+исключением <code>InterruptedException</code>. И с помощью конструкции <code>try..catch</code> перехватываем и обрабатываем это исключение.</p>
+<p>В методе main запускаем поток MyTask, приостанавливаем главный поток, чтобы MyTask успел немного отработать, и далее вызыаем у MyTask метод <code>interrupt()</code>:</p>
+<pre class="brush:java;">
+var t = new Thread(new MyTask(), "MyTask");
+t.start();
+        
+try{
+    Thread.sleep(2000);
+}
+catch(InterruptedException ex){
+    System.out.println(ex.getMessage());
+}
+
+// прерываем поток
+t.interrupt();
+</pre>
+<p>В итоге при вызове метода <code>interrupt()</code> во время приостановки MyTask обработает исключение <code>InterruptedException</code> и завершит работу:</p>
+<pre class="sh">
+Main thread started...
+MyTask started...
+MyTask works
+MyTask works
+Main thread finished...
+sleep interrupted
+MyTask finished...
+</pre>
+	
+
+	<div style="margin-top:25px;">
+
+	
+	</div>
+
+	<div class="nav"><p><a href="8.11.html">Назад</a><a href="index.html">Содержание</a><a href="8.12.html">Вперед</a></p></div>
+	<div class="socBlock">
+	<div class="share soctop">
+	<ul>
+	<li><a title="Поделиться в Вконтакте" rel="nofollow" class="fa fa-lg fa-vk"></a></li>
+	<li><a title="Поделиться в Телеграм" rel="nofollow" class="fa fa-lg fa-telegram"></a></li>
+	<li><a title="Поделиться в Одноклассниках" rel="nofollow" class="fa fa-lg fa-odnoklassniki"></a></li>
+	
+	</ul>
+	</div>
+	</div>
+  </div>
+
+	<div class="item left">
+     <ul id="browser" class="filetree"> 
+	<li class="closed"><span class="folder">Глава 1. Введение в Java</span>
+		<ul>
+			<li><span class="file"><a href="1.1.html">Что такое Java</a></span></li>
+			<li><span class="file"><a href="1.6.html">Установка JDK</a></span></li>
+			<li><span class="file"><a href="1.2.html">Первая программа на Java</a></span></li>
+			<li><span class="file"><a href="1.5.html">Первая программа в IntelliJ IDEA</a></span></li>
+			<li><span class="file"><a href="1.3.html">Первая программа в NetBeans</a></span></li>
+			<li><span class="file"><a href="1.4.html">Первая программа в Eclipse</a></span></li>
+			<li><span class="file"><a href="1.7.html">JShell</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 2. Основы программирования на Java</span>
+		<ul>
+			<li><span class="file"><a href="2.11.html">Структура программы</a></span></li>
+			<li><span class="file"><a href="2.1.html">Переменные и константы</a></span></li>
+			<li><span class="file"><a href="2.19.html">Литералы</a></span></li>
+			<li><span class="file"><a href="2.12.html">Типы данных</a></span></li>
+			<li><span class="file"><a href="2.9.html">Консольный ввод/вывод в Java</a></span></li>
+			<li><span class="file"><a href="2.3.html">Арифметические операции</a></span></li>
+			<li><span class="file"><a href="2.13.html">Поразрядные операции</a></span></li>
+			<li><span class="file"><a href="2.14.html">Условные выражения</a></span></li>
+			<li><span class="file"><a href="2.15.html">Операции присваивания и приоритет операций</a></span></li>
+			<li><span class="file"><a href="2.2.html">Преобразования базовых типов данных</a></span></li>
+			<li><span class="file"><a href="2.5.html">Условные конструкции</a></span></li>
+			<li><span class="file"><a href="2.6.html">Циклы</a></span></li>
+			<li><span class="file"><a href="2.4.html">Массивы</a></span></li>
+			<li><span class="file"><a href="2.20.html">Конструкция и выражение switch</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 3. Классы</span>
+		<ul>
+			<li><span class="file"><a href="3.1.html">Классы и объекты</a></span></li>
+
+
+			<li><span class="file"><a href="2.7.html">Методы</a></span></li>
+			<li><span class="file"><a href="2.16.html">Параметры методов</a></span></li>
+			<li><span class="file"><a href="3.14.html">Объекты как параметры методов</a></span></li>
+			<li><span class="file"><a href="2.17.html">Оператор return. Результат метода</a></span></li>
+			<li><span class="file"><a href="2.18.html">Перегрузка методов</a></span></li>
+			<li><span class="file"><a href="3.21.html">Конструкторы и инициализаторы</a></span></li>
+
+
+			<li><span class="file"><a href="3.4.html">Статические компоненты класса и модификатор static</a></span></li>
+			<li><span class="file"><a href="3.20.html">Область действия и время жизни переменных</a></span></li>
+			<li><span class="file"><a href="2.8.html">Рекурсивные функции</a></span></li>
+			<li><span class="file"><a href="3.2.html">Пакеты</a></span></li>
+			<li><span class="file"><a href="3.3.html">Модификаторы доступа</a></span></li>
+			<li><span class="file"><a href="3.19.html">Компактные файлы кода и метод main</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 4. Объектно-ориентированное программирование</span>
+		<ul>
+			<li><span class="file"><a href="3.22.html">Инкапсуляция</a></span></li>
+			<li><span class="file"><a href="3.5.html">Наследование</a></span></li>
+			<li><span class="file"><a href="3.23.html">Запрет наследования и переопределения методов</a></span></li>
+			<li><span class="file"><a href="3.24.html">Полиморфизм и динамическая диспетчеризация методов</a></span></li>
+			<li><span class="file"><a href="3.9.html">Класс Object и его методы</a></span></li>
+			<li><span class="file"><a href="3.6.html">Абстрактные классы</a></span></li>
+			<li><span class="file"><a href="3.10.html">Иерархия наследования и преобразование типов</a></span></li>
+
+			<li><span class="file"><a href="3.7.html">Интерфейсы</a></span></li>
+			<li><span class="file"><a href="3.28.html">Интерфейсы и полиморфизм</a></span></li>
+			<li><span class="file"><a href="3.29.html">Множественная реализация и наследование интерфейсов</a></span></li>
+			<li><span class="file"><a href="3.16.html">Интерфейсы в механизме обратного вызова</a></span></li>
+			<li><span class="file"><a href="3.8.html">Перечисления enum</a></span></li>
+			<li><span class="file"><a href="3.11.html">Обобщения (Generics)</a></span></li>
+			<li><span class="file"><a href="3.17.html">Ограничения обобщений</a></span></li>
+			<li><span class="file"><a href="3.15.html">Наследование и обобщения</a></span></li>
+			<li><span class="file"><a href="3.31.html">Type Erasure (Стирание типов)</a></span></li>
+			<li><span class="file"><a href="3.32.html">Подстановочные знаки wildcards в обобщениях</a></span></li>
+			<li><span class="file"><a href="3.13.html">Ссылочные типы и клонирование объектов</a></span></li>
+			<li><span class="file"><a href="3.18.html">Классы Records</a></span></li>
+			<li><span class="file"><a href="9.4.html">Функциональные интерфейсы и ссылки на методы</a></span></li>
+			<li><span class="file"><a href="9.1.html">Лямбда-выражения</a></span></li>
+			<li><span class="file"><a href="9.2.html">Лямбды как параметры и результаты методов</a></span></li>
+			<li><span class="file"><a href="9.3.html">Встроенные функциональные интерфейсы</a></span></li>
+			<li><span class="file"><a href="3.12.html">Внутренние и вложенные классы</a></span></li>
+			<li><span class="file"><a href="3.30.html">Анонимные классы</a></span></li>
+
+
+			<li><span class="file"><a href="3.25.html">Sealed-классы и интерфейсы</a></span></li>
+			<li><span class="file"><a href="3.26.html">Pattern мatching. Паттерн типов</a></span></li>
+			<li><span class="file"><a href="3.27.html">Pattern мatching. record-паттерн</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 5. Обработка исключений</span>
+		<ul>
+			<li><span class="file"><a href="2.10.html">Обработка исключений и конструкция try...catch...finally</a></span></li>
+			<li><span class="file"><a href="4.2.html">Классы исключений</a></span></li>
+			<li><span class="file"><a href="4.1.html">Операторы throws и throw</a></span></li>
+			<li><span class="file"><a href="4.3.html">Создание своих классов исключений</a></span></li>
+			<li><span class="file"><a href="4.4.html">Assert</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 6. Коллекции</span>
+		<ul>
+			<li><span class="file"><a href="5.1.html">Типы коллекций. Интерфейс Collection</a></span></li>
+			<li><span class="file"><a href="5.2.html">Класс ArrayList и интерфейс List</a></span></li>
+			<li><span class="file"><a href="5.6.html">Интерфейсы Comparable и Comporator. Сортировка</a></span></li>
+			<li><span class="file"><a href="5.7.html">Очереди и стеки. Классы ArrayDeque и PriorityQueue</a></span></li>
+			<li><span class="file"><a href="5.3.html">Связанный список LinkedList</a></span></li>
+			<li><span class="file"><a href="5.4.html">Интерфейс Set и хеш-таблицы HashSet</a></span></li>
+			<li><span class="file"><a href="5.5.html">Деревья TreeSet и интерфейсы SortedSet и NavigableSet</a></span></li>
+			<li><span class="file"><a href="5.8.html">Словари. Интерфейс Map и класс HashMap</a></span></li>
+			<li><span class="file"><a href="5.9.html">Интерфейсы SortedMap и NavigableMap. Класс TreeMap</a></span></li>
+			<li><span class="file"><a href="5.10.html">Итераторы. Iterator и Iterable</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 7. Потоки ввода-вывода. Работа с файлами</span>
+		<ul>
+			<li><span class="file"><a href="6.1.html">Потоки ввода-вывода</a></span></li>
+			<li><span class="file"><a href="6.3.html">Чтение и запись файлов. FileInputStream и FileOutputStream</a></span></li>
+			<li><span class="file"><a href="6.2.html">Закрытие потоков и конструкция try-с-ресурсами</a></span></li>
+			<li><span class="file"><a href="6.4.html">Классы ByteArrayInputStream и ByteArrayOutputStream</a></span></li>
+			<li><span class="file"><a href="6.5.html">Буферизованные потоки BufferedInputStream и BufferedOutputStream</a></span></li>
+			<li><span class="file"><a href="6.6.html">Форматируемый вывод. PrintStream и PrintWriter</a></span></li>
+			<li><span class="file"><a href="6.7.html">Классы DataOutputStream и DataInputStream</a></span></li>
+			<li><span class="file"><a href="6.8.html">Чтение и запись текстовых файлов</a></span></li>
+			<li><span class="file"><a href="6.9.html">Буферизация символьных потоков. BufferedReader и BufferedWriter</a></span></li>
+			<li><span class="file"><a href="6.10.html">Сериализация объектов</a></span></li>
+			<li><span class="file"><a href="6.11.html">Класс File. Работа с файлами и каталогами</a></span></li>
+			<li><span class="file"><a href="6.12.html">Работа с ZIP-архивами</a></span></li>
+			<li><span class="file"><a href="6.13.html">Класс Console</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 8. Работа со строками</span>
+		<ul>
+			<li><span class="file"><a href="7.1.html">Введение в строки. Класс String</a></span></li>
+			<li><span class="file"><a href="7.2.html">Основные операции со строками</a></span></li>
+			<li><span class="file"><a href="7.3.html">StringBuffer и StringBuilder</a></span></li>
+			<li><span class="file"><a href="7.4.html">Регулярные выражения</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 9. Многопоточное программирование</span>
+		<ul>
+			<li><span class="file"><a href="8.1.html">Многопоточное программирование и класс Thread</a></span></li>
+			<li><span class="file"><a href="8.2.html">Создание и выполнение потоков</a></span></li>
+			<li><span class="file"><a href="8.11.html">Управление потоками</a></span></li>
+			<li><span class="file"><a href="8.4.html">Завершение и прерывание потока</a></span></li>
+			<li><span class="file"><a href="8.12.html">Виртуальные потоки</a></span></li>
+			<li><span class="file"><a href="8.3.html">Синхронизация потоков. Оператор synchronized</a></span></li>
+			<li><span class="file"><a href="8.5.html">Взаимодействие потоков. Методы wait и notify</a></span></li>
+			<li><span class="file"><a href="8.6.html">Семафоры</a></span></li>
+			<li><span class="file"><a href="8.7.html">Обмен между потоками. Класс Exchanger</a></span></li>
+			<li><span class="file"><a href="8.8.html">Класс Phaser</a></span></li>
+			<li><span class="file"><a href="8.9.html">Блокировки. ReentrantLock</a></span></li>
+			<li><span class="file"><a href="8.10.html">Условия в блокировках</a></span></li>
+			<li><span class="file"><a href="8.16.html">Переменные volatile</a></span></li>
+			<li><span class="file"><a href="8.17.html">Атомарность и Atomics. Потокобезопасность без блокировок</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 10. Асинхронность</span>
+		<ul>
+			<li><span class="file"><a href="8.13.html">Асинхронные задачи FutureTask. Callable и Future</a></span></li>
+			<li><span class="file"><a href="8.14.html">Executor - исполнитель задач</a></span></li>
+			<li><span class="file"><a href="8.15.html">Координация выполнения асинхронных задач</a></span></li>
+			<li><span class="file"><a href="8.18.html">CompletableFuture и промисы. Обработка результата асинхронных задач</a></span></li>
+			<li><span class="file"><a href="8.19.html">CompletableFuture, обработка ошибок и завершения асинхронных задач</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 11. Stream API</span>
+		<ul>
+			<li><span class="file"><a href="10.1.html">Введение в Stream API</a></span></li>
+			<li><span class="file"><a href="10.2.html">Создание потока данных</a></span></li>
+			<li><span class="file"><a href="10.3.html">Фильтрация, перебор элементов и отображение</a></span></li>
+			<li><span class="file"><a href="10.8.html">Сортировка</a></span></li>
+			<li><span class="file"><a href="10.13.html">Получение подпотока и объединение потоков</a></span></li>
+			<li><span class="file"><a href="10.4.html">Методы skip и limit</a></span></li>
+			<li><span class="file"><a href="10.11.html">Операции сведения</a></span></li>
+			<li><span class="file"><a href="10.5.html">Метод reduce</a></span></li>
+			<li><span class="file"><a href="10.12.html">Тип Optional</a></span></li>
+			<li><span class="file"><a href="10.6.html">Метод collect</a></span></li>
+			<li><span class="file"><a href="10.7.html">Группировка</a></span></li>
+			<li><span class="file"><a href="10.9.html">Параллельные потоки</a></span></li>
+			<li><span class="file"><a href="10.10.html">Параллельные операции над массивами</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 12. Модульность</span>
+		<ul>
+			<li><span class="file"><a href="11.1.html">Создание модуля</a></span></li>
+			<li><span class="file"><a href="11.2.html">Зависимые модули</a></span></li>
+			<li><span class="file"><a href="11.3.html">Взаимодействие между модулями. Экспорт и импорт</a></span></li>
+		</ul>
+	</li>
+	</li>
+	<li class="closed"><span class="folder">Глава 13. Дополнительные классы</span>
+		<ul>
+			<li><span class="file"><a href="12.1.html">Математические вычисления и класс Math</a></span></li>
+			<li><span class="file"><a href="12.2.html">Большие числа BigInteger и BigDecimal</a></span></li>
+			<li><span class="file"><a href="12.3.html">Работа с датами. LocalDate</a></span></li>
+			<li><span class="file"><a href="12.4.html">Процессы. Process и ProcessBuilder</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 14. JAR-файлы и подключение библиотек и классов</span>
+		<ul>
+			<li><span class="file"><a href="13.1.html">Файлы JAR, их создание и выполнение</a></span></li>
+			<li><span class="file"><a href="13.2.html">Создание и подключение библиотеки JAR</a></span></li>
+			<li><span class="file"><a href="13.4.html">Модульный jar-файл</a></span></li>
+			<li><span class="file"><a href="13.3.html">Установка пути к классам Java</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 15. Рефлексия</span>
+		<ul>
+			<li><span class="file"><a href="14.1.html">Введение в рефлексию. Класс Class</a></span></li>
+			<li><span class="file"><a href="14.2.html">Исследование типов</a></span></li>
+			<li><span class="file"><a href="14.3.html">Поля класса и класс Field</a></span></li>
+			<li><span class="file"><a href="14.4.html">Модификаторы доступа и класс Modifier</a></span></li>
+			<li><span class="file"><a href="14.5.html">Класс Constructor и cоздание объектов</a></span></li>
+			<li><span class="file"><a href="14.6.html">Методы и класс Method</a></span></li>
+			<li><span class="file"><a href="14.7.html">Proxy (Прокси)</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 16. Аннотации</span>
+		<ul>
+			<li><span class="file"><a href="15.1.html">Введение в аннотации. Встроенные аннотации</a></span></li>
+			<li><span class="file"><a href="15.2.html">Создание и применение аннотаций</a></span></li>
+			<li><span class="file"><a href="15.3.html">Обработка аннотаций во время выполнения</a></span></li>
+		</ul>
+	</li>
+
+
+	<li class="closed"><span class="folder">Глава 17. Взаимодействие с нативным кодом</span>
+		<ul>
+			<li><span class="file"><a href="16.1.html">Java Native Interface (JNI)</a></span></li>
+			<li><span class="file"><a href="16.2.html">Foreign Functions и Memory API</a></span></li>
+			<li><span class="file"><a href="16.3.html">Арена и сегменты памяти MemorySegment</a></span></li>
+			<li><span class="file"><a href="16.4.html">Компоновка памяти MemoryLayout и работа с MemorySegment</a></span></li>
+			<li><span class="file"><a href="16.5.html">Сложные данные и MemoryLayout</a></span></li>
+			<li><span class="file"><a href="16.6.html">Поиск и вызов внешних функций</a></span></li>
+			<li><span class="file"><a href="16.7.html">Нативные функции обратного вызова</a></span></li>
+		</ul>
+	</li>
+</ul>   </div>
+</div>
+
+  <div class="item right">
+<div class="help" style="border: 0px;">
+    
+	<div class="help-item">
+		<div class="help-item-name"><a href="https://metanit.com/settings.html">Настройки</a></div>
+	 </div>
+</div>
+			<div class="help">
+
+      <div class="help-header">Помощь сайту</div>
+
+       <div class="help-item">
+		<div class="help-item-name"><a href="https://yoomoney.ru/to/410011174743222" rel="nofollow">Помощь сайту</a></div>
+	 </div>
+       
+      <div class="help-item">
+		<div class="help-item-name">Юмани:</div>
+		<div class="help-item-req">410011174743222</div>
+	 </div>
+
+		<div class="help-item">
+			<div class="help-item-name">Номер карты:</div>
+			<div class="help-item-req">4048415020898850</div>
+		</div>
+
+      </div>
+
+	
+	
+
+
+
+
+  </div>
+</div>
+
+<div id="footer" style="padding-bottom:85px;">
+
+<div class="bootomLinks">
+<a href="https://vk.com/metanit" title="Присоединиться к группе вконтакте" rel="nofollow">
+Вконтакте</a>|
+ <a href="https://t.me/devnull22" title="Подписаться на телеграм" rel="nofollow">
+Телеграм</a> | 
+<a href="https://metanit.com/donations.html" rel="nofollow">Донаты/Помощь сайту</a>
+</div>
+<p>Contacts: metanit22@mail.ru</p>
+<p>Copyright &copy; Евгений Попов, metanit.com, 2026. Все права защищены.</p>
+
+
+</div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+<script src='../../js/syntax16.js'></script>
+<script>
+// Syntax Highlighter
+if (typeof SyntaxHighlighter !== 'undefined') {
+    SyntaxHighlighter.all();
+}
+
+// Copy guard
+document.addEventListener('copy', (ev) => {
+    const et = ev.target;
+    if (et.type === 'textarea') {
+        ev.clipboardData.setData('text/plain', et.value.substring(et.selectionStart, et.selectionEnd).replace(/ /g, ' '));
+        ev.preventDefault();
+    }
+});
+
+// Mobile menu
+const faBars = document.querySelector('.fa-bars');
+if (faBars) {
+    faBars.addEventListener('click', () => {
+        const tree = document.querySelector('.item.left');
+        if (tree) {
+            tree.style.display = (tree.style.display === 'block') ? 'none' : 'block';
+        }
+    });
+}
+
+const menuButton = document.getElementById('menuButton');
+if (menuButton) {
+    menuButton.addEventListener('click', () => {
+        menuButton.classList.toggle('menu-opened');
+        const mainMenu = document.querySelector('.mainmenu');
+        if (mainMenu) mainMenu.classList.toggle('open');
+    });
+}
+
+// Search toggle
+const magGlass = document.getElementById('magnifying-glass');
+if (magGlass) {
+    magGlass.addEventListener('click', () => {
+        const search = document.getElementById('search');
+        if (search) search.classList.toggle('transp');
+    });
+}
+
+// Theme toggle
+const toggleTheme = document.getElementById('toggle-theme');
+if (toggleTheme) {
+    toggleTheme.addEventListener('click', () => {
+        if (document.documentElement.hasAttribute('theme')) {
+            document.documentElement.removeAttribute('theme');
+            document.cookie = 'theme=1;expires=Mon, 19 Feb 2001 12:00:00 UTC;path=/;';
+        } else {
+            document.documentElement.setAttribute('theme', 'dark');
+            var expire = new Date();
+            expire.setHours(expire.getHours() + 7);
+            document.cookie = 'theme=1;expires=' + expire.toUTCString() + ';path=/;';
+        }
+    });
+}
+
+// Share buttons
+const shareVK = document.querySelectorAll('.share .fa-vk');
+shareVK.forEach(e => e.addEventListener('click', () => window.open('http://vk.com/share.php?url=' + window.location.href, 'Поделиться в ВКОНТАКТЕ')));
+const shareTG = document.querySelectorAll('.share .fa-telegram');
+shareTG.forEach(e => e.addEventListener('click', () => window.open('tg://msg_url/url=' + window.location.href, 'Поделиться в Telegram')));
+const shareOK = document.querySelectorAll('.share .fa-odnoklassniki');
+shareOK.forEach(e => e.addEventListener('click', () => window.open('https://connect.ok.ru/offer?url=' + window.location.href, 'Поделиться в Одноклассниках')));
+
+// Folders
+const folders = document.getElementsByClassName('closed');
+for (let i = 0; i < folders.length; i++) {
+    folders[i].addEventListener('click', function (e) {
+        this.classList.toggle('closed');
+        this.classList.toggle('opened');
+    });
+}
+
+// Active Item Highlight
+const activePath = window.location.pathname.split('/').pop();
+const activeItem = document.querySelector(".file a[href*='" + activePath + "']");
+if (activeItem) {
+    activeItem.classList.add('aMItem');
+    activeItem.parentElement.classList.add('aMItem');
+    const activeFolder = activeItem.closest('li');
+    if (activeFolder) {
+        activeFolder.classList.remove('closed');
+        activeFolder.classList.add('opened');
+        const folderLabel = activeFolder.querySelector('.folder');
+        if (folderLabel) folderLabel.classList.add('aMItem');
+    }
+}
+
+// Settings
+const props = ['--main-font-size', '--main-font-family', '--menc-bg-color', '--container-bg-color', '--menu-bg-color', '--code-font-size', '--code-font-family', '--code-bgcolor', '--code-max-height'];
+for (let i = 0; i < props.length; i++) {
+    const propValue = localStorage.getItem(props[i]);
+    if (propValue !== null) document.documentElement.style.setProperty(props[i], propValue);
+}
+</script>
+</body>
+</html>

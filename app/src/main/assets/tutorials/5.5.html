@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html  lang="ru">
+<head>
+<title>Java | Деревья TreeSet и интерфейсы SortedSet и NavigableSet</title>
+<meta charset="utf-8" />
+<meta name="description" content="Деревья TreeSet в языке программирования Java, интерфейсы SortedSet и NavigableSet, древовидные структуры данных, харнение неупорядоченных данных в отсортированном виде в дереве">
+<meta name="viewport" content="width=device-width">
+<link href="../../style50.css@v=1.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<div id="container">
+<header>
+<div id="header">
+<div id="logo">
+<a class="logoTitle" href="https://metanit.com/" title="На главную">METANIT.COM</a>
+<div class="logoDefinition">Сайт о программировании</div> 
+</div>
+
+<div class="socbtns">
+<ul>
+<li><a title="Посмотреть меню" rel="nofollow" class="fa fa-lg fa-bars"></a></li>
+<li><a href="https://metanit.com/donations.html" title="Помощь сайту" rel="nofollow" style="color: var(--fa-usd-color);" class="fa fa-lg fa-usd"></a></li>
+<li><a href="https://vk.com/metanit" title="Группа в ВКонтакте" rel="nofollow" style="color: var(--fa-vk-color);" class="fa fa-lg fa-vk"></a></li>
+<li><a href="https://t.me/devnull22" title="Группа в Телеграмме"  class="fa fa-lg fa-tel" style="color: var(--fa-tel-color);"></a></li>
+<li><a href="https://metanit.com/android.html" title="Приложения андроид" rel="nofollow" style="color: var(--fa-android-color);" class="fa fa-lg fa-android"></a></li>
+<li><i id="toggle-theme" class="fa fa-lg fa-adjust"></i></li>
+</ul>
+</div>
+
+
+<div id="magnifying-glass"></div>
+
+<div class="menuButton" id="menuButton">
+	<span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+</div>
+</div>
+
+<div id="search" class="transp">
+<form action="https://www.google.ru" id="cse-search-box">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3716042175333627:1096498938" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" />
+    <input type="submit" name="sa" value="Найти" />
+  </div>
+</form>
+</div>
+
+<div id="menu" class="menu">
+<ul class="mainmenu">
+    <li><a href="https://metanit.com/common/">Программирование</a></li>
+    <li><a href="https://metanit.com/assembler/">Ассемблер</a></li>
+   <li><a href="https://metanit.com/sharp/">C#</a></li>
+   <li><a href="https://metanit.com/java/">Java</a></li>
+   <li><a href="https://metanit.com/web/">WEB</a></li>
+   <li><a href="https://metanit.com/python/">Python</a></li>
+   <li><a href="https://metanit.com/c/">C</a></li>
+   <li><a href="https://metanit.com/cpp/">C++</a></li>
+   <li><a href="https://metanit.com/sql/">SQL</a></li>
+   <li><a href="https://metanit.com/nosql/mongodb/">MongoDB</a></li>
+   <li><a href="https://metanit.com/go/">Go</a></li>
+   <li><a href="https://metanit.com/visualbasic/">VB.NET</a></li>
+   <li><a href="https://metanit.com/swift/tutorial/">Swift</a></li>
+   <li><a href="https://metanit.com/kotlin/">Kotlin</a></li>
+   <li><a href="https://metanit.com/dart/">Dart</a></li>
+   <li><a href="https://metanit.com/php/">PHP</a></li>
+   <li><a href="https://metanit.com/rust/">Rust</a></li>
+   <li><a href="https://metanit.com/os/">Linux</a></li>
+   <li><a href="https://metanit.com/f/">F#</a></li>
+   <!--<li><a href="//metanit.com/lisp/tutorial/">Common Lisp</a></li>-->
+   <li><a href="https://metanit.com/hosting">Хостинг</a></li>
+</ul>
+</div>
+
+</header>
+<div class="outercontainer">
+<div class="innercontainer">
+ 
+   <div class="item center menC">
+     <h1>Деревья TreeSet и интерфейсы SortedSet и NavigableSet</h1><div class="date">Последнее обновление: 11.10.2025</div>
+	<div class="socBlock">
+	<div class="share soctop">
+	<ul>
+	<li><a title="Поделиться в Вконтакте" rel="nofollow" class="fa fa-lg fa-vk"></a></li>
+	<li><a title="Поделиться в Телеграм" rel="nofollow" class="fa fa-lg fa-telegram"></a></li>
+	<li><a title="Поделиться в Одноклассниках" rel="nofollow" class="fa fa-lg fa-odnoklassniki"></a></li>
+	
+	</ul>
+	</div>
+	</div>
+
+	<div style="margin-top:23px;margin-left:5px;">
+		
+		
+		
+	</div>
+
+	<h3>SortedSet</h3>
+<p>Интерфейс <span class="b">SortedSet</span> предназначен для создания коллекций, который хранят элементы в отсортированном виде (сортировка по 
+возрастанию). <b>SortedSet</b> расширяет интерфейс <code>Set</code>, поэтому такая коллекция опять же хранит только уникальные значения. 
+SortedSet предоставляет следующие методы:</p>
+<ul>
+<li><p><span class="b">E first()</span>: возвращает первый элемент набора</p></li>
+<li><p><span class="b">E last()</span>: возвращает последний элемент набора</p></li>
+<li><p><span class="b">SortedSet&lt;E&gt; headSet(E end)</span>: возвращает объект SortedSet, который содержит все элементы первичного набора до элемента end</p></li>
+<li><p><span class="b">SortedSet&lt;E&gt; subSet(E start, E end)</span>: возвращает объект SortedSet, который содержит все элементы первичного набора между элементами start и end</p></li>
+<li><p><span class="b">SortedSet&lt;E&gt; tailSet(E start)</span>: возвращает объект SortedSet, который содержит все элементы первичного набора, начиная с элемента start</p></li>
+</ul>
+<h3>NavigableSet</h3>
+<p>Интерфейс <span class="b">NavigableSet</span> расширяет интерфейс <span class="b">SortedSet</span> и позволяет извлекать элементы на основании их значений. 
+NavigableSet определяет следующие методы:</p>
+<ul>
+<li><p><span class="b">E ceiling(E obj)</span>: ищет в наборе наименьший элемент e, который больше obj (e &gt;=obj). Если такой элемент найден, 
+то он возвращается в качестве результата. Иначе возвращается null.</p></li>
+<li><p><span class="b">E floor(E obj)</span>: ищет в наборе наибольший элемент e, который меньше элемента obj (e &lt;=obj). Если такой элемент найден, 
+то он возвращается в качестве результата. Иначе возвращается null.</p></li>
+<li><p><span class="b">E higher(E obj)</span>: ищет в наборе наименьший элемент e, который больше элемента obj (e &gt;obj). Если такой элемент найден, 
+то он возвращается в качестве результата. Иначе возвращается null.</p></li>
+<li><p><span class="b">E lower(E obj)</span>: ищет в наборе наибольший элемент e, который меньше элемента obj (e &lt;obj). Если такой элемент найден, 
+то он возвращается в качестве результата. Иначе возвращается null.</p></li>
+<li><p><span class="b">E pollFirst()</span>: возвращает первый элемент и удаляет его из набора</p></li>
+<li><p><span class="b">E pollLast()</span>: возвращает последний элемент и удаляет его из набора</p></li>
+<li><p><span class="b">NavigableSet&lt;E&gt; descendingSet()</span>: возвращает объект NavigableSet, который содержит все элементы первичного набора NavigableSet в обратном порядке</p></li>
+<li><p><span class="b">NavigableSet&lt;E&gt; headSet(E upperBound, boolean incl)</span>: возвращает объект NavigableSet, который содержит все 
+элементы первичного набора NavigableSet до upperBound. Параметр incl при значении true, позволяет включить в выходной набор элемент upperBound</p></li>
+<li><p><span class="b">NavigableSet&lt;E&gt; tailSet(E lowerBound, boolean incl)</span>: возвращает объект NavigableSet, который содержит все 
+элементы первичного набора NavigableSet, начиная с lowerBound. Параметр incl при значении true, позволяет включить в выходной набор элемент lowerBound</p></li>
+<li><p><span class="b">NavigableSet&lt;E&gt; subSet(E lowerBound, boolean lowerIncl, E upperBound, boolean highIncl)</span>: возвращает объект 
+NavigableSet, который содержит все элементы первичного набора NavigableSet от lowerBound до upperBound.</p></li>
+</ul>
+<h3>TreeSet</h3>
+<p>Обобщенный класс TreeSet&lt;E&gt; представляет структуру данных в виде дерева, в котором все объекты хранятся в отсортированном виде по возрастанию. 
+TreeSet является наследником класса <code>AbstractSet</code> и реализует интерфейс <code>NavigableSet</code>, а следовательно, и интерфейс <code>SortedSet</code>.</p>
+<p>Добавление элемента в дерево происходит медленнее, чем добавление его в хеш-таблицу HashSet, но всt равно намного быстрее, чем проверка на наличие дубликатов в массиве или связном списке. 
+Если дерево содержит n элементов, то для поиска правильной позиции нового элемента требуется в среднем <code>log<sub>2</sub>n</code> сравнений. Например, если дерево уже содержит 1000 элементов, добавление нового элемента потребует около 10 сравнений.</p>
+
+<p>И поскольку <code>TreeSet</code> при добавлении сравнивает объекты, они должны реализовывать интерфейс <b>Comparable</b>. Либо необходимо предоставить объект интерфейса <b>Comparator</b> 
+при создании дерева TreeSet.</p>
+
+<p>В классе TreeSet определены следующие конструкторы:</p>
+<ul>
+<li><p><code>TreeSet()</code>: создает пустое дерево</p></li>
+<li><p><code>TreeSet(Collection&lt;? extends E&gt; col)</code>: создает дерево, в которое добавляет все элементы коллекции col</p></li>
+<li><p><code>TreeSet(SortedSet &lt;E&gt; set)</code>: создает дерево, в которое добавляет все элементы сортированного набора set</p></li>
+<li><p><code>TreeSet(Comparator&lt;? super E&gt; comparator)</code>: создает пустое дерево, где все добавляемые элементы впоследствии будут 
+отсортированы компаратором.</p></li>
+</ul>
+<p>TreeSet поддерживает все стандартные методы для вставки и удаления элементов и ряд других методов:</p>
+<ul>
+<li><p><code>boolean add(E e)</code>: Добавляет указанный элемент в этот набор, если он ещё отсутствует</p></li>
+<li><p><code>boolean addAll(Collection&lt;? extends E&gt; c)</code>: Добавляет все элементы указанной коллекции в этот набор</p></li>
+<li><p><code>E ceiling(E e)</code>: Возвращает наименьший элемент в этом наборе, больший или равный заданному, или null, если такого элемента нет</p></li>
+<li><p><code>void clear()</code>: Удаляет все элементы из этого набора</p></li>
+<li><p><code>Object clone()</code>: Возвращает поверхностную копию данного экземпляра TreeSet</p></li>
+<li><p><code>Comparator&lt;? super E&gt; comparator()</code>: Возвращает компаратор, используемый для упорядочивания элементов в этом наборе, или null, если набор использует естественный порядок своих элементов</p></li>
+<li><p><code>boolean contains(Object o)</code>: Возвращает true, если набор содержит указанный элемент</p></li>
+<li><p><code>Iterator&lt;E&gt; descendingIterator()</code>: Возвращает итератор по элементам набора в порядке убывания</p></li>
+<li><p><code>NavigableSet&lt;E&gt; descendingSet()</code>: Возвращает обратный порядок элементов набора</p></li>
+<li><p><code>E first()</code>: Возвращает первый (самый низкий) элемент в наборе</p></li>
+<li><p><code>E floor(E e)</code>: Возвращает наибольший элемент набора, меньший или равный заданному, или null, если такого элемента нет</p></li>
+<li><p><code>SortedSet&lt;E&gt; headSet(E toElement)</code>: Возвращает представление части набора, элементы которой строго меньше toElement</p></li>
+<li><p><code>NavigableSet&lt;E&gt; headSet(E toElement, boolean inclusive)</code>: Возвращает представление части данного множества, элементы которой меньше (или равны, если inclusive равно true) toElement</p></li>
+<li><p><code>E higher(E e)</code>: Возвращает наименьший элемент в данном множестве, строго больший заданного элемента, или null, если такого элемента нет</p></li>
+<li><p><code>boolean isEmpty()</code>: Возвращает true, если в данном множестве нет элементов</p></li>
+<li><p><code>Iterator&lt;E&gt; iterator()</code>: Возвращает итератор по элементам данного множества в порядке возрастания</p></li>
+<li><p><code>E last()</code>: Возвращает последний (наивысший) элемент в данном множестве в данный момент</p></li>
+<li><p><code>E lower(E e)</code>: Возвращает наибольший элемент в данном множестве, строго меньший заданного элемента, или null, если такого элемента нет</p></li>
+<li><p><code>E pollFirst()</code>: Извлекает и удаляет первый (наименьший) элемент или возвращает null, если данное множество пусто (необязательная операция)</p></li>
+<li><p><code>E pollLast()</code>: Извлекает и удаляет последний (самый высокий) элемент или возвращает null, если набор пуст (необязательная операция)</p></li>
+<li><p><code>boolean remove(Object o)</code>: Удаляет указанный элемент из набора, если он присутствует</p></li>
+<li><p><code>int size()</code>: Возвращает количество элементов в дереве</p></li>
+<li><p><code>NavigableSet&lt;E&gt; subSet(E fromElement, boolean fromInclusive, E toElement, boolean toInclusive)</code>: Возвращает представление части набора, элементы которой находятся в диапазоне от fromElement до toElement</p></li>
+<li><p><code>SortedSet&lt;E&gt; subSet(E fromElement, E toElement)</code>: Возвращает представление части набора, элементы которой находятся в диапазоне от fromElement (включительно) до toElement (исключительно)</p></li>
+<li><p><code>SortedSet&lt;E&gt; tailSet(E fromElement)</code>: Возвращает представление части данного набора, элементы которой больше или равны fromElement</p></li>
+<li><p><code>NavigableSet&lt;E&gt; tailSet(E fromElement, boolean inclusive)</code>: Возвращает представление части данного набора, элементы которой больше (или равны, если inclusive равно true) fromElement</p></li>
+</ul>
+
+<pre class="brush:java;">
+import java.util.TreeSet;
+ 
+public class Program{
+      
+    public static void main(String[] args) {
+          
+        TreeSet&lt;String&gt; langs = new TreeSet&lt;String&gt;();
+          
+        // добавим в список ряд элементов
+        langs.add("Java");
+        langs.add("JavaScript");
+        langs.add("Python");
+        langs.add("C++");
+        
+        System.out.printf("langs size: %d \n", langs.size());
+
+        System.out.println(langs);  // [C++, Java, JavaScript, Python]
+         
+        // удаление элемента
+        langs.remove("JavaScript");
+        System.out.println(langs);  // [C++, Java, Python]
+    }
+}
+</pre>
+<p>И поскольку при вставке объекты сразу же сортируются по возрастанию, то при выводе мы получим отсортированный набор:</p>
+<pre class="sh">
+langs size: 4 
+[C++, Java, JavaScript, Python]
+[C++, Java, Python]
+</pre>
+<p>Так как TreeSet реализует интерфейс NavigableSet, а через него и SortedSet, то мы можем применить к структуре дерева различные методы для получения элементов:</p>
+<pre class="brush:java;">
+import java.util.TreeSet;
+import java.util.SortedSet;
+import java.util.NavigableSet;
+ 
+public class Program{
+      
+    public static void main(String[] args) {
+          
+        TreeSet&lt;String&gt; langs = new TreeSet&lt;String&gt;();
+          
+        // добавим в список ряд элементов
+        langs.add("Java");
+        langs.add("JavaScript");
+        langs.add("Python");
+        langs.add("C#");
+        langs.add("C++");
+        langs.add("Go");
+        
+        // сначала выводим все
+        System.out.println(langs);      // [C#, C++, Go, Java, JavaScript, Python]
+
+        // получим первый - самый меньший элемент
+        System.out.println(langs.first());      // C#
+
+        // получим последний - самый больший элемент
+        System.out.println(langs.last());       // Python
+
+        // получим поднабор от одного элемента до другого
+        SortedSet&lt;String&gt; set = langs.subSet("Go", "Python");
+        System.out.println(set);                // [Go, Java, JavaScript]
+
+        // элемент из набора, который идет перед JavaScript ("больше" JavaScript)
+        String greater = langs.higher("JavaScript");    // Python
+        System.out.println(greater);
+
+        // элемент из набора, который идет перед Go ("меньше" Go)
+        String lower = langs.lower("Go");
+        System.out.println(lower);          // C++
+
+        // возвращаем набор элементов, которые идут перед Go
+        SortedSet&lt;String&gt; goHead=langs.headSet("Go");
+        System.out.println(goHead);       // [C#, C++]
+
+        // возвращаем набор элементов, которые идут начиная с JavaScript
+        SortedSet&lt;String&gt; jsTail =langs.tailSet("JavaScript");  
+        System.out.println(jsTail);     // [JavaScript, Python]
+
+        // возвращаем набор в обратном порядке
+        NavigableSet&lt;String&gt; reversedSet = langs.descendingSet();
+        System.out.println(reversedSet);     // [Python, JavaScript, Java, Go, C++, C#]
+    }
+}
+</pre>
+	
+
+	<div style="margin-top:25px;">
+
+	
+	</div>
+
+	<div class="nav"><p><a href="5.4.html">Назад</a><a href="index.html">Содержание</a><a href="5.8.html">Вперед</a></p></div>
+	<div class="socBlock">
+	<div class="share soctop">
+	<ul>
+	<li><a title="Поделиться в Вконтакте" rel="nofollow" class="fa fa-lg fa-vk"></a></li>
+	<li><a title="Поделиться в Телеграм" rel="nofollow" class="fa fa-lg fa-telegram"></a></li>
+	<li><a title="Поделиться в Одноклассниках" rel="nofollow" class="fa fa-lg fa-odnoklassniki"></a></li>
+	
+	</ul>
+	</div>
+	</div>
+  </div>
+
+	<div class="item left">
+     <ul id="browser" class="filetree"> 
+	<li class="closed"><span class="folder">Глава 1. Введение в Java</span>
+		<ul>
+			<li><span class="file"><a href="1.1.html">Что такое Java</a></span></li>
+			<li><span class="file"><a href="1.6.html">Установка JDK</a></span></li>
+			<li><span class="file"><a href="1.2.html">Первая программа на Java</a></span></li>
+			<li><span class="file"><a href="1.5.html">Первая программа в IntelliJ IDEA</a></span></li>
+			<li><span class="file"><a href="1.3.html">Первая программа в NetBeans</a></span></li>
+			<li><span class="file"><a href="1.4.html">Первая программа в Eclipse</a></span></li>
+			<li><span class="file"><a href="1.7.html">JShell</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 2. Основы программирования на Java</span>
+		<ul>
+			<li><span class="file"><a href="2.11.html">Структура программы</a></span></li>
+			<li><span class="file"><a href="2.1.html">Переменные и константы</a></span></li>
+			<li><span class="file"><a href="2.19.html">Литералы</a></span></li>
+			<li><span class="file"><a href="2.12.html">Типы данных</a></span></li>
+			<li><span class="file"><a href="2.9.html">Консольный ввод/вывод в Java</a></span></li>
+			<li><span class="file"><a href="2.3.html">Арифметические операции</a></span></li>
+			<li><span class="file"><a href="2.13.html">Поразрядные операции</a></span></li>
+			<li><span class="file"><a href="2.14.html">Условные выражения</a></span></li>
+			<li><span class="file"><a href="2.15.html">Операции присваивания и приоритет операций</a></span></li>
+			<li><span class="file"><a href="2.2.html">Преобразования базовых типов данных</a></span></li>
+			<li><span class="file"><a href="2.5.html">Условные конструкции</a></span></li>
+			<li><span class="file"><a href="2.6.html">Циклы</a></span></li>
+			<li><span class="file"><a href="2.4.html">Массивы</a></span></li>
+			<li><span class="file"><a href="2.20.html">Конструкция и выражение switch</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 3. Классы</span>
+		<ul>
+			<li><span class="file"><a href="3.1.html">Классы и объекты</a></span></li>
+
+
+			<li><span class="file"><a href="2.7.html">Методы</a></span></li>
+			<li><span class="file"><a href="2.16.html">Параметры методов</a></span></li>
+			<li><span class="file"><a href="3.14.html">Объекты как параметры методов</a></span></li>
+			<li><span class="file"><a href="2.17.html">Оператор return. Результат метода</a></span></li>
+			<li><span class="file"><a href="2.18.html">Перегрузка методов</a></span></li>
+			<li><span class="file"><a href="3.21.html">Конструкторы и инициализаторы</a></span></li>
+
+
+			<li><span class="file"><a href="3.4.html">Статические компоненты класса и модификатор static</a></span></li>
+			<li><span class="file"><a href="3.20.html">Область действия и время жизни переменных</a></span></li>
+			<li><span class="file"><a href="2.8.html">Рекурсивные функции</a></span></li>
+			<li><span class="file"><a href="3.2.html">Пакеты</a></span></li>
+			<li><span class="file"><a href="3.3.html">Модификаторы доступа</a></span></li>
+			<li><span class="file"><a href="3.19.html">Компактные файлы кода и метод main</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 4. Объектно-ориентированное программирование</span>
+		<ul>
+			<li><span class="file"><a href="3.22.html">Инкапсуляция</a></span></li>
+			<li><span class="file"><a href="3.5.html">Наследование</a></span></li>
+			<li><span class="file"><a href="3.23.html">Запрет наследования и переопределения методов</a></span></li>
+			<li><span class="file"><a href="3.24.html">Полиморфизм и динамическая диспетчеризация методов</a></span></li>
+			<li><span class="file"><a href="3.9.html">Класс Object и его методы</a></span></li>
+			<li><span class="file"><a href="3.6.html">Абстрактные классы</a></span></li>
+			<li><span class="file"><a href="3.10.html">Иерархия наследования и преобразование типов</a></span></li>
+
+			<li><span class="file"><a href="3.7.html">Интерфейсы</a></span></li>
+			<li><span class="file"><a href="3.28.html">Интерфейсы и полиморфизм</a></span></li>
+			<li><span class="file"><a href="3.29.html">Множественная реализация и наследование интерфейсов</a></span></li>
+			<li><span class="file"><a href="3.16.html">Интерфейсы в механизме обратного вызова</a></span></li>
+			<li><span class="file"><a href="3.8.html">Перечисления enum</a></span></li>
+			<li><span class="file"><a href="3.11.html">Обобщения (Generics)</a></span></li>
+			<li><span class="file"><a href="3.17.html">Ограничения обобщений</a></span></li>
+			<li><span class="file"><a href="3.15.html">Наследование и обобщения</a></span></li>
+			<li><span class="file"><a href="3.31.html">Type Erasure (Стирание типов)</a></span></li>
+			<li><span class="file"><a href="3.32.html">Подстановочные знаки wildcards в обобщениях</a></span></li>
+			<li><span class="file"><a href="3.13.html">Ссылочные типы и клонирование объектов</a></span></li>
+			<li><span class="file"><a href="3.18.html">Классы Records</a></span></li>
+			<li><span class="file"><a href="9.4.html">Функциональные интерфейсы и ссылки на методы</a></span></li>
+			<li><span class="file"><a href="9.1.html">Лямбда-выражения</a></span></li>
+			<li><span class="file"><a href="9.2.html">Лямбды как параметры и результаты методов</a></span></li>
+			<li><span class="file"><a href="9.3.html">Встроенные функциональные интерфейсы</a></span></li>
+			<li><span class="file"><a href="3.12.html">Внутренние и вложенные классы</a></span></li>
+			<li><span class="file"><a href="3.30.html">Анонимные классы</a></span></li>
+
+
+			<li><span class="file"><a href="3.25.html">Sealed-классы и интерфейсы</a></span></li>
+			<li><span class="file"><a href="3.26.html">Pattern мatching. Паттерн типов</a></span></li>
+			<li><span class="file"><a href="3.27.html">Pattern мatching. record-паттерн</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 5. Обработка исключений</span>
+		<ul>
+			<li><span class="file"><a href="2.10.html">Обработка исключений и конструкция try...catch...finally</a></span></li>
+			<li><span class="file"><a href="4.2.html">Классы исключений</a></span></li>
+			<li><span class="file"><a href="4.1.html">Операторы throws и throw</a></span></li>
+			<li><span class="file"><a href="4.3.html">Создание своих классов исключений</a></span></li>
+			<li><span class="file"><a href="4.4.html">Assert</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 6. Коллекции</span>
+		<ul>
+			<li><span class="file"><a href="5.1.html">Типы коллекций. Интерфейс Collection</a></span></li>
+			<li><span class="file"><a href="5.2.html">Класс ArrayList и интерфейс List</a></span></li>
+			<li><span class="file"><a href="5.6.html">Интерфейсы Comparable и Comporator. Сортировка</a></span></li>
+			<li><span class="file"><a href="5.7.html">Очереди и стеки. Классы ArrayDeque и PriorityQueue</a></span></li>
+			<li><span class="file"><a href="5.3.html">Связанный список LinkedList</a></span></li>
+			<li><span class="file"><a href="5.4.html">Интерфейс Set и хеш-таблицы HashSet</a></span></li>
+			<li><span class="file"><a href="5.5.html">Деревья TreeSet и интерфейсы SortedSet и NavigableSet</a></span></li>
+			<li><span class="file"><a href="5.8.html">Словари. Интерфейс Map и класс HashMap</a></span></li>
+			<li><span class="file"><a href="5.9.html">Интерфейсы SortedMap и NavigableMap. Класс TreeMap</a></span></li>
+			<li><span class="file"><a href="5.10.html">Итераторы. Iterator и Iterable</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 7. Потоки ввода-вывода. Работа с файлами</span>
+		<ul>
+			<li><span class="file"><a href="6.1.html">Потоки ввода-вывода</a></span></li>
+			<li><span class="file"><a href="6.3.html">Чтение и запись файлов. FileInputStream и FileOutputStream</a></span></li>
+			<li><span class="file"><a href="6.2.html">Закрытие потоков и конструкция try-с-ресурсами</a></span></li>
+			<li><span class="file"><a href="6.4.html">Классы ByteArrayInputStream и ByteArrayOutputStream</a></span></li>
+			<li><span class="file"><a href="6.5.html">Буферизованные потоки BufferedInputStream и BufferedOutputStream</a></span></li>
+			<li><span class="file"><a href="6.6.html">Форматируемый вывод. PrintStream и PrintWriter</a></span></li>
+			<li><span class="file"><a href="6.7.html">Классы DataOutputStream и DataInputStream</a></span></li>
+			<li><span class="file"><a href="6.8.html">Чтение и запись текстовых файлов</a></span></li>
+			<li><span class="file"><a href="6.9.html">Буферизация символьных потоков. BufferedReader и BufferedWriter</a></span></li>
+			<li><span class="file"><a href="6.10.html">Сериализация объектов</a></span></li>
+			<li><span class="file"><a href="6.11.html">Класс File. Работа с файлами и каталогами</a></span></li>
+			<li><span class="file"><a href="6.12.html">Работа с ZIP-архивами</a></span></li>
+			<li><span class="file"><a href="6.13.html">Класс Console</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 8. Работа со строками</span>
+		<ul>
+			<li><span class="file"><a href="7.1.html">Введение в строки. Класс String</a></span></li>
+			<li><span class="file"><a href="7.2.html">Основные операции со строками</a></span></li>
+			<li><span class="file"><a href="7.3.html">StringBuffer и StringBuilder</a></span></li>
+			<li><span class="file"><a href="7.4.html">Регулярные выражения</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 9. Многопоточное программирование</span>
+		<ul>
+			<li><span class="file"><a href="8.1.html">Многопоточное программирование и класс Thread</a></span></li>
+			<li><span class="file"><a href="8.2.html">Создание и выполнение потоков</a></span></li>
+			<li><span class="file"><a href="8.11.html">Управление потоками</a></span></li>
+			<li><span class="file"><a href="8.4.html">Завершение и прерывание потока</a></span></li>
+			<li><span class="file"><a href="8.12.html">Виртуальные потоки</a></span></li>
+			<li><span class="file"><a href="8.3.html">Синхронизация потоков. Оператор synchronized</a></span></li>
+			<li><span class="file"><a href="8.5.html">Взаимодействие потоков. Методы wait и notify</a></span></li>
+			<li><span class="file"><a href="8.6.html">Семафоры</a></span></li>
+			<li><span class="file"><a href="8.7.html">Обмен между потоками. Класс Exchanger</a></span></li>
+			<li><span class="file"><a href="8.8.html">Класс Phaser</a></span></li>
+			<li><span class="file"><a href="8.9.html">Блокировки. ReentrantLock</a></span></li>
+			<li><span class="file"><a href="8.10.html">Условия в блокировках</a></span></li>
+			<li><span class="file"><a href="8.16.html">Переменные volatile</a></span></li>
+			<li><span class="file"><a href="8.17.html">Атомарность и Atomics. Потокобезопасность без блокировок</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 10. Асинхронность</span>
+		<ul>
+			<li><span class="file"><a href="8.13.html">Асинхронные задачи FutureTask. Callable и Future</a></span></li>
+			<li><span class="file"><a href="8.14.html">Executor - исполнитель задач</a></span></li>
+			<li><span class="file"><a href="8.15.html">Координация выполнения асинхронных задач</a></span></li>
+			<li><span class="file"><a href="8.18.html">CompletableFuture и промисы. Обработка результата асинхронных задач</a></span></li>
+			<li><span class="file"><a href="8.19.html">CompletableFuture, обработка ошибок и завершения асинхронных задач</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 11. Stream API</span>
+		<ul>
+			<li><span class="file"><a href="10.1.html">Введение в Stream API</a></span></li>
+			<li><span class="file"><a href="10.2.html">Создание потока данных</a></span></li>
+			<li><span class="file"><a href="10.3.html">Фильтрация, перебор элементов и отображение</a></span></li>
+			<li><span class="file"><a href="10.8.html">Сортировка</a></span></li>
+			<li><span class="file"><a href="10.13.html">Получение подпотока и объединение потоков</a></span></li>
+			<li><span class="file"><a href="10.4.html">Методы skip и limit</a></span></li>
+			<li><span class="file"><a href="10.11.html">Операции сведения</a></span></li>
+			<li><span class="file"><a href="10.5.html">Метод reduce</a></span></li>
+			<li><span class="file"><a href="10.12.html">Тип Optional</a></span></li>
+			<li><span class="file"><a href="10.6.html">Метод collect</a></span></li>
+			<li><span class="file"><a href="10.7.html">Группировка</a></span></li>
+			<li><span class="file"><a href="10.9.html">Параллельные потоки</a></span></li>
+			<li><span class="file"><a href="10.10.html">Параллельные операции над массивами</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 12. Модульность</span>
+		<ul>
+			<li><span class="file"><a href="11.1.html">Создание модуля</a></span></li>
+			<li><span class="file"><a href="11.2.html">Зависимые модули</a></span></li>
+			<li><span class="file"><a href="11.3.html">Взаимодействие между модулями. Экспорт и импорт</a></span></li>
+		</ul>
+	</li>
+	</li>
+	<li class="closed"><span class="folder">Глава 13. Дополнительные классы</span>
+		<ul>
+			<li><span class="file"><a href="12.1.html">Математические вычисления и класс Math</a></span></li>
+			<li><span class="file"><a href="12.2.html">Большие числа BigInteger и BigDecimal</a></span></li>
+			<li><span class="file"><a href="12.3.html">Работа с датами. LocalDate</a></span></li>
+			<li><span class="file"><a href="12.4.html">Процессы. Process и ProcessBuilder</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 14. JAR-файлы и подключение библиотек и классов</span>
+		<ul>
+			<li><span class="file"><a href="13.1.html">Файлы JAR, их создание и выполнение</a></span></li>
+			<li><span class="file"><a href="13.2.html">Создание и подключение библиотеки JAR</a></span></li>
+			<li><span class="file"><a href="13.4.html">Модульный jar-файл</a></span></li>
+			<li><span class="file"><a href="13.3.html">Установка пути к классам Java</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 15. Рефлексия</span>
+		<ul>
+			<li><span class="file"><a href="14.1.html">Введение в рефлексию. Класс Class</a></span></li>
+			<li><span class="file"><a href="14.2.html">Исследование типов</a></span></li>
+			<li><span class="file"><a href="14.3.html">Поля класса и класс Field</a></span></li>
+			<li><span class="file"><a href="14.4.html">Модификаторы доступа и класс Modifier</a></span></li>
+			<li><span class="file"><a href="14.5.html">Класс Constructor и cоздание объектов</a></span></li>
+			<li><span class="file"><a href="14.6.html">Методы и класс Method</a></span></li>
+			<li><span class="file"><a href="14.7.html">Proxy (Прокси)</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 16. Аннотации</span>
+		<ul>
+			<li><span class="file"><a href="15.1.html">Введение в аннотации. Встроенные аннотации</a></span></li>
+			<li><span class="file"><a href="15.2.html">Создание и применение аннотаций</a></span></li>
+			<li><span class="file"><a href="15.3.html">Обработка аннотаций во время выполнения</a></span></li>
+		</ul>
+	</li>
+
+
+	<li class="closed"><span class="folder">Глава 17. Взаимодействие с нативным кодом</span>
+		<ul>
+			<li><span class="file"><a href="16.1.html">Java Native Interface (JNI)</a></span></li>
+			<li><span class="file"><a href="16.2.html">Foreign Functions и Memory API</a></span></li>
+			<li><span class="file"><a href="16.3.html">Арена и сегменты памяти MemorySegment</a></span></li>
+			<li><span class="file"><a href="16.4.html">Компоновка памяти MemoryLayout и работа с MemorySegment</a></span></li>
+			<li><span class="file"><a href="16.5.html">Сложные данные и MemoryLayout</a></span></li>
+			<li><span class="file"><a href="16.6.html">Поиск и вызов внешних функций</a></span></li>
+			<li><span class="file"><a href="16.7.html">Нативные функции обратного вызова</a></span></li>
+		</ul>
+	</li>
+</ul>   </div>
+</div>
+
+  <div class="item right">
+<div class="help" style="border: 0px;">
+    
+	<div class="help-item">
+		<div class="help-item-name"><a href="https://metanit.com/settings.html">Настройки</a></div>
+	 </div>
+</div>
+			<div class="help">
+
+      <div class="help-header">Помощь сайту</div>
+
+       <div class="help-item">
+		<div class="help-item-name"><a href="https://yoomoney.ru/to/410011174743222" rel="nofollow">Помощь сайту</a></div>
+	 </div>
+       
+      <div class="help-item">
+		<div class="help-item-name">Юмани:</div>
+		<div class="help-item-req">410011174743222</div>
+	 </div>
+
+		<div class="help-item">
+			<div class="help-item-name">Номер карты:</div>
+			<div class="help-item-req">4048415020898850</div>
+		</div>
+
+      </div>
+
+	
+	
+
+
+
+
+  </div>
+</div>
+
+<div id="footer" style="padding-bottom:85px;">
+
+<div class="bootomLinks">
+<a href="https://vk.com/metanit" title="Присоединиться к группе вконтакте" rel="nofollow">
+Вконтакте</a>|
+ <a href="https://t.me/devnull22" title="Подписаться на телеграм" rel="nofollow">
+Телеграм</a> | 
+<a href="https://metanit.com/donations.html" rel="nofollow">Донаты/Помощь сайту</a>
+</div>
+<p>Contacts: metanit22@mail.ru</p>
+<p>Copyright &copy; Евгений Попов, metanit.com, 2026. Все права защищены.</p>
+
+
+</div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+<script src='../../js/syntax16.js'></script>
+<script>
+// Syntax Highlighter
+if (typeof SyntaxHighlighter !== 'undefined') {
+    SyntaxHighlighter.all();
+}
+
+// Copy guard
+document.addEventListener('copy', (ev) => {
+    const et = ev.target;
+    if (et.type === 'textarea') {
+        ev.clipboardData.setData('text/plain', et.value.substring(et.selectionStart, et.selectionEnd).replace(/ /g, ' '));
+        ev.preventDefault();
+    }
+});
+
+// Mobile menu
+const faBars = document.querySelector('.fa-bars');
+if (faBars) {
+    faBars.addEventListener('click', () => {
+        const tree = document.querySelector('.item.left');
+        if (tree) {
+            tree.style.display = (tree.style.display === 'block') ? 'none' : 'block';
+        }
+    });
+}
+
+const menuButton = document.getElementById('menuButton');
+if (menuButton) {
+    menuButton.addEventListener('click', () => {
+        menuButton.classList.toggle('menu-opened');
+        const mainMenu = document.querySelector('.mainmenu');
+        if (mainMenu) mainMenu.classList.toggle('open');
+    });
+}
+
+// Search toggle
+const magGlass = document.getElementById('magnifying-glass');
+if (magGlass) {
+    magGlass.addEventListener('click', () => {
+        const search = document.getElementById('search');
+        if (search) search.classList.toggle('transp');
+    });
+}
+
+// Theme toggle
+const toggleTheme = document.getElementById('toggle-theme');
+if (toggleTheme) {
+    toggleTheme.addEventListener('click', () => {
+        if (document.documentElement.hasAttribute('theme')) {
+            document.documentElement.removeAttribute('theme');
+            document.cookie = 'theme=1;expires=Mon, 19 Feb 2001 12:00:00 UTC;path=/;';
+        } else {
+            document.documentElement.setAttribute('theme', 'dark');
+            var expire = new Date();
+            expire.setHours(expire.getHours() + 7);
+            document.cookie = 'theme=1;expires=' + expire.toUTCString() + ';path=/;';
+        }
+    });
+}
+
+// Share buttons
+const shareVK = document.querySelectorAll('.share .fa-vk');
+shareVK.forEach(e => e.addEventListener('click', () => window.open('http://vk.com/share.php?url=' + window.location.href, 'Поделиться в ВКОНТАКТЕ')));
+const shareTG = document.querySelectorAll('.share .fa-telegram');
+shareTG.forEach(e => e.addEventListener('click', () => window.open('tg://msg_url/url=' + window.location.href, 'Поделиться в Telegram')));
+const shareOK = document.querySelectorAll('.share .fa-odnoklassniki');
+shareOK.forEach(e => e.addEventListener('click', () => window.open('https://connect.ok.ru/offer?url=' + window.location.href, 'Поделиться в Одноклассниках')));
+
+// Folders
+const folders = document.getElementsByClassName('closed');
+for (let i = 0; i < folders.length; i++) {
+    folders[i].addEventListener('click', function (e) {
+        this.classList.toggle('closed');
+        this.classList.toggle('opened');
+    });
+}
+
+// Active Item Highlight
+const activePath = window.location.pathname.split('/').pop();
+const activeItem = document.querySelector(".file a[href*='" + activePath + "']");
+if (activeItem) {
+    activeItem.classList.add('aMItem');
+    activeItem.parentElement.classList.add('aMItem');
+    const activeFolder = activeItem.closest('li');
+    if (activeFolder) {
+        activeFolder.classList.remove('closed');
+        activeFolder.classList.add('opened');
+        const folderLabel = activeFolder.querySelector('.folder');
+        if (folderLabel) folderLabel.classList.add('aMItem');
+    }
+}
+
+// Settings
+const props = ['--main-font-size', '--main-font-family', '--menc-bg-color', '--container-bg-color', '--menu-bg-color', '--code-font-size', '--code-font-family', '--code-bgcolor', '--code-max-height'];
+for (let i = 0; i < props.length; i++) {
+    const propValue = localStorage.getItem(props[i]);
+    if (propValue !== null) document.documentElement.style.setProperty(props[i], propValue);
+}
+</script>
+</body>
+</html>

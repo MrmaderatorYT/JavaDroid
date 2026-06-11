@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html  lang="ru">
+<head>
+<title>Java | Группировка в Stream API</title>
+<meta charset="utf-8" />
+<meta name="description" content="Группировка данных в Stream API в языке программирования Java, метод Collectors.groupingBy">
+<meta name="viewport" content="width=device-width">
+<link href="../../style50.css@v=1.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<div id="container">
+<header>
+<div id="header">
+<div id="logo">
+<a class="logoTitle" href="https://metanit.com/" title="На главную">METANIT.COM</a>
+<div class="logoDefinition">Сайт о программировании</div> 
+</div>
+
+<div class="socbtns">
+<ul>
+<li><a title="Посмотреть меню" rel="nofollow" class="fa fa-lg fa-bars"></a></li>
+<li><a href="https://metanit.com/donations.html" title="Помощь сайту" rel="nofollow" style="color: var(--fa-usd-color);" class="fa fa-lg fa-usd"></a></li>
+<li><a href="https://vk.com/metanit" title="Группа в ВКонтакте" rel="nofollow" style="color: var(--fa-vk-color);" class="fa fa-lg fa-vk"></a></li>
+<li><a href="https://t.me/devnull22" title="Группа в Телеграмме"  class="fa fa-lg fa-tel" style="color: var(--fa-tel-color);"></a></li>
+<li><a href="https://metanit.com/android.html" title="Приложения андроид" rel="nofollow" style="color: var(--fa-android-color);" class="fa fa-lg fa-android"></a></li>
+<li><i id="toggle-theme" class="fa fa-lg fa-adjust"></i></li>
+</ul>
+</div>
+
+
+<div id="magnifying-glass"></div>
+
+<div class="menuButton" id="menuButton">
+	<span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+</div>
+</div>
+
+<div id="search" class="transp">
+<form action="https://www.google.ru" id="cse-search-box">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3716042175333627:1096498938" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" />
+    <input type="submit" name="sa" value="Найти" />
+  </div>
+</form>
+</div>
+
+<div id="menu" class="menu">
+<ul class="mainmenu">
+    <li><a href="https://metanit.com/common/">Программирование</a></li>
+    <li><a href="https://metanit.com/assembler/">Ассемблер</a></li>
+   <li><a href="https://metanit.com/sharp/">C#</a></li>
+   <li><a href="https://metanit.com/java/">Java</a></li>
+   <li><a href="https://metanit.com/web/">WEB</a></li>
+   <li><a href="https://metanit.com/python/">Python</a></li>
+   <li><a href="https://metanit.com/c/">C</a></li>
+   <li><a href="https://metanit.com/cpp/">C++</a></li>
+   <li><a href="https://metanit.com/sql/">SQL</a></li>
+   <li><a href="https://metanit.com/nosql/mongodb/">MongoDB</a></li>
+   <li><a href="https://metanit.com/go/">Go</a></li>
+   <li><a href="https://metanit.com/visualbasic/">VB.NET</a></li>
+   <li><a href="https://metanit.com/swift/tutorial/">Swift</a></li>
+   <li><a href="https://metanit.com/kotlin/">Kotlin</a></li>
+   <li><a href="https://metanit.com/dart/">Dart</a></li>
+   <li><a href="https://metanit.com/php/">PHP</a></li>
+   <li><a href="https://metanit.com/rust/">Rust</a></li>
+   <li><a href="https://metanit.com/os/">Linux</a></li>
+   <li><a href="https://metanit.com/f/">F#</a></li>
+   <!--<li><a href="//metanit.com/lisp/tutorial/">Common Lisp</a></li>-->
+   <li><a href="https://metanit.com/hosting">Хостинг</a></li>
+</ul>
+</div>
+
+</header>
+<div class="outercontainer">
+<div class="innercontainer">
+ 
+   <div class="item center menC">
+     <h2>Группировка</h2><div class="date">Последнее обновление: 30.04.2018</div>
+	<div class="socBlock">
+	<div class="share soctop">
+	<ul>
+	<li><a title="Поделиться в Вконтакте" rel="nofollow" class="fa fa-lg fa-vk"></a></li>
+	<li><a title="Поделиться в Телеграм" rel="nofollow" class="fa fa-lg fa-telegram"></a></li>
+	<li><a title="Поделиться в Одноклассниках" rel="nofollow" class="fa fa-lg fa-odnoklassniki"></a></li>
+	
+	</ul>
+	</div>
+	</div>
+
+	<div style="margin-top:23px;margin-left:5px;">
+		
+		
+		
+	</div>
+
+	<p>Чтобы сгруппировать данные по какому-нибудь признаку, нам надо использовать в связке метод <code>collect()</code> объекта Stream и метод 
+<span class="b">Collectors.groupingBy()</span>. Допустим, у нас есть следующий класс:</p>
+<pre class="brush:java;">
+class Phone{
+    
+    private String name;
+    private String company;
+    private int price;
+    
+    public Phone(String name, String comp, int price){
+        this.name=name;
+        this.company=comp;
+        this.price = price;
+    }
+    
+    public String getName() { return name; }
+    public int getPrice() { return price; }
+    public String getCompany() { return company; }
+}
+</pre>
+<p>И, к примеру, у нас есть набор объектов Phone, которые мы хотим сгруппировать по компании:</p>
+<pre class="brush:java;">
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
+import java.util.stream.Collectors;
+
+public class Program {
+ 
+    public static void main(String[] args) {
+         
+        Stream&lt;Phone&gt; phoneStream = Stream.of(new Phone("iPhone X", "Apple", 600), 
+            new Phone("Pixel 2", "Google", 500),
+            new Phone("iPhone 8", "Apple",450),
+            new Phone("Galaxy S9", "Samsung", 440),
+            new Phone("Galaxy S8", "Samsung", 340));
+         
+        Map&lt;String, List&lt;Phone&gt;&gt; phonesByCompany = phoneStream.collect(
+                Collectors.groupingBy(Phone::getCompany));
+         
+        for(Map.Entry&lt;String, List&lt;Phone&gt;&gt; item : phonesByCompany.entrySet()){
+             
+            System.out.println(item.getKey());
+            for(Phone phone : item.getValue()){
+                 
+                System.out.println(phone.getName());
+            }
+            System.out.println();
+        } 
+    } 
+}
+</pre>
+<p>Консольный вывод:</p>
+<div class="console">
+<pre class="consoletext">
+Google
+Pixel 2
+
+Apple
+iPhone X
+iPhone 8
+
+Samsung
+Galaxy S9
+Galaxy S8
+</pre>
+</div>
+<p>Итак, для создания групп в метод <code>phoneStream.collect()</code> передается вызов функции <code>Collectors.groupingBy()</code>, 
+которая с помощью выражения <code>Phone::getCompany</code> группирует объекты по компании. В итоге будет создан объект Map, в котором ключами являются названия компаний, 
+а значениями - список связанных с компаниями телефонов.</p>
+<h3>Метод Collectors.partitioningBy</h3>
+<p>Метод <span class="b">Collectors.partitioningBy()</span> имеет похожее действие, только он делит элементы на группы по принципу, соответствует ли элемент определенному условию. 
+Например:</p>
+<pre class="brush:java;">
+Map&lt;Boolean, List&lt;Phone&gt;&gt; phonesByCompany = phoneStream.collect(
+                Collectors.partitioningBy(p-&gt;p.getCompany()=="Apple"));
+        
+for(Map.Entry&lt;Boolean, List&lt;Phone&gt;&gt; item : phonesByCompany.entrySet()){
+            
+    System.out.println(item.getKey());
+    for(Phone phone : item.getValue()){
+                
+        System.out.println(phone.getName());
+    }
+    System.out.println();
+}
+</pre>
+<p>В данном случае с помощью условия <code>p-&gt;p.getCompany()=="Apple"</code> мы смотрим, принадлежит ли телефон компании Apple. Если телефон принадлежит этой 
+компании, то он попадает в одну группу, если нет, то в другую.</p>
+<h3>Метод Coollectors.counting</h3>
+<p>Метод <span class="b">Collectors.counting</span> применяется в <code>Collectors.groupingBy()</code> для вычисления количества элементов в каждой группе:</p>
+<pre class="brush:java;">
+Map&lt;String, Long&gt; phonesByCompany = phoneStream.collect(
+        Collectors.groupingBy(Phone::getCompany, Collectors.counting()));
+        
+for(Map.Entry&lt;String, Long&gt; item : phonesByCompany.entrySet()){
+
+    System.out.println(item.getKey() + " - " + item.getValue());
+}
+</pre>
+<p>Консольный вывод:</p>
+<div class="console">
+<pre class="consoletext">
+Google -1
+Apple - 2
+Samsung - 2
+</pre>
+</div>
+
+<div style="margin-top:23px;margin-left:5px;">
+
+<!-- Yandex.RTB R-A-201190-9 -->
+
+</div>
+
+<h3>Метод Collectors.summing</h3>
+<p>Метод Collectors.summing применяется для подсчета суммы. В зависимости от типа данных, к которым применяется метод, он имеет следующие формы: 
+<code>summingInt()</code>, <code>summingLong()</code>, <code>summingDouble()</code>. Применим этот метод для подсчета стоимости всех смартфонов по компаниям:</p>
+<pre class="brush:java;">
+Map&lt;String, Integer&gt; phonesByCompany = phoneStream.collect(
+        Collectors.groupingBy(Phone::getCompany, Collectors.summingInt(Phone::getPrice)));
+        
+for(Map.Entry&lt;String, Integer&gt; item : phonesByCompany.entrySet()){
+
+    System.out.println(item.getKey() + " - " + item.getValue());
+}
+</pre>
+<p>С помощью выражения <code>Collectors.summingInt(Phone::getPrice))</code> мы указываем, что для каждой компании будет вычислять совокупная цена 
+всех ее смартфонов. И поскольку вычисляется результат - сумма для значений типа int, то в качестве типа возвращаемой коллекции используется тип 
+<code>Map&lt;String, Integer&gt;</code></p>
+<p>Консольный вывод:</p>
+<div class="console">
+<pre class="consoletext">
+Google - 500
+Apple - 1050
+Samsung - 780
+</pre>
+</div>
+<h3>Методы maxBy и minBy</h3>
+<p>Методы maxBy и minBy применяются для подсчета минимального и максимального значения в каждой группе. В качестве параметра эти методы принимают 
+функцию компаратора, которая нужна для сравнения значений. Например, найдем для каждой компании телефон с минимальной ценой:</p>
+<pre class="brush:java;">
+Map&lt;String, Optional&lt;Phone&gt;&gt; phonesByCompany = phoneStream.collect(
+        Collectors.groupingBy(Phone::getCompany, 
+                Collectors.minBy(Comparator.comparing(Phone::getPrice))));
+        
+for(Map.Entry&lt;String, Optional&lt;Phone&gt;&gt; item : phonesByCompany.entrySet()){
+
+    System.out.println(item.getKey() + " - " + item.getValue().get().getName());
+}
+</pre>
+<p>Консольный вывод:</p>
+<div class="console">
+<pre class="consoletext">
+Google - Pixel 2
+Apple - iPhone 8
+Samsung - Galaxy S8
+</pre>
+</div>
+<p>В качестве возвращаемого значения операции группировки используется объект <code>Map&lt;String, Optional&lt;Phone&gt;&gt;</code>. Опять же поскольку 
+группируем по компаниям, то ключом будет выступать строка, а значением - объект <code>Optional&lt;Phone&gt;</code>.</p>
+<h3>Метод summarizing</h3>
+<p>Методы <code>summarizingInt() / summarizingLong() / summarizingDouble()</code> позволяют объединить в набор значения соответствующих типов:</p>
+<pre class="brush:java;">
+import java.util.IntSummaryStatistics;
+//....................................
+
+ Map&lt;String, IntSummaryStatistics&gt; priceSummary = phoneStream.collect(
+    Collectors.groupingBy(Phone::getCompany,
+        Collectors.summarizingInt(Phone::getPrice)));
+        
+for(Map.Entry&lt;String, IntSummaryStatistics&gt; item : priceSummary.entrySet()){
+
+    System.out.println(item.getKey() + " - " + item.getValue().getAverage());
+}
+</pre>
+<p>Метод <code>Collectors.summarizingInt(Phone::getPrice))</code> создает набор, в который помещаются цены для всех телефонов каждой из групп. Данный набор 
+инкапсулируется в объекте <span class="b">IntSummaryStatistics</span>. Соответственно если бы мы применяли методы <code>summarizingLong()</code> или <code>summarizingDouble()</code>, то 
+соответственно бы получали объекты LongSummaryStatistics или DoubleSummaryStatistics.</p>
+<p>У этих объектов есть ряд методов, который позволяют выполнить различные атомарные операции над набором:</p>
+<ul>
+<li><p><span class="b">getAverage()</span>: возвращает среднее значение</p></li>
+<li><p><span class="b">getCount()</span>: возвращает количество элементов в наборе</p></li>
+<li><p><span class="b">getMax()</span>: возвращает максимальное значение</p></li>
+<li><p><span class="b">getMin()</span>: возвращает минимальное значение</p></li>
+<li><p><span class="b">getSum()</span>: возвращает сумму элементов</p></li>
+<li><p><span class="b">accept()</span>: добавляет в набор новый элемент</p></li>
+</ul>
+<p>В данном случае мы получаем среднюю цену смартфонов для каждой группы.</p>
+<p>Консольный вывод:</p>
+<div class="console">
+<pre class="consoletext">
+Google - 500.0
+Apple - 525.0
+Samsung - 390.0
+</pre>
+</div>
+<h3>Метод mapping</h3>
+<p>Метод mapping позволяет дополнительно обработать данные и задать функцию отображения объектов из потока на какой-нибудь другой тип данных. Например:</p>
+<pre class="brush:java;">
+Map&lt;String, List&lt;String&gt;&gt; phonesByCompany = phoneStream.collect(
+    Collectors.groupingBy(Phone::getCompany,
+        Collectors.mapping(Phone::getName, Collectors.toList())));
+        
+for(Map.Entry&lt;String, List&lt;String&gt;&gt; item : phonesByCompany.entrySet()){
+
+    System.out.println(item.getKey());
+    for(String name : item.getValue()){
+        System.out.println(name);
+    }
+}
+</pre>
+<p>Выражение <code>Collectors.mapping(Phone::getName, Collectors.toList())</code> указывает, что в группу будут выделятся названия смартфонов, причем 
+группа будет представлять объект List.</p>
+	
+
+	<div style="margin-top:25px;">
+
+	
+	</div>
+
+	<div class="nav"><p><a href="10.6.html">Назад</a><a href="index.html">Содержание</a><a href="10.9.html">Вперед</a></p></div>
+	<div class="socBlock">
+	<div class="share soctop">
+	<ul>
+	<li><a title="Поделиться в Вконтакте" rel="nofollow" class="fa fa-lg fa-vk"></a></li>
+	<li><a title="Поделиться в Телеграм" rel="nofollow" class="fa fa-lg fa-telegram"></a></li>
+	<li><a title="Поделиться в Одноклассниках" rel="nofollow" class="fa fa-lg fa-odnoklassniki"></a></li>
+	
+	</ul>
+	</div>
+	</div>
+  </div>
+
+	<div class="item left">
+     <ul id="browser" class="filetree"> 
+	<li class="closed"><span class="folder">Глава 1. Введение в Java</span>
+		<ul>
+			<li><span class="file"><a href="1.1.html">Что такое Java</a></span></li>
+			<li><span class="file"><a href="1.6.html">Установка JDK</a></span></li>
+			<li><span class="file"><a href="1.2.html">Первая программа на Java</a></span></li>
+			<li><span class="file"><a href="1.5.html">Первая программа в IntelliJ IDEA</a></span></li>
+			<li><span class="file"><a href="1.3.html">Первая программа в NetBeans</a></span></li>
+			<li><span class="file"><a href="1.4.html">Первая программа в Eclipse</a></span></li>
+			<li><span class="file"><a href="1.7.html">JShell</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 2. Основы программирования на Java</span>
+		<ul>
+			<li><span class="file"><a href="2.11.html">Структура программы</a></span></li>
+			<li><span class="file"><a href="2.1.html">Переменные и константы</a></span></li>
+			<li><span class="file"><a href="2.19.html">Литералы</a></span></li>
+			<li><span class="file"><a href="2.12.html">Типы данных</a></span></li>
+			<li><span class="file"><a href="2.9.html">Консольный ввод/вывод в Java</a></span></li>
+			<li><span class="file"><a href="2.3.html">Арифметические операции</a></span></li>
+			<li><span class="file"><a href="2.13.html">Поразрядные операции</a></span></li>
+			<li><span class="file"><a href="2.14.html">Условные выражения</a></span></li>
+			<li><span class="file"><a href="2.15.html">Операции присваивания и приоритет операций</a></span></li>
+			<li><span class="file"><a href="2.2.html">Преобразования базовых типов данных</a></span></li>
+			<li><span class="file"><a href="2.5.html">Условные конструкции</a></span></li>
+			<li><span class="file"><a href="2.6.html">Циклы</a></span></li>
+			<li><span class="file"><a href="2.4.html">Массивы</a></span></li>
+			<li><span class="file"><a href="2.20.html">Конструкция и выражение switch</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 3. Классы</span>
+		<ul>
+			<li><span class="file"><a href="3.1.html">Классы и объекты</a></span></li>
+
+
+			<li><span class="file"><a href="2.7.html">Методы</a></span></li>
+			<li><span class="file"><a href="2.16.html">Параметры методов</a></span></li>
+			<li><span class="file"><a href="3.14.html">Объекты как параметры методов</a></span></li>
+			<li><span class="file"><a href="2.17.html">Оператор return. Результат метода</a></span></li>
+			<li><span class="file"><a href="2.18.html">Перегрузка методов</a></span></li>
+			<li><span class="file"><a href="3.21.html">Конструкторы и инициализаторы</a></span></li>
+
+
+			<li><span class="file"><a href="3.4.html">Статические компоненты класса и модификатор static</a></span></li>
+			<li><span class="file"><a href="3.20.html">Область действия и время жизни переменных</a></span></li>
+			<li><span class="file"><a href="2.8.html">Рекурсивные функции</a></span></li>
+			<li><span class="file"><a href="3.2.html">Пакеты</a></span></li>
+			<li><span class="file"><a href="3.3.html">Модификаторы доступа</a></span></li>
+			<li><span class="file"><a href="3.19.html">Компактные файлы кода и метод main</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 4. Объектно-ориентированное программирование</span>
+		<ul>
+			<li><span class="file"><a href="3.22.html">Инкапсуляция</a></span></li>
+			<li><span class="file"><a href="3.5.html">Наследование</a></span></li>
+			<li><span class="file"><a href="3.23.html">Запрет наследования и переопределения методов</a></span></li>
+			<li><span class="file"><a href="3.24.html">Полиморфизм и динамическая диспетчеризация методов</a></span></li>
+			<li><span class="file"><a href="3.9.html">Класс Object и его методы</a></span></li>
+			<li><span class="file"><a href="3.6.html">Абстрактные классы</a></span></li>
+			<li><span class="file"><a href="3.10.html">Иерархия наследования и преобразование типов</a></span></li>
+
+			<li><span class="file"><a href="3.7.html">Интерфейсы</a></span></li>
+			<li><span class="file"><a href="3.28.html">Интерфейсы и полиморфизм</a></span></li>
+			<li><span class="file"><a href="3.29.html">Множественная реализация и наследование интерфейсов</a></span></li>
+			<li><span class="file"><a href="3.16.html">Интерфейсы в механизме обратного вызова</a></span></li>
+			<li><span class="file"><a href="3.8.html">Перечисления enum</a></span></li>
+			<li><span class="file"><a href="3.11.html">Обобщения (Generics)</a></span></li>
+			<li><span class="file"><a href="3.17.html">Ограничения обобщений</a></span></li>
+			<li><span class="file"><a href="3.15.html">Наследование и обобщения</a></span></li>
+			<li><span class="file"><a href="3.31.html">Type Erasure (Стирание типов)</a></span></li>
+			<li><span class="file"><a href="3.32.html">Подстановочные знаки wildcards в обобщениях</a></span></li>
+			<li><span class="file"><a href="3.13.html">Ссылочные типы и клонирование объектов</a></span></li>
+			<li><span class="file"><a href="3.18.html">Классы Records</a></span></li>
+			<li><span class="file"><a href="9.4.html">Функциональные интерфейсы и ссылки на методы</a></span></li>
+			<li><span class="file"><a href="9.1.html">Лямбда-выражения</a></span></li>
+			<li><span class="file"><a href="9.2.html">Лямбды как параметры и результаты методов</a></span></li>
+			<li><span class="file"><a href="9.3.html">Встроенные функциональные интерфейсы</a></span></li>
+			<li><span class="file"><a href="3.12.html">Внутренние и вложенные классы</a></span></li>
+			<li><span class="file"><a href="3.30.html">Анонимные классы</a></span></li>
+
+
+			<li><span class="file"><a href="3.25.html">Sealed-классы и интерфейсы</a></span></li>
+			<li><span class="file"><a href="3.26.html">Pattern мatching. Паттерн типов</a></span></li>
+			<li><span class="file"><a href="3.27.html">Pattern мatching. record-паттерн</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 5. Обработка исключений</span>
+		<ul>
+			<li><span class="file"><a href="2.10.html">Обработка исключений и конструкция try...catch...finally</a></span></li>
+			<li><span class="file"><a href="4.2.html">Классы исключений</a></span></li>
+			<li><span class="file"><a href="4.1.html">Операторы throws и throw</a></span></li>
+			<li><span class="file"><a href="4.3.html">Создание своих классов исключений</a></span></li>
+			<li><span class="file"><a href="4.4.html">Assert</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 6. Коллекции</span>
+		<ul>
+			<li><span class="file"><a href="5.1.html">Типы коллекций. Интерфейс Collection</a></span></li>
+			<li><span class="file"><a href="5.2.html">Класс ArrayList и интерфейс List</a></span></li>
+			<li><span class="file"><a href="5.6.html">Интерфейсы Comparable и Comporator. Сортировка</a></span></li>
+			<li><span class="file"><a href="5.7.html">Очереди и стеки. Классы ArrayDeque и PriorityQueue</a></span></li>
+			<li><span class="file"><a href="5.3.html">Связанный список LinkedList</a></span></li>
+			<li><span class="file"><a href="5.4.html">Интерфейс Set и хеш-таблицы HashSet</a></span></li>
+			<li><span class="file"><a href="5.5.html">Деревья TreeSet и интерфейсы SortedSet и NavigableSet</a></span></li>
+			<li><span class="file"><a href="5.8.html">Словари. Интерфейс Map и класс HashMap</a></span></li>
+			<li><span class="file"><a href="5.9.html">Интерфейсы SortedMap и NavigableMap. Класс TreeMap</a></span></li>
+			<li><span class="file"><a href="5.10.html">Итераторы. Iterator и Iterable</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 7. Потоки ввода-вывода. Работа с файлами</span>
+		<ul>
+			<li><span class="file"><a href="6.1.html">Потоки ввода-вывода</a></span></li>
+			<li><span class="file"><a href="6.3.html">Чтение и запись файлов. FileInputStream и FileOutputStream</a></span></li>
+			<li><span class="file"><a href="6.2.html">Закрытие потоков и конструкция try-с-ресурсами</a></span></li>
+			<li><span class="file"><a href="6.4.html">Классы ByteArrayInputStream и ByteArrayOutputStream</a></span></li>
+			<li><span class="file"><a href="6.5.html">Буферизованные потоки BufferedInputStream и BufferedOutputStream</a></span></li>
+			<li><span class="file"><a href="6.6.html">Форматируемый вывод. PrintStream и PrintWriter</a></span></li>
+			<li><span class="file"><a href="6.7.html">Классы DataOutputStream и DataInputStream</a></span></li>
+			<li><span class="file"><a href="6.8.html">Чтение и запись текстовых файлов</a></span></li>
+			<li><span class="file"><a href="6.9.html">Буферизация символьных потоков. BufferedReader и BufferedWriter</a></span></li>
+			<li><span class="file"><a href="6.10.html">Сериализация объектов</a></span></li>
+			<li><span class="file"><a href="6.11.html">Класс File. Работа с файлами и каталогами</a></span></li>
+			<li><span class="file"><a href="6.12.html">Работа с ZIP-архивами</a></span></li>
+			<li><span class="file"><a href="6.13.html">Класс Console</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 8. Работа со строками</span>
+		<ul>
+			<li><span class="file"><a href="7.1.html">Введение в строки. Класс String</a></span></li>
+			<li><span class="file"><a href="7.2.html">Основные операции со строками</a></span></li>
+			<li><span class="file"><a href="7.3.html">StringBuffer и StringBuilder</a></span></li>
+			<li><span class="file"><a href="7.4.html">Регулярные выражения</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 9. Многопоточное программирование</span>
+		<ul>
+			<li><span class="file"><a href="8.1.html">Многопоточное программирование и класс Thread</a></span></li>
+			<li><span class="file"><a href="8.2.html">Создание и выполнение потоков</a></span></li>
+			<li><span class="file"><a href="8.11.html">Управление потоками</a></span></li>
+			<li><span class="file"><a href="8.4.html">Завершение и прерывание потока</a></span></li>
+			<li><span class="file"><a href="8.12.html">Виртуальные потоки</a></span></li>
+			<li><span class="file"><a href="8.3.html">Синхронизация потоков. Оператор synchronized</a></span></li>
+			<li><span class="file"><a href="8.5.html">Взаимодействие потоков. Методы wait и notify</a></span></li>
+			<li><span class="file"><a href="8.6.html">Семафоры</a></span></li>
+			<li><span class="file"><a href="8.7.html">Обмен между потоками. Класс Exchanger</a></span></li>
+			<li><span class="file"><a href="8.8.html">Класс Phaser</a></span></li>
+			<li><span class="file"><a href="8.9.html">Блокировки. ReentrantLock</a></span></li>
+			<li><span class="file"><a href="8.10.html">Условия в блокировках</a></span></li>
+			<li><span class="file"><a href="8.16.html">Переменные volatile</a></span></li>
+			<li><span class="file"><a href="8.17.html">Атомарность и Atomics. Потокобезопасность без блокировок</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 10. Асинхронность</span>
+		<ul>
+			<li><span class="file"><a href="8.13.html">Асинхронные задачи FutureTask. Callable и Future</a></span></li>
+			<li><span class="file"><a href="8.14.html">Executor - исполнитель задач</a></span></li>
+			<li><span class="file"><a href="8.15.html">Координация выполнения асинхронных задач</a></span></li>
+			<li><span class="file"><a href="8.18.html">CompletableFuture и промисы. Обработка результата асинхронных задач</a></span></li>
+			<li><span class="file"><a href="8.19.html">CompletableFuture, обработка ошибок и завершения асинхронных задач</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 11. Stream API</span>
+		<ul>
+			<li><span class="file"><a href="10.1.html">Введение в Stream API</a></span></li>
+			<li><span class="file"><a href="10.2.html">Создание потока данных</a></span></li>
+			<li><span class="file"><a href="10.3.html">Фильтрация, перебор элементов и отображение</a></span></li>
+			<li><span class="file"><a href="10.8.html">Сортировка</a></span></li>
+			<li><span class="file"><a href="10.13.html">Получение подпотока и объединение потоков</a></span></li>
+			<li><span class="file"><a href="10.4.html">Методы skip и limit</a></span></li>
+			<li><span class="file"><a href="10.11.html">Операции сведения</a></span></li>
+			<li><span class="file"><a href="10.5.html">Метод reduce</a></span></li>
+			<li><span class="file"><a href="10.12.html">Тип Optional</a></span></li>
+			<li><span class="file"><a href="10.6.html">Метод collect</a></span></li>
+			<li><span class="file"><a href="10.7.html">Группировка</a></span></li>
+			<li><span class="file"><a href="10.9.html">Параллельные потоки</a></span></li>
+			<li><span class="file"><a href="10.10.html">Параллельные операции над массивами</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 12. Модульность</span>
+		<ul>
+			<li><span class="file"><a href="11.1.html">Создание модуля</a></span></li>
+			<li><span class="file"><a href="11.2.html">Зависимые модули</a></span></li>
+			<li><span class="file"><a href="11.3.html">Взаимодействие между модулями. Экспорт и импорт</a></span></li>
+		</ul>
+	</li>
+	</li>
+	<li class="closed"><span class="folder">Глава 13. Дополнительные классы</span>
+		<ul>
+			<li><span class="file"><a href="12.1.html">Математические вычисления и класс Math</a></span></li>
+			<li><span class="file"><a href="12.2.html">Большие числа BigInteger и BigDecimal</a></span></li>
+			<li><span class="file"><a href="12.3.html">Работа с датами. LocalDate</a></span></li>
+			<li><span class="file"><a href="12.4.html">Процессы. Process и ProcessBuilder</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 14. JAR-файлы и подключение библиотек и классов</span>
+		<ul>
+			<li><span class="file"><a href="13.1.html">Файлы JAR, их создание и выполнение</a></span></li>
+			<li><span class="file"><a href="13.2.html">Создание и подключение библиотеки JAR</a></span></li>
+			<li><span class="file"><a href="13.4.html">Модульный jar-файл</a></span></li>
+			<li><span class="file"><a href="13.3.html">Установка пути к классам Java</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 15. Рефлексия</span>
+		<ul>
+			<li><span class="file"><a href="14.1.html">Введение в рефлексию. Класс Class</a></span></li>
+			<li><span class="file"><a href="14.2.html">Исследование типов</a></span></li>
+			<li><span class="file"><a href="14.3.html">Поля класса и класс Field</a></span></li>
+			<li><span class="file"><a href="14.4.html">Модификаторы доступа и класс Modifier</a></span></li>
+			<li><span class="file"><a href="14.5.html">Класс Constructor и cоздание объектов</a></span></li>
+			<li><span class="file"><a href="14.6.html">Методы и класс Method</a></span></li>
+			<li><span class="file"><a href="14.7.html">Proxy (Прокси)</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 16. Аннотации</span>
+		<ul>
+			<li><span class="file"><a href="15.1.html">Введение в аннотации. Встроенные аннотации</a></span></li>
+			<li><span class="file"><a href="15.2.html">Создание и применение аннотаций</a></span></li>
+			<li><span class="file"><a href="15.3.html">Обработка аннотаций во время выполнения</a></span></li>
+		</ul>
+	</li>
+
+
+	<li class="closed"><span class="folder">Глава 17. Взаимодействие с нативным кодом</span>
+		<ul>
+			<li><span class="file"><a href="16.1.html">Java Native Interface (JNI)</a></span></li>
+			<li><span class="file"><a href="16.2.html">Foreign Functions и Memory API</a></span></li>
+			<li><span class="file"><a href="16.3.html">Арена и сегменты памяти MemorySegment</a></span></li>
+			<li><span class="file"><a href="16.4.html">Компоновка памяти MemoryLayout и работа с MemorySegment</a></span></li>
+			<li><span class="file"><a href="16.5.html">Сложные данные и MemoryLayout</a></span></li>
+			<li><span class="file"><a href="16.6.html">Поиск и вызов внешних функций</a></span></li>
+			<li><span class="file"><a href="16.7.html">Нативные функции обратного вызова</a></span></li>
+		</ul>
+	</li>
+</ul>   </div>
+</div>
+
+  <div class="item right">
+<div class="help" style="border: 0px;">
+    
+	<div class="help-item">
+		<div class="help-item-name"><a href="https://metanit.com/settings.html">Настройки</a></div>
+	 </div>
+</div>
+			<div class="help">
+
+      <div class="help-header">Помощь сайту</div>
+
+       <div class="help-item">
+		<div class="help-item-name"><a href="https://yoomoney.ru/to/410011174743222" rel="nofollow">Помощь сайту</a></div>
+	 </div>
+       
+      <div class="help-item">
+		<div class="help-item-name">Юмани:</div>
+		<div class="help-item-req">410011174743222</div>
+	 </div>
+
+		<div class="help-item">
+			<div class="help-item-name">Номер карты:</div>
+			<div class="help-item-req">4048415020898850</div>
+		</div>
+
+      </div>
+
+	
+	
+
+
+
+
+  </div>
+</div>
+
+<div id="footer" style="padding-bottom:85px;">
+
+<div class="bootomLinks">
+<a href="https://vk.com/metanit" title="Присоединиться к группе вконтакте" rel="nofollow">
+Вконтакте</a>|
+ <a href="https://t.me/devnull22" title="Подписаться на телеграм" rel="nofollow">
+Телеграм</a> | 
+<a href="https://metanit.com/donations.html" rel="nofollow">Донаты/Помощь сайту</a>
+</div>
+<p>Contacts: metanit22@mail.ru</p>
+<p>Copyright &copy; Евгений Попов, metanit.com, 2026. Все права защищены.</p>
+
+
+</div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+<script src='../../js/syntax16.js'></script>
+<script>
+// Syntax Highlighter
+if (typeof SyntaxHighlighter !== 'undefined') {
+    SyntaxHighlighter.all();
+}
+
+// Copy guard
+document.addEventListener('copy', (ev) => {
+    const et = ev.target;
+    if (et.type === 'textarea') {
+        ev.clipboardData.setData('text/plain', et.value.substring(et.selectionStart, et.selectionEnd).replace(/ /g, ' '));
+        ev.preventDefault();
+    }
+});
+
+// Mobile menu
+const faBars = document.querySelector('.fa-bars');
+if (faBars) {
+    faBars.addEventListener('click', () => {
+        const tree = document.querySelector('.item.left');
+        if (tree) {
+            tree.style.display = (tree.style.display === 'block') ? 'none' : 'block';
+        }
+    });
+}
+
+const menuButton = document.getElementById('menuButton');
+if (menuButton) {
+    menuButton.addEventListener('click', () => {
+        menuButton.classList.toggle('menu-opened');
+        const mainMenu = document.querySelector('.mainmenu');
+        if (mainMenu) mainMenu.classList.toggle('open');
+    });
+}
+
+// Search toggle
+const magGlass = document.getElementById('magnifying-glass');
+if (magGlass) {
+    magGlass.addEventListener('click', () => {
+        const search = document.getElementById('search');
+        if (search) search.classList.toggle('transp');
+    });
+}
+
+// Theme toggle
+const toggleTheme = document.getElementById('toggle-theme');
+if (toggleTheme) {
+    toggleTheme.addEventListener('click', () => {
+        if (document.documentElement.hasAttribute('theme')) {
+            document.documentElement.removeAttribute('theme');
+            document.cookie = 'theme=1;expires=Mon, 19 Feb 2001 12:00:00 UTC;path=/;';
+        } else {
+            document.documentElement.setAttribute('theme', 'dark');
+            var expire = new Date();
+            expire.setHours(expire.getHours() + 7);
+            document.cookie = 'theme=1;expires=' + expire.toUTCString() + ';path=/;';
+        }
+    });
+}
+
+// Share buttons
+const shareVK = document.querySelectorAll('.share .fa-vk');
+shareVK.forEach(e => e.addEventListener('click', () => window.open('http://vk.com/share.php?url=' + window.location.href, 'Поделиться в ВКОНТАКТЕ')));
+const shareTG = document.querySelectorAll('.share .fa-telegram');
+shareTG.forEach(e => e.addEventListener('click', () => window.open('tg://msg_url/url=' + window.location.href, 'Поделиться в Telegram')));
+const shareOK = document.querySelectorAll('.share .fa-odnoklassniki');
+shareOK.forEach(e => e.addEventListener('click', () => window.open('https://connect.ok.ru/offer?url=' + window.location.href, 'Поделиться в Одноклассниках')));
+
+// Folders
+const folders = document.getElementsByClassName('closed');
+for (let i = 0; i < folders.length; i++) {
+    folders[i].addEventListener('click', function (e) {
+        this.classList.toggle('closed');
+        this.classList.toggle('opened');
+    });
+}
+
+// Active Item Highlight
+const activePath = window.location.pathname.split('/').pop();
+const activeItem = document.querySelector(".file a[href*='" + activePath + "']");
+if (activeItem) {
+    activeItem.classList.add('aMItem');
+    activeItem.parentElement.classList.add('aMItem');
+    const activeFolder = activeItem.closest('li');
+    if (activeFolder) {
+        activeFolder.classList.remove('closed');
+        activeFolder.classList.add('opened');
+        const folderLabel = activeFolder.querySelector('.folder');
+        if (folderLabel) folderLabel.classList.add('aMItem');
+    }
+}
+
+// Settings
+const props = ['--main-font-size', '--main-font-family', '--menc-bg-color', '--container-bg-color', '--menu-bg-color', '--code-font-size', '--code-font-family', '--code-bgcolor', '--code-max-height'];
+for (let i = 0; i < props.length; i++) {
+    const propValue = localStorage.getItem(props[i]);
+    if (propValue !== null) document.documentElement.style.setProperty(props[i], propValue);
+}
+</script>
+</body>
+</html>

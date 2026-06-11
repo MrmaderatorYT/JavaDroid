@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html  lang="ru">
+<head>
+<title>Java | Итераторы. Iterator и Iterable</title>
+<meta charset="utf-8" />
+<meta name="description" content="Итераторы в языке программирования Java, перебор коллекций, интерфейс Iterator и его методы hasNext и next, тип ListIterator, инерфейс Iterable и создание коллекций">
+<meta name="viewport" content="width=device-width">
+<link href="../../style50.css@v=1.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<div id="container">
+<header>
+<div id="header">
+<div id="logo">
+<a class="logoTitle" href="https://metanit.com/" title="На главную">METANIT.COM</a>
+<div class="logoDefinition">Сайт о программировании</div> 
+</div>
+
+<div class="socbtns">
+<ul>
+<li><a title="Посмотреть меню" rel="nofollow" class="fa fa-lg fa-bars"></a></li>
+<li><a href="https://metanit.com/donations.html" title="Помощь сайту" rel="nofollow" style="color: var(--fa-usd-color);" class="fa fa-lg fa-usd"></a></li>
+<li><a href="https://vk.com/metanit" title="Группа в ВКонтакте" rel="nofollow" style="color: var(--fa-vk-color);" class="fa fa-lg fa-vk"></a></li>
+<li><a href="https://t.me/devnull22" title="Группа в Телеграмме"  class="fa fa-lg fa-tel" style="color: var(--fa-tel-color);"></a></li>
+<li><a href="https://metanit.com/android.html" title="Приложения андроид" rel="nofollow" style="color: var(--fa-android-color);" class="fa fa-lg fa-android"></a></li>
+<li><i id="toggle-theme" class="fa fa-lg fa-adjust"></i></li>
+</ul>
+</div>
+
+
+<div id="magnifying-glass"></div>
+
+<div class="menuButton" id="menuButton">
+	<span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+</div>
+</div>
+
+<div id="search" class="transp">
+<form action="https://www.google.ru" id="cse-search-box">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3716042175333627:1096498938" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" />
+    <input type="submit" name="sa" value="Найти" />
+  </div>
+</form>
+</div>
+
+<div id="menu" class="menu">
+<ul class="mainmenu">
+    <li><a href="https://metanit.com/common/">Программирование</a></li>
+    <li><a href="https://metanit.com/assembler/">Ассемблер</a></li>
+   <li><a href="https://metanit.com/sharp/">C#</a></li>
+   <li><a href="https://metanit.com/java/">Java</a></li>
+   <li><a href="https://metanit.com/web/">WEB</a></li>
+   <li><a href="https://metanit.com/python/">Python</a></li>
+   <li><a href="https://metanit.com/c/">C</a></li>
+   <li><a href="https://metanit.com/cpp/">C++</a></li>
+   <li><a href="https://metanit.com/sql/">SQL</a></li>
+   <li><a href="https://metanit.com/nosql/mongodb/">MongoDB</a></li>
+   <li><a href="https://metanit.com/go/">Go</a></li>
+   <li><a href="https://metanit.com/visualbasic/">VB.NET</a></li>
+   <li><a href="https://metanit.com/swift/tutorial/">Swift</a></li>
+   <li><a href="https://metanit.com/kotlin/">Kotlin</a></li>
+   <li><a href="https://metanit.com/dart/">Dart</a></li>
+   <li><a href="https://metanit.com/php/">PHP</a></li>
+   <li><a href="https://metanit.com/rust/">Rust</a></li>
+   <li><a href="https://metanit.com/os/">Linux</a></li>
+   <li><a href="https://metanit.com/f/">F#</a></li>
+   <!--<li><a href="//metanit.com/lisp/tutorial/">Common Lisp</a></li>-->
+   <li><a href="https://metanit.com/hosting">Хостинг</a></li>
+</ul>
+</div>
+
+</header>
+<div class="outercontainer">
+<div class="innercontainer">
+ 
+   <div class="item center menC">
+     <h1>Итераторы. Iterator и Iterable</h1><div class="date">Последнее обновление: 13.10.2025</div>
+	<div class="socBlock">
+	<div class="share soctop">
+	<ul>
+	<li><a title="Поделиться в Вконтакте" rel="nofollow" class="fa fa-lg fa-vk"></a></li>
+	<li><a title="Поделиться в Телеграм" rel="nofollow" class="fa fa-lg fa-telegram"></a></li>
+	<li><a title="Поделиться в Одноклассниках" rel="nofollow" class="fa fa-lg fa-odnoklassniki"></a></li>
+	
+	</ul>
+	</div>
+	</div>
+
+	<div style="margin-top:23px;margin-left:5px;">
+		
+		
+		
+	</div>
+
+	<p>Одним из ключевых интерфейсов коллекций в языке Java является интерфейс <span class="b">Iterator</span>. Он позволяет проходить по элементам коллекции. 
+<p>Интерфейс <span class="b">Iterator</span> имеет следующее определение:</p>
+<pre class="brush:java;">
+public interface Iterator &lt;E&gt;{
+    
+   boolean hasNext();
+   E next();
+   default void remove();
+   default void forEachRemaining(Consumer&lt;? super E&gt; action);
+}
+</pre>
+<p>Реализация интерфейса предполагает, что с помощью вызова метода <code>next()</code> можно получить следующий элемент. С помощью 
+метода <code>hasNext()</code> можно узнать, есть ли следующий элемент, и не достигнут ли конец коллекции. И если элементы еще имеются, то <code>hasNext()</code>
+вернет значение <code>true</code>. Метод <code>hasNext()</code> следует вызывать перед методом <code>next()</code>, так как при достижении конца коллекции метод <code>next()</code> выбрасывает исключение 
+<code>NoSuchElementException</code>. И метод <code>remove()</code> удаляет текущий элемент, который был получен последним вызовом <code>next()</code>.</p>
+
+
+<p>Например, используем итератор для перебора коллекции ArrayList:</p>
+<pre class="brush:java;">
+import java.util.Collection;
+import java.util.ArrayList;
+import java.util.Iterator;
+ 
+public class Program{
+      
+    public static void main(String[] args) {
+          
+        Collection&lt;String&gt; people = new ArrayList&lt;String&gt;();
+        people.add("Tom");
+        people.add("Bob");
+        people.add("Sam");
+         
+        // получаем интератор коллекции people
+        Iterator&lt;String&gt; iter = people.iterator();
+        // используя итератор, перебираем коллекцию
+        while(iter.hasNext()){
+         
+            System.out.println(iter.next());
+        }
+    }
+}
+</pre>
+<p>Консольный вывод:</p>
+<pre class="sh">
+Tom
+Bob
+Sam
+</pre>
+<p>Конечно, для перебора коллекции гораздо проще использовать стандартный цикл <code>for each</code>:</p>
+<pre class="brush:java;">
+import java.util.Collection;
+import java.util.ArrayList;
+ 
+public class Program{
+      
+    public static void main(String[] args) {
+          
+        Collection&lt;String&gt; people = new ArrayList&lt;String&gt;();
+        people.add("Tom");
+        people.add("Bob");
+        people.add("Sam");
+         
+        for(var p : people){
+            System.out.println(p);
+        }
+    }
+}
+</pre>
+<p>Однако "под капотом" компилятор преобразует цикл <code>for-each</code> в цикл с итератором.</p>
+
+<h3>Встроенные реализации итераторов</h3>
+<p>Интерфейс <code>Iterator</code> предоставляет ограниченный функционал. Но Java имеет встроенные типы, которые расширяют его функционал и предназначены для перебора определенных типов коллекций. 
+Например, интерфейс <span class="b">ListIterator</span> используется классами, которые реализуют интерфейс <code>List</code> и представляют списки, то есть классами 
+LinkedList, ArrayList и др.</p>
+<p>Интерфейс <b>ListIterator</b> расширяет интерфейс <code>Iterator</code> и определяет ряд дополнительных методов:</p>
+<ul>
+<li><p><span class="b">void add(E obj)</span>: вставляет объект obj перед элементом, который должен быть возвращен следующим вызовом <code>next()</code></p></li>
+<li><p><span class="b">boolean hasNext()</span>: возвращает <code>true</code>, если в коллекции имеется следующий элемент, иначе возвращает false</p></li>
+<li><p><span class="b">boolean hasPrevious()</span>: возвращает <code>true</code>, если в коллекции имеется предыдущий элемент, иначе возвращает false</p></li>
+<li><p><span class="b">E next()</span>: возвращает текущий элемент и переходит к следующему, если такого нет, то генерируется исключение <code>NoSuchElementException</code></p></li>
+<li><p><span class="b">E previous()</span>: возвращает текущий элемент и переходит к предыдущему, если такого нет, то генерируется исключение <code>NoSuchElementException</code></p></li>
+<li><p><span class="b">int nextIndex()</span>: возвращает индекс следующего элемента. Если такого нет, то возвращается размер списка</p></li>
+<li><p><span class="b">int previousIndex()</span>: возвращает индекс предыдущего элемента. Если такого нет, то возвращается число -1</p></li>
+<li><p><span class="b">void remove()</span>: удаляет текущий элемент из списка. Таким образом, этот метод должен быть вызван после методов 
+<code>next()</code> или <code>previous()</code>, иначе будет сгенерировано исключение <code>IlligalStateException</code></p></li>
+<li><p><span class="b">void set(E obj)</span>: присваивает текущему элементу, выбранному вызовом методов <code>next()</code> или <code>previous()</code>, 
+ссылку на объект obj</p></li>
+</ul>
+<p>Используем ListIterator:</p>
+<pre class="brush:java;">
+import java.util.ListIterator;
+import java.util.ArrayList;
+ 
+public class Program{
+      
+    public static void main(String[] args) {
+          
+        var people = new ArrayList&lt;String&gt;();
+        people.add("Tom");
+        people.add("Bob");
+        people.add("Sam"); 
+         
+        ListIterator&lt;String&gt; listIter = people.listIterator();
+         
+        while(listIter.hasNext()){
+         
+            System.out.println(listIter.next());
+        }
+        // сейчас текущий элемент - Sam
+        // изменим значение этого элемента
+        listIter.set("Sammy");
+        // пройдемся по элементам в обратном порядке
+        while(listIter.hasPrevious()){
+         
+            System.out.println(listIter.previous());
+        }  
+    }
+}
+</pre>
+<p>Консольный вывод программы:</p>
+<pre class="sh">
+Tom
+Bob
+Sam
+Sammy
+Bob
+Tom
+</pre>
+
+<div style="margin-top:23px;margin-left:5px;">
+
+<!-- Yandex.RTB R-A-201190-9 -->
+
+</div>
+
+<h3>Интерфейс Iterable</h3>
+<p>Цикл <code>for-each</code> работает с любым объектом, который реализует интерфейс <b>Iterable</b> и реализует его метод <code>iterator()</code>:</p>
+<pre class="brush:java;">
+public interface Iterable&lt;E&gt;
+{
+    Iterator&lt;E&gt; iterator();
+    ....
+}
+</pre>
+<p>В частности, этот метод возвращает итератор - то есть объект, реализующий интерфейс <span class="b">Iterator</span>. И с помощью этого итератора будет осуществляться перебор объекта класса, которые реализует интерфейс <code>Iterable</code>.</p>
+<p>Интерфейс <code>Collection</code>, а через него и все остальные коллекции, как раз расширяет интерфейс <code>Iterable</code> и наследует метод <code>Iterator&lt;E&gt; iterator()</code>.:</p>
+<pre class="brush:java;">
+public interface Collection&lt;E&gt;
+{
+    Iterator&lt;E&gt; iterator();
+    ................
+</pre>
+<p>Поэтому вы можете использовать цикл "for each" с любой коллекцией в Java Collections Framework.</p>
+
+
+
+<h3>Кастомная реализация итераторов</h3>
+<p>Хотя итераторы и интерфейс Iterable предназначены прежде всего для работы с коллекциями, но фактически мы можем их использовать с любыми классами, рассматривая класс как набор некоторых объектов. 
+Например, реализуем интерфейсы <code>Iterable</code> и <code>Iterator</code> для перебора объекта кастомного класса:</p>
+<pre class="brush:java;">
+import java.util.Iterator;
+ 
+public class Program{
+      
+    public static void main(String[] args) {
+          
+        Person tom = new Person(22, "Tom", 41);
+        for(var prop : tom){
+            System.out.println(prop);
+        }
+    }
+}
+
+class PersonIterator implements Iterator&lt;String&gt;{
+
+    int currentProp = 0;
+    Person person;
+
+    PersonIterator(Person person){ this.person = person; }
+
+    public boolean hasNext(){ return currentProp &lt; 3; }
+
+    public String next(){
+        return switch(currentProp++){
+
+            case 0 -&gt; String.valueOf(person.getId());
+            case 1 -&gt; person.getName();
+            case 2 -&gt; String.valueOf(person.getAge());
+            default -&gt; null;
+        };
+    }
+}
+
+class Person implements Iterable{
+
+    private int id;
+    private String name;
+    private int age;
+
+    int getId() { return id;}
+    String getName() { return name;}
+    int getAge() { return age;}
+
+    private PersonIterator iter = null;
+
+
+    Person(int id, String name, int age){
+
+        this.id = id;
+        this.age = age;
+        this.name = name;
+    }
+
+    public PersonIterator iterator(){
+        if(iter == null){
+            iter = new PersonIterator(this);
+        }
+        return iter;
+    }
+}
+</pre>
+<p>В данном случае демонстрируется, как сделать собственный класс итерируемым, то есть дать возможность перебирать его в цикле "for-each". И для начала определяем класс, объект которого будет перебираться - 
+класс <code>Person</code>, который описывает человека:</p>
+<pre class="brush:java;">
+class Person implements Iterable{
+    // ... поля и конструктор ...
+
+    public PersonIterator iterator(){
+        if(iter == null){
+            iter = new PersonIterator(this);
+        }
+        return iter;
+    }
+}
+</pre>
+<p>Основные моменты:</p>
+<ul>
+<li><p><code>implements Iterable</code>: реализуя этот интерфейс, класс Person обязуется предоставить метод <b>iterator()</b>, который неявно вызывается циклом "for-each".</p></li> 
+<li><p><code>public PersonIterator iterator()</code>: этот метод должен вернуть объект, который, в свою очередь, реализует интерфейс <b>Iterator</b>. В данном случае он возвращает экземпляр 
+нашего кастомного итератора <code>PersonIterator</code>.</p></li>
+</ul>
+<p>Класс <code>PersonIterator</code> содержит всю логику перебора свойств объекта <code>Person</code>:</p>
+<pre class="brush:java;">
+class PersonIterator implements Iterator&lt;String&gt;{
+    // ... поля и конструктор ...
+
+    public boolean hasNext(){ return currentProp &lt; 3; }
+
+    public String next(){
+        return switch(currentProp++){
+            // ...
+        };
+    }
+}
+</pre>
+<p>Основные моменты:</p>
+<ul>
+<li><p><code>implements Iterator&lt;String&gt;</code>: применяем интерфейс, который будет перебирать значения типа String</p></li>
+<li><p><code>boolean hasNext()</code>: этот метод вызывается перед каждой итерацией цикла "for-each". Он должен вернуть <code>true</code>, если есть следующий элемент для перебора, и 
+<code>false</code>, если элементы закончились. Здесь логика проста: поскольку у <code>Person</code> три свойства, метод возвращает  <code>true</code>, пока счетчик <code>currentProp</code> меньше 3.</p></li>
+<li><p><code>String next()</code>: этот метод возвращает следующий элемент. Он вызывается, если <code>hasNext()</code> вернул  <code>true</code>. С помощью оператора <code>switch</code> 
+он последовательно возвращает значения полей id, name и age в виде строки (String), увеличивая счетчик <code>currentProp</code> на единицу после каждого вызова.</p></li>
+</ul>
+<p>Таким образом, код создает специальную конструкцию в виде PersonIterator о том, как пошагово перебрать свойства объекта Person, и связывает эту конструкцию с самим классом Person через интерфейс 
+<code>Iterable</code></p>
+<p>И далее в методе <code>main</code> мы можем создать объект класса Person и перебрать его свойства:</p>
+<pre class="brush:java;">
+public static void main(String[] args) {
+      
+    Person tom = new Person(22, "Tom", 41);
+    for(var prop : tom){
+        System.out.println(prop);
+    }
+}
+</pre>
+<p>Результат выполнения программы:</p>
+<pre class="sh">
+22
+Tom
+41
+</pre>
+<h3>Метод forEach</h3>
+<p>Вместо цикла "for each" для перебора коллекции можно вызвать методы <b>Collection.forEach</b> или <b>Iterator.forEachRemaining</b> с лямбда-выражением, которое использует элемент. 
+Лямбда-выражение применяется ко всем элементам коллекции или к оставшимся элементам, которые может обойти итератор:</p>
+
+<pre class="brush:java;">
+coll.forEach(element -&gt; действия с element);
+iter.forEachRemaining(element -&gt; действия с element);
+</pre>
+<p>Например:</p>
+<pre class="brush:java;">
+import java.util.ArrayList;
+ 
+public class Program{
+      
+    public static void main(String[] args) {
+          
+        var people = new ArrayList&lt;String&gt;();
+        people.add("Tom");
+        people.add("Bob");
+        people.add("Sam"); 
+         
+        // p представляет каждый объект в people
+        people.forEach(p -> System.out.println(p) );
+    }
+}
+</pre>
+	
+
+	<div style="margin-top:25px;">
+
+	
+	</div>
+
+	<div class="nav"><p><a href="5.9.html">Назад</a><a href="index.html">Содержание</a><a href="6.1.html">Вперед</a></p></div>
+	<div class="socBlock">
+	<div class="share soctop">
+	<ul>
+	<li><a title="Поделиться в Вконтакте" rel="nofollow" class="fa fa-lg fa-vk"></a></li>
+	<li><a title="Поделиться в Телеграм" rel="nofollow" class="fa fa-lg fa-telegram"></a></li>
+	<li><a title="Поделиться в Одноклассниках" rel="nofollow" class="fa fa-lg fa-odnoklassniki"></a></li>
+	
+	</ul>
+	</div>
+	</div>
+  </div>
+
+	<div class="item left">
+     <ul id="browser" class="filetree"> 
+	<li class="closed"><span class="folder">Глава 1. Введение в Java</span>
+		<ul>
+			<li><span class="file"><a href="1.1.html">Что такое Java</a></span></li>
+			<li><span class="file"><a href="1.6.html">Установка JDK</a></span></li>
+			<li><span class="file"><a href="1.2.html">Первая программа на Java</a></span></li>
+			<li><span class="file"><a href="1.5.html">Первая программа в IntelliJ IDEA</a></span></li>
+			<li><span class="file"><a href="1.3.html">Первая программа в NetBeans</a></span></li>
+			<li><span class="file"><a href="1.4.html">Первая программа в Eclipse</a></span></li>
+			<li><span class="file"><a href="1.7.html">JShell</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 2. Основы программирования на Java</span>
+		<ul>
+			<li><span class="file"><a href="2.11.html">Структура программы</a></span></li>
+			<li><span class="file"><a href="2.1.html">Переменные и константы</a></span></li>
+			<li><span class="file"><a href="2.19.html">Литералы</a></span></li>
+			<li><span class="file"><a href="2.12.html">Типы данных</a></span></li>
+			<li><span class="file"><a href="2.9.html">Консольный ввод/вывод в Java</a></span></li>
+			<li><span class="file"><a href="2.3.html">Арифметические операции</a></span></li>
+			<li><span class="file"><a href="2.13.html">Поразрядные операции</a></span></li>
+			<li><span class="file"><a href="2.14.html">Условные выражения</a></span></li>
+			<li><span class="file"><a href="2.15.html">Операции присваивания и приоритет операций</a></span></li>
+			<li><span class="file"><a href="2.2.html">Преобразования базовых типов данных</a></span></li>
+			<li><span class="file"><a href="2.5.html">Условные конструкции</a></span></li>
+			<li><span class="file"><a href="2.6.html">Циклы</a></span></li>
+			<li><span class="file"><a href="2.4.html">Массивы</a></span></li>
+			<li><span class="file"><a href="2.20.html">Конструкция и выражение switch</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 3. Классы</span>
+		<ul>
+			<li><span class="file"><a href="3.1.html">Классы и объекты</a></span></li>
+
+
+			<li><span class="file"><a href="2.7.html">Методы</a></span></li>
+			<li><span class="file"><a href="2.16.html">Параметры методов</a></span></li>
+			<li><span class="file"><a href="3.14.html">Объекты как параметры методов</a></span></li>
+			<li><span class="file"><a href="2.17.html">Оператор return. Результат метода</a></span></li>
+			<li><span class="file"><a href="2.18.html">Перегрузка методов</a></span></li>
+			<li><span class="file"><a href="3.21.html">Конструкторы и инициализаторы</a></span></li>
+
+
+			<li><span class="file"><a href="3.4.html">Статические компоненты класса и модификатор static</a></span></li>
+			<li><span class="file"><a href="3.20.html">Область действия и время жизни переменных</a></span></li>
+			<li><span class="file"><a href="2.8.html">Рекурсивные функции</a></span></li>
+			<li><span class="file"><a href="3.2.html">Пакеты</a></span></li>
+			<li><span class="file"><a href="3.3.html">Модификаторы доступа</a></span></li>
+			<li><span class="file"><a href="3.19.html">Компактные файлы кода и метод main</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 4. Объектно-ориентированное программирование</span>
+		<ul>
+			<li><span class="file"><a href="3.22.html">Инкапсуляция</a></span></li>
+			<li><span class="file"><a href="3.5.html">Наследование</a></span></li>
+			<li><span class="file"><a href="3.23.html">Запрет наследования и переопределения методов</a></span></li>
+			<li><span class="file"><a href="3.24.html">Полиморфизм и динамическая диспетчеризация методов</a></span></li>
+			<li><span class="file"><a href="3.9.html">Класс Object и его методы</a></span></li>
+			<li><span class="file"><a href="3.6.html">Абстрактные классы</a></span></li>
+			<li><span class="file"><a href="3.10.html">Иерархия наследования и преобразование типов</a></span></li>
+
+			<li><span class="file"><a href="3.7.html">Интерфейсы</a></span></li>
+			<li><span class="file"><a href="3.28.html">Интерфейсы и полиморфизм</a></span></li>
+			<li><span class="file"><a href="3.29.html">Множественная реализация и наследование интерфейсов</a></span></li>
+			<li><span class="file"><a href="3.16.html">Интерфейсы в механизме обратного вызова</a></span></li>
+			<li><span class="file"><a href="3.8.html">Перечисления enum</a></span></li>
+			<li><span class="file"><a href="3.11.html">Обобщения (Generics)</a></span></li>
+			<li><span class="file"><a href="3.17.html">Ограничения обобщений</a></span></li>
+			<li><span class="file"><a href="3.15.html">Наследование и обобщения</a></span></li>
+			<li><span class="file"><a href="3.31.html">Type Erasure (Стирание типов)</a></span></li>
+			<li><span class="file"><a href="3.32.html">Подстановочные знаки wildcards в обобщениях</a></span></li>
+			<li><span class="file"><a href="3.13.html">Ссылочные типы и клонирование объектов</a></span></li>
+			<li><span class="file"><a href="3.18.html">Классы Records</a></span></li>
+			<li><span class="file"><a href="9.4.html">Функциональные интерфейсы и ссылки на методы</a></span></li>
+			<li><span class="file"><a href="9.1.html">Лямбда-выражения</a></span></li>
+			<li><span class="file"><a href="9.2.html">Лямбды как параметры и результаты методов</a></span></li>
+			<li><span class="file"><a href="9.3.html">Встроенные функциональные интерфейсы</a></span></li>
+			<li><span class="file"><a href="3.12.html">Внутренние и вложенные классы</a></span></li>
+			<li><span class="file"><a href="3.30.html">Анонимные классы</a></span></li>
+
+
+			<li><span class="file"><a href="3.25.html">Sealed-классы и интерфейсы</a></span></li>
+			<li><span class="file"><a href="3.26.html">Pattern мatching. Паттерн типов</a></span></li>
+			<li><span class="file"><a href="3.27.html">Pattern мatching. record-паттерн</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 5. Обработка исключений</span>
+		<ul>
+			<li><span class="file"><a href="2.10.html">Обработка исключений и конструкция try...catch...finally</a></span></li>
+			<li><span class="file"><a href="4.2.html">Классы исключений</a></span></li>
+			<li><span class="file"><a href="4.1.html">Операторы throws и throw</a></span></li>
+			<li><span class="file"><a href="4.3.html">Создание своих классов исключений</a></span></li>
+			<li><span class="file"><a href="4.4.html">Assert</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 6. Коллекции</span>
+		<ul>
+			<li><span class="file"><a href="5.1.html">Типы коллекций. Интерфейс Collection</a></span></li>
+			<li><span class="file"><a href="5.2.html">Класс ArrayList и интерфейс List</a></span></li>
+			<li><span class="file"><a href="5.6.html">Интерфейсы Comparable и Comporator. Сортировка</a></span></li>
+			<li><span class="file"><a href="5.7.html">Очереди и стеки. Классы ArrayDeque и PriorityQueue</a></span></li>
+			<li><span class="file"><a href="5.3.html">Связанный список LinkedList</a></span></li>
+			<li><span class="file"><a href="5.4.html">Интерфейс Set и хеш-таблицы HashSet</a></span></li>
+			<li><span class="file"><a href="5.5.html">Деревья TreeSet и интерфейсы SortedSet и NavigableSet</a></span></li>
+			<li><span class="file"><a href="5.8.html">Словари. Интерфейс Map и класс HashMap</a></span></li>
+			<li><span class="file"><a href="5.9.html">Интерфейсы SortedMap и NavigableMap. Класс TreeMap</a></span></li>
+			<li><span class="file"><a href="5.10.html">Итераторы. Iterator и Iterable</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 7. Потоки ввода-вывода. Работа с файлами</span>
+		<ul>
+			<li><span class="file"><a href="6.1.html">Потоки ввода-вывода</a></span></li>
+			<li><span class="file"><a href="6.3.html">Чтение и запись файлов. FileInputStream и FileOutputStream</a></span></li>
+			<li><span class="file"><a href="6.2.html">Закрытие потоков и конструкция try-с-ресурсами</a></span></li>
+			<li><span class="file"><a href="6.4.html">Классы ByteArrayInputStream и ByteArrayOutputStream</a></span></li>
+			<li><span class="file"><a href="6.5.html">Буферизованные потоки BufferedInputStream и BufferedOutputStream</a></span></li>
+			<li><span class="file"><a href="6.6.html">Форматируемый вывод. PrintStream и PrintWriter</a></span></li>
+			<li><span class="file"><a href="6.7.html">Классы DataOutputStream и DataInputStream</a></span></li>
+			<li><span class="file"><a href="6.8.html">Чтение и запись текстовых файлов</a></span></li>
+			<li><span class="file"><a href="6.9.html">Буферизация символьных потоков. BufferedReader и BufferedWriter</a></span></li>
+			<li><span class="file"><a href="6.10.html">Сериализация объектов</a></span></li>
+			<li><span class="file"><a href="6.11.html">Класс File. Работа с файлами и каталогами</a></span></li>
+			<li><span class="file"><a href="6.12.html">Работа с ZIP-архивами</a></span></li>
+			<li><span class="file"><a href="6.13.html">Класс Console</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 8. Работа со строками</span>
+		<ul>
+			<li><span class="file"><a href="7.1.html">Введение в строки. Класс String</a></span></li>
+			<li><span class="file"><a href="7.2.html">Основные операции со строками</a></span></li>
+			<li><span class="file"><a href="7.3.html">StringBuffer и StringBuilder</a></span></li>
+			<li><span class="file"><a href="7.4.html">Регулярные выражения</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 9. Многопоточное программирование</span>
+		<ul>
+			<li><span class="file"><a href="8.1.html">Многопоточное программирование и класс Thread</a></span></li>
+			<li><span class="file"><a href="8.2.html">Создание и выполнение потоков</a></span></li>
+			<li><span class="file"><a href="8.11.html">Управление потоками</a></span></li>
+			<li><span class="file"><a href="8.4.html">Завершение и прерывание потока</a></span></li>
+			<li><span class="file"><a href="8.12.html">Виртуальные потоки</a></span></li>
+			<li><span class="file"><a href="8.3.html">Синхронизация потоков. Оператор synchronized</a></span></li>
+			<li><span class="file"><a href="8.5.html">Взаимодействие потоков. Методы wait и notify</a></span></li>
+			<li><span class="file"><a href="8.6.html">Семафоры</a></span></li>
+			<li><span class="file"><a href="8.7.html">Обмен между потоками. Класс Exchanger</a></span></li>
+			<li><span class="file"><a href="8.8.html">Класс Phaser</a></span></li>
+			<li><span class="file"><a href="8.9.html">Блокировки. ReentrantLock</a></span></li>
+			<li><span class="file"><a href="8.10.html">Условия в блокировках</a></span></li>
+			<li><span class="file"><a href="8.16.html">Переменные volatile</a></span></li>
+			<li><span class="file"><a href="8.17.html">Атомарность и Atomics. Потокобезопасность без блокировок</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 10. Асинхронность</span>
+		<ul>
+			<li><span class="file"><a href="8.13.html">Асинхронные задачи FutureTask. Callable и Future</a></span></li>
+			<li><span class="file"><a href="8.14.html">Executor - исполнитель задач</a></span></li>
+			<li><span class="file"><a href="8.15.html">Координация выполнения асинхронных задач</a></span></li>
+			<li><span class="file"><a href="8.18.html">CompletableFuture и промисы. Обработка результата асинхронных задач</a></span></li>
+			<li><span class="file"><a href="8.19.html">CompletableFuture, обработка ошибок и завершения асинхронных задач</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 11. Stream API</span>
+		<ul>
+			<li><span class="file"><a href="10.1.html">Введение в Stream API</a></span></li>
+			<li><span class="file"><a href="10.2.html">Создание потока данных</a></span></li>
+			<li><span class="file"><a href="10.3.html">Фильтрация, перебор элементов и отображение</a></span></li>
+			<li><span class="file"><a href="10.8.html">Сортировка</a></span></li>
+			<li><span class="file"><a href="10.13.html">Получение подпотока и объединение потоков</a></span></li>
+			<li><span class="file"><a href="10.4.html">Методы skip и limit</a></span></li>
+			<li><span class="file"><a href="10.11.html">Операции сведения</a></span></li>
+			<li><span class="file"><a href="10.5.html">Метод reduce</a></span></li>
+			<li><span class="file"><a href="10.12.html">Тип Optional</a></span></li>
+			<li><span class="file"><a href="10.6.html">Метод collect</a></span></li>
+			<li><span class="file"><a href="10.7.html">Группировка</a></span></li>
+			<li><span class="file"><a href="10.9.html">Параллельные потоки</a></span></li>
+			<li><span class="file"><a href="10.10.html">Параллельные операции над массивами</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 12. Модульность</span>
+		<ul>
+			<li><span class="file"><a href="11.1.html">Создание модуля</a></span></li>
+			<li><span class="file"><a href="11.2.html">Зависимые модули</a></span></li>
+			<li><span class="file"><a href="11.3.html">Взаимодействие между модулями. Экспорт и импорт</a></span></li>
+		</ul>
+	</li>
+	</li>
+	<li class="closed"><span class="folder">Глава 13. Дополнительные классы</span>
+		<ul>
+			<li><span class="file"><a href="12.1.html">Математические вычисления и класс Math</a></span></li>
+			<li><span class="file"><a href="12.2.html">Большие числа BigInteger и BigDecimal</a></span></li>
+			<li><span class="file"><a href="12.3.html">Работа с датами. LocalDate</a></span></li>
+			<li><span class="file"><a href="12.4.html">Процессы. Process и ProcessBuilder</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 14. JAR-файлы и подключение библиотек и классов</span>
+		<ul>
+			<li><span class="file"><a href="13.1.html">Файлы JAR, их создание и выполнение</a></span></li>
+			<li><span class="file"><a href="13.2.html">Создание и подключение библиотеки JAR</a></span></li>
+			<li><span class="file"><a href="13.4.html">Модульный jar-файл</a></span></li>
+			<li><span class="file"><a href="13.3.html">Установка пути к классам Java</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 15. Рефлексия</span>
+		<ul>
+			<li><span class="file"><a href="14.1.html">Введение в рефлексию. Класс Class</a></span></li>
+			<li><span class="file"><a href="14.2.html">Исследование типов</a></span></li>
+			<li><span class="file"><a href="14.3.html">Поля класса и класс Field</a></span></li>
+			<li><span class="file"><a href="14.4.html">Модификаторы доступа и класс Modifier</a></span></li>
+			<li><span class="file"><a href="14.5.html">Класс Constructor и cоздание объектов</a></span></li>
+			<li><span class="file"><a href="14.6.html">Методы и класс Method</a></span></li>
+			<li><span class="file"><a href="14.7.html">Proxy (Прокси)</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 16. Аннотации</span>
+		<ul>
+			<li><span class="file"><a href="15.1.html">Введение в аннотации. Встроенные аннотации</a></span></li>
+			<li><span class="file"><a href="15.2.html">Создание и применение аннотаций</a></span></li>
+			<li><span class="file"><a href="15.3.html">Обработка аннотаций во время выполнения</a></span></li>
+		</ul>
+	</li>
+
+
+	<li class="closed"><span class="folder">Глава 17. Взаимодействие с нативным кодом</span>
+		<ul>
+			<li><span class="file"><a href="16.1.html">Java Native Interface (JNI)</a></span></li>
+			<li><span class="file"><a href="16.2.html">Foreign Functions и Memory API</a></span></li>
+			<li><span class="file"><a href="16.3.html">Арена и сегменты памяти MemorySegment</a></span></li>
+			<li><span class="file"><a href="16.4.html">Компоновка памяти MemoryLayout и работа с MemorySegment</a></span></li>
+			<li><span class="file"><a href="16.5.html">Сложные данные и MemoryLayout</a></span></li>
+			<li><span class="file"><a href="16.6.html">Поиск и вызов внешних функций</a></span></li>
+			<li><span class="file"><a href="16.7.html">Нативные функции обратного вызова</a></span></li>
+		</ul>
+	</li>
+</ul>   </div>
+</div>
+
+  <div class="item right">
+<div class="help" style="border: 0px;">
+    
+	<div class="help-item">
+		<div class="help-item-name"><a href="https://metanit.com/settings.html">Настройки</a></div>
+	 </div>
+</div>
+			<div class="help">
+
+      <div class="help-header">Помощь сайту</div>
+
+       <div class="help-item">
+		<div class="help-item-name"><a href="https://yoomoney.ru/to/410011174743222" rel="nofollow">Помощь сайту</a></div>
+	 </div>
+       
+      <div class="help-item">
+		<div class="help-item-name">Юмани:</div>
+		<div class="help-item-req">410011174743222</div>
+	 </div>
+
+		<div class="help-item">
+			<div class="help-item-name">Номер карты:</div>
+			<div class="help-item-req">4048415020898850</div>
+		</div>
+
+      </div>
+
+	
+	
+
+
+
+
+  </div>
+</div>
+
+<div id="footer" style="padding-bottom:85px;">
+
+<div class="bootomLinks">
+<a href="https://vk.com/metanit" title="Присоединиться к группе вконтакте" rel="nofollow">
+Вконтакте</a>|
+ <a href="https://t.me/devnull22" title="Подписаться на телеграм" rel="nofollow">
+Телеграм</a> | 
+<a href="https://metanit.com/donations.html" rel="nofollow">Донаты/Помощь сайту</a>
+</div>
+<p>Contacts: metanit22@mail.ru</p>
+<p>Copyright &copy; Евгений Попов, metanit.com, 2026. Все права защищены.</p>
+
+
+</div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+<script src='../../js/syntax16.js'></script>
+<script>
+// Syntax Highlighter
+if (typeof SyntaxHighlighter !== 'undefined') {
+    SyntaxHighlighter.all();
+}
+
+// Copy guard
+document.addEventListener('copy', (ev) => {
+    const et = ev.target;
+    if (et.type === 'textarea') {
+        ev.clipboardData.setData('text/plain', et.value.substring(et.selectionStart, et.selectionEnd).replace(/ /g, ' '));
+        ev.preventDefault();
+    }
+});
+
+// Mobile menu
+const faBars = document.querySelector('.fa-bars');
+if (faBars) {
+    faBars.addEventListener('click', () => {
+        const tree = document.querySelector('.item.left');
+        if (tree) {
+            tree.style.display = (tree.style.display === 'block') ? 'none' : 'block';
+        }
+    });
+}
+
+const menuButton = document.getElementById('menuButton');
+if (menuButton) {
+    menuButton.addEventListener('click', () => {
+        menuButton.classList.toggle('menu-opened');
+        const mainMenu = document.querySelector('.mainmenu');
+        if (mainMenu) mainMenu.classList.toggle('open');
+    });
+}
+
+// Search toggle
+const magGlass = document.getElementById('magnifying-glass');
+if (magGlass) {
+    magGlass.addEventListener('click', () => {
+        const search = document.getElementById('search');
+        if (search) search.classList.toggle('transp');
+    });
+}
+
+// Theme toggle
+const toggleTheme = document.getElementById('toggle-theme');
+if (toggleTheme) {
+    toggleTheme.addEventListener('click', () => {
+        if (document.documentElement.hasAttribute('theme')) {
+            document.documentElement.removeAttribute('theme');
+            document.cookie = 'theme=1;expires=Mon, 19 Feb 2001 12:00:00 UTC;path=/;';
+        } else {
+            document.documentElement.setAttribute('theme', 'dark');
+            var expire = new Date();
+            expire.setHours(expire.getHours() + 7);
+            document.cookie = 'theme=1;expires=' + expire.toUTCString() + ';path=/;';
+        }
+    });
+}
+
+// Share buttons
+const shareVK = document.querySelectorAll('.share .fa-vk');
+shareVK.forEach(e => e.addEventListener('click', () => window.open('http://vk.com/share.php?url=' + window.location.href, 'Поделиться в ВКОНТАКТЕ')));
+const shareTG = document.querySelectorAll('.share .fa-telegram');
+shareTG.forEach(e => e.addEventListener('click', () => window.open('tg://msg_url/url=' + window.location.href, 'Поделиться в Telegram')));
+const shareOK = document.querySelectorAll('.share .fa-odnoklassniki');
+shareOK.forEach(e => e.addEventListener('click', () => window.open('https://connect.ok.ru/offer?url=' + window.location.href, 'Поделиться в Одноклассниках')));
+
+// Folders
+const folders = document.getElementsByClassName('closed');
+for (let i = 0; i < folders.length; i++) {
+    folders[i].addEventListener('click', function (e) {
+        this.classList.toggle('closed');
+        this.classList.toggle('opened');
+    });
+}
+
+// Active Item Highlight
+const activePath = window.location.pathname.split('/').pop();
+const activeItem = document.querySelector(".file a[href*='" + activePath + "']");
+if (activeItem) {
+    activeItem.classList.add('aMItem');
+    activeItem.parentElement.classList.add('aMItem');
+    const activeFolder = activeItem.closest('li');
+    if (activeFolder) {
+        activeFolder.classList.remove('closed');
+        activeFolder.classList.add('opened');
+        const folderLabel = activeFolder.querySelector('.folder');
+        if (folderLabel) folderLabel.classList.add('aMItem');
+    }
+}
+
+// Settings
+const props = ['--main-font-size', '--main-font-family', '--menc-bg-color', '--container-bg-color', '--menu-bg-color', '--code-font-size', '--code-font-family', '--code-bgcolor', '--code-max-height'];
+for (let i = 0; i < props.length; i++) {
+    const propValue = localStorage.getItem(props[i]);
+    if (propValue !== null) document.documentElement.style.setProperty(props[i], propValue);
+}
+</script>
+</body>
+</html>

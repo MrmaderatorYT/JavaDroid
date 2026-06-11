@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html  lang="ru">
+<head>
+<title>Java | Процессы. Process и ProcessBuilder</title>
+<meta charset="utf-8" />
+<meta name="description" content="Управление процессами в языке программирования Java, классы Process и ProcessBuilder, создание, настройка, запуск и завершение процессов, направление вывода процессов на консоль и в файл, запуск произвольных программ">
+<meta name="viewport" content="width=device-width">
+<link href="../../style50.css@v=1.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<div id="container">
+<header>
+<div id="header">
+<div id="logo">
+<a class="logoTitle" href="https://metanit.com/" title="На главную">METANIT.COM</a>
+<div class="logoDefinition">Сайт о программировании</div> 
+</div>
+
+<div class="socbtns">
+<ul>
+<li><a title="Посмотреть меню" rel="nofollow" class="fa fa-lg fa-bars"></a></li>
+<li><a href="https://metanit.com/donations.html" title="Помощь сайту" rel="nofollow" style="color: var(--fa-usd-color);" class="fa fa-lg fa-usd"></a></li>
+<li><a href="https://vk.com/metanit" title="Группа в ВКонтакте" rel="nofollow" style="color: var(--fa-vk-color);" class="fa fa-lg fa-vk"></a></li>
+<li><a href="https://t.me/devnull22" title="Группа в Телеграмме"  class="fa fa-lg fa-tel" style="color: var(--fa-tel-color);"></a></li>
+<li><a href="https://metanit.com/android.html" title="Приложения андроид" rel="nofollow" style="color: var(--fa-android-color);" class="fa fa-lg fa-android"></a></li>
+<li><i id="toggle-theme" class="fa fa-lg fa-adjust"></i></li>
+</ul>
+</div>
+
+
+<div id="magnifying-glass"></div>
+
+<div class="menuButton" id="menuButton">
+	<span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+</div>
+</div>
+
+<div id="search" class="transp">
+<form action="https://www.google.ru" id="cse-search-box">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3716042175333627:1096498938" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" />
+    <input type="submit" name="sa" value="Найти" />
+  </div>
+</form>
+</div>
+
+<div id="menu" class="menu">
+<ul class="mainmenu">
+    <li><a href="https://metanit.com/common/">Программирование</a></li>
+    <li><a href="https://metanit.com/assembler/">Ассемблер</a></li>
+   <li><a href="https://metanit.com/sharp/">C#</a></li>
+   <li><a href="https://metanit.com/java/">Java</a></li>
+   <li><a href="https://metanit.com/web/">WEB</a></li>
+   <li><a href="https://metanit.com/python/">Python</a></li>
+   <li><a href="https://metanit.com/c/">C</a></li>
+   <li><a href="https://metanit.com/cpp/">C++</a></li>
+   <li><a href="https://metanit.com/sql/">SQL</a></li>
+   <li><a href="https://metanit.com/nosql/mongodb/">MongoDB</a></li>
+   <li><a href="https://metanit.com/go/">Go</a></li>
+   <li><a href="https://metanit.com/visualbasic/">VB.NET</a></li>
+   <li><a href="https://metanit.com/swift/tutorial/">Swift</a></li>
+   <li><a href="https://metanit.com/kotlin/">Kotlin</a></li>
+   <li><a href="https://metanit.com/dart/">Dart</a></li>
+   <li><a href="https://metanit.com/php/">PHP</a></li>
+   <li><a href="https://metanit.com/rust/">Rust</a></li>
+   <li><a href="https://metanit.com/os/">Linux</a></li>
+   <li><a href="https://metanit.com/f/">F#</a></li>
+   <!--<li><a href="//metanit.com/lisp/tutorial/">Common Lisp</a></li>-->
+   <li><a href="https://metanit.com/hosting">Хостинг</a></li>
+</ul>
+</div>
+
+</header>
+<div class="outercontainer">
+<div class="innercontainer">
+ 
+   <div class="item center menC">
+     <h1>Процессы. Process и ProcessBuilder</h1> <div class="date">Последнее обновление: 29.10.2025</div>
+	<div class="socBlock">
+	<div class="share soctop">
+	<ul>
+	<li><a title="Поделиться в Вконтакте" rel="nofollow" class="fa fa-lg fa-vk"></a></li>
+	<li><a title="Поделиться в Телеграм" rel="nofollow" class="fa fa-lg fa-telegram"></a></li>
+	<li><a title="Поделиться в Одноклассниках" rel="nofollow" class="fa fa-lg fa-odnoklassniki"></a></li>
+	
+	</ul>
+	</div>
+	</div>
+
+	<div style="margin-top:23px;margin-left:5px;">
+		
+		
+		
+	</div>
+
+	
+<p>Иногда в рамках одной программы на языке Java требуется выполнить другую, произвольную программу. И стандартная библиотека языка Java предоставляет для этой цели класс <b>Process</b>.  
+Класс <b>Process</b> выполняет команду в отдельном процессе операционной системы  и позволяет взаимодействовать с его стандартными потоками ввода, вывода и ошибок. В частности, этот класс обеспечивает управление процессами и предоставляет методы для передачи данных в процесс и, наоборот, получения данных из процесса, а также ожидания завершения процесса, 
+проверки статуса процесса и его завершения.</p>
+<h3>Создание процесса</h3>
+<p>Для создания и настройки объекта <code>Process</code> применяется класс <b>ProcessBuilder</b>. Этот класс имеет два похожих конструктора</p>
+<pre class="brush:java;">
+ProcessBuilder(String... command)
+ProcessBuilder(List&lt;String&gt; command)
+</pre>
+<p>Оба этих конструктора принимают путь к запускаемой программе и набор ее аргументов в виде строк. Например:</p>
+<pre class="brush:java;">var builder = new ProcessBuilder("java", "--version");</pre>
+<p>Первый аргумент - "java" представляет имя приложения, которае будет запускаться в процессе. Второй параметр - "--version" - аргумент, который передается приложению. То есть в данном случае будем запускать 
+команду "java --version", пытаясь получить текущую версию Java.</p>
+
+<h3>Запуск процесса</h3>
+<p>Для запуска процесса в классе <code>ProcessBuilder</code> определен метод <b>start()</b></p>
+<pre class="brush:java;">Process start()</pre>
+<p>Этот метод возвращает объект запущенного процесса. Например:</p>
+<pre class="brush:java;">
+class Program{
+ 
+    public static void main(String[] args) throws Exception{
+          
+        var builder = new ProcessBuilder("java", "--version");
+        Process javac = builder.start();
+    }
+}
+</pre>
+<p>Однако после компиляции и запуска программы мы ничего не увидим. Для этого нам надо дополнительно выполнить некоторую настройку.</p>
+
+<h3>Настройка создания процесса</h3>
+<p>С помощью ряда методов <b>ProcessBuilder</b> можно настроить создание и выполнение процесса. Все эти методы возвращают объект <code>ProcessBuilder</code>:</p>
+<ul>
+<li><p><code>ProcessBuilder command(String... command) / command(List<String> command)</code>: устанавливает запускаемую программу и аргументы для ее запускав.</p></li>
+<li><p><code>ProcessBuilder directory(File directory)</code>: устанавливает рабочий каталог для построителя процессов.</p></li>
+<li><p><code>ProcessBuilder inheritIO()</code>: устанавливает источник ввода и назначение вывода подпроцесса такими же, как у текущего процесса Java.</p></li>
+<li><p><code>ProcessBuilder redirectError(File file)</code>: устанавливает файл для вывода ошибок.</p></li>
+<li><p><code>ProcessBuilder redirectError(ProcessBuilder.Redirect destination)</code>: устанавливает стандартный вывод ошибок.</p></li>
+<li><p><code>ProcessBuilder redirectInput(File file)</code>: устанавливает файл в качестве стандартного источника ввода.</p></li>
+<li><p><code>ProcessBuilder redirectInput(ProcessBuilder.Redirect source)</code>: устанавливает источник стандартного ввода.</p></li>
+<li><p><code>ProcessBuilder redirectOutput(File file)</code>: устанавливает файл в качестве стандартного вывода.</p></li>
+<li><p><code>ProcessBuilder redirectOutput(ProcessBuilder.Redirect destination)</code>: устанавливает место вывода.</p></li></ul>
+<li><p><code>ProcessBuilder redirectErrorStream(boolean redirectErrorStream)</code>: устанавливает свойство redirectErrorStream - если оно равно <code>true</code>, то стандартный вывод и вывод ошибок производятся в одно место.</p></li>
+</ul>
+
+<p>Здесь надо отметить следующие важные аспекты:</p>
+<ul>
+<li><p><span class="b">Вывод</span>: куда будет идти вывод запускаемого процесса. Задается методом <code>redirectOutput()</code></p></li>
+<li><p><span class="b">Ввод</span>: откуда будет идти ввод данных для запускаемого процесса. Задается методом <code>redirectInput()</code></p></li>
+<li><p><span class="b">Вывод ошибок</span>: куда будет идти вывод ошибок процесса. Задается методом <code>redirectError()</code> и <code>redirectErrorStream()</code></p></li>
+</ul>
+
+<p>Мы также можем получить устанавливаемые параметры с помощью одноименных методов:</p>
+<ul>
+<li><p><code>List&lt;String>&gt; command()</code></p><p>Возвращает запускаемую программу и аргументы для ее запуска.</p></li>
+<li><p><code>File directory()</code></p><p>Возвращает рабочий каталог для построителя процессов.</p></li>
+<li><p><code>boolean redirectErrorStream()</code>: Указывает, объединяет ли этот построитель процессов стандартный вывод ошибок и стандартный вывод.</p></li>
+<li><p><code>ProcessBuilder.Redirect redirectError()</code>: Возвращает стандартный приёмник ошибок этого построителя процессов.</p></li>
+<li><p><code>ProcessBuilder.Redirect redirectInput()</code>: Возвращает стандартный источник ввода.</p></li>
+<li><p><code>ProcessBuilder.Redirect redirectOutput()</code>: Возвращает стандартный вывод.</p></li>
+</ul>
+<p>Можете указать, что потоки ввода, вывода и ошибок нового процесса должны совпадать с потоками JVM. Если пользователь запускает JVM в консоли, любой пользовательский ввод перенаправляется в процесс, 
+а вывод процесса отображается в консоли. Для этого применяется метод <b>inheritIO()</b>. Например, наша основная программа запускается в консоли, и мы хотим, чтобы запускаемый процесс также 
+выводил данные на консоль:</p>
+<pre class="brush:java;">
+class Program{
+ 
+    public static void main(String[] args) throws Exception{
+          
+        var builder = new ProcessBuilder("java", "--version");
+        Process javac = builder
+                            .inheritIO()    // запускаемый процесс наследует параметры ввода/вывода текущего процесса
+                            .start();       // запускаем процесс
+    }
+}
+</pre>
+<p>В итоге при запуске мы увидим версию Java - по сути вывод запущенного подпроцесса:</p>
+<pre class="sh">
+eugene@Eugene:/workspace/java/hello$ javac Program.java && java Program
+java 25 2025-09-16 LTS
+Java(TM) SE Runtime Environment (build 25+37-LTS-3491)
+Java HotSpot(TM) 64-Bit Server VM (build 25+37-LTS-3491, mixed mode, sharing)
+</pre>
+<p>Также можно по отдельности направить потоки подпроцесса на текущие процессы JVM. Для этого используется константа <span class="b">ProcessBuilder.Redirect.INHERIT</span></p>
+<pre class="brush:java;">
+class Program{
+ 
+    public static void main(String[] args) throws Exception{
+          
+        var builder = new ProcessBuilder("java", "--version");
+        builder
+            .redirectOutput(ProcessBuilder.Redirect.INHERIT)
+            .start();
+    }
+}
+</pre>
+<p>Еще один распространенный способ вывода - вывод в файл. Для этого в метод <code>redirectOutput()</code> передается объект <span class="b">File</span>:</p>
+<pre class="brush:java;">
+import java.nio.file.Path;
+
+class Program{
+ 
+    public static void main(String[] args) throws Exception{
+          
+        var builder = new ProcessBuilder("java", "--version");
+        builder
+            .redirectOutput(Path.of("output.txt").toFile())
+            .start();
+    }
+}
+</pre>
+<p>Здесь для создания пути применяется встроенный интерфейс <code>java.nio.file.Path</code>. С помощью статического метода <code>Path.of()</code> определяем путь к файлу. В данном случае будет использоваться 
+файл "output.txt" из текущего каталога (если такого файла нет, то он создается). А метод <code>.toFile()</code> преобразует путь <code>Path</code> в объект <code>File</code>. В итоге вывод команды 
+"java --version" будет записан в файл "output.txt"</p>
+<p>Нередо потоки вывода и ошибок пишут свои данные в один поток. Чтобы объединить потоки вывода и ошибок можно выполнить вызов</p>
+<pre class="brush:java;">builder.redirectErrorStream(true);</pre>
+<h4>Рабочий каталог</h4>
+<p>У каждого процесса есть рабочий каталог (working directory), который используется для вычисления относительных имен каталогов. По умолчанию рабочий каталог процесса совпадает с рабочим каталогом 
+виртуальной машины - обычно это каталог текущей программы на Java. С помощью метода <code>directory()</code> можно получить данный каталог в виде объекта <span class="b">File</span>:</p>
+<pre class="brush:java;">
+var builder = new ProcessBuilder("java", "--version");
+System.out.println(builder.directory());  // null - текущий каталог
+</pre>
+<p>Если метод возвращает <code>null</code>, то в качестве рабочего каталога установлен каталог текуй программы на Java.</p>
+<p>Но также можно изменить рабочий каталог с помощью одноименного метода <code>directory()</code>, который принимает объенкт File.</p>
+<p>Например, создадим в текущей папке программы новый каталог с именем "test". А в этом каталоге определим файл с именем "Main.java" и следующим содержимым:</p>
+<pre class="brush:java;">
+class Main{
+ 
+    public static void main(String[] args) throws Exception{
+          
+        System.out.println("Hello METANIT.COM");
+    }
+}
+</pre>
+<p>То есть файл Main.java из папки "test" содержит простейшую программу на Java. И допустим, мы хотим, чтобы наша программа запускала на выполнение этот файл. Для этого определеим следующую программу:</p>
+<pre class="brush:java;">
+import java.nio.file.Path;
+
+class Program{
+ 
+    public static void main(String[] args) throws Exception{
+          
+        var builder = new ProcessBuilder("java", "Main.java");
+        builder
+            .directory(Path.of("test").toFile())                // устанавливаем рабочий каталог на подкаталог "test"
+            .redirectOutput(ProcessBuilder.Redirect.INHERIT)    // устанавливаем вывод на консоль
+            .redirectErrorStream(true)                          // вывод ошибок также идет на консоль
+            .start();
+    }
+}
+</pre>
+<p>То есть фактически наша программу будет запускать команду <code>"java Main.java"</code>. И поскольку мы установили в качестве рабочего каталога подпадку "test", то процесс сможет найти файл "Main.java". 
+Запустим данную программу, и в отдельном подпроцессе будет выполняться команда <code>java Main.java</code>:</p>
+<pre class="sh">
+eugene@Eugene:/workspace/java$ java Program.java
+Hello METANIT.COM
+eugene@Eugene:/workspace/java$ 
+</pre>
+
+<div style="margin-top:23px;margin-left:5px;">
+
+<!-- Yandex.RTB R-A-201190-9 -->
+
+</div>
+
+
+<h2>Управление процессами</h2>
+<p>Класс <span class="b">Process</span> предоставляет ряд методов для управления процессом:</p>
+
+<ul>
+<li><p><code>abstract InputStream getErrorStream()</code></p><p>Возвращает входной поток, подключенный к потоку ошибок процесса.</p></li>
+<li><p><code>abstract InputStream getInputStream()</code></p><p>Возвращает поток ввода, подключенный к обычному выводу процесса.</p></li>
+<li><p><code>abstract OutputStream getOutputStream()</code></p><p>Возвращает поток вывода, подключенный к обычному вводу процесса.</p></li>
+
+<li><p><code>final BufferedReader errorReader()</code></p><p>Возвращает объект BufferedReader, подключенный к стандартному потоку ошибок процесса.</p></li>
+<li><p><code>final BufferedReader inputReader()</code></p><p>Возвращает объект BufferedReader, подключенный к стандартному выводу процесса.</p></li>
+<li><p><code>final BufferedWriter outputWriter()</code></p><p>Возвращает объект BufferedWriter, подключенный к обычному входу процесса, используя собственную кодировку.</p></li>
+
+<li><p><code>Stream&lt;ProcessHandle&gt; children()</code></p><p>Возвращает поток прямых дочерних процессов процесса.</p></li>
+<li><p><code>Stream&lt;ProcessHandle&gt; descendants()</code></p><p>Возвращает поток потомков процесса.</p></li>
+
+<li><p><code>abstract void destroy()</code></p><p>Завершает процесс.</p></li>
+<li><p><code>Process destroyForcibly()</code></p><p>Принудительно завершает процесс.</p></li>
+
+<li><p><code>boolean isAlive()</code></p><p>Проверяет, активен ли запущенный процесс.</p></li>
+<li><p><code>long pid()</code></p><p>Возвращает идентификатор запущенного процесса.</p></li>
+<li><p><code>ProcessHandle toHandle()</code></p><p>Возвращает объект ProcessHandle для процесса.</p></li>
+
+<li><p><code>CompletableFuture<Process> onExit()</code></p><p>Возвращает объект CompletableFuture<Process> для завершения процесса.</p></li>
+<li><p><code>boolean supportsNormalTermination()</code></p><p>Возвращает true, если метод destroy() завершает процесс нормально. Возвращает false, если метод destroy завершает процесс принудительно и немедленно.</p></li>
+
+<li><p><code>abstract int waitFor()</code></p><p>При необходимости заставляет текущий поток ожидать завершения запущенного процесса. Модификации метода позволяют передать период ожидания до завершения процесса</p>
+<p><code>boolean waitFor(long timeout, TimeUnit unit)</code></p><p><code>boolean waitFor(Duration duration)</code></p>
+</li>
+</ul>
+<h3>Получение потоков ввода-вывода процесса</h3>
+<p>Ряд методов позволяют получить потоки ввода-вывода процесса:</p>
+
+<ul>
+<li><p><code>abstract InputStream getErrorStream()</code></p><p>Возвращает входной поток, подключенный к потоку ошибок процесса.</p></li>
+<li><p><code>abstract InputStream getInputStream()</code></p><p>Возвращает поток ввода, подключенный к обычному выводу процесса.</p></li>
+<li><p><code>abstract OutputStream getOutputStream()</code></p><p>Возвращает поток вывода, подключенный к обычному вводу процесса.</p></li>
+<li><p><code>final BufferedReader errorReader()</code></p><p>Возвращает объект BufferedReader, подключенный к стандартному потоку ошибок процесса.</p></li>
+<li><p><code>final BufferedReader inputReader()</code></p><p>Возвращает объект BufferedReader, подключенный к стандартному выводу процесса.</p></li>
+<li><p><code>final BufferedWriter outputWriter()</code></p><p>Возвращает объект BufferedWriter, подключенный к обычному входу процесса, используя собственную кодировку.</p></li>
+</ul>
+<p>Конечно, мы можем в целом перенаправить поток вывода или ошибок в заданное место (например, в файл или на консоль). Однако потоки ввода-вывода позволяют вручную настроить взаимодействие с потоком. Например:</p>
+<pre class="brush:java;">
+import java.util.Scanner;
+
+class Program{
+ 
+    public static void main(String[] args) throws Exception{
+          
+        var builder = new ProcessBuilder("java", "--version");
+        Process process = builder.start();
+        try (var in = new Scanner(process.getInputStream()))
+        {
+            int i = 0;
+            // проходим по каждой строке из потока
+            while (in.hasNextLine()){
+                // при выводе на консоль добавляем перед строкой ее номер
+                System.out.println(++i + ". " + in.nextLine());
+            }
+        }
+    }
+}
+</pre>
+<p>В данном случае запускаем команду <code>"java --version"</code>, которая выводит версию Java. Но этот вывод может включать в себя несколько строк. И в данном случае мы вручную обрабатываем кажду строку из входного потока, 
+добавляя к строке вначале ее номер. В итоге мы получим консольный вывод на подобие следующего:</p>
+<pre class="sh">
+1. java 25 2025-09-16 LTS
+2. Java(TM) SE Runtime Environment (build 25+37-LTS-3491)
+3. Java HotSpot(TM) 64-Bit Server VM (build 25+37-LTS-3491, mixed mode, sharing)
+</pre>
+<p>Аналогично можно было бы получить поток ввода с помощью другого метода:</p>
+<pre class="brush:java;">
+class Program{
+ 
+    public static void main(String[] args) throws Exception{
+          
+        var builder = new ProcessBuilder("java", "--version");
+        Process process = builder.start();
+        try (var in = process.inputReader();)
+        {
+            int i = 0;
+            String s;
+            // считываем построчно
+            while ((s = in.readLine())!=null){
+                System.out.println(++i + ". " + s);
+            }
+        }
+    }
+}
+</pre>
+<p>Стоит отметить, что буферное пространство для потоков процессов ограничено. Поэтому не следует перегружать входные данные, а выходные следует считывать быстро.</p>
+<h3>Завершение процесса</h3>
+<h4>destroy и destroyForcibly</h4>
+<p>Для завершения процесса применяются методы <b>destroy()</b> либо <b>destroyForcibly()</b>.</p>
+<pre class="brush:java;">
+process.destroy();
+// или
+process.destroyForcibly();
+</pre>
+<p>Разница между ними зависит от платформы. В UNIX-подобных системах (например, в Linux) метод destroy()
+ завершает процесс с помощью сигнала <b>SIGTERM</b>, а <b>destroyForcibly()</b> - с помощью сигнала <b>SIGKILL</b>. (Метод <b>supportsNormalTermination()</b> возвращает <code>true</code>, 
+если метод <b>destroy()</b> может завершить процесс нормально.)</p>
+<p>Уничтожение процесса подает операционной системе сигнал о необходимости его завершения. Операционная система должна очистить и освободить ресурсы этого процесса.
+ Обычно файловые дескрипторы и дескрипторы закрываются. При их закрытии все соединения с другими процессами разрываются.</p>
+
+<h4>Ожидание завершения процесса и waitFor</h4>
+<p>Чтобы дождаться завершения процесса, можно вызвать метод <code>waitFor()</code>:</p>
+<pre class="brush:java;">int result = process.waitFor();</pre>
+<p>Этот метод возвращает числовой код завершения процесса (по соглашению, 0 в случае успешного завершения или ненулевой код ошибки).</p>
+<p>Однако этот метод неограничен по времени. Чтобы ограничить время ожидания, можно применить другую версию метода, которая принимает временной интервал:</p>
+<pre class="brush:java;">
+long delay = 10; // период ожидания
+if (process.waitFor(delay, TimeUnit.SECONDS)){
+
+    int result = process.exitValue();
+}
+else{
+
+    process.destroyForcibly();
+}
+</pre>
+<p>Здесь вызов <code>process.waitFor()</code> возвращает <code>true</code>, если время ожидания процесса не истекло. В этом случае с помощью метода <code>exitValue()</code> 
+получаем статусный код завершения.</p>
+<h4>Асинхронное уведомление о завершении процесса и onExit()</h4>
+<p>С помощью метода <b>onExit()</b> можно получить асинхронное уведомление о завершении процесса. Этот метод возвращает объект <code>CompletableFuture&lt;Process&gt;</code>, 
+который можно использовать для планирования любого действия по завершении процесса:</p>
+<pre class="brush:java;">
+class Program{
+ 
+    public static void main(String[] args) throws Exception{
+          
+        var builder = new ProcessBuilder("java", "--version");
+        Process process = builder.redirectOutput(ProcessBuilder.Redirect.INHERIT).start();
+        process.onExit().thenAccept(p -&gt; System.out.println("Процесс завершился с кодом: " + p.exitValue()));
+        Thread.sleep(500); // задержка, что успел отработать
+    }
+}
+</pre>
+	
+
+	<div style="margin-top:25px;">
+
+	
+	</div>
+
+	<div class="nav"><p><a href="12.3.html">Назад</a><a href="index.html">Содержание</a><a href="13.1.html">Вперед</a></p></div>
+	<div class="socBlock">
+	<div class="share soctop">
+	<ul>
+	<li><a title="Поделиться в Вконтакте" rel="nofollow" class="fa fa-lg fa-vk"></a></li>
+	<li><a title="Поделиться в Телеграм" rel="nofollow" class="fa fa-lg fa-telegram"></a></li>
+	<li><a title="Поделиться в Одноклассниках" rel="nofollow" class="fa fa-lg fa-odnoklassniki"></a></li>
+	
+	</ul>
+	</div>
+	</div>
+  </div>
+
+	<div class="item left">
+     <ul id="browser" class="filetree"> 
+	<li class="closed"><span class="folder">Глава 1. Введение в Java</span>
+		<ul>
+			<li><span class="file"><a href="1.1.html">Что такое Java</a></span></li>
+			<li><span class="file"><a href="1.6.html">Установка JDK</a></span></li>
+			<li><span class="file"><a href="1.2.html">Первая программа на Java</a></span></li>
+			<li><span class="file"><a href="1.5.html">Первая программа в IntelliJ IDEA</a></span></li>
+			<li><span class="file"><a href="1.3.html">Первая программа в NetBeans</a></span></li>
+			<li><span class="file"><a href="1.4.html">Первая программа в Eclipse</a></span></li>
+			<li><span class="file"><a href="1.7.html">JShell</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 2. Основы программирования на Java</span>
+		<ul>
+			<li><span class="file"><a href="2.11.html">Структура программы</a></span></li>
+			<li><span class="file"><a href="2.1.html">Переменные и константы</a></span></li>
+			<li><span class="file"><a href="2.19.html">Литералы</a></span></li>
+			<li><span class="file"><a href="2.12.html">Типы данных</a></span></li>
+			<li><span class="file"><a href="2.9.html">Консольный ввод/вывод в Java</a></span></li>
+			<li><span class="file"><a href="2.3.html">Арифметические операции</a></span></li>
+			<li><span class="file"><a href="2.13.html">Поразрядные операции</a></span></li>
+			<li><span class="file"><a href="2.14.html">Условные выражения</a></span></li>
+			<li><span class="file"><a href="2.15.html">Операции присваивания и приоритет операций</a></span></li>
+			<li><span class="file"><a href="2.2.html">Преобразования базовых типов данных</a></span></li>
+			<li><span class="file"><a href="2.5.html">Условные конструкции</a></span></li>
+			<li><span class="file"><a href="2.6.html">Циклы</a></span></li>
+			<li><span class="file"><a href="2.4.html">Массивы</a></span></li>
+			<li><span class="file"><a href="2.20.html">Конструкция и выражение switch</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 3. Классы</span>
+		<ul>
+			<li><span class="file"><a href="3.1.html">Классы и объекты</a></span></li>
+
+
+			<li><span class="file"><a href="2.7.html">Методы</a></span></li>
+			<li><span class="file"><a href="2.16.html">Параметры методов</a></span></li>
+			<li><span class="file"><a href="3.14.html">Объекты как параметры методов</a></span></li>
+			<li><span class="file"><a href="2.17.html">Оператор return. Результат метода</a></span></li>
+			<li><span class="file"><a href="2.18.html">Перегрузка методов</a></span></li>
+			<li><span class="file"><a href="3.21.html">Конструкторы и инициализаторы</a></span></li>
+
+
+			<li><span class="file"><a href="3.4.html">Статические компоненты класса и модификатор static</a></span></li>
+			<li><span class="file"><a href="3.20.html">Область действия и время жизни переменных</a></span></li>
+			<li><span class="file"><a href="2.8.html">Рекурсивные функции</a></span></li>
+			<li><span class="file"><a href="3.2.html">Пакеты</a></span></li>
+			<li><span class="file"><a href="3.3.html">Модификаторы доступа</a></span></li>
+			<li><span class="file"><a href="3.19.html">Компактные файлы кода и метод main</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 4. Объектно-ориентированное программирование</span>
+		<ul>
+			<li><span class="file"><a href="3.22.html">Инкапсуляция</a></span></li>
+			<li><span class="file"><a href="3.5.html">Наследование</a></span></li>
+			<li><span class="file"><a href="3.23.html">Запрет наследования и переопределения методов</a></span></li>
+			<li><span class="file"><a href="3.24.html">Полиморфизм и динамическая диспетчеризация методов</a></span></li>
+			<li><span class="file"><a href="3.9.html">Класс Object и его методы</a></span></li>
+			<li><span class="file"><a href="3.6.html">Абстрактные классы</a></span></li>
+			<li><span class="file"><a href="3.10.html">Иерархия наследования и преобразование типов</a></span></li>
+
+			<li><span class="file"><a href="3.7.html">Интерфейсы</a></span></li>
+			<li><span class="file"><a href="3.28.html">Интерфейсы и полиморфизм</a></span></li>
+			<li><span class="file"><a href="3.29.html">Множественная реализация и наследование интерфейсов</a></span></li>
+			<li><span class="file"><a href="3.16.html">Интерфейсы в механизме обратного вызова</a></span></li>
+			<li><span class="file"><a href="3.8.html">Перечисления enum</a></span></li>
+			<li><span class="file"><a href="3.11.html">Обобщения (Generics)</a></span></li>
+			<li><span class="file"><a href="3.17.html">Ограничения обобщений</a></span></li>
+			<li><span class="file"><a href="3.15.html">Наследование и обобщения</a></span></li>
+			<li><span class="file"><a href="3.31.html">Type Erasure (Стирание типов)</a></span></li>
+			<li><span class="file"><a href="3.32.html">Подстановочные знаки wildcards в обобщениях</a></span></li>
+			<li><span class="file"><a href="3.13.html">Ссылочные типы и клонирование объектов</a></span></li>
+			<li><span class="file"><a href="3.18.html">Классы Records</a></span></li>
+			<li><span class="file"><a href="9.4.html">Функциональные интерфейсы и ссылки на методы</a></span></li>
+			<li><span class="file"><a href="9.1.html">Лямбда-выражения</a></span></li>
+			<li><span class="file"><a href="9.2.html">Лямбды как параметры и результаты методов</a></span></li>
+			<li><span class="file"><a href="9.3.html">Встроенные функциональные интерфейсы</a></span></li>
+			<li><span class="file"><a href="3.12.html">Внутренние и вложенные классы</a></span></li>
+			<li><span class="file"><a href="3.30.html">Анонимные классы</a></span></li>
+
+
+			<li><span class="file"><a href="3.25.html">Sealed-классы и интерфейсы</a></span></li>
+			<li><span class="file"><a href="3.26.html">Pattern мatching. Паттерн типов</a></span></li>
+			<li><span class="file"><a href="3.27.html">Pattern мatching. record-паттерн</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 5. Обработка исключений</span>
+		<ul>
+			<li><span class="file"><a href="2.10.html">Обработка исключений и конструкция try...catch...finally</a></span></li>
+			<li><span class="file"><a href="4.2.html">Классы исключений</a></span></li>
+			<li><span class="file"><a href="4.1.html">Операторы throws и throw</a></span></li>
+			<li><span class="file"><a href="4.3.html">Создание своих классов исключений</a></span></li>
+			<li><span class="file"><a href="4.4.html">Assert</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 6. Коллекции</span>
+		<ul>
+			<li><span class="file"><a href="5.1.html">Типы коллекций. Интерфейс Collection</a></span></li>
+			<li><span class="file"><a href="5.2.html">Класс ArrayList и интерфейс List</a></span></li>
+			<li><span class="file"><a href="5.6.html">Интерфейсы Comparable и Comporator. Сортировка</a></span></li>
+			<li><span class="file"><a href="5.7.html">Очереди и стеки. Классы ArrayDeque и PriorityQueue</a></span></li>
+			<li><span class="file"><a href="5.3.html">Связанный список LinkedList</a></span></li>
+			<li><span class="file"><a href="5.4.html">Интерфейс Set и хеш-таблицы HashSet</a></span></li>
+			<li><span class="file"><a href="5.5.html">Деревья TreeSet и интерфейсы SortedSet и NavigableSet</a></span></li>
+			<li><span class="file"><a href="5.8.html">Словари. Интерфейс Map и класс HashMap</a></span></li>
+			<li><span class="file"><a href="5.9.html">Интерфейсы SortedMap и NavigableMap. Класс TreeMap</a></span></li>
+			<li><span class="file"><a href="5.10.html">Итераторы. Iterator и Iterable</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 7. Потоки ввода-вывода. Работа с файлами</span>
+		<ul>
+			<li><span class="file"><a href="6.1.html">Потоки ввода-вывода</a></span></li>
+			<li><span class="file"><a href="6.3.html">Чтение и запись файлов. FileInputStream и FileOutputStream</a></span></li>
+			<li><span class="file"><a href="6.2.html">Закрытие потоков и конструкция try-с-ресурсами</a></span></li>
+			<li><span class="file"><a href="6.4.html">Классы ByteArrayInputStream и ByteArrayOutputStream</a></span></li>
+			<li><span class="file"><a href="6.5.html">Буферизованные потоки BufferedInputStream и BufferedOutputStream</a></span></li>
+			<li><span class="file"><a href="6.6.html">Форматируемый вывод. PrintStream и PrintWriter</a></span></li>
+			<li><span class="file"><a href="6.7.html">Классы DataOutputStream и DataInputStream</a></span></li>
+			<li><span class="file"><a href="6.8.html">Чтение и запись текстовых файлов</a></span></li>
+			<li><span class="file"><a href="6.9.html">Буферизация символьных потоков. BufferedReader и BufferedWriter</a></span></li>
+			<li><span class="file"><a href="6.10.html">Сериализация объектов</a></span></li>
+			<li><span class="file"><a href="6.11.html">Класс File. Работа с файлами и каталогами</a></span></li>
+			<li><span class="file"><a href="6.12.html">Работа с ZIP-архивами</a></span></li>
+			<li><span class="file"><a href="6.13.html">Класс Console</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 8. Работа со строками</span>
+		<ul>
+			<li><span class="file"><a href="7.1.html">Введение в строки. Класс String</a></span></li>
+			<li><span class="file"><a href="7.2.html">Основные операции со строками</a></span></li>
+			<li><span class="file"><a href="7.3.html">StringBuffer и StringBuilder</a></span></li>
+			<li><span class="file"><a href="7.4.html">Регулярные выражения</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 9. Многопоточное программирование</span>
+		<ul>
+			<li><span class="file"><a href="8.1.html">Многопоточное программирование и класс Thread</a></span></li>
+			<li><span class="file"><a href="8.2.html">Создание и выполнение потоков</a></span></li>
+			<li><span class="file"><a href="8.11.html">Управление потоками</a></span></li>
+			<li><span class="file"><a href="8.4.html">Завершение и прерывание потока</a></span></li>
+			<li><span class="file"><a href="8.12.html">Виртуальные потоки</a></span></li>
+			<li><span class="file"><a href="8.3.html">Синхронизация потоков. Оператор synchronized</a></span></li>
+			<li><span class="file"><a href="8.5.html">Взаимодействие потоков. Методы wait и notify</a></span></li>
+			<li><span class="file"><a href="8.6.html">Семафоры</a></span></li>
+			<li><span class="file"><a href="8.7.html">Обмен между потоками. Класс Exchanger</a></span></li>
+			<li><span class="file"><a href="8.8.html">Класс Phaser</a></span></li>
+			<li><span class="file"><a href="8.9.html">Блокировки. ReentrantLock</a></span></li>
+			<li><span class="file"><a href="8.10.html">Условия в блокировках</a></span></li>
+			<li><span class="file"><a href="8.16.html">Переменные volatile</a></span></li>
+			<li><span class="file"><a href="8.17.html">Атомарность и Atomics. Потокобезопасность без блокировок</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 10. Асинхронность</span>
+		<ul>
+			<li><span class="file"><a href="8.13.html">Асинхронные задачи FutureTask. Callable и Future</a></span></li>
+			<li><span class="file"><a href="8.14.html">Executor - исполнитель задач</a></span></li>
+			<li><span class="file"><a href="8.15.html">Координация выполнения асинхронных задач</a></span></li>
+			<li><span class="file"><a href="8.18.html">CompletableFuture и промисы. Обработка результата асинхронных задач</a></span></li>
+			<li><span class="file"><a href="8.19.html">CompletableFuture, обработка ошибок и завершения асинхронных задач</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 11. Stream API</span>
+		<ul>
+			<li><span class="file"><a href="10.1.html">Введение в Stream API</a></span></li>
+			<li><span class="file"><a href="10.2.html">Создание потока данных</a></span></li>
+			<li><span class="file"><a href="10.3.html">Фильтрация, перебор элементов и отображение</a></span></li>
+			<li><span class="file"><a href="10.8.html">Сортировка</a></span></li>
+			<li><span class="file"><a href="10.13.html">Получение подпотока и объединение потоков</a></span></li>
+			<li><span class="file"><a href="10.4.html">Методы skip и limit</a></span></li>
+			<li><span class="file"><a href="10.11.html">Операции сведения</a></span></li>
+			<li><span class="file"><a href="10.5.html">Метод reduce</a></span></li>
+			<li><span class="file"><a href="10.12.html">Тип Optional</a></span></li>
+			<li><span class="file"><a href="10.6.html">Метод collect</a></span></li>
+			<li><span class="file"><a href="10.7.html">Группировка</a></span></li>
+			<li><span class="file"><a href="10.9.html">Параллельные потоки</a></span></li>
+			<li><span class="file"><a href="10.10.html">Параллельные операции над массивами</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 12. Модульность</span>
+		<ul>
+			<li><span class="file"><a href="11.1.html">Создание модуля</a></span></li>
+			<li><span class="file"><a href="11.2.html">Зависимые модули</a></span></li>
+			<li><span class="file"><a href="11.3.html">Взаимодействие между модулями. Экспорт и импорт</a></span></li>
+		</ul>
+	</li>
+	</li>
+	<li class="closed"><span class="folder">Глава 13. Дополнительные классы</span>
+		<ul>
+			<li><span class="file"><a href="12.1.html">Математические вычисления и класс Math</a></span></li>
+			<li><span class="file"><a href="12.2.html">Большие числа BigInteger и BigDecimal</a></span></li>
+			<li><span class="file"><a href="12.3.html">Работа с датами. LocalDate</a></span></li>
+			<li><span class="file"><a href="12.4.html">Процессы. Process и ProcessBuilder</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 14. JAR-файлы и подключение библиотек и классов</span>
+		<ul>
+			<li><span class="file"><a href="13.1.html">Файлы JAR, их создание и выполнение</a></span></li>
+			<li><span class="file"><a href="13.2.html">Создание и подключение библиотеки JAR</a></span></li>
+			<li><span class="file"><a href="13.4.html">Модульный jar-файл</a></span></li>
+			<li><span class="file"><a href="13.3.html">Установка пути к классам Java</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 15. Рефлексия</span>
+		<ul>
+			<li><span class="file"><a href="14.1.html">Введение в рефлексию. Класс Class</a></span></li>
+			<li><span class="file"><a href="14.2.html">Исследование типов</a></span></li>
+			<li><span class="file"><a href="14.3.html">Поля класса и класс Field</a></span></li>
+			<li><span class="file"><a href="14.4.html">Модификаторы доступа и класс Modifier</a></span></li>
+			<li><span class="file"><a href="14.5.html">Класс Constructor и cоздание объектов</a></span></li>
+			<li><span class="file"><a href="14.6.html">Методы и класс Method</a></span></li>
+			<li><span class="file"><a href="14.7.html">Proxy (Прокси)</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 16. Аннотации</span>
+		<ul>
+			<li><span class="file"><a href="15.1.html">Введение в аннотации. Встроенные аннотации</a></span></li>
+			<li><span class="file"><a href="15.2.html">Создание и применение аннотаций</a></span></li>
+			<li><span class="file"><a href="15.3.html">Обработка аннотаций во время выполнения</a></span></li>
+		</ul>
+	</li>
+
+
+	<li class="closed"><span class="folder">Глава 17. Взаимодействие с нативным кодом</span>
+		<ul>
+			<li><span class="file"><a href="16.1.html">Java Native Interface (JNI)</a></span></li>
+			<li><span class="file"><a href="16.2.html">Foreign Functions и Memory API</a></span></li>
+			<li><span class="file"><a href="16.3.html">Арена и сегменты памяти MemorySegment</a></span></li>
+			<li><span class="file"><a href="16.4.html">Компоновка памяти MemoryLayout и работа с MemorySegment</a></span></li>
+			<li><span class="file"><a href="16.5.html">Сложные данные и MemoryLayout</a></span></li>
+			<li><span class="file"><a href="16.6.html">Поиск и вызов внешних функций</a></span></li>
+			<li><span class="file"><a href="16.7.html">Нативные функции обратного вызова</a></span></li>
+		</ul>
+	</li>
+</ul>   </div>
+</div>
+
+  <div class="item right">
+<div class="help" style="border: 0px;">
+    
+	<div class="help-item">
+		<div class="help-item-name"><a href="https://metanit.com/settings.html">Настройки</a></div>
+	 </div>
+</div>
+			<div class="help">
+
+      <div class="help-header">Помощь сайту</div>
+
+       <div class="help-item">
+		<div class="help-item-name"><a href="https://yoomoney.ru/to/410011174743222" rel="nofollow">Помощь сайту</a></div>
+	 </div>
+       
+      <div class="help-item">
+		<div class="help-item-name">Юмани:</div>
+		<div class="help-item-req">410011174743222</div>
+	 </div>
+
+		<div class="help-item">
+			<div class="help-item-name">Номер карты:</div>
+			<div class="help-item-req">4048415020898850</div>
+		</div>
+
+      </div>
+
+	
+	
+
+
+
+
+  </div>
+</div>
+
+<div id="footer" style="padding-bottom:85px;">
+
+<div class="bootomLinks">
+<a href="https://vk.com/metanit" title="Присоединиться к группе вконтакте" rel="nofollow">
+Вконтакте</a>|
+ <a href="https://t.me/devnull22" title="Подписаться на телеграм" rel="nofollow">
+Телеграм</a> | 
+<a href="https://metanit.com/donations.html" rel="nofollow">Донаты/Помощь сайту</a>
+</div>
+<p>Contacts: metanit22@mail.ru</p>
+<p>Copyright &copy; Евгений Попов, metanit.com, 2026. Все права защищены.</p>
+
+
+</div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+<script src='../../js/syntax16.js'></script>
+<script>
+// Syntax Highlighter
+if (typeof SyntaxHighlighter !== 'undefined') {
+    SyntaxHighlighter.all();
+}
+
+// Copy guard
+document.addEventListener('copy', (ev) => {
+    const et = ev.target;
+    if (et.type === 'textarea') {
+        ev.clipboardData.setData('text/plain', et.value.substring(et.selectionStart, et.selectionEnd).replace(/ /g, ' '));
+        ev.preventDefault();
+    }
+});
+
+// Mobile menu
+const faBars = document.querySelector('.fa-bars');
+if (faBars) {
+    faBars.addEventListener('click', () => {
+        const tree = document.querySelector('.item.left');
+        if (tree) {
+            tree.style.display = (tree.style.display === 'block') ? 'none' : 'block';
+        }
+    });
+}
+
+const menuButton = document.getElementById('menuButton');
+if (menuButton) {
+    menuButton.addEventListener('click', () => {
+        menuButton.classList.toggle('menu-opened');
+        const mainMenu = document.querySelector('.mainmenu');
+        if (mainMenu) mainMenu.classList.toggle('open');
+    });
+}
+
+// Search toggle
+const magGlass = document.getElementById('magnifying-glass');
+if (magGlass) {
+    magGlass.addEventListener('click', () => {
+        const search = document.getElementById('search');
+        if (search) search.classList.toggle('transp');
+    });
+}
+
+// Theme toggle
+const toggleTheme = document.getElementById('toggle-theme');
+if (toggleTheme) {
+    toggleTheme.addEventListener('click', () => {
+        if (document.documentElement.hasAttribute('theme')) {
+            document.documentElement.removeAttribute('theme');
+            document.cookie = 'theme=1;expires=Mon, 19 Feb 2001 12:00:00 UTC;path=/;';
+        } else {
+            document.documentElement.setAttribute('theme', 'dark');
+            var expire = new Date();
+            expire.setHours(expire.getHours() + 7);
+            document.cookie = 'theme=1;expires=' + expire.toUTCString() + ';path=/;';
+        }
+    });
+}
+
+// Share buttons
+const shareVK = document.querySelectorAll('.share .fa-vk');
+shareVK.forEach(e => e.addEventListener('click', () => window.open('http://vk.com/share.php?url=' + window.location.href, 'Поделиться в ВКОНТАКТЕ')));
+const shareTG = document.querySelectorAll('.share .fa-telegram');
+shareTG.forEach(e => e.addEventListener('click', () => window.open('tg://msg_url/url=' + window.location.href, 'Поделиться в Telegram')));
+const shareOK = document.querySelectorAll('.share .fa-odnoklassniki');
+shareOK.forEach(e => e.addEventListener('click', () => window.open('https://connect.ok.ru/offer?url=' + window.location.href, 'Поделиться в Одноклассниках')));
+
+// Folders
+const folders = document.getElementsByClassName('closed');
+for (let i = 0; i < folders.length; i++) {
+    folders[i].addEventListener('click', function (e) {
+        this.classList.toggle('closed');
+        this.classList.toggle('opened');
+    });
+}
+
+// Active Item Highlight
+const activePath = window.location.pathname.split('/').pop();
+const activeItem = document.querySelector(".file a[href*='" + activePath + "']");
+if (activeItem) {
+    activeItem.classList.add('aMItem');
+    activeItem.parentElement.classList.add('aMItem');
+    const activeFolder = activeItem.closest('li');
+    if (activeFolder) {
+        activeFolder.classList.remove('closed');
+        activeFolder.classList.add('opened');
+        const folderLabel = activeFolder.querySelector('.folder');
+        if (folderLabel) folderLabel.classList.add('aMItem');
+    }
+}
+
+// Settings
+const props = ['--main-font-size', '--main-font-family', '--menc-bg-color', '--container-bg-color', '--menu-bg-color', '--code-font-size', '--code-font-family', '--code-bgcolor', '--code-max-height'];
+for (let i = 0; i < props.length; i++) {
+    const propValue = localStorage.getItem(props[i]);
+    if (propValue !== null) document.documentElement.style.setProperty(props[i], propValue);
+}
+</script>
+</body>
+</html>

@@ -237,7 +237,10 @@ public class WelcomeActivity extends AppCompatActivity {
 
         View sidebarLearn = findViewById(R.id.sidebarLearn);
         if (sidebarLearn != null) {
-            sidebarLearn.setOnClickListener(v -> Toast.makeText(this, R.string.soon_in_development, Toast.LENGTH_SHORT).show());
+            sidebarLearn.setOnClickListener(v -> {
+                Intent intent = new Intent(this, LearnActivity.class);
+                startActivity(intent);
+            });
         }
     }
 

@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html  lang="ru">
+<head>
+<title>Java | JShell</title>
+<meta charset="utf-8" />
+<meta name="description" content="Выполнение программ на языке программирования Java в среде JShell и облочка REPL, автодополнение">
+<meta name="viewport" content="width=device-width">
+<link href="../../style50.css@v=1.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<div id="container">
+<header>
+<div id="header">
+<div id="logo">
+<a class="logoTitle" href="https://metanit.com/" title="На главную">METANIT.COM</a>
+<div class="logoDefinition">Сайт о программировании</div> 
+</div>
+
+<div class="socbtns">
+<ul>
+<li><a title="Посмотреть меню" rel="nofollow" class="fa fa-lg fa-bars"></a></li>
+<li><a href="https://metanit.com/donations.html" title="Помощь сайту" rel="nofollow" style="color: var(--fa-usd-color);" class="fa fa-lg fa-usd"></a></li>
+<li><a href="https://vk.com/metanit" title="Группа в ВКонтакте" rel="nofollow" style="color: var(--fa-vk-color);" class="fa fa-lg fa-vk"></a></li>
+<li><a href="https://t.me/devnull22" title="Группа в Телеграмме"  class="fa fa-lg fa-tel" style="color: var(--fa-tel-color);"></a></li>
+<li><a href="https://metanit.com/android.html" title="Приложения андроид" rel="nofollow" style="color: var(--fa-android-color);" class="fa fa-lg fa-android"></a></li>
+<li><i id="toggle-theme" class="fa fa-lg fa-adjust"></i></li>
+</ul>
+</div>
+
+
+<div id="magnifying-glass"></div>
+
+<div class="menuButton" id="menuButton">
+	<span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+</div>
+</div>
+
+<div id="search" class="transp">
+<form action="https://www.google.ru" id="cse-search-box">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3716042175333627:1096498938" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" />
+    <input type="submit" name="sa" value="Найти" />
+  </div>
+</form>
+</div>
+
+<div id="menu" class="menu">
+<ul class="mainmenu">
+    <li><a href="https://metanit.com/common/">Програмування</a></li>
+    <li><a href="https://metanit.com/assembler/">Асемблер</a></li>
+   <li><a href="https://metanit.com/sharp/">C#</a></li>
+   <li><a href="https://metanit.com/java/">Java</a></li>
+   <li><a href="https://metanit.com/web/">WEB</a></li>
+   <li><a href="https://metanit.com/python/">Python</a></li>
+   <li><a href="https://metanit.com/c/">C</a></li>
+   <li><a href="https://metanit.com/cpp/">C++</a></li>
+   <li><a href="https://metanit.com/sql/">SQL</a></li>
+   <li><a href="https://metanit.com/nosql/mongodb/">MongoDB</a></li>
+   <li><a href="https://metanit.com/go/">Go</a></li>
+   <li><a href="https://metanit.com/visualbasic/">VB.NET</a></li>
+   <li><a href="https://metanit.com/swift/tutorial/">Swift</a></li>
+   <li><a href="https://metanit.com/kotlin/">Kotlin</a></li>
+   <li><a href="https://metanit.com/dart/">Dart</a></li>
+   <li><a href="https://metanit.com/php/">PHP</a></li>
+   <li><a href="https://metanit.com/rust/">Rust</a></li>
+   <li><a href="https://metanit.com/os/">Linux</a></li>
+   <li><a href="https://metanit.com/f/">F#</a></li>
+   <!--<li><a href="//metanit.com/lisp/tutorial/">Common Lisp</a></li>-->
+   <li><a href="https://metanit.com/hosting">Хостинг</a></li>
+</ul>
+</div>
+
+</header>
+<div class="outercontainer">
+<div class="innercontainer">
+ 
+   <div class="item center menC">
+     <h1>JShell</h1><div class="date">Последнее обновление: 16.09.2025</div>
+	<div class="socBlock">
+	<div class="share soctop">
+	<ul>
+	<li><a title="Поделиться в Вконтакте" rel="nofollow" class="fa fa-lg fa-vk"></a></li>
+	<li><a title="Поделиться в Телеграм" rel="nofollow" class="fa fa-lg fa-telegram"></a></li>
+	<li><a title="Поделиться в Одноклассниках" rel="nofollow" class="fa fa-lg fa-odnoklassniki"></a></li>
+	
+	</ul>
+	</div>
+	</div>
+
+	<div style="margin-top:23px;margin-left:5px;">
+		
+		
+		
+	</div>
+
+	
+<p>Консольная утилита <b>JShell</b> предоставляет функциональность "read-evaluate-print loop" или REPL (цикл "чтение-вычисление-вывод"). В этой программе вы вводите выражение языка Java, и 
+JShell оценивает и выполняет это выражение, выводит результат выполнения и ждет следующего ввода. JShell предоставляет отличный способ экспериментировать — гораздо быстрее, чем писать 
+полноценную программу.</p>
+<p>Для початку роботи з JShell введемо команди &quot;jshell&quot; у консолі/командному рядку:</p>
+<pre class="sh">
+eugene@Eugene:~$ jshell
+|  Welcome to JShell -- Version 22.0.1
+|  For an introduction type: /help intro
+
+jshell&gt; 
+</pre>
+<p>Далее введем простейшее выражение на языке Java - <code>2 + 6</code> (то есть попробуем найти сумму двух чисел):</p>
+<pre class="sh">
+jshell&gt; 2 + 6
+$1 ==&gt; 8
+
+jshell&gt; 
+</pre>
+<p>JShell повертає результат - у цьому випадку число 8 - суму чисел 2 і 6</p>
+<pre class="sh">$1 ==&gt; 8</pre>
+<p>Значение <span class="b">$1</span> в выводе означает, что результат (число 8) доступен для дальнейших вычислений через плейсхолдер <code>$1</code>. Например, далее введем выражение <code>5 * $1</code>:</p>
+<pre class="sh">
+jshell&gt; 5 * $1
+$2 ==&gt; 40
+
+jshell&gt; 
+</pre>
+<p>Фактически выражение <code>5 * $1</code> означает выполнение выражения <code>5 * 8</code>, поэтому в итоге мы получим число 40б и это число сможем использовать через плейсхолдер <code>$2</code></p>
+<p>Якщо якесь значення використовується безліч разів, то їй можна дати ім&#x27;я, що більш запам&#x27;ятовується. Наприклад:</p>
+<pre class="sh">
+jshell&gt; var sum = 2 + 5
+sum ==&gt; 7
+
+jshell&gt; 
+</pre>
+<p>Здесь с помощью ключевого слова <code>var</code> определяем переменную "sum", которая будет хранить сумму чисел 2 и 5. И далее мы можем использовать эту переменную:</p>
+<pre class="sh">
+jshell&gt; 4 * sum
+$4 ==&gt; 28
+
+jshell&gt; 
+</pre>
+<h3>Автодоповнення</h3>
+<p>Ще одна корисна функція – автодоповнення за допомогою клавіші Tab. Наприклад, введемо рядок &quot;System.&quot; (з точкою в кінці) і натисніть клавішу Tab. Через велику кількість автодоповнень 
+нам буде запропоновано натиснути клавішу Tab ще раз. І отримаємо список всіх методів, які можна викликати за допомогою класу System:</p>
+<pre class="sh">
+jshell&gt; System.
+Logger                 LoggerFinder           arraycopy(             
+class                  clearProperty(         console()              
+currentTimeMillis()    err                    exit(                  
+gc()                   getLogger(             getProperties()        
+getProperty(           getSecurityManager()   getenv(                
+identityHashCode(      in                     inheritedChannel()     
+lineSeparator()        load(                  loadLibrary(           
+mapLibraryName(        nanoTime()             out                    
+runFinalization()      setErr(                setIn(                 
+setOut(                setProperties(         setProperty(           
+setSecurityManager(    
+jshell&gt; System.
+</pre>
+<p>Далі введемо &quot;System.out.&quot; і знову ж таки натиснемо на Tab:</p>
+<pre class="sh">
+jshell&gt; System.out.
+append(        charset()      checkError()   close()        equals(        
+flush()        format(        getClass()     hashCode()     notify()       
+notifyAll()    print(         printf(        println(       toString()     
+wait(          write(         writeBytes(    
+jshell&gt; System.out.
+</pre>
+<p>Мы видим, какие методы есть у объекта <code>System.out</code>. Допустим, нам нужно вывести строку на консоль. Для этого нам нужен один из методов - printf, print или println. Поэтому 
+введем "<code>System.out.p</code> - с буквой "p" на конце и также нажмем на Tab</p>
+<pre class="sh">
+jshell&gt; System.out.p
+print(     printf(    println(   
+jshell&gt; System.out.print
+</pre>
+<p>Програма відразу підставляє загальну початкову частину - &quot;print&quot;, і далі простіше додрукувати необхідний код:</p>
+<pre class="sh">
+jshell&gt; System.out.println("Hello METANIT.COM")
+Hello METANIT.COM
+
+jshell&gt; 
+</pre>
+<h3>Вихід із програми</h3>
+<p>Для виходу із програми необхідно запровадити команду &quot;/exit&quot;:</p>
+<pre class="sh">
+jshell&gt; /exit
+|  Goodbye
+eugene@Eugene:~$ 
+</pre>
+	
+
+	<div style="margin-top:25px;">
+
+	
+	</div>
+
+	<div class="nav"><p><a href="1.4.html">Назад</a><a href="index.html">Зміст</a><a href="2.11.html">Вперед</a></p></div>
+	<div class="socBlock">
+	<div class="share soctop">
+	<ul>
+	<li><a title="Поделиться в Вконтакте" rel="nofollow" class="fa fa-lg fa-vk"></a></li>
+	<li><a title="Поделиться в Телеграм" rel="nofollow" class="fa fa-lg fa-telegram"></a></li>
+	<li><a title="Поделиться в Одноклассниках" rel="nofollow" class="fa fa-lg fa-odnoklassniki"></a></li>
+	
+	</ul>
+	</div>
+	</div>
+  </div>
+
+	<div class="item left">
+     <ul id="browser" class="filetree"> 
+	<li class="closed"><span class="folder">Глава 1. Введення у Java</span>
+		<ul>
+			<li><span class="file"><a href="1.1.html">Що таке Java</a></span></li>
+			<li><span class="file"><a href="1.6.html">Встановлення JDK</a></span></li>
+			<li><span class="file"><a href="1.2.html">Перша програма на Java</a></span></li>
+			<li><span class="file"><a href="1.5.html">Перша програма у IntelliJ IDEA</a></span></li>
+			<li><span class="file"><a href="1.3.html">Перша програма у NetBeans</a></span></li>
+			<li><span class="file"><a href="1.4.html">Перша програма у Eclipse</a></span></li>
+			<li><span class="file"><a href="1.7.html">JShell</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 2. Основи програмування Java</span>
+		<ul>
+			<li><span class="file"><a href="2.11.html">Структура програми</a></span></li>
+			<li><span class="file"><a href="2.1.html">Змінні та константи</a></span></li>
+			<li><span class="file"><a href="2.19.html">Літерали</a></span></li>
+			<li><span class="file"><a href="2.12.html">Типи даних</a></span></li>
+			<li><span class="file"><a href="2.9.html">Консольне введення/виведення в Java</a></span></li>
+			<li><span class="file"><a href="2.3.html">Арифметичні операції</a></span></li>
+			<li><span class="file"><a href="2.13.html">Порозрядні операції</a></span></li>
+			<li><span class="file"><a href="2.14.html">Умовні вирази</a></span></li>
+			<li><span class="file"><a href="2.15.html">Операції присвоєння та пріоритет операцій</a></span></li>
+			<li><span class="file"><a href="2.2.html">Перетворення базових типів даних</a></span></li>
+			<li><span class="file"><a href="2.5.html">Умовні конструкції</a></span></li>
+			<li><span class="file"><a href="2.6.html">Цикли</a></span></li>
+			<li><span class="file"><a href="2.4.html">Масиви</a></span></li>
+			<li><span class="file"><a href="2.20.html">Конструкція та вираз switch</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Розділ 3. Класи</span>
+		<ul>
+			<li><span class="file"><a href="3.1.html">Класи та об&#x27;єкти</a></span></li>
+
+
+			<li><span class="file"><a href="2.7.html">Методи</a></span></li>
+			<li><span class="file"><a href="2.16.html">Параметри методів</a></span></li>
+			<li><span class="file"><a href="3.14.html">Об&#x27;єкти як параметри методів</a></span></li>
+			<li><span class="file"><a href="2.17.html">Оператор return. Результат методу</a></span></li>
+			<li><span class="file"><a href="2.18.html">Навантаження методів</a></span></li>
+			<li><span class="file"><a href="3.21.html">Конструктори та ініціалізатори</a></span></li>
+
+
+			<li><span class="file"><a href="3.4.html">Статичні компоненти класу та модифікатор static</a></span></li>
+			<li><span class="file"><a href="3.20.html">Область дії та час життя змінних</a></span></li>
+			<li><span class="file"><a href="2.8.html">Рекурсивні функції</a></span></li>
+			<li><span class="file"><a href="3.2.html">Пакети</a></span></li>
+			<li><span class="file"><a href="3.3.html">Модифікатори доступу</a></span></li>
+			<li><span class="file"><a href="3.19.html">Компактні файли коду та метод main</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 4. Об&#x27;єктно-орієнтоване програмування</span>
+		<ul>
+			<li><span class="file"><a href="3.22.html">Інкапсуляція</a></span></li>
+			<li><span class="file"><a href="3.5.html">Успадкування</a></span></li>
+			<li><span class="file"><a href="3.23.html">Заборона наслідування та перевизначення методів</a></span></li>
+			<li><span class="file"><a href="3.24.html">Поліморфізм та динамічна диспетчеризація методів</a></span></li>
+			<li><span class="file"><a href="3.9.html">Клас Object та його методи</a></span></li>
+			<li><span class="file"><a href="3.6.html">Абстрактні класи</a></span></li>
+			<li><span class="file"><a href="3.10.html">Ієрархія успадкування та перетворення типів</a></span></li>
+
+			<li><span class="file"><a href="3.7.html">Інтерфейси</a></span></li>
+			<li><span class="file"><a href="3.28.html">Інтерфейси та поліморфізм</a></span></li>
+			<li><span class="file"><a href="3.29.html">Множинна реалізація та успадкування інтерфейсів</a></span></li>
+			<li><span class="file"><a href="3.16.html">Інтерфейси у механізмі зворотного виклику</a></span></li>
+			<li><span class="file"><a href="3.8.html">Перерахування enum</a></span></li>
+			<li><span class="file"><a href="3.11.html">Узагальнення (Generics)</a></span></li>
+			<li><span class="file"><a href="3.17.html">Обмеження узагальнень</a></span></li>
+			<li><span class="file"><a href="3.15.html">Спадкування та узагальнення</a></span></li>
+			<li><span class="file"><a href="3.31.html">Type Erasure (Стирання типів)</a></span></li>
+			<li><span class="file"><a href="3.32.html">Підстановочні знаки wildcards в узагальненнях</a></span></li>
+			<li><span class="file"><a href="3.13.html">Посилальні типи та клонування об&#x27;єктів</a></span></li>
+			<li><span class="file"><a href="3.18.html">Класи Records</a></span></li>
+			<li><span class="file"><a href="9.4.html">Функціональні інтерфейси та посилання на методи</a></span></li>
+			<li><span class="file"><a href="9.1.html">Лямбда-вираження</a></span></li>
+			<li><span class="file"><a href="9.2.html">Лямбди як параметри та результати методів</a></span></li>
+			<li><span class="file"><a href="9.3.html">Вбудовані функціональні інтерфейси</a></span></li>
+			<li><span class="file"><a href="3.12.html">Внутрішні та вкладені класи</a></span></li>
+			<li><span class="file"><a href="3.30.html">Анонімні класи</a></span></li>
+
+
+			<li><span class="file"><a href="3.25.html">Sealed-класи та інтерфейси</a></span></li>
+			<li><span class="file"><a href="3.26.html">Pattern матч. Патер типів</a></span></li>
+			<li><span class="file"><a href="3.27.html">Pattern матч. record-паттерн</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 5. Обробка винятків</span>
+		<ul>
+			<li><span class="file"><a href="2.10.html">Обробка винятків та конструкція try...catch...finally</a></span></li>
+			<li><span class="file"><a href="4.2.html">Класи винятків</a></span></li>
+			<li><span class="file"><a href="4.1.html">Оператори throws та throw</a></span></li>
+			<li><span class="file"><a href="4.3.html">Створення своїх виняткових класів</a></span></li>
+			<li><span class="file"><a href="4.4.html">Assert</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 6. Колекції</span>
+		<ul>
+			<li><span class="file"><a href="5.1.html">Типи колекцій. Інтерфейс Collection</a></span></li>
+			<li><span class="file"><a href="5.2.html">Клас ArrayList та інтерфейс List</a></span></li>
+			<li><span class="file"><a href="5.6.html">Інтерфейси Comparable та Comporator. Сортування</a></span></li>
+			<li><span class="file"><a href="5.7.html">Черги та стеки. Класи ArrayDeque та PriorityQueue</a></span></li>
+			<li><span class="file"><a href="5.3.html">Пов&#x27;язаний список LinkedList</a></span></li>
+			<li><span class="file"><a href="5.4.html">Інтерфейс Set та хеш-таблиці HashSet</a></span></li>
+			<li><span class="file"><a href="5.5.html">Дерева TreeSet та інтерфейси SortedSet та NavigableSet</a></span></li>
+			<li><span class="file"><a href="5.8.html">Словники. Інтерфейс Map та клас HashMap</a></span></li>
+			<li><span class="file"><a href="5.9.html">Інтерфейси SortedMap та NavigableMap. Клас TreeMap</a></span></li>
+			<li><span class="file"><a href="5.10.html">Ітератори. Iterator та Iterable</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 7. Потоки введення-виведення. Робота з файлами</span>
+		<ul>
+			<li><span class="file"><a href="6.1.html">Потоки введення-виведення</a></span></li>
+			<li><span class="file"><a href="6.3.html">Читання та запис файлів. FileInputStream та FileOutputStream</a></span></li>
+			<li><span class="file"><a href="6.2.html">Закриття потоків та конструкція try-з-ресурсами</a></span></li>
+			<li><span class="file"><a href="6.4.html">Класи ByteArrayInputStream та ByteArrayOutputStream</a></span></li>
+			<li><span class="file"><a href="6.5.html">Буферизовані потоки BufferedInputStream та BufferedOutputStream</a></span></li>
+			<li><span class="file"><a href="6.6.html">Форматований висновок. PrintStream та PrintWriter</a></span></li>
+			<li><span class="file"><a href="6.7.html">Класи DataOutputStream та DataInputStream</a></span></li>
+			<li><span class="file"><a href="6.8.html">Читання та запис текстових файлів</a></span></li>
+			<li><span class="file"><a href="6.9.html">Буферизація символьних потоків. BufferedReader та BufferedWriter</a></span></li>
+			<li><span class="file"><a href="6.10.html">Серіалізація об&#x27;єктів</a></span></li>
+			<li><span class="file"><a href="6.11.html">Клас File. Робота з файлами та каталогами</a></span></li>
+			<li><span class="file"><a href="6.12.html">Робота з ZIP-архівами</a></span></li>
+			<li><span class="file"><a href="6.13.html">Клас Console</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 8. Робота з рядками</span>
+		<ul>
+			<li><span class="file"><a href="7.1.html">Введення у рядки. Клас String</a></span></li>
+			<li><span class="file"><a href="7.2.html">Основні операції з рядками</a></span></li>
+			<li><span class="file"><a href="7.3.html">StringBuffer та StringBuilder</a></span></li>
+			<li><span class="file"><a href="7.4.html">Регулярні вирази</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 9. Багатопоточне програмування</span>
+		<ul>
+			<li><span class="file"><a href="8.1.html">Багатопоточне програмування та клас Thread</a></span></li>
+			<li><span class="file"><a href="8.2.html">Створення та виконання потоків</a></span></li>
+			<li><span class="file"><a href="8.11.html">Управління потоками</a></span></li>
+			<li><span class="file"><a href="8.4.html">Завершення та переривання потоку</a></span></li>
+			<li><span class="file"><a href="8.12.html">Віртуальні потоки</a></span></li>
+			<li><span class="file"><a href="8.3.html">Синхронізація потоків. Оператор synchronized</a></span></li>
+			<li><span class="file"><a href="8.5.html">Взаємодія потоків. Методи wait та notify</a></span></li>
+			<li><span class="file"><a href="8.6.html">Семафори</a></span></li>
+			<li><span class="file"><a href="8.7.html">Обмін між потоками. Клас Exchanger</a></span></li>
+			<li><span class="file"><a href="8.8.html">Клас Phaser</a></span></li>
+			<li><span class="file"><a href="8.9.html">Блокування. ReentrantLock</a></span></li>
+			<li><span class="file"><a href="8.10.html">Умови блокування</a></span></li>
+			<li><span class="file"><a href="8.16.html">Змінні volatile</a></span></li>
+			<li><span class="file"><a href="8.17.html">Атомарність та Atomics. Потокобезпека без блокувань</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Розділ 10. Асинхронність</span>
+		<ul>
+			<li><span class="file"><a href="8.13.html">Асинхронні задачі FutureTask. Callable та Future</a></span></li>
+			<li><span class="file"><a href="8.14.html">Executor – виконавець завдань</a></span></li>
+			<li><span class="file"><a href="8.15.html">Координація виконання асинхронних завдань</a></span></li>
+			<li><span class="file"><a href="8.18.html">Комплектувальнемайно і проміси. Обробка результату асинхронних задач</a></span></li>
+			<li><span class="file"><a href="8.19.html">CompletableFuture, обробка помилок та завершення асинхронних завдань</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Розділ 11. Stream API</span>
+		<ul>
+			<li><span class="file"><a href="10.1.html">Введення у Stream API</a></span></li>
+			<li><span class="file"><a href="10.2.html">Створення потоку даних</a></span></li>
+			<li><span class="file"><a href="10.3.html">Фільтрування, перебір елементів та відображення</a></span></li>
+			<li><span class="file"><a href="10.8.html">Сортування</a></span></li>
+			<li><span class="file"><a href="10.13.html">Отримання підтоку та об&#x27;єднання потоків</a></span></li>
+			<li><span class="file"><a href="10.4.html">Методи skip та limit</a></span></li>
+			<li><span class="file"><a href="10.11.html">Операції відомості</a></span></li>
+			<li><span class="file"><a href="10.5.html">Метод reduce</a></span></li>
+			<li><span class="file"><a href="10.12.html">Тип Optional</a></span></li>
+			<li><span class="file"><a href="10.6.html">Метод collect</a></span></li>
+			<li><span class="file"><a href="10.7.html">Угруповання</a></span></li>
+			<li><span class="file"><a href="10.9.html">Паралельні потоки</a></span></li>
+			<li><span class="file"><a href="10.10.html">Паралельні операції над масивами</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Розділ 12. Модульність</span>
+		<ul>
+			<li><span class="file"><a href="11.1.html">Створення модуля</a></span></li>
+			<li><span class="file"><a href="11.2.html">Залежні модулі</a></span></li>
+			<li><span class="file"><a href="11.3.html">Взаємодія між модулями. Експорт та імпорт</a></span></li>
+		</ul>
+	</li>
+	</li>
+	<li class="closed"><span class="folder">Розділ 13. Додаткові класи</span>
+		<ul>
+			<li><span class="file"><a href="12.1.html">Математичні обчислення та клас Math</a></span></li>
+			<li><span class="file"><a href="12.2.html">Великі числа BigInteger та BigDecimal</a></span></li>
+			<li><span class="file"><a href="12.3.html">Робота із датами. LocalDate</a></span></li>
+			<li><span class="file"><a href="12.4.html">Процеси. Process та ProcessBuilder</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 14. JAR-файли та підключення бібліотек та класів</span>
+		<ul>
+			<li><span class="file"><a href="13.1.html">Файли JAR, їх створення та виконання</a></span></li>
+			<li><span class="file"><a href="13.2.html">Створення та підключення бібліотеки JAR</a></span></li>
+			<li><span class="file"><a href="13.4.html">Модульний jar-файл</a></span></li>
+			<li><span class="file"><a href="13.3.html">Встановлення шляху до класів Java</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Розділ 15. Рефлексія</span>
+		<ul>
+			<li><span class="file"><a href="14.1.html">Введення у рефлексію. Клас Class</a></span></li>
+			<li><span class="file"><a href="14.2.html">Дослідження типів</a></span></li>
+			<li><span class="file"><a href="14.3.html">Поля класу та клас Field</a></span></li>
+			<li><span class="file"><a href="14.4.html">Модифікатори доступу та клас Modifier</a></span></li>
+			<li><span class="file"><a href="14.5.html">Клас Constructor та створення об&#x27;єктів</a></span></li>
+			<li><span class="file"><a href="14.6.html">Методи та клас Method</a></span></li>
+			<li><span class="file"><a href="14.7.html">Proxy (Проксі)</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 16. Інструкції</span>
+		<ul>
+			<li><span class="file"><a href="15.1.html">Введення в інструкції. Вбудовані інструкції</a></span></li>
+			<li><span class="file"><a href="15.2.html">Створення та застосування анотацій</a></span></li>
+			<li><span class="file"><a href="15.3.html">Обробка інструкцій під час виконання</a></span></li>
+		</ul>
+	</li>
+
+
+	<li class="closed"><span class="folder">Глава 17. Взаємодія із нативним кодом</span>
+		<ul>
+			<li><span class="file"><a href="16.1.html">Java Native Interface (JNI)</a></span></li>
+			<li><span class="file"><a href="16.2.html">Foreign Functions та Memory API</a></span></li>
+			<li><span class="file"><a href="16.3.html">Арена та сегменти пам&#x27;яті MemorySegment</a></span></li>
+			<li><span class="file"><a href="16.4.html">Компонування пам&#x27;яті MemoryLayout та робота з MemorySegment</a></span></li>
+			<li><span class="file"><a href="16.5.html">Складні дані та MemoryLayout</a></span></li>
+			<li><span class="file"><a href="16.6.html">Пошук та виклик зовнішніх функцій</a></span></li>
+			<li><span class="file"><a href="16.7.html">Нативні функції зворотного дзвінка</a></span></li>
+		</ul>
+	</li>
+</ul>   </div>
+</div>
+
+  <div class="item right">
+<div class="help" style="border: 0px;">
+    
+	<div class="help-item">
+		<div class="help-item-name"><a href="https://metanit.com/settings.html">Налаштування</a></div>
+	 </div>
+</div>
+			<div class="help">
+
+      <div class="help-header">Помощь сайту</div>
+
+       <div class="help-item">
+		<div class="help-item-name"><a href="https://yoomoney.ru/to/410011174743222" rel="nofollow">Допомога сайту</a></div>
+	 </div>
+       
+      <div class="help-item">
+		<div class="help-item-name">Юмани:</div>
+		<div class="help-item-req">410011174743222</div>
+	 </div>
+
+		<div class="help-item">
+			<div class="help-item-name">Номер карты:</div>
+			<div class="help-item-req">4048415020898850</div>
+		</div>
+
+      </div>
+
+	
+	
+
+
+
+
+  </div>
+</div>
+
+<div id="footer" style="padding-bottom:85px;">
+
+<div class="bootomLinks">
+<a href="https://vk.com/metanit" title="Присоединиться к группе вконтакте" rel="nofollow">Вконтакті</a>|
+ <a href="https://t.me/devnull22" title="Подписаться на телеграм" rel="nofollow">Телеграм</a> | 
+<a href="https://metanit.com/donations.html" rel="nofollow">Донати/Допомога сайту</a>
+</div>
+<p>Contacts: metanit22@mail.ru</p>
+<p>Copyright © Євген Попов, metanit.com, 2026. Усі права захищені.</p>
+
+
+</div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+<script src='../../js/syntax16.js'></script>
+<script>
+// Syntax Highlighter
+if (typeof SyntaxHighlighter !== 'undefined') {
+    SyntaxHighlighter.all();
+}
+
+// Copy guard
+document.addEventListener('copy', (ev) => {
+    const et = ev.target;
+    if (et.type === 'textarea') {
+        ev.clipboardData.setData('text/plain', et.value.substring(et.selectionStart, et.selectionEnd).replace(/ /g, ' '));
+        ev.preventDefault();
+    }
+});
+
+// Mobile menu
+const faBars = document.querySelector('.fa-bars');
+if (faBars) {
+    faBars.addEventListener('click', () => {
+        const tree = document.querySelector('.item.left');
+        if (tree) {
+            tree.style.display = (tree.style.display === 'block') ? 'none' : 'block';
+        }
+    });
+}
+
+const menuButton = document.getElementById('menuButton');
+if (menuButton) {
+    menuButton.addEventListener('click', () => {
+        menuButton.classList.toggle('menu-opened');
+        const mainMenu = document.querySelector('.mainmenu');
+        if (mainMenu) mainMenu.classList.toggle('open');
+    });
+}
+
+// Search toggle
+const magGlass = document.getElementById('magnifying-glass');
+if (magGlass) {
+    magGlass.addEventListener('click', () => {
+        const search = document.getElementById('search');
+        if (search) search.classList.toggle('transp');
+    });
+}
+
+// Theme toggle
+const toggleTheme = document.getElementById('toggle-theme');
+if (toggleTheme) {
+    toggleTheme.addEventListener('click', () => {
+        if (document.documentElement.hasAttribute('theme')) {
+            document.documentElement.removeAttribute('theme');
+            document.cookie = 'theme=1;expires=Mon, 19 Feb 2001 12:00:00 UTC;path=/;';
+        } else {
+            document.documentElement.setAttribute('theme', 'dark');
+            var expire = new Date();
+            expire.setHours(expire.getHours() + 7);
+            document.cookie = 'theme=1;expires=' + expire.toUTCString() + ';path=/;';
+        }
+    });
+}
+
+// Share buttons
+const shareVK = document.querySelectorAll('.share .fa-vk');
+shareVK.forEach(e => e.addEventListener('click', () => window.open('http://vk.com/share.php?url=' + window.location.href, 'Поделиться в ВКОНТАКТЕ')));
+const shareTG = document.querySelectorAll('.share .fa-telegram');
+shareTG.forEach(e => e.addEventListener('click', () => window.open('tg://msg_url/url=' + window.location.href, 'Поделиться в Telegram')));
+const shareOK = document.querySelectorAll('.share .fa-odnoklassniki');
+shareOK.forEach(e => e.addEventListener('click', () => window.open('https://connect.ok.ru/offer?url=' + window.location.href, 'Поделиться в Одноклассниках')));
+
+// Folders
+const folders = document.getElementsByClassName('closed');
+for (let i = 0; i < folders.length; i++) {
+    folders[i].addEventListener('click', function (e) {
+        this.classList.toggle('closed');
+        this.classList.toggle('opened');
+    });
+}
+
+// Active Item Highlight
+const activePath = window.location.pathname.split('/').pop();
+const activeItem = document.querySelector(".file a[href*='" + activePath + "']");
+if (activeItem) {
+    activeItem.classList.add('aMItem');
+    activeItem.parentElement.classList.add('aMItem');
+    const activeFolder = activeItem.closest('li');
+    if (activeFolder) {
+        activeFolder.classList.remove('closed');
+        activeFolder.classList.add('opened');
+        const folderLabel = activeFolder.querySelector('.folder');
+        if (folderLabel) folderLabel.classList.add('aMItem');
+    }
+}
+
+// Settings
+const props = ['--main-font-size', '--main-font-family', '--menc-bg-color', '--container-bg-color', '--menu-bg-color', '--code-font-size', '--code-font-family', '--code-bgcolor', '--code-max-height'];
+for (let i = 0; i < props.length; i++) {
+    const propValue = localStorage.getItem(props[i]);
+    if (propValue !== null) document.documentElement.style.setProperty(props[i], propValue);
+}
+</script>
+</body>
+</html>

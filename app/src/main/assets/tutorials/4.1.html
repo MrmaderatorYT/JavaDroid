@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html  lang="ru">
+<head>
+<title>Java | Обработка исключений</title>
+<meta charset="utf-8" />
+<meta name="description" content="Обработка исключений в языке программирования Java, использование оператора throws, конструкция try...catch, генерация исключения с помощью оператора throw">
+<meta name="viewport" content="width=device-width">
+<link href="../../style50.css@v=1.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<div id="container">
+<header>
+<div id="header">
+<div id="logo">
+<a class="logoTitle" href="https://metanit.com/" title="На главную">METANIT.COM</a>
+<div class="logoDefinition">Сайт о программировании</div> 
+</div>
+
+<div class="socbtns">
+<ul>
+<li><a title="Посмотреть меню" rel="nofollow" class="fa fa-lg fa-bars"></a></li>
+<li><a href="https://metanit.com/donations.html" title="Помощь сайту" rel="nofollow" style="color: var(--fa-usd-color);" class="fa fa-lg fa-usd"></a></li>
+<li><a href="https://vk.com/metanit" title="Группа в ВКонтакте" rel="nofollow" style="color: var(--fa-vk-color);" class="fa fa-lg fa-vk"></a></li>
+<li><a href="https://t.me/devnull22" title="Группа в Телеграмме"  class="fa fa-lg fa-tel" style="color: var(--fa-tel-color);"></a></li>
+<li><a href="https://metanit.com/android.html" title="Приложения андроид" rel="nofollow" style="color: var(--fa-android-color);" class="fa fa-lg fa-android"></a></li>
+<li><i id="toggle-theme" class="fa fa-lg fa-adjust"></i></li>
+</ul>
+</div>
+
+
+<div id="magnifying-glass"></div>
+
+<div class="menuButton" id="menuButton">
+	<span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+</div>
+</div>
+
+<div id="search" class="transp">
+<form action="https://www.google.ru" id="cse-search-box">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3716042175333627:1096498938" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" />
+    <input type="submit" name="sa" value="Найти" />
+  </div>
+</form>
+</div>
+
+<div id="menu" class="menu">
+<ul class="mainmenu">
+    <li><a href="https://metanit.com/common/">Программирование</a></li>
+    <li><a href="https://metanit.com/assembler/">Ассемблер</a></li>
+   <li><a href="https://metanit.com/sharp/">C#</a></li>
+   <li><a href="https://metanit.com/java/">Java</a></li>
+   <li><a href="https://metanit.com/web/">WEB</a></li>
+   <li><a href="https://metanit.com/python/">Python</a></li>
+   <li><a href="https://metanit.com/c/">C</a></li>
+   <li><a href="https://metanit.com/cpp/">C++</a></li>
+   <li><a href="https://metanit.com/sql/">SQL</a></li>
+   <li><a href="https://metanit.com/nosql/mongodb/">MongoDB</a></li>
+   <li><a href="https://metanit.com/go/">Go</a></li>
+   <li><a href="https://metanit.com/visualbasic/">VB.NET</a></li>
+   <li><a href="https://metanit.com/swift/tutorial/">Swift</a></li>
+   <li><a href="https://metanit.com/kotlin/">Kotlin</a></li>
+   <li><a href="https://metanit.com/dart/">Dart</a></li>
+   <li><a href="https://metanit.com/php/">PHP</a></li>
+   <li><a href="https://metanit.com/rust/">Rust</a></li>
+   <li><a href="https://metanit.com/os/">Linux</a></li>
+   <li><a href="https://metanit.com/f/">F#</a></li>
+   <!--<li><a href="//metanit.com/lisp/tutorial/">Common Lisp</a></li>-->
+   <li><a href="https://metanit.com/hosting">Хостинг</a></li>
+</ul>
+</div>
+
+</header>
+<div class="outercontainer">
+<div class="innercontainer">
+ 
+   <div class="item center menC">
+     <h1>Оператор throws и throw</h1><div class="date">Последнее обновление: 06.10.2025</div>
+	<div class="socBlock">
+	<div class="share soctop">
+	<ul>
+	<li><a title="Поделиться в Вконтакте" rel="nofollow" class="fa fa-lg fa-vk"></a></li>
+	<li><a title="Поделиться в Телеграм" rel="nofollow" class="fa fa-lg fa-telegram"></a></li>
+	<li><a title="Поделиться в Одноклассниках" rel="nofollow" class="fa fa-lg fa-odnoklassniki"></a></li>
+	
+	</ul>
+	</div>
+	</div>
+
+	<div style="margin-top:23px;margin-left:5px;">
+		
+		
+		
+	</div>
+
+	
+<h2>Генерация исключения и оператор throw</h2>
+<p>Обычно система сама генерирует исключения при определенных ситуациях, например, при делении числа на ноль. Но язык Java также позволяет генерировать исключения вручную с помощью оператора <b>throw</b>. 
+Например, в нашей программе пользователь должен вводить имя, но имя имеет свои ограничения. Например, очевидно, что имя из одного символа - это некорректно имя. Возможно, мы предъявляем еще какие-то ограничения к  
+имени. И в этом случае мы можем при вводе некорректных данных генерировать исключение.</p>
+<p>Общая форма оператора:</p>
+<pre class="brush:java;">
+throw объект_исключения;
+</pre>
+<p>То есть после оператора указывается объект исключения. Как его создать? Прежде всего мы можем использовать встроенные классы исключений, в том числе базовые - <code>Throwable</code> и <code>Exception</code>. 
+Так, один из конструкторов типа <code>Throwable</code> принимает сообщение об ошибке:</p>
+<pre class="brush:java;">
+Throwable(String message)
+</pre>
+<p>По сути это то сообщение, которое возвращается методом <code>getMessage()</code> и которое при возникновении ошибки отображается на консоли. Ну и соответственно все другие типы исключений также имеют подобный конструктор.</p>
+<p>Рассмотрим генерацию исключения на примере:</p>
+<pre class="brush:java;">
+import java.util.Scanner;
+
+class Program{
+     
+	public static void main(String[] args) {
+         
+        Scanner in = new Scanner(System.in);
+        System.out.print("Введите имя: ");
+        String name = in.nextLine(); // считываем введенную строку
+
+        // если строка имеет имеет меньше 2-х символов, генерируем исключение
+        if(name.length() &lt; 2) throw new Throwable("Малобукоф");
+
+        System.out.println("Привет, " + name);
+    }
+}
+</pre>
+<p>Здесь с помощью класса <code>Scanner</code> и метода <code>in.nextLine()</code> считываем с консоли строку - условное имя пользователя. Затем, используя метол <code>length()</code> у строки смотрим на длину - 
+если в имени меньше 2 символов, то генерируем исключение:</p>
+<pre class="brush:java;">if(name.length() &lt; 2) throw new Throwable("Малобукоф");</pre>
+<p>В конструктор класса <code>Throwable</code> передаем сообщение об ошибке.</p>
+<p>Но если мы попробуем скомпилировать программу, нас постигнет неудача:</p>
+<pre class="sh">
+Program.java:12: error: unreported exception Throwable; must be caught or declared to be thrown
+        if(name.length() &lt; 2) throw new Throwable("Малобукоф");
+                              ^
+1 error
+</pre>
+<p>Компилятор нам говорит, что нам надо либо обработать исключение, либо указать, что метод main генерирует данное исключение.</p>
+<h3>Проверяемые и непроверяемые исключения</h3>
+<p>КАк говорилось в прошлой статье, исключения в Java делятся условно на две группы: <span class="b">проверяемые</span> (checked exceptions) и <span class="b">непроверяемые</span> 
+ (unchecked exceptions). К <span class="b">непроверяемым исключениям</span> относят классы <b>Error</b> и <b>RuntimeException</b> и унаследованные от них классы. А проверяемые исключения по сути все остальные. 
+И в контексте работы с оператором <code>throw</code> подобное разделение имеет большое значение. При генерации <span class="b">проверяемых исключений</span> нам надо либо указать, что метод генерирует исключение, либо обработать это исключение. Если же генерируются 
+<b>непроверяемые исключения</b>, то ничего этого делать не надо.</p>
+<p>В нашем примере выше генерируемое исключение типа <code>Throwable</code> рассматривается компилятором как <b>проверяемое исключение</b> (хотя классы <code>Error</code> и <code>RuntimeException</code> 
+унаследованы от <code>Throwable</code>). Поэтому и при компиляции возникает ошибка.</p>
+
+
+<p>Для решения проблемы изменим код и обработаем исключение с помощью рассмотренной в прошлых статьях конструкции <code>try..catch</code>:</p>
+<pre class="brush:java;">
+import java.util.Scanner;
+
+class Program{
+     
+	public static void main(String[] args) {
+         
+        Scanner in = new Scanner(System.in);
+        System.out.print("Введите имя: ");
+        String name = in.nextLine(); // считываем введенную строку
+
+        try{
+
+            // если строка имеет имеет меньше 2-х символов, генерируем исключение
+            if(name.length() &lt; 2) throw new Throwable("Малобукоф");
+            System.out.println("Привет, " + name);
+        }
+        catch(Throwable ex){
+            System.out.println("Возникла ошибка: " + ex.getMessage());
+        }
+    }
+}
+</pre>
+<p>Здесь та, часть кода, которая генерирует исключения и которая зависит от проверки переменной name, помещается в блок <code>try</code>. 
+Если будет сгенерировано исключение, то управление перейдет к блоку <code>catch</code>, где мы перехватим исключение и выведем сообщение об ошибке.</p>
+<p>Пример работы программы:</p>
+<pre class="sh">
+Введите имя: e
+Возникла ошибка: Малобукоф
+</pre>
+
+<h3>Обработка других типов исключений</h3>
+<p>Подобным образом мы можем генерировать исключения в любом месте программы. Кроме того, мы можем использовать и другие встроенные типы исключений. Например, встроенный тип 
+<code>IllegalArgumentException</code> предназначен для генерации исключения при некорректном параметре метода. Используем данный тип:</p>
+<pre class="brush:java;">
+class Program{
+     
+	public static void main(String[] args) {
+         
+        var tom = new Person("Tom", -20);
+        tom.print();
+    }
+}
+
+class Person{
+    
+    private String name;
+    private int age;
+
+    Person(String name, int age){
+
+        if(age &lt; 1 || age &gt; 110) throw new IllegalArgumentException("Некорректный возраст: " + age);
+        this.name = name; 
+        this.age = age;
+    }
+
+    void print(){ System.out.printf("Name: %s; Age: %d\n", name, age); }
+}
+</pre>
+<p>Здесь в конструктор класса Person через параметр <code>age</code> передается возраст человека. Однако не все значения типа <code>int</code> могут быть разумными значениями для возраста. Например, 
+возраст не может быть отрицательным. И в конструкторе класса Person проверяем значение параметра <code>age</code> на соответствие некоторому диапазону. Ив случае несоответствия, генерируем исключение 
+типа <code>IllegalArgumentException</code></p>
+<pre class="brush:java;">
+if(age &lt; 1 || age &gt; 110) 
+    throw new IllegalArgumentException("Некорректный возраст: " + age);
+</pre>
+<p>В методе <code>main</code> передаем в конструктор Person заведомо некорректное значение:</p>
+<pre class="brush:java;">var tom = new Person("Tom", -20);</pre>
+<p>В итоге при запуске программы и создании этого объекта будет сгенерировано исключение</p>
+<pre class="sh">
+Exception in thread "main" java.lang.IllegalArgumentException: Некорректный возраст: -20
+	at Person.&lt;init&gt;(Program.java:20)
+	at Program.main(Program.java:7)
+</pre>
+<p>Обратите внимание, что при компиляции программы компилятор не выдал ошибку, как при компиляции предыдущего примера. Потому что в данном случае мы обрабатываем исключение типа 
+<code>IllegalArgumentException</code>, которое является <b>непроверяемым</b>. Поэтому в принципе его можно не обрабатывать, если нас устраивает подобное завершение программы с ошибкой. Тем не менее обработаем исключением:</p>
+<pre class="brush:java;">
+class Program{
+     
+	public static void main(String[] args) {
+         
+        try{
+
+            var tom = new Person("Tom", -20);
+            tom.print();
+        }
+        catch(IllegalArgumentException ex){
+            System.out.println(ex.getMessage());
+        }
+    }
+}
+
+class Person{
+    
+    private String name;
+    private int age;
+
+    Person(String name, int age){
+
+        if(age &lt; 1 || age &gt; 110) throw new IllegalArgumentException("Некорректный возраст: " + age);
+        this.name = name; 
+        this.age = age;
+    }
+
+    void print(){ System.out.printf("Name: %s; Age: %d\n", name, age); }
+}
+</pre>
+
+<div style="margin-top:23px;margin-left:5px;">
+
+<!-- Yandex.RTB R-A-201190-9 -->
+
+</div>
+
+<h2>Оператор throws</h2>
+<p>Если метод генерирует <b>проверяемое исключение</b>, то нам надо либо обработать это исключение, либо сообщить компилятору, что метод генерирует данное исключение. 
+Поэтому обработка исключения непосредственно в методе - не единственный способ работы с проверяемыми исключениями. Нередко метод сам не обрабатывает исключение, а предоставляет возможность обработки внешнему коду, 
+где этот метод вызывается. В этом случае в объявлении метода необходимо указать тип исключения, который генерирует метод. Для этого используется 
+оператор <span class="b">throws</span> в следующем виде:</p>
+<pre class="brush:java;">
+возвращаемый_тип имя_метода(параметры) throws тип_исключения_1, тип_исключения_2,... тип_исключения_N  {
+
+}
+</pre>
+<p>Оператор <span class="b">throws</span> указывается после списка параметров метода, но до открывающей фигурной скобки. А после оператора идет перечисление типов генерируемых исключений. Например:</p>
+<pre class="brush:java;">
+import java.util.Scanner;
+
+class Program{
+     
+	public static void main(String[] args) {
+         
+        try{
+            printName();  // здесь генерируется исключение
+        }
+        catch(Throwable ex){
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    static void printName() throws Throwable {
+
+        Scanner in = new Scanner(System.in);
+        System.out.print("Введите имя: ");
+        String name = in.nextLine(); // считываем введенную строку
+
+        // если строка имеет имеет меньше 2-х символов, генерируем исключение
+        if(name.length() &lt; 2) throw new Throwable("Недостаточная длина имени: " + name.length());
+        System.out.println("Привет, " + name);
+    }
+}
+</pre>
+<p>Здесь метод <code>printName()</code> считывает через консоль имя пользователя и с помощью оператора <code>throw</code> генерирует исключение типа <code>Throwable</code>, если длина введенного имени меньше 2 символов. 
+При этом, поскольку этот метод сам не обрабатывает исключение, то в объявлении метода указываем, что он генерирует исключение типа <code>Throwable</code>:</p>
+<pre class="brush:java;">static void printName() throws Throwable {</pre>
+<p>А внешний метод - <code>main()</code>, в котором вызывается <code>printName()</code>, обрабатывает возможно исключение с помощью конструкции <code>try..catch</code>.</p>
+
+<p>ПРи этом следует учитывать, что если вызываемый метод (<code>printName()</code>) сам не обрабатывает <b>проверяемое исключение</b>, то внешний - вызывающий метод (<code>main()</code>) должен 
+либо обработать исключение (как в примере выше), либо также указать компилятору с помощью оператора <code>throws</code>, что он генерирует данный тип исключений.</p>
+<p>Выше был пример, где внешний метод <code>main()</code> обрабаотывал исключение, возникшее в <code>printName()</code>. Теперь же используем другую стратегию:</p>
+<pre class="brush:java;">
+import java.util.Scanner;
+
+class Program{
+     
+	public static void main(String[] args) throws Throwable {
+         
+        printName(); // здесь возникает исключение, но его никто не обрабатывает
+    }
+
+    static void printName() throws Throwable{
+
+        Scanner in = new Scanner(System.in);
+        System.out.print("Введите имя: ");
+        String name = in.nextLine(); // считываем введенную строку
+
+        // если строка имеет имеет меньше 2-х символов, генерируем исключение
+        if(name.length() &lt; 2) throw new Throwable("Недостаточная длина имени: " + name.length());
+        System.out.println("Привет, " + name);
+    }
+}
+</pre>
+<p>Данная программа успешно скомпилируется, так как в заголовке метода <code>main()</code> мы указали выражение <code>throws Throwable</code>:</p>
+<pre class="brush:java;">
+public static void main(String[] args) throws Throwable { 
+</pre>
+<p>Однако при выполнении при некорректном вводе, поскольку исключение не обрабатывается, программа упадет с ошибкой:</p>
+<pre class="sh">
+Введите имя: r
+Exception in thread "main" java.lang.Throwable: Недостаточная длина имени: 1
+	at Program.printName(Program.java:22)
+	at Program.main(Program.java:7)
+</pre>
+<p>И в конце стоит отметить, что метод может генерировать несколько типов исключений. В этом случае они указываются после оператора <code>throws</code> через запятую:</p>
+<pre class="brush:java;">
+public static void main(String[] args) throws FileNotFoundException, EOFException { 
+</pre>
+<p>Однако если метод генерирует <b>непроверяемые исключения</b> типа <code>IllegalArgumentException</code>, то нет смысла их указывать, так как компилятор их все равно не проверяет.</p>
+
+	
+
+	<div style="margin-top:25px;">
+
+	
+	</div>
+
+	<div class="nav"><p><a href="4.1.html">Назад</a><a href="index.html">Содержание</a><a href="4.3.html">Вперед</a></p></div>
+	<div class="socBlock">
+	<div class="share soctop">
+	<ul>
+	<li><a title="Поделиться в Вконтакте" rel="nofollow" class="fa fa-lg fa-vk"></a></li>
+	<li><a title="Поделиться в Телеграм" rel="nofollow" class="fa fa-lg fa-telegram"></a></li>
+	<li><a title="Поделиться в Одноклассниках" rel="nofollow" class="fa fa-lg fa-odnoklassniki"></a></li>
+	
+	</ul>
+	</div>
+	</div>
+  </div>
+
+	<div class="item left">
+     <ul id="browser" class="filetree"> 
+	<li class="closed"><span class="folder">Глава 1. Введение в Java</span>
+		<ul>
+			<li><span class="file"><a href="1.1.html">Что такое Java</a></span></li>
+			<li><span class="file"><a href="1.6.html">Установка JDK</a></span></li>
+			<li><span class="file"><a href="1.2.html">Первая программа на Java</a></span></li>
+			<li><span class="file"><a href="1.5.html">Первая программа в IntelliJ IDEA</a></span></li>
+			<li><span class="file"><a href="1.3.html">Первая программа в NetBeans</a></span></li>
+			<li><span class="file"><a href="1.4.html">Первая программа в Eclipse</a></span></li>
+			<li><span class="file"><a href="1.7.html">JShell</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 2. Основы программирования на Java</span>
+		<ul>
+			<li><span class="file"><a href="2.11.html">Структура программы</a></span></li>
+			<li><span class="file"><a href="2.1.html">Переменные и константы</a></span></li>
+			<li><span class="file"><a href="2.19.html">Литералы</a></span></li>
+			<li><span class="file"><a href="2.12.html">Типы данных</a></span></li>
+			<li><span class="file"><a href="2.9.html">Консольный ввод/вывод в Java</a></span></li>
+			<li><span class="file"><a href="2.3.html">Арифметические операции</a></span></li>
+			<li><span class="file"><a href="2.13.html">Поразрядные операции</a></span></li>
+			<li><span class="file"><a href="2.14.html">Условные выражения</a></span></li>
+			<li><span class="file"><a href="2.15.html">Операции присваивания и приоритет операций</a></span></li>
+			<li><span class="file"><a href="2.2.html">Преобразования базовых типов данных</a></span></li>
+			<li><span class="file"><a href="2.5.html">Условные конструкции</a></span></li>
+			<li><span class="file"><a href="2.6.html">Циклы</a></span></li>
+			<li><span class="file"><a href="2.4.html">Массивы</a></span></li>
+			<li><span class="file"><a href="2.20.html">Конструкция и выражение switch</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 3. Классы</span>
+		<ul>
+			<li><span class="file"><a href="3.1.html">Классы и объекты</a></span></li>
+
+
+			<li><span class="file"><a href="2.7.html">Методы</a></span></li>
+			<li><span class="file"><a href="2.16.html">Параметры методов</a></span></li>
+			<li><span class="file"><a href="3.14.html">Объекты как параметры методов</a></span></li>
+			<li><span class="file"><a href="2.17.html">Оператор return. Результат метода</a></span></li>
+			<li><span class="file"><a href="2.18.html">Перегрузка методов</a></span></li>
+			<li><span class="file"><a href="3.21.html">Конструкторы и инициализаторы</a></span></li>
+
+
+			<li><span class="file"><a href="3.4.html">Статические компоненты класса и модификатор static</a></span></li>
+			<li><span class="file"><a href="3.20.html">Область действия и время жизни переменных</a></span></li>
+			<li><span class="file"><a href="2.8.html">Рекурсивные функции</a></span></li>
+			<li><span class="file"><a href="3.2.html">Пакеты</a></span></li>
+			<li><span class="file"><a href="3.3.html">Модификаторы доступа</a></span></li>
+			<li><span class="file"><a href="3.19.html">Компактные файлы кода и метод main</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 4. Объектно-ориентированное программирование</span>
+		<ul>
+			<li><span class="file"><a href="3.22.html">Инкапсуляция</a></span></li>
+			<li><span class="file"><a href="3.5.html">Наследование</a></span></li>
+			<li><span class="file"><a href="3.23.html">Запрет наследования и переопределения методов</a></span></li>
+			<li><span class="file"><a href="3.24.html">Полиморфизм и динамическая диспетчеризация методов</a></span></li>
+			<li><span class="file"><a href="3.9.html">Класс Object и его методы</a></span></li>
+			<li><span class="file"><a href="3.6.html">Абстрактные классы</a></span></li>
+			<li><span class="file"><a href="3.10.html">Иерархия наследования и преобразование типов</a></span></li>
+
+			<li><span class="file"><a href="3.7.html">Интерфейсы</a></span></li>
+			<li><span class="file"><a href="3.28.html">Интерфейсы и полиморфизм</a></span></li>
+			<li><span class="file"><a href="3.29.html">Множественная реализация и наследование интерфейсов</a></span></li>
+			<li><span class="file"><a href="3.16.html">Интерфейсы в механизме обратного вызова</a></span></li>
+			<li><span class="file"><a href="3.8.html">Перечисления enum</a></span></li>
+			<li><span class="file"><a href="3.11.html">Обобщения (Generics)</a></span></li>
+			<li><span class="file"><a href="3.17.html">Ограничения обобщений</a></span></li>
+			<li><span class="file"><a href="3.15.html">Наследование и обобщения</a></span></li>
+			<li><span class="file"><a href="3.31.html">Type Erasure (Стирание типов)</a></span></li>
+			<li><span class="file"><a href="3.32.html">Подстановочные знаки wildcards в обобщениях</a></span></li>
+			<li><span class="file"><a href="3.13.html">Ссылочные типы и клонирование объектов</a></span></li>
+			<li><span class="file"><a href="3.18.html">Классы Records</a></span></li>
+			<li><span class="file"><a href="9.4.html">Функциональные интерфейсы и ссылки на методы</a></span></li>
+			<li><span class="file"><a href="9.1.html">Лямбда-выражения</a></span></li>
+			<li><span class="file"><a href="9.2.html">Лямбды как параметры и результаты методов</a></span></li>
+			<li><span class="file"><a href="9.3.html">Встроенные функциональные интерфейсы</a></span></li>
+			<li><span class="file"><a href="3.12.html">Внутренние и вложенные классы</a></span></li>
+			<li><span class="file"><a href="3.30.html">Анонимные классы</a></span></li>
+
+
+			<li><span class="file"><a href="3.25.html">Sealed-классы и интерфейсы</a></span></li>
+			<li><span class="file"><a href="3.26.html">Pattern мatching. Паттерн типов</a></span></li>
+			<li><span class="file"><a href="3.27.html">Pattern мatching. record-паттерн</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 5. Обработка исключений</span>
+		<ul>
+			<li><span class="file"><a href="2.10.html">Обработка исключений и конструкция try...catch...finally</a></span></li>
+			<li><span class="file"><a href="4.2.html">Классы исключений</a></span></li>
+			<li><span class="file"><a href="4.1.html">Операторы throws и throw</a></span></li>
+			<li><span class="file"><a href="4.3.html">Создание своих классов исключений</a></span></li>
+			<li><span class="file"><a href="4.4.html">Assert</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 6. Коллекции</span>
+		<ul>
+			<li><span class="file"><a href="5.1.html">Типы коллекций. Интерфейс Collection</a></span></li>
+			<li><span class="file"><a href="5.2.html">Класс ArrayList и интерфейс List</a></span></li>
+			<li><span class="file"><a href="5.6.html">Интерфейсы Comparable и Comporator. Сортировка</a></span></li>
+			<li><span class="file"><a href="5.7.html">Очереди и стеки. Классы ArrayDeque и PriorityQueue</a></span></li>
+			<li><span class="file"><a href="5.3.html">Связанный список LinkedList</a></span></li>
+			<li><span class="file"><a href="5.4.html">Интерфейс Set и хеш-таблицы HashSet</a></span></li>
+			<li><span class="file"><a href="5.5.html">Деревья TreeSet и интерфейсы SortedSet и NavigableSet</a></span></li>
+			<li><span class="file"><a href="5.8.html">Словари. Интерфейс Map и класс HashMap</a></span></li>
+			<li><span class="file"><a href="5.9.html">Интерфейсы SortedMap и NavigableMap. Класс TreeMap</a></span></li>
+			<li><span class="file"><a href="5.10.html">Итераторы. Iterator и Iterable</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 7. Потоки ввода-вывода. Работа с файлами</span>
+		<ul>
+			<li><span class="file"><a href="6.1.html">Потоки ввода-вывода</a></span></li>
+			<li><span class="file"><a href="6.3.html">Чтение и запись файлов. FileInputStream и FileOutputStream</a></span></li>
+			<li><span class="file"><a href="6.2.html">Закрытие потоков и конструкция try-с-ресурсами</a></span></li>
+			<li><span class="file"><a href="6.4.html">Классы ByteArrayInputStream и ByteArrayOutputStream</a></span></li>
+			<li><span class="file"><a href="6.5.html">Буферизованные потоки BufferedInputStream и BufferedOutputStream</a></span></li>
+			<li><span class="file"><a href="6.6.html">Форматируемый вывод. PrintStream и PrintWriter</a></span></li>
+			<li><span class="file"><a href="6.7.html">Классы DataOutputStream и DataInputStream</a></span></li>
+			<li><span class="file"><a href="6.8.html">Чтение и запись текстовых файлов</a></span></li>
+			<li><span class="file"><a href="6.9.html">Буферизация символьных потоков. BufferedReader и BufferedWriter</a></span></li>
+			<li><span class="file"><a href="6.10.html">Сериализация объектов</a></span></li>
+			<li><span class="file"><a href="6.11.html">Класс File. Работа с файлами и каталогами</a></span></li>
+			<li><span class="file"><a href="6.12.html">Работа с ZIP-архивами</a></span></li>
+			<li><span class="file"><a href="6.13.html">Класс Console</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 8. Работа со строками</span>
+		<ul>
+			<li><span class="file"><a href="7.1.html">Введение в строки. Класс String</a></span></li>
+			<li><span class="file"><a href="7.2.html">Основные операции со строками</a></span></li>
+			<li><span class="file"><a href="7.3.html">StringBuffer и StringBuilder</a></span></li>
+			<li><span class="file"><a href="7.4.html">Регулярные выражения</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 9. Многопоточное программирование</span>
+		<ul>
+			<li><span class="file"><a href="8.1.html">Многопоточное программирование и класс Thread</a></span></li>
+			<li><span class="file"><a href="8.2.html">Создание и выполнение потоков</a></span></li>
+			<li><span class="file"><a href="8.11.html">Управление потоками</a></span></li>
+			<li><span class="file"><a href="8.4.html">Завершение и прерывание потока</a></span></li>
+			<li><span class="file"><a href="8.12.html">Виртуальные потоки</a></span></li>
+			<li><span class="file"><a href="8.3.html">Синхронизация потоков. Оператор synchronized</a></span></li>
+			<li><span class="file"><a href="8.5.html">Взаимодействие потоков. Методы wait и notify</a></span></li>
+			<li><span class="file"><a href="8.6.html">Семафоры</a></span></li>
+			<li><span class="file"><a href="8.7.html">Обмен между потоками. Класс Exchanger</a></span></li>
+			<li><span class="file"><a href="8.8.html">Класс Phaser</a></span></li>
+			<li><span class="file"><a href="8.9.html">Блокировки. ReentrantLock</a></span></li>
+			<li><span class="file"><a href="8.10.html">Условия в блокировках</a></span></li>
+			<li><span class="file"><a href="8.16.html">Переменные volatile</a></span></li>
+			<li><span class="file"><a href="8.17.html">Атомарность и Atomics. Потокобезопасность без блокировок</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 10. Асинхронность</span>
+		<ul>
+			<li><span class="file"><a href="8.13.html">Асинхронные задачи FutureTask. Callable и Future</a></span></li>
+			<li><span class="file"><a href="8.14.html">Executor - исполнитель задач</a></span></li>
+			<li><span class="file"><a href="8.15.html">Координация выполнения асинхронных задач</a></span></li>
+			<li><span class="file"><a href="8.18.html">CompletableFuture и промисы. Обработка результата асинхронных задач</a></span></li>
+			<li><span class="file"><a href="8.19.html">CompletableFuture, обработка ошибок и завершения асинхронных задач</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 11. Stream API</span>
+		<ul>
+			<li><span class="file"><a href="10.1.html">Введение в Stream API</a></span></li>
+			<li><span class="file"><a href="10.2.html">Создание потока данных</a></span></li>
+			<li><span class="file"><a href="10.3.html">Фильтрация, перебор элементов и отображение</a></span></li>
+			<li><span class="file"><a href="10.8.html">Сортировка</a></span></li>
+			<li><span class="file"><a href="10.13.html">Получение подпотока и объединение потоков</a></span></li>
+			<li><span class="file"><a href="10.4.html">Методы skip и limit</a></span></li>
+			<li><span class="file"><a href="10.11.html">Операции сведения</a></span></li>
+			<li><span class="file"><a href="10.5.html">Метод reduce</a></span></li>
+			<li><span class="file"><a href="10.12.html">Тип Optional</a></span></li>
+			<li><span class="file"><a href="10.6.html">Метод collect</a></span></li>
+			<li><span class="file"><a href="10.7.html">Группировка</a></span></li>
+			<li><span class="file"><a href="10.9.html">Параллельные потоки</a></span></li>
+			<li><span class="file"><a href="10.10.html">Параллельные операции над массивами</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 12. Модульность</span>
+		<ul>
+			<li><span class="file"><a href="11.1.html">Создание модуля</a></span></li>
+			<li><span class="file"><a href="11.2.html">Зависимые модули</a></span></li>
+			<li><span class="file"><a href="11.3.html">Взаимодействие между модулями. Экспорт и импорт</a></span></li>
+		</ul>
+	</li>
+	</li>
+	<li class="closed"><span class="folder">Глава 13. Дополнительные классы</span>
+		<ul>
+			<li><span class="file"><a href="12.1.html">Математические вычисления и класс Math</a></span></li>
+			<li><span class="file"><a href="12.2.html">Большие числа BigInteger и BigDecimal</a></span></li>
+			<li><span class="file"><a href="12.3.html">Работа с датами. LocalDate</a></span></li>
+			<li><span class="file"><a href="12.4.html">Процессы. Process и ProcessBuilder</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 14. JAR-файлы и подключение библиотек и классов</span>
+		<ul>
+			<li><span class="file"><a href="13.1.html">Файлы JAR, их создание и выполнение</a></span></li>
+			<li><span class="file"><a href="13.2.html">Создание и подключение библиотеки JAR</a></span></li>
+			<li><span class="file"><a href="13.4.html">Модульный jar-файл</a></span></li>
+			<li><span class="file"><a href="13.3.html">Установка пути к классам Java</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 15. Рефлексия</span>
+		<ul>
+			<li><span class="file"><a href="14.1.html">Введение в рефлексию. Класс Class</a></span></li>
+			<li><span class="file"><a href="14.2.html">Исследование типов</a></span></li>
+			<li><span class="file"><a href="14.3.html">Поля класса и класс Field</a></span></li>
+			<li><span class="file"><a href="14.4.html">Модификаторы доступа и класс Modifier</a></span></li>
+			<li><span class="file"><a href="14.5.html">Класс Constructor и cоздание объектов</a></span></li>
+			<li><span class="file"><a href="14.6.html">Методы и класс Method</a></span></li>
+			<li><span class="file"><a href="14.7.html">Proxy (Прокси)</a></span></li>
+		</ul>
+	</li>
+	<li class="closed"><span class="folder">Глава 16. Аннотации</span>
+		<ul>
+			<li><span class="file"><a href="15.1.html">Введение в аннотации. Встроенные аннотации</a></span></li>
+			<li><span class="file"><a href="15.2.html">Создание и применение аннотаций</a></span></li>
+			<li><span class="file"><a href="15.3.html">Обработка аннотаций во время выполнения</a></span></li>
+		</ul>
+	</li>
+
+
+	<li class="closed"><span class="folder">Глава 17. Взаимодействие с нативным кодом</span>
+		<ul>
+			<li><span class="file"><a href="16.1.html">Java Native Interface (JNI)</a></span></li>
+			<li><span class="file"><a href="16.2.html">Foreign Functions и Memory API</a></span></li>
+			<li><span class="file"><a href="16.3.html">Арена и сегменты памяти MemorySegment</a></span></li>
+			<li><span class="file"><a href="16.4.html">Компоновка памяти MemoryLayout и работа с MemorySegment</a></span></li>
+			<li><span class="file"><a href="16.5.html">Сложные данные и MemoryLayout</a></span></li>
+			<li><span class="file"><a href="16.6.html">Поиск и вызов внешних функций</a></span></li>
+			<li><span class="file"><a href="16.7.html">Нативные функции обратного вызова</a></span></li>
+		</ul>
+	</li>
+</ul>   </div>
+</div>
+
+  <div class="item right">
+<div class="help" style="border: 0px;">
+    
+	<div class="help-item">
+		<div class="help-item-name"><a href="https://metanit.com/settings.html">Настройки</a></div>
+	 </div>
+</div>
+			<div class="help">
+
+      <div class="help-header">Помощь сайту</div>
+
+       <div class="help-item">
+		<div class="help-item-name"><a href="https://yoomoney.ru/to/410011174743222" rel="nofollow">Помощь сайту</a></div>
+	 </div>
+       
+      <div class="help-item">
+		<div class="help-item-name">Юмани:</div>
+		<div class="help-item-req">410011174743222</div>
+	 </div>
+
+		<div class="help-item">
+			<div class="help-item-name">Номер карты:</div>
+			<div class="help-item-req">4048415020898850</div>
+		</div>
+
+      </div>
+
+	
+	
+
+
+
+
+  </div>
+</div>
+
+<div id="footer" style="padding-bottom:85px;">
+
+<div class="bootomLinks">
+<a href="https://vk.com/metanit" title="Присоединиться к группе вконтакте" rel="nofollow">
+Вконтакте</a>|
+ <a href="https://t.me/devnull22" title="Подписаться на телеграм" rel="nofollow">
+Телеграм</a> | 
+<a href="https://metanit.com/donations.html" rel="nofollow">Донаты/Помощь сайту</a>
+</div>
+<p>Contacts: metanit22@mail.ru</p>
+<p>Copyright &copy; Евгений Попов, metanit.com, 2026. Все права защищены.</p>
+
+
+</div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+<script src='../../js/syntax16.js'></script>
+<script>
+// Syntax Highlighter
+if (typeof SyntaxHighlighter !== 'undefined') {
+    SyntaxHighlighter.all();
+}
+
+// Copy guard
+document.addEventListener('copy', (ev) => {
+    const et = ev.target;
+    if (et.type === 'textarea') {
+        ev.clipboardData.setData('text/plain', et.value.substring(et.selectionStart, et.selectionEnd).replace(/ /g, ' '));
+        ev.preventDefault();
+    }
+});
+
+// Mobile menu
+const faBars = document.querySelector('.fa-bars');
+if (faBars) {
+    faBars.addEventListener('click', () => {
+        const tree = document.querySelector('.item.left');
+        if (tree) {
+            tree.style.display = (tree.style.display === 'block') ? 'none' : 'block';
+        }
+    });
+}
+
+const menuButton = document.getElementById('menuButton');
+if (menuButton) {
+    menuButton.addEventListener('click', () => {
+        menuButton.classList.toggle('menu-opened');
+        const mainMenu = document.querySelector('.mainmenu');
+        if (mainMenu) mainMenu.classList.toggle('open');
+    });
+}
+
+// Search toggle
+const magGlass = document.getElementById('magnifying-glass');
+if (magGlass) {
+    magGlass.addEventListener('click', () => {
+        const search = document.getElementById('search');
+        if (search) search.classList.toggle('transp');
+    });
+}
+
+// Theme toggle
+const toggleTheme = document.getElementById('toggle-theme');
+if (toggleTheme) {
+    toggleTheme.addEventListener('click', () => {
+        if (document.documentElement.hasAttribute('theme')) {
+            document.documentElement.removeAttribute('theme');
+            document.cookie = 'theme=1;expires=Mon, 19 Feb 2001 12:00:00 UTC;path=/;';
+        } else {
+            document.documentElement.setAttribute('theme', 'dark');
+            var expire = new Date();
+            expire.setHours(expire.getHours() + 7);
+            document.cookie = 'theme=1;expires=' + expire.toUTCString() + ';path=/;';
+        }
+    });
+}
+
+// Share buttons
+const shareVK = document.querySelectorAll('.share .fa-vk');
+shareVK.forEach(e => e.addEventListener('click', () => window.open('http://vk.com/share.php?url=' + window.location.href, 'Поделиться в ВКОНТАКТЕ')));
+const shareTG = document.querySelectorAll('.share .fa-telegram');
+shareTG.forEach(e => e.addEventListener('click', () => window.open('tg://msg_url/url=' + window.location.href, 'Поделиться в Telegram')));
+const shareOK = document.querySelectorAll('.share .fa-odnoklassniki');
+shareOK.forEach(e => e.addEventListener('click', () => window.open('https://connect.ok.ru/offer?url=' + window.location.href, 'Поделиться в Одноклассниках')));
+
+// Folders
+const folders = document.getElementsByClassName('closed');
+for (let i = 0; i < folders.length; i++) {
+    folders[i].addEventListener('click', function (e) {
+        this.classList.toggle('closed');
+        this.classList.toggle('opened');
+    });
+}
+
+// Active Item Highlight
+const activePath = window.location.pathname.split('/').pop();
+const activeItem = document.querySelector(".file a[href*='" + activePath + "']");
+if (activeItem) {
+    activeItem.classList.add('aMItem');
+    activeItem.parentElement.classList.add('aMItem');
+    const activeFolder = activeItem.closest('li');
+    if (activeFolder) {
+        activeFolder.classList.remove('closed');
+        activeFolder.classList.add('opened');
+        const folderLabel = activeFolder.querySelector('.folder');
+        if (folderLabel) folderLabel.classList.add('aMItem');
+    }
+}
+
+// Settings
+const props = ['--main-font-size', '--main-font-family', '--menc-bg-color', '--container-bg-color', '--menu-bg-color', '--code-font-size', '--code-font-family', '--code-bgcolor', '--code-max-height'];
+for (let i = 0; i < props.length; i++) {
+    const propValue = localStorage.getItem(props[i]);
+    if (propValue !== null) document.documentElement.style.setProperty(props[i], propValue);
+}
+</script>
+</body>
+</html>
