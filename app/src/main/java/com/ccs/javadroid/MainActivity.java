@@ -1237,15 +1237,6 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, R.string.toast_no_file_open, Toast.LENGTH_SHORT).show();
             return;
         }
-        
-        if (activeTab.file != null && activeTab.file.getName().toLowerCase(java.util.Locale.ROOT).endsWith(".kt")) {
-            new AlertDialog.Builder(this)
-                    .setTitle(R.string.kotlin_run_warning_title)
-                    .setMessage(R.string.kotlin_run_warning_message)
-                    .setPositiveButton(R.string.dialog_cancel, null)
-                    .show();
-            return;
-        }
 
         saveCurrentToActiveTab();
 

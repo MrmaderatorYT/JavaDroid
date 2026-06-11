@@ -69,6 +69,14 @@ android {
         jniLibs {
             useLegacyPackaging true
         }
+        resources {
+            excludes += 'META-INF/versions/9/OSGI-INF/MANIFEST.MF'
+            excludes += '**/*.kotlin_builtins'
+            excludes += 'META-INF/*.kotlin_module'
+            excludes += 'META-INF/proguard/*'
+            excludes += 'META-INF/NOTICE'
+            excludes += 'META-INF/LICENSE'
+        }
     }
 }
 
@@ -95,6 +103,10 @@ dependencies {
         exclude group: 'com.jcraft', module: 'jsch'
     }
     implementation 'org.slf4j:slf4j-nop:1.7.36'
+
+    // Kotlin Runtime Compiler support for on-device compilation
+    implementation 'org.jetbrains.kotlin:kotlin-compiler-embeddable:1.9.22'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.9.22'
 }
 
 configurations.all {

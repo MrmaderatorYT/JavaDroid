@@ -91,11 +91,11 @@ public final class ProjectCompiler {
         final Callback callback = wrapCallback(context, rawCallback);
         new Thread(() -> {
             try {
+                boolean isKotlin = logicalSourceFile != null && logicalSourceFile.getName().toLowerCase(java.util.Locale.ROOT).endsWith(".kt");
                 String className = extractClassName(sourceCode);
                 File cacheDir = new File(context.getCacheDir(), "compile_cache");
                 if (!cacheDir.exists()) cacheDir.mkdirs();
 
-                File srcFile = new File(cacheDir, className + ".java");
                 File androidJar = ensureAndroidJar(context, cacheDir);
                 File dexDir = new File(cacheDir, "dex");
                 if (!dexDir.exists()) {
@@ -107,24 +107,93 @@ public final class ProjectCompiler {
                     }
                 }
 
-                writeUtf8(srcFile, sourceCode);
+                if (isKotlin) {
+                    postProgress(callback, "Compiling Kotlin source...");
+                    File srcFile = new File(cacheDir, className + ".kt");
+                    writeUtf8(srcFile, sourceCode);
 
-                String ecjErr = compileEcj(androidJar, null, cacheDir, javaTarget(context), srcFile);
-                if (ecjErr != null) {
-                    postCompileFailure(callback, context, null, ecjErr, logicalSourceFile,
-                            "Compilation Error:\n" + ecjErr);
-                    return;
+                    // Compile Kotlin using K2JVMCompiler via reflection
+                    ByteArrayOutputStream kotOut = new ByteArrayOutputStream();
+                    PrintStream ps = new PrintStream(kotOut, true, "UTF-8");
+                    
+                    Class<?> compilerClass = Class.forName("org.jetbrains.kotlin.cli.jvm.K2JVMCompiler");
+                    Object compilerInstance = compilerClass.getDeclaredConstructor().newInstance();
+                    Method execMethod = compilerClass.getMethod("exec", PrintStream.class, String[].class);
+
+                    // We need standard library path, but since we are compiling single source without stdlib jar sometimes,
+                    // we can pass noStdlib=false or specify classpath including our own android.jar.
+                    String[] args = new String[] {
+                        srcFile.getAbsolutePath(),
+                        "-d", cacheDir.getAbsolutePath(),
+                        "-classpath", androidJar.getAbsolutePath(),
+                        "-no-stdlib"
+                    };
+
+                    Object exitCodeObj = execMethod.invoke(compilerInstance, ps, args);
+                    ps.flush();
+                    String errLog = kotOut.toString("UTF-8");
+
+                    int exitCode = 0;
+                    if (exitCodeObj != null) {
+                        if (exitCodeObj instanceof Enum) {
+                            exitCode = ((Enum<?>) exitCodeObj).ordinal(); // 0 is OK usually
+                        } else if (exitCodeObj instanceof Integer) {
+                            exitCode = (Integer) exitCodeObj;
+                        }
+                    }
+
+                    if (exitCode != 0 || !errLog.isEmpty()) {
+                        // Some warnings can be in errLog even if exitCode is 0, check if file exists
+                        File classFile = new File(cacheDir, className + "Kt.class");
+                        if (!classFile.exists()) {
+                            classFile = new File(cacheDir, className + ".class");
+                        }
+                        if (!classFile.exists()) {
+                            postCompileFailure(callback, context, null, errLog, logicalSourceFile,
+                                    "Kotlin Compilation Error:\n" + errLog);
+                            return;
+                        }
+                    }
+
+                    File classFile = new File(cacheDir, className + "Kt.class");
+                    if (!classFile.exists()) {
+                        classFile = new File(cacheDir, className + ".class");
+                    }
+                    if (!classFile.exists()) {
+                        postResult(callback, "Error: Compiled Kotlin class file not found.");
+                        return;
+                    }
+
+                    runD8Dex(androidJar, dexDir, classFile);
+                    // Kotlin compiled file usually has "Kt" suffix for main methods (e.g. MainKt)
+                    String runClassName = className;
+                    if (new File(cacheDir, className + "Kt.class").exists()) {
+                        runClassName = className + "Kt";
+                    }
+                    runDexMain(context, null, dexDir, runClassName, callback);
+                } else {
+                    File srcFile = new File(cacheDir, className + ".java");
+                    writeUtf8(srcFile, sourceCode);
+
+                    String ecjErr = compileEcj(androidJar, null, cacheDir, javaTarget(context), srcFile);
+                    if (ecjErr != null) {
+                        postCompileFailure(callback, context, null, ecjErr, logicalSourceFile,
+                                "Compilation Error:\n" + ecjErr);
+                        return;
+                    }
+                    postProblems(callback, context, null, "", logicalSourceFile);
+
+                    File classFile = new File(cacheDir, className + ".class");
+                    if (!classFile.exists()) {
+                        postResult(callback, "Error: " + className + ".class not found.");
+                        return;
+                    }
+
+                    runD8Dex(androidJar, dexDir, classFile);
+                    runDexMain(context, null, dexDir, className, callback);
                 }
-                postProblems(callback, context, null, "", logicalSourceFile);
-
-                File classFile = new File(cacheDir, className + ".class");
-                if (!classFile.exists()) {
-                    postResult(callback, "Error: " + className + ".class not found.");
-                    return;
-                }
-
-                runD8Dex(androidJar, dexDir, classFile);
-                runDexMain(context, null, dexDir, className, callback);
+            } catch (ClassNotFoundException e) {
+                postResult(callback, "Error: Kotlin compiler library not integrated. Please verify kotlin-compiler-embeddable in build.gradle.");
             } catch (Exception e) {
                 postResult(callback, "System Error: " + e.getMessage() + "\n" + Log.getStackTraceString(e));
             }
