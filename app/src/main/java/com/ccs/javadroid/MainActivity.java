@@ -597,6 +597,18 @@ public class MainActivity extends AppCompatActivity {
                     || name.endsWith(".hpp") || name.endsWith(".cc") || name.endsWith(".cxx")) {
                 editor.setEditorLanguage(new CppLanguage());
                 return;
+            } else if (name.endsWith(".xml")) {
+                editor.setEditorLanguage(new XmlLanguage());
+                return;
+            } else if (name.endsWith(".gradle")) {
+                editor.setEditorLanguage(new GradleLanguage());
+                return;
+            } else if (name.endsWith(".json")) {
+                editor.setEditorLanguage(new JsonLanguage());
+                return;
+            } else if (name.endsWith(".sh") || name.endsWith(".bash")) {
+                editor.setEditorLanguage(new BashLanguage());
+                return;
             }
         }
         editor.setEditorLanguage(new JavaDroidLanguage(this, projectManager.getProjectDir()));
