@@ -421,9 +421,7 @@
                         android:paddingEnd="10dp"
                         android:gravity="center_vertical"
                         android:text="@string/tab_run"
-                        android:textColor="@color/idea_run_green"
                         android:textSize="11sp"
-                        android:background="@color/idea_tab_active"
                         android:clickable="true"
                         android:focusable="true" />
 
@@ -435,9 +433,7 @@
                         android:paddingEnd="10dp"
                         android:gravity="center_vertical"
                         android:text="@string/tab_problems"
-                        android:textColor="@color/idea_text_dim"
                         android:textSize="11sp"
-                        android:background="@color/idea_toolbar"
                         android:clickable="true"
                         android:focusable="true" />
 
@@ -449,9 +445,7 @@
                         android:paddingEnd="10dp"
                         android:gravity="center_vertical"
                         android:text="@string/tab_bytecode"
-                        android:textColor="@color/idea_text_dim"
                         android:textSize="11sp"
-                        android:background="@color/idea_toolbar"
                         android:clickable="true"
                         android:focusable="true" />
 
@@ -463,9 +457,7 @@
                         android:paddingEnd="10dp"
                         android:gravity="center_vertical"
                         android:text="@string/tab_debug"
-                        android:textColor="@color/idea_text_dim"
                         android:textSize="11sp"
-                        android:background="@color/idea_toolbar"
                         android:clickable="true"
                         android:focusable="true"
                         android:visibility="gone" />
@@ -478,9 +470,7 @@
                         android:paddingEnd="10dp"
                         android:gravity="center_vertical"
                         android:text="@string/tab_debug_console"
-                        android:textColor="@color/idea_text_dim"
                         android:textSize="11sp"
-                        android:background="@color/idea_toolbar"
                         android:clickable="true"
                         android:focusable="true"
                         android:visibility="gone" />

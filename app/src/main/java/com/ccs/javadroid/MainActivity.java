@@ -380,6 +380,7 @@ public class MainActivity extends AppCompatActivity {
         if (editor2 != null) EditorSettingsApplier.apply(editor2, appPrefs, theme);
         refreshBreakpointMarkers();
         if (bottomTabsBar != null) bottomTabsBar.setBackgroundColor(theme.toolbar);
+        refreshBottomTabColors();
         if (statusBar != null)    statusBar.setBackgroundColor(theme.statusBar);
         if (consoleScroll != null) consoleScroll.setBackgroundColor(theme.consoleBg);
         if (consoleOutput != null) consoleOutput.setTextColor(theme.consoleText);
@@ -838,6 +839,22 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+    private void refreshBottomTabColors() {
+        int activeBg   = blend(theme.toolbar, theme.bg, 0.4f);
+        int inactiveBg = theme.toolbar;
+        tabRun.setBackgroundColor(bottomPanelMode == PANEL_RUN ? activeBg : inactiveBg);
+        tabProblems.setBackgroundColor(bottomPanelMode == PANEL_PROBLEMS ? activeBg : inactiveBg);
+        tabBytecode.setBackgroundColor(bottomPanelMode == PANEL_BYTECODE ? activeBg : inactiveBg);
+        if (tabDebug != null) tabDebug.setBackgroundColor(bottomPanelMode == PANEL_DEBUG ? activeBg : inactiveBg);
+        if (tabDebugConsole != null) tabDebugConsole.setBackgroundColor(bottomPanelMode == PANEL_DEBUG_CONSOLE ? activeBg : inactiveBg);
+
+        tabRun.setTextColor(bottomPanelMode == PANEL_RUN ? theme.successText : theme.textDim);
+        tabProblems.setTextColor(bottomPanelMode == PANEL_PROBLEMS ? theme.text : theme.textDim);
+        tabBytecode.setTextColor(bottomPanelMode == PANEL_BYTECODE ? theme.accent : theme.textDim);
+        if (tabDebug != null) tabDebug.setTextColor(bottomPanelMode == PANEL_DEBUG ? theme.accent : theme.textDim);
+        if (tabDebugConsole != null) tabDebugConsole.setTextColor(bottomPanelMode == PANEL_DEBUG_CONSOLE ? theme.accent : theme.textDim);
     }
 
     private void switchBottomPanel(int mode) {
