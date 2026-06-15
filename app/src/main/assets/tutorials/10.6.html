@@ -3,7 +3,7 @@
 <head>
 <title>Java | Метод collect в Stream API</title>
 <meta charset="utf-8" />
-<meta name="description" content="Метод collect в Stream API в языке программирования Java, класс Collector, получение из потока коллекций ArrayList, HashSet, Map">
+<meta name="description" content="Метод collect в Stream API в языке програмирования Java, клас Collector, отримання из потіка колекцій ArrayList, HashSet, Map">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -13,22 +13,22 @@
 <div class="item center menC">
      <h2>Метод collect</h2><div class="date">Останнє оновлення: 29.04.2018</div>
 
-	<p>Большинство операций класса Stream, которые модифицируют набор данных, повертають цей набор в виде потока. Однак бывают ситуации, когда хотелось бы 
-отримати дані не в виде потока, а в виде обычной коллекции, наприклад, ArrayList або HashSet. И для цього у класса Stream определен метод <span class="b">collect</span>. 
-Первая версия метода приймає в качестве параметра функцию преобразования к коллекции:</p>
+	<p>Большинство операцій класа Stream, которые модифицируют набор данных, повертають цей набор в виде потіка. Однак бывают ситуации, когда хотелось бы 
+отримати дані не в виде потіка, а в виде обычной колекції, наприклад, ArrayList або HashSet. И для цього у класа Stream визначений метод <span class="b">collect</span>. 
+Первая версия методу приймає в качестве параметра функцію преобразования к колекції:</p>
 <pre class="line-numbers"><code class="language-java">
 &lt;R,A&gt; R collect(Collector&lt;? super T,A,R&gt; collector)
 </code></pre>
-<p>Параметр R представляє тип результата метода, параметр Т - тип элемента в потоке, а параметр А - тип промежуточных накапливаемых данных. 
-В итоге параметр collector представляє функцию преобразования потока в коллекцию.</p>
-<p>Эта функция представляє об'єкт Collector, який определен в пакеті <i>java.util.stream</i>. Мы можемо написать свою реализацию функції, однак 
-Java вже надає ряд встроенных функций, определенных в классе <span class="b">Collectors</span>:</p>
+<p>Параметр R представляє тип результата методу, параметр Т - тип елемента у потоці, а параметр А - тип промежуточных накапливаемых данных. 
+В итоге параметр collector представляє функцію преобразования потіка в колекцію.</p>
+<p>Эта функція представляє об'єкт Collector, який визначений в пакеті <i>java.util.stream</i>. Мы можемо написать свою реализацию функції, однак 
+Java вже надає ряд встроенных функцій, визначенийных в класе <span class="b">Collectors</span>:</p>
 <ul>
 <li><p><span class="b">toList()</span>: преобразование к типу List<p></li>
 <li><p><span class="b">toSet()</span>: преобразование к типу Set<p></li>
 <li><p><span class="b">toMap()</span>: преобразование к типу Map<p></li>
 </ul>
-<p>Наприклад, преобразуем набор в потоке в список:</p>
+<p>Наприклад, преобразуем набор у потоці в список:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.ArrayList;
 import java.util.Collections;
@@ -54,13 +54,13 @@ public class Program {
     } 
 }
 </code></pre>
-<p>Использование метода <code>toSet()</code> аналогично.</p>
+<p>Використання методу <code>toSet()</code> аналогично.</p>
 <pre class="line-numbers"><code class="language-java">
 Set&lt;String&gt; filteredPhones = phones.stream()
                 .filter(s-&gt;s.length()&lt;10)
                 .collect(Collectors.toSet());
 </code></pre>
-<p>Для применения метода <code>toMap()</code> треба задать ключ и значение. Наприклад, пусть у нас есть следующая модель:</p>
+<p>Для применения методу <code>toMap()</code> треба задать ключ и значення. Наприклад, пусть у нас есть следующая модель:</p>
 <pre class="line-numbers"><code class="language-java">
 class Phone{
     
@@ -82,7 +82,7 @@ class Phone{
 }
 </code></pre>
 
-<p>Теперь применим метод <code>toMap()</code>:</p>
+<p>Теперь застосуємо метод <code>toMap()</code>:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -117,8 +117,8 @@ class Phone{
     public int getPrice() { return price; }
 }
 </code></pre>
-<p>Лямбда-выражение <code>p-&gt;p.getName()</code> отримує значение для ключа элемента, а <code>t-&gt;t.getPrice()</code> - извлекает значение элемента.</p>
-<p>Если нам треба создать якой-то определенный тип коллекции, наприклад, HashSet, то мы можемо використовувати специальные функції, которые определены в классах-коллекций. 
+<p>Лямбда-выражение <code>p-&gt;p.getName()</code> отримує значення для ключа елемента, а <code>t-&gt;t.getPrice()</code> - извлекает значення елемента.</p>
+<p>Если нам треба створити якой-то визначенийный тип колекції, наприклад, HashSet, то мы можемо використовувати специальные функції, которые визначенийы в класах-колекцій. 
 Наприклад, получим об'єкт HashSet:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.HashSet;
@@ -140,20 +140,20 @@ public class Program {
     } 
 }
 </code></pre>
-<p>Выражение <code>HashSet::new</code> представляє функцию создания коллекции. Аналогичным чином можна получать другие коллекции, наприклад, ArrayList:</p>
+<p>Выражение <code>HashSet::new</code> представляє функцію створенняя колекції. Аналогичным чином можна получать другие колекції, наприклад, ArrayList:</p>
 <pre class="line-numbers"><code class="language-java">
 ArrayList&lt;String&gt; result = phones.collect(Collectors.toCollection(ArrayList::new));
 </code></pre>
-<p>Вторая форма метода collect имїїт три параметра:</p>
+<p>Вторая форма методу collect имїїт три параметра:</p>
 <pre class="line-numbers"><code class="language-java">
 &lt;R&gt; R collect(Supplier&lt;R&gt; supplier, BiConsumer&lt;R,? super T&gt; accumulator, BiConsumer&lt;R,R&gt; combiner)
 </code></pre>
 <ul>
-<li><p><code>supplier</code>: створює об'єкт коллекции</p></li>
-<li><p><code>accumulator</code>: додає элемент в коллекцию</p></li>
-<li><p><code>combiner</code>: бинарная функция, которая об'єднує два об'єкта</p></li>
+<li><p><code>supplier</code>: створює об'єкт колекції</p></li>
+<li><p><code>accumulator</code>: додає елемент в колекцію</p></li>
+<li><p><code>combiner</code>: бинарная функція, которая об'єднує два об'єкта</p></li>
 </ul>
-<p>Применим эту версию метода collect:</p>
+<p>Застосуємо эту версию методу collect:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.ArrayList;
 import java.util.stream.Collectors;
@@ -169,9 +169,9 @@ public class Program {
   
 		ArrayList&lt;String&gt; filteredPhones = phones.filter(s-&gt;s.length()&lt;12)
 			.collect(
-                ()-&gt;new ArrayList&lt;String&gt;(), // создаем ArrayList
-                (list, item)-&gt;list.add(item), // добавляем в список элемент
-                (list1, list2)-&gt; list1.addAll(list2)); // добавляем в список другой список
+                ()-&gt;new ArrayList&lt;String&gt;(), // створюємо ArrayList
+                (list, item)-&gt;list.add(item), // додаємо в список елемент
+                (list1, list2)-&gt; list1.addAll(list2)); // додаємо в список інший список
          
 		filteredPhones.forEach(s-&gt;System.out.println(s));
     } 

@@ -13,14 +13,14 @@
 <div class="item center menC">
      <h2>Фільтрування, перебір елементів та відображення</h2><div class="date">Останнє оновлення: 02.05.2018</div>
 
-	<h3>Перебор элементов. Метод forEach</h3>
-<p>Для перебора элементов потока застосовується метод <code>forEach()</code>, який представляє терминальную операцию. В качестве параметра он приймає 
-об'єкт <code>Consumer&lt;? super String&gt;</code>, який представляє действие, выполняемое для каждого элемента набора. Например:</p>
+	<h3>Перебор елементов. Метод forEach</h3>
+<p>Для перебора елементов потіка застосовується метод <code>forEach()</code>, який представляє терминальную операцію. В качестве параметра он приймає 
+об'єкт <code>Consumer&lt;? super String&gt;</code>, який представляє действие, выполняемое для каждого елемента набора. Наприклад:</p>
 <pre class="line-numbers"><code class="language-java">
 Stream&lt;String&gt; citiesStream = Stream.of("Париж", "Лондон", "Мадрид","Берлин", "Брюссель");
 citiesStream.forEach(s-&gt;System.out.println(s));
 </code></pre>
-<p>Фактически це буде аналогично перебору всех элементов в цикле for и выполнению с ними действия, а именно вывод на консоль. В итоге консоль выведет:</p>
+<p>Фактически це буде аналогично перебору всех елементов в цикле for и выполнению с ними действия, а именно вивід на консоль. В итоге консоль выведет:</p>
 <div class="console">
 <pre class="consoletext">
 Париж
@@ -30,20 +30,20 @@ citiesStream.forEach(s-&gt;System.out.println(s));
 Брюссель
 </pre>
 </div>
-<p>Кстати мы можемо сократить в данном случае применение метода forEach наступним чином:</p>
+<p>Кстати мы можемо сократить у даному випадку застосування методу forEach наступним чином:</p>
 <pre class="line-numbers"><code class="language-java">
 Stream&lt;String&gt; citiesStream = Stream.of("Париж", "Лондон", "Мадрид","Берлин", "Брюссель");
 citiesStream.forEach(System.out::println);
 </code></pre>
-<p>Фактически здесь переадается ссылка на статический метод, який выводит строку на консоль.</p>
-<h3>Фильтрация. Метод filter</h3>
-<p>Для фильтрации элементов в потоке застосовується метод <span class="b">filter()</span>, який представляє промежуточную операцию. Он приймає в 
-качестве параметра некоторое условие в виде об'єкта <code>Predicate&lt;T&gt;</code> и повертає новый поток из элементов, которые удовлетворяют цему условию:</p>
+<p>Фактически здесь переадается ссылка на статический метод, який виводить рядок на консоль.</p>
+<h3>Фільтрація. Метод filter</h3>
+<p>Для фильтрации елементов у потоці застосовується метод <span class="b">filter()</span>, який представляє промежуточную операцію. Он приймає в 
+качестве параметра некоторое условие в виде об'єкта <code>Predicate&lt;T&gt;</code> и повертає новый потік из елементов, которые удовлетворяют цему условию:</p>
 <pre class="line-numbers"><code class="language-java">
 Stream&lt;String&gt; citiesStream = Stream.of("Париж", "Лондон", "Мадрид","Берлин", "Брюссель");
 citiesStream.filter(s-&gt;s.length()==6).forEach(s-&gt;System.out.println(s));
 </code></pre>
-<p>Здесь условие <code>s.length()==6</code> повертає true для тех элементов, длина которых равна 6 символам. То есть в итоге программа выведет:</p>
+<p>Здесь условие <code>s.length()==6</code> повертає true для тех елементов, длина которых равна 6 символам. То есть в итоге програма выведет:</p>
 <div class="console">
 <pre class="consoletext">
 Лондон
@@ -51,7 +51,7 @@ citiesStream.filter(s-&gt;s.length()==6).forEach(s-&gt;System.out.println(s));
 Берлин
 </pre>
 </div>
-<p>Рассмотрим ще один пример фильтрации с болїї сложными данными. Допустим, у нас есть следующий класс Phone:</p>
+<p>Рассмотрим ще один пример фильтрации с болїї сложными данными. Допустим, у нас есть следующий клас Phone:</p>
 <pre class="line-numbers"><code class="language-java">
 class Phone{
     
@@ -80,7 +80,7 @@ class Phone{
     }
 }
 </code></pre>
-<p>Отфильтруем набор телефонов по цене:</p>
+<p>Отфільтруємо набор телефонов по цене:</p>
 <pre class="line-numbers"><code class="language-java">
 Stream&lt;Phone&gt; phoneStream = Stream.of(new Phone("iPhone 6 S", 54000), new Phone("Lumia 950", 45000),
                 new Phone("Samsung Galaxy S 6", 40000));
@@ -88,22 +88,22 @@ Stream&lt;Phone&gt; phoneStream = Stream.of(new Phone("iPhone 6 S", 54000), new 
 phoneStream.filter(p-&gt;p.getPrice()&lt;50000).forEach(p-&gt;System.out.println(p.getName()));
 </code></pre>
 <h3>Отображение. Метод map</h3>
-<p>Отображение або маппинг дозволяє задать функцию преобразования одного об'єкта в другой, то есть отримати из элемента одного типу элемент другого типу. Для 
-отображения використовується метод <code>map</code>, який имїїт следующїї определение:</p>
+<p>Отображение або маппинг дозволяє задать функцію преобразования одного об'єкта в другой, то есть отримати из елемента одного типу елемент другого типу. Для 
+отображения використовується метод <code>map</code>, який имїїт следующїї визначенийие:</p>
 <pre class="line-numbers"><code class="language-java">
 &lt;R&gt; Stream&lt;R&gt; map(Function&lt;? super T, ? extends R&gt; mapper)
 </code></pre>
-<p>Передаваемая в метод map функция задает преобразование от об'єктов типу T к типу R. И в результате повертаєся новый поток с преобразованными об'єктами.</p>
-<p>Підзьмем вышеопределенный класс телефонов и выполним преобразование от типу Phone к типу String:</p>
+<p>Передавана в метод map функція задає перетворення від об'єктов типу T к типу R. І в результаті повертається новий потік з перетвореними об'єктами.</p>
+<p>Візьмемо вищевизначений клас телефонів і виконаємо перетворення від типу Phone до типу String:</p>
 <pre class="line-numbers"><code class="language-java">
 Stream&lt;Phone&gt; phoneStream = Stream.of(new Phone("iPhone 6 S", 54000), new Phone("Lumia 950", 45000),
                 new Phone("Samsung Galaxy S 6", 40000));
         
 phoneStream
-    .map(p-&gt; p.getName()) // помещаем в поток лише названия телефонов
+    .map(p-&gt; p.getName()) // розміщуємо в потік лише назви телефонів
     .forEach(s-&gt;System.out.println(s));
 </code></pre>
-<p>Операция <code>map(p-&gt; p.getName())</code> помещает в новый поток лише названия телефонов. В итоге на консоли будуть лише названия:</p>
+<p>Операція <code>map(p-&gt; p.getName())</code> помещает в новый потік лише названия телефонов. В итоге на консоли будуть лише названия:</p>
 <div class="console">
 <pre class="consoletext">
 iPhone 6 S
@@ -117,16 +117,16 @@ phoneStream
     .map(p-&gt; "название: " + p.getName() + " цена: " + p.getPrice())
     .forEach(s-&gt;System.out.println(s));
 </code></pre>
-<p>Здесь також результирующий поток містить лише строки, лише теперь названия соединяются с ценами.</p>
-<p>Для преобразования об'єктов в типы Integer, Long, Double определены специальные методы <span class="b">mapToInt()</span>, <span class="b">mapToLong()</span> и 
+<p>Здесь також результирующий потік містить лише рядки, лише теперь названия соединяются с ценами.</p>
+<p>Для преобразования об'єктов в типи Integer, Long, Double визначенийы специальные методи <span class="b">mapToInt()</span>, <span class="b">mapToLong()</span> и 
 <span class="b">mapToDouble()</span> соответственно.</p>
 <h3>Плоское отображение. Метод flatMap</h3>
-<p>Плоское отображение виконується тогда, когда из одного элемента потрібно отримати декілька. Данную операцию выполняет метод <span class="b">flatMap</span>:</p>
+<p>Плоское отображение виконується тогда, когда из одного елемента потрібно отримати декілька. Данную операцію виконує метод <span class="b">flatMap</span>:</p>
 <pre class="line-numbers"><code class="language-java">
 &lt;R&gt; Stream&lt;R&gt; flatMap(Function&lt;? super T, ? extends Stream&lt;? extends R&gt;&gt; mapper)
 </code></pre>
-<p>Наприклад, в примере выше мы выводим название телефона и его цену. Но что, якщо мы хочемо установить для каждого телефона цену со скидкой и цену без 
-скидки. То есть из одного об'єкта Phone нам треба отримати два об'єкта с информацией, наприклад, в виде строки. Для цього применим flatMap:</p>
+<p>Наприклад, в примере выше мы вивідим название телефона и его цену. Но что, якщо мы хочемо установить для каждого телефона цену со скидкой и цену без 
+скидки. То есть из одного об'єкта Phone нам треба отримати два об'єкта с информацией, наприклад, в виде рядки. Для цього застосуємо flatMap:</p>
 <pre class="line-numbers"><code class="language-java">
 Stream&lt;Phone&gt; phoneStream = Stream.of(new Phone("iPhone 6 S", 54000), new Phone("Lumia 950", 45000),
                 new Phone("Samsung Galaxy S 6", 40000));
@@ -138,7 +138,7 @@ phoneStream
 	))
     .forEach(s-&gt;System.out.println(s));
 </code></pre>
-<p>Результат работы программы:</p>
+<p>Результат работы програми:</p>
 <div class="console">
 <pre class="consoletext">
 название: iPhone 6 S цена без скидки: 54000

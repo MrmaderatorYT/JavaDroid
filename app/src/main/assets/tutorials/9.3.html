@@ -3,7 +3,7 @@
 <head>
 <title>Java | Встроенные функциональные інтерфейсы</title>
 <meta charset="utf-8" />
-<meta name="description" content="Встроенные функциональные інтерфейсы в язые программирования Java, Predicate, BinaryOperator, UnaryOperator, Consumer, Function, BiFunction, Supplier">
+<meta name="description" content="Встроенные функциональные інтерфейсы в язые програмирования Java, Predicate, BinaryOperator, UnaryOperator, Consumer, Function, BiFunction, Supplier">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -25,14 +25,14 @@
 <li><p><span class="b">BinaryOperator&lt;T&gt;</span></p></li>
 </ul>
 <h3>Predicate&lt;T&gt;</h3>
-<p>Функциональный інтерфейс <code>Predicate&lt;T&gt;</code> проверяет соблюдение некоторого условия. Если оно соблюдается, то повертаєся значение <code>true</code>. 
+<p>Функциональный інтерфейс <code>Predicate&lt;T&gt;</code> проверяет соблюдение некоторого условия. Если оно соблюдается, то повертаєся значення <code>true</code>. 
 В качестве параметра лямбда-выражение приймає об'єкт типу T:</p>
 <pre class="line-numbers"><code class="language-java">
 public interface Predicate&lt;T&gt; {
 	boolean test(T t);
 }
 </code></pre>
-<p>Например:</p>
+<p>Наприклад:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.function.Predicate;
 
@@ -48,13 +48,13 @@ public class Program {
 }
 </code></pre>
 <h3>BinaryOperator&lt;T&gt;</h3>
-<p><code>BinaryOperator&lt;T&gt;</code> приймає в качестве параметра два об'єкта типу T, выполняет над ними бинарную операцию и повертає її результат також в виде об'єкта типу T:</p>
+<p><code>BinaryOperator&lt;T&gt;</code> приймає в качестве параметра два об'єкта типу T, виконує над ними бинарную операцію и повертає її результат також в виде об'єкта типу T:</p>
 <pre class="line-numbers"><code class="language-java">
 public interface BinaryOperator&lt;T&gt; {
 	T apply(T t1, T t2);
 }
 </code></pre>
-<p>Например:</p>
+<p>Наприклад:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.function.BinaryOperator;
 
@@ -70,13 +70,13 @@ public class Program {
 }
 </code></pre>
 <h3>UnaryOperator&lt;T&gt;</h3>
-<p><code>UnaryOperator&lt;T&gt;</code> приймає в качестве параметра об'єкт типу T, выполняет над ними операции и повертає результат операций в виде об'єкта типу T:</p>
+<p><code>UnaryOperator&lt;T&gt;</code> приймає в качестве параметра об'єкт типу T, виконує над ними операції и повертає результат операцій в виде об'єкта типу T:</p>
 <pre class="line-numbers"><code class="language-java">
 public interface UnaryOperator&lt;T&gt; {
 	T apply(T t);
 }
 </code></pre>
-<p>Например:</p>
+<p>Наприклад:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.function.UnaryOperator;
 
@@ -90,13 +90,13 @@ public class Program {
 }
 </code></pre>
 <h3>Function&lt;T,R&gt;</h3>
-<p>Функциональный інтерфейс <code>Function&lt;T,R&gt;</code> представляє функцию перехода от об'єкта типу T к об'єкту типу R:</p>
+<p>Функциональный інтерфейс <code>Function&lt;T,R&gt;</code> представляє функцію перехода от об'єкта типу T к об'єкту типу R:</p>
 <pre class="line-numbers"><code class="language-java">
 public interface Function&lt;T, R&gt; {
 	R apply(T t);
 }
 </code></pre>
-<p>Например:</p>
+<p>Наприклад:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.function.Function;
 
@@ -111,13 +111,13 @@ public class Program {
 </code></pre>
 
 <h3>BiFunction&lt;T, U, R&gt;</h3>
-<p>Функциональный інтерфейс <code>BiFunction&lt;T, U, R&gt;</code> представляє функцию с двумя параметрами типу T и U и результатом типу R:</p>
+<p>Функциональный інтерфейс <code>BiFunction&lt;T, U, R&gt;</code> представляє функцію с двумя параметрами типу T и U и результатом типу R:</p>
 <pre class="line-numbers"><code class="language-java">
 public interface Function&lt;T, U, R&gt; {
 	R apply(T t, U u);
 }
 </code></pre>
-<p>Например:</p>
+<p>Наприклад:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.function.BiFunction;
 
@@ -134,13 +134,13 @@ public class Program {
 </code></pre>
 
 <h3>Consumer&lt;T&gt;</h3>
-<p><code>Consumer&lt;T&gt;</code> выполняет некоторое действие над об'єктом типу T, при цем ничего не возвращая:</p>
+<p><code>Consumer&lt;T&gt;</code> виконує некоторое действие над об'єктом типу T, при цем ничего не возвращая:</p>
 <pre class="line-numbers"><code class="language-java">
 public interface Consumer&lt;T&gt; {
 	void accept(T t);
 }
 </code></pre>
-<p>Например:</p>
+<p>Наприклад:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.function.Consumer;
 
@@ -161,7 +161,7 @@ public interface Supplier&lt;T&gt; {
 	T get();
 }
 </code></pre>
-<p>Данный інтерфейс використовуються для так называемых ленивых вычислений, когда результат вычисления может потребоваться лишь спустя некоторое час. Например:</p>
+<p>Данный інтерфейс використовуються для так называемых ленивых вычислений, когда результат вычисления может потребоваться лишь спустя некоторое час. Наприклад:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.function.Supplier;
 
@@ -171,12 +171,12 @@ public class Program {
          
         Supplier&lt;Integer&gt; randomValue = ()-&gt; (int)(Math.random() * 10) + 1;
          
-        System.out.println("Случайное значение");
+        System.out.println("Случайное значення");
         System.out.println(randomValue.get());  // реальные вычисления происходят тут
     } 
 }
 </code></pre>
-<p>В данном случае переменная randomValue представляє выражение по вычислению случайного значения, но реальное вычисление происходит, когда вызвается метод <code>get()</code> для получения цейого значения.</p>
+<p>У даному випадку змінна randomValue представляє выражение по вычислению случайного значення, но реальное вычисление происходит, когда вызвается метод <code>get()</code> для получения цейого значення.</p>
 
   </div>
 

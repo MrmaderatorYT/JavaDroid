@@ -3,7 +3,7 @@
 <head>
 <title>Java | Модульний jar-файл</title>
 <meta charset="utf-8" />
-<meta name="description" content="Модульний jar-файл на языке программирования Java, утилита jar и створення JAR-файлов из модулей">
+<meta name="description" content="Модульний jar-файл на языке програмирования Java, утилита jar и створення JAR-файлів из модулів">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -13,22 +13,22 @@
 <div class="item center menC">
      <h1>Модульний jar-файл</h1><div class="date">Останнє оновлення: 06.11.2025</div>
 
-<p>Упаковка функционала пакетів в единый jar-файл також может використовуватися для распространения модулей Java. JAR-файл, який по сути представляє скомпилированный модуль, називається 
+<p>Упаковка функционала пакетів в единый jar-файл також может використовуватися для распространения модулів Java. JAR-файл, який по сути представляє скомпилированный модуль, називається 
 <span class="b">модульным JAR-файлом</span>.</p>
-<p>Для создания модульного JAR-файла аналогичным чином застосовується утилита <b>jar</b>. 
-Если модуль містить декілька пакетів, то також лучше всего его компилировать с опцией -d, которая помещает файлы классов в отдельный каталог (якщо каталог ще не существует, то он створюєся). 
-А при упаковке файлов в <code>jar-файл</code> для перехода в цей каталог застосовується опция <span class="b">-C</span> команды <b>jar</b>. Рассмотрим на примере.</p>
+<p>Для створенняя модульного JAR-файлу аналогичным чином застосовується утилита <b>jar</b>. 
+Если модуль містить декілька пакетів, то також лучше всего его компилировать с опцией -d, которая помещает файли класов в отдельный каталог (якщо каталог ще не існує, то он створюєся). 
+А при упаковке файлів в <code>jar-файл</code> для перехода в цей каталог застосовується опция <span class="b">-C</span> команди <b>jar</b>. Рассмотрим на примере.</p>
 
-<h3>Определение модуля</h3>
-<p>Для начала где-нибудь на жестком диске (в моем случае це папка <span class="b">worlspace/java</span>) создадим каталог, який назовем <span class="b">demo</span>. Цет каталог буде представлять 
-одноименный модуль. И в цем каталоге <span class="b">demo</span> определим новый файл <span class="b">module-info.java</span> - файл дескриптора модуля  со наступним кодом:</p>
+<h3>Визначенийие модуля</h3>
+<p>Для начала где-нибудь на жестком диске (в моем случае це папка <span class="b">worlspace/java</span>) створимо каталог, який назовем <span class="b">demo</span>. Цет каталог буде представлять 
+одноименный модуль. И в цем каталогу <span class="b">demo</span> визначимо новий файл <span class="b">module-info.java</span> - файл дескриптора модуля  со наступним кодом:</p>
 <pre class="line-numbers"><code class="language-java">
 module demo {
 }
 </code></pre>
-<p>Далїї в каталоге <span class="b">demo</span> создадим папку <span class="b">com</span>. В папке com создадим папку <span class="b"></span>, а в папке <span class="b">com/</span> - 
+<p>Далїї в каталогу <span class="b">demo</span> створимо папку <span class="b">com</span>. В папке com створимо папку <span class="b"></span>, а в папке <span class="b">com/</span> - 
 папку <span class="b">hello</span>.</p>
-<p>В папке <span class="b">com//hello</span> определим новый файл <span class="b">Hello.java</span>:</p>
+<p>В папке <span class="b">com//hello</span> визначимо новий файл <span class="b">Hello.java</span>:</p>
 <pre class="line-numbers"><code class="language-java">
 package com..hello;
  
@@ -39,18 +39,18 @@ public class Hello{
     }
 }
 </code></pre>
-<p>Название пакета файла - <span class="b">com..hello</span> отражает структуру папок, в которых расположен файл. Сам файл определяет класс Hello, 
-який в методе main выводит на консоль строку.</p>
-<p>В итоге у нас получится следующая стуктура проекта:</p>
-<img src="pics/11.1.png" alt="Модули в Java" />
+<p>Название пакету файлу - <span class="b">com..hello</span> отражает структуру папок, в которых расположен файл. Сам файл визначає клас Hello, 
+який в методі main виводить на консоль рядок.</p>
+<p>В итоге у нас получится следующая стуктура проєкта:</p>
+<img src="pics/11.1.png" alt="Модулі в Java" />
 <p>Теперь скомпилируем все це и упакуем в файл jar.</p>
 <h3>Створення jar</h3>
-<p>Для создания jar перейдем в командной строке/терминале к папке, где находится папка <span class="b">demo</span> с нашим модулем (в моем случае це папка <span class="b">worlspace/java</span>). 
-Затем для компиляции модуля выполним следующую команду:</p>
+<p>Для створенняя jar перейдем в командной рядківе/терминале к папке, где находится папка <span class="b">demo</span> с нашим модулем (в моем случае це папка <span class="b">worlspace/java</span>). 
+Затем для компиляции модуля виконаємо следующую команду:</p>
 <pre class="line-numbers"><code class="language-none">
 javac --module-source-path . -d mods demo/module-info.java demo/com//hello/Hello.java
 </code></pre>
-<p>После компиляции модуля в текущей папке появится папка "mods", в яку будуть помещаться все скомпилированные классы модуля demo и которая буде иметь следующую структуру:</p>
+<p>Після компиляции модуля в текущей папке появится папка "mods", в яку будуть помещаться все скомпилированные класы модуля demo и которая буде иметь следующую структуру:</p>
 <pre class="browser">
 mods
 |_demo
@@ -60,20 +60,20 @@ mods
             |_hello
                 |_Hello.class
 </pre>
-<p>Далїї для упаковки в <b>jar</b> выполним следующую команду:</p>
+<p>Далїї для упаковки в <b>jar</b> виконаємо следующую команду:</p>
 <pre class="line-numbers"><code class="language-none">
 jar -c -v -f demo.jar -C mods/demo .
 </code></pre>
-<p>Команда приймає следующие параметры</p>
+<p>Команда приймає следующие параметри</p>
 <ul>
-<li><p><span class="b">-c</span>: указывает на створення нового архива.</p></li>
-<li><p><span class="b">-v</span>: надає подробный вывод виконання команды</p></li>
-<li><p><span class="b">-f demo.jar</span>: задает имя создаваемого JAR-файла. То есть создаваемый файл буде называться "demo.jar"</p></li>
-<li><p><span class="b">-C mods/demo .</span>: переходит в папку с скомпилированными классами (mods/имя__модуля) и додає все її содержимое (.) в JAR. В данном случае це папка "mods" (название произвольное) и 
-її подкаталог "demo", название которого повинно соответствовать имени модуля, указананного в <span class="b">module-info.java</span> (якщо указано). В примере выше модуль називається "demo", соответственно 
-все компилируемые файлы помещаются в папку "mods/demo"</p></li>
+<li><p><span class="b">-c</span>: вказує на створення нового архива.</p></li>
+<li><p><span class="b">-v</span>: надає підробный вивід виконання команди</p></li>
+<li><p><span class="b">-f demo.jar</span>: задає ім'я создаваемого JAR-файлу. То есть создаваемый файл буде называться "demo.jar"</p></li>
+<li><p><span class="b">-C mods/demo .</span>: переходит в папку с скомпилированными класами (mods/ім'я__модуля) и додає все її вміст (.) в JAR. У даному випадку це папка "mods" (название произвольное) и 
+її підкаталог "demo", название которого повинно соответствовать імені модуля, указананного в <span class="b">module-info.java</span> (якщо указано). В примере выше модуль називається "demo", соответственно 
+все компилируемые файли помещаются в папку "mods/demo"</p></li>
 </ul>
-<p>Полный консольный вывод:</p>
+<p>Полный консольный вивід:</p>
 <pre class="line-numbers"><code class="language-none">
 eugene@Eugene:~$ cd workspace/java
 eugene@Eugene:/workspace/java$ javac --module-source-path . -d mods demo/module-info.java demo/com//hello/Hello.java
@@ -87,18 +87,18 @@ adding: com//hello/Hello.class(in = 440) (out= 305)(deflated 30%)
 eugene@Eugene:/workspace/java$ 
 </code></pre>
 <h3>Створення исполняемого jar</h3>
-<p>Но в примере выше класс Hello є исполняемым, то есть он имїїт метод <code>main()</code> и может быть запущен на выполнение. И 
-як и в обычных JAR-файлах, в модульном JAR-файле можна указать основной класс, який буде выполняться при запуске. 
-Для цього призначенийа опция <span class="b">-e</span> (полное название опции - <span class="b">--main-class</span>), которой передаєся название основного класса с учетом его пакетів:</p>
+<p>Но в примере выше клас Hello є исполняемым, то есть он имїїт метод <code>main()</code> и может быть запущен на виконання. И 
+як и в обычных JAR-файлух, в модульном JAR-файле можна указать основной клас, який буде выполняться при запуску. 
+Для цього призначенийа опция <span class="b">-e</span> (полное название опции - <span class="b">--main-class</span>), которой передаєся название основного класа с учетом его пакетів:</p>
 <pre class="line-numbers"><code class="language-none">
 jar -c -v -f demo.jar -e com..hello.Hello -C mods/demo .
 </code></pre>
-<p>В примере выше класс Hello определен в пакеті <code>com..hello</code>, поцему указываем в качестве полного имени файла "com..hello.Hello".</p>
+<p>В примере выше клас Hello визначений в пакеті <code>com..hello</code>, поцему указываем в качестве полного імені файлу "com..hello.Hello".</p>
 
-<p>После цього можна запустить створений модульный JAR-файл за допомогою команды <span class="b">java</span>:</p>
+<p>Після цього можна запустить створений модульный JAR-файл за допомогою команди <span class="b">java</span>:</p>
 <pre class="line-numbers"><code class="language-none">java --module-path demo.jar --module demo</code></pre>
 
-<p>Полный консольный вывод:</p>
+<p>Полный консольный вивід:</p>
 <pre class="line-numbers"><code class="language-none">
 eugene@Eugene:/workspace/java$ javac --module-source-path . -d mods demo/module-info.java demo/com//hello/Hello.java
 eugene@Eugene:/workspace/java$ jar -c -v -f demo.jar -e com..hello.Hello -C mods/demo .
@@ -113,12 +113,12 @@ Hello !
 eugene@Eugene:/workspace/java$ 
 </code></pre>
 
-<h3>Компиляция взаимодействующих модулей</h3>
-<p>Рассмотрим другую, болїї сложную ситуацию, где у нас есть декілька модулей, которые взаимодействуют друг с другом. Допустим, у нас есть следующая структура проектов:</p>
+<h3>Компиляция взаимодействующих модулів</h3>
+<p>Рассмотрим другую, болїї сложную ситуацию, где у нас есть декілька модулів, которые взаимодействуют друг с другом. Допустим, у нас есть следующая структура проєктов:</p>
 
-<img src="pics/11.5.png" alt="Взаимодействие модулей в Java" />
-<p>Здесь определено два модуля: <span class="b">demo</span> и <span class="b">operations</span>. Каждый располагается в своей одноименной папке.</p>
-<p>В папке <span class="b">operations/com//factorial</span> определен следующий файл <span class="b">Factorial.java</span>:</p>
+<img src="pics/11.5.png" alt="Взаимодействие модулів в Java" />
+<p>Здесь визначенийо два модуля: <span class="b">demo</span> и <span class="b">operations</span>. Каждый располагается в своей одноименной папке.</p>
+<p>В папке <span class="b">operations/com//factorial</span> визначений следующий файл <span class="b">Factorial.java</span>:</p>
 <pre class="line-numbers"><code class="language-java">
 package com..factorial;
 
@@ -132,21 +132,21 @@ public class Factorial{
 	}
 }
 </code></pre>
-<p>Класс Factorial определяет функцию вычисления факториала и принадлежит пакету <span class="b">com..factorial</span>.</p>
-<p>Щоб сделать цей класс и в целом его пакет доступным для использования в других модулях в папке <span class="b">operations</span> определен следующий файл <span class="b">module-info.java</span>:</p>
+<p>Клас Factorial визначає функцію вычисления факториала и принадлежит пакету <span class="b">com..factorial</span>.</p>
+<p>Щоб сделать цей клас и в целом его пакет доступным для использования в других модулях в папке <span class="b">operations</span> визначений следующий файл <span class="b">module-info.java</span>:</p>
 <pre class="line-numbers"><code class="language-java">
 module operations {
     exports com..factorial;
 }
 </code></pre>
-<p>В папке <span class="b">demo</span> определен следующий файл <span class="b">module-info.java</span>:</p>
+<p>В папке <span class="b">demo</span> визначений следующий файл <span class="b">module-info.java</span>:</p>
 <pre class="line-numbers"><code class="language-java">
 module demo {
     requires operations;
 }
 </code></pre>
-<p>С помощью оператора <span class="b">requires<</span> указываем, что модуль demo буде використовувати модуль operations.</p>
-<p>А в папке <span class="b">demo/com//hello/</span> определим следующий файл <span class="b">Hello.java</span>:</p>
+<p>За допомогою оператора <span class="b">requires<</span> указываем, что модуль demo буде використовувати модуль operations.</p>
+<p>А в папке <span class="b">demo/com//hello/</span> визначимо следующий файл <span class="b">Hello.java</span>:</p>
 <pre class="line-numbers"><code class="language-java">
 package com..hello;
 
@@ -162,11 +162,11 @@ public class Hello{
 	}
 }
 </code></pre>
-<p>Здесь мы подключаем класс Factorial из пакета "com./factorial" и вычисляем факториал числа.</p>
-<p>Теперь нам треба оба модуля скомпилировать в jar-файлы. Стандартный подход предполагает, что оба модуля компилируются по отдельности каждый в свой jar-файл. 
-В консоли перейдем к корневой папке, где размещаются оба модуля (в моем случае це папка "/workspace/java") и скомпилируем их. Для цього выполним следующую команду:</p>
+<p>Здесь мы підключаем клас Factorial из пакету "com./factorial" и вычисляем факториал числа.</p>
+<p>Теперь нам треба оба модуля скомпилировать в jar-файли. Стандартный підход предполагает, что оба модуля компилируются по отдельности каждый в свой jar-файл. 
+В консоли перейдем к корневой папке, где размещаются оба модуля (в моем случае це папка "/workspace/java") и скомпилируем их. Для цього виконаємо следующую команду:</p>
 <pre class="line-numbers"><code class="language-none">javac --module-source-path . -d mods demo/module-info.java demo/com//hello/Hello.java</code></pre>
-<p>Хотя здесь указан лише один модуль, зависимый модуль також буде скомпилирован. Оба модуля в данном случае будуть помещаться в папку "mods", которая в итоге буде иметь следующую структуру:</p>
+<p>Хотя здесь указан лише один модуль, зависимый модуль також буде скомпилирован. Оба модуля у даному випадку будуть помещаться в папку "mods", которая в итоге буде иметь следующую структуру:</p>
 <pre class="browser">
 mods
 |_demo
@@ -186,9 +186,9 @@ mods
 <pre class="line-numbers"><code class="language-none">jar -c -v -f libs/operations.jar -C mods/operations .</code></pre>
 <p>Компилируем из модуля файл "operations.jar" буде помещаться в папку "libs". Далїї скомпилируем модуль <b>demo</b>:</p>
 <pre class="line-numbers"><code class="language-none">jar -c -v -f libs/demo.jar -e com..hello.Hello -C mods/demo .</code></pre>
-<p>В итоге в папке "libs" будуть располагаться оба скомпилированных модуля. Теперь запустим главный модуль, передав путь к папке с модульными jar:</p>
+<p>В итоге в папке "libs" будуть располагаться оба скомпилированных модуля. Теперь запустимо главный модуль, передав путь к папке с модульными jar:</p>
 <pre class="line-numbers"><code class="language-none">java --module-path libs --module demo/com..hello.Hello</code></pre>
-<p>Полный консольный вывод:</p>
+<p>Полный консольный вивід:</p>
 <pre class="line-numbers"><code class="language-none">
 eugene@Eugene:/workspace/java$ javac --module-source-path . -d mods demo/module-info.java demo/com//hello/Hello.java
 eugene@Eugene:/workspace/java$ jar -c -v -f libs/operations.jar -C mods/operations .

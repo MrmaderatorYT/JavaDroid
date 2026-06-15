@@ -3,7 +3,7 @@
 <head>
 <title>Java | Конструкція та вираз switch</title>
 <meta charset="utf-8" />
-<meta name="description" content="Конструкція та вираз switch в языке программирования Java, блоки case">
+<meta name="description" content="Конструкція та вираз switch в языке програмирования Java, блоки case">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -14,30 +14,30 @@
      <h1>Конструкція та вираз switch</h1><div class="date">Останнє оновлення: 16.09.2025</div>
 
 	<h3>Конструкція switch</h3>
-<p>Конструкция <span class="b">switch/case</span>  оценивает некоторое выражение и сравнивает його значення с набором значений. И при совпадении значений выполняет определенный код. 
-Конструкция <span class="b">switch/case</span> в некоторой степени аналогична конструкции <code>if/else</code>, оскільки дозволяє обработать відразу декілька условий.</p>
-<p>В классическом виде конструкция <code>switch</code> имїїт следующїї формальное определение: </p>
+<p>Конструкция <span class="b">switch/case</span>  оценивает некоторое выражение и сравнивает його значення с набором значений. И при совпадении значений виконує визначенийный код. 
+Конструкция <span class="b">switch/case</span> в некоторой степени аналогична конструкции <code>if/else</code>, оскільки дозволяє обпрацювати відразу декілька условий.</p>
+<p>В класическом виде конструкция <code>switch</code> имїїт следующїї формальное визначенийие: </p>
 <pre class="line-numbers"><code class="language-java">
 switch (выражение)
 {
-    case значение1:
-        код,выполняемый якщо выражение имїїт значение1
+    case значення1:
+        код,выполняемый якщо выражение имїїт значення1
         break;
-    case значение2:
-        код,выполняемый якщо выражение имїїт значение2
+    case значення2:
+        код,выполняемый якщо выражение имїїт значення2
         break;
 	//.............
-	case значениеN:
-        код, выполняемый якщо выражение имїїт значениеN
+	case значенняN:
+        код, выполняемый якщо выражение имїїт значенняN
         break;
     default:
         код, выполняемый якщо выражение не имїїт ни одно из выше указанных значений
         break;
 }
 </code></pre>
-<p>После ключевого слова <span class="b">switch</span> в скобках идет сравниваемое выражение. Значение цього выражения последовательно 
-сравнивается со значениями, помщенными после оператора <span class="b">сase</span>. И якщо совпадение буде найдено, то буде 
-выполняться определенный блок <span class="b">сase</span>.</p>
+<p>Після ключевого слова <span class="b">switch</span> в скобках идет сравниваемое выражение. Значення цього выражения післядовательно 
+сравнивается со значеннями, помщенными після оператора <span class="b">сase</span>. И якщо совпадение буде найдено, то буде 
+выполняться визначенийный блок <span class="b">сase</span>.</p>
 <p>В конце каждого блока <code>сase</code> повинен ставиться один из операторов перехода: 
 <span class="b">break</span>, <span class="b">return</span> або <span class="b">throw</span>. 
 Как правило, використовується оператор <span class="b">break</span>. При его применении другие блоки <code>case</code> выполняться не будуть.</p>
@@ -52,98 +52,98 @@ class Program {
         switch (name){
 
             case "Bob":
-                System.out.println("Ваше имя - Bob");
+                System.out.println("Ваше ім'я - Bob");
                 break;
             case "Tom":
-                System.out.println("Ваше имя - Tom");
+                System.out.println("Ваше ім'я - Tom");
                 break;
             case "Sam":
-                System.out.println("Ваше имя - Sam");
+                System.out.println("Ваше ім'я - Sam");
                 break;
         }
     }
 }
 </code></pre>
-<p>В данном случае конструкция <code>switch</code> последовательно сравнивает значение змінної <code>name</code> с набором значений, 
-которые указаны после операторов <code>case</code>. Поскольку здесь значение змінної <code>name</code> - строка "Tom", то буде выполняться блок</p>
+<p>У даному випадку конструкция <code>switch</code> післядовательно сравнивает значення змінної <code>name</code> с набором значений, 
+которые указаны після операторов <code>case</code>. Поскольку здесь значення змінної <code>name</code> - рядок "Tom", то буде выполняться блок</p>
 <pre class="line-numbers"><code class="language-java">
 case "Tom":
-	System.out.println("Ваше имя - Tom");
+	System.out.println("Ваше ім'я - Tom");
 	break;
 </code></pre>
 <p>Відповідно, ми побачимо на консолі</p>
-<pre class="line-numbers"><code class="language-none">Ваше имя - Tom</code></pre>
+<pre class="line-numbers"><code class="language-none">Ваше ім'я - Tom</code></pre>
 
-<p>Если бы мы не использовали бы в данном случае операторы <code>break</code>, як в следующем случае:</p>
+<p>Если бы мы не использовали бы у даному випадку операторы <code>break</code>, як в следующем случае:</p>
 <pre class="line-numbers"><code class="language-java">
 String name = "Tom";
 
 switch (name){
 
     case "Bob":
-        System.out.println("Ваше имя - Bob");
+        System.out.println("Ваше ім'я - Bob");
     case "Tom":
-         System.out.println("Ваше имя - Tom");
+         System.out.println("Ваше ім'я - Tom");
     case "Sam":
-        System.out.println("Ваше имя - Sam");
+        System.out.println("Ваше ім'я - Sam");
 }
 </code></pre>
 <p>То після виконання блоку</p>
 <pre class="line-numbers"><code class="language-java">
 case "Tom":
-    System.out.println("Ваше имя - Tom");
+    System.out.println("Ваше ім'я - Tom");
 </code></pre>
 <p>Почав би виконуватися блок</p>
 case "Sam":
-    System.out.println("Ваше имя - Sam");
+    System.out.println("Ваше ім'я - Sam");
 </pre>
 <p>І ми отримали такий консольний висновок:</p>
 <pre class="line-numbers"><code class="language-none">
-Ваше имя - Tom
-Ваше имя - Sam
+Ваше ім'я - Tom
+Ваше ім'я - Sam
 </code></pre>
 <h4>default</h4>
-<p>Если значение змінної <code>name</code> не совпадает ни с яким значением после операторов <code>case</code>, то ни один из блоков case не виконується. 
+<p>Если значення змінної <code>name</code> не збігається ни с яким значенням після операторов <code>case</code>, то ни один из блоков case не виконується. 
 Однак якщо даже в цем случае нам все равно треба выполнить якие-нибудь действия, то мы можемо добавить в конструкцию <span class="b">switch</span> необязательный 
-блок <span class="b">default</span>. Например:</p>
+блок <span class="b">default</span>. Наприклад:</p>
 <pre class="line-numbers"><code class="language-java">
 string name = "Alex";
 
 switch (name)
 {
     case "Bob":
-        System.out.println("Ваше имя - Bob");
+        System.out.println("Ваше ім'я - Bob");
         break;
     case "Tom":
-        System.out.println("Ваше имя - Tom");
+        System.out.println("Ваше ім'я - Tom");
         break;
     case "Sam":
-        System.out.println("Ваше имя - Sam");
+        System.out.println("Ваше ім'я - Sam");
         break;
     default:
-        System.out.println("Неизвестное имя");
+        System.out.println("Неизвестное ім'я");
         break;
 }
 </code></pre>
 <p>В даному випадку жодне із значень після операторів case не збігається зі значенням змінної name, тому буде виконуватись блок default:</p>
 <pre class="line-numbers"><code class="language-java">
 default:
-	System.out.println("Неизвестное имя");
+	System.out.println("Неизвестное ім'я");
 	break;
 </code></pre>
 <h4>Нова форма конструкції switch</h4>
-<p>В классической версии конструкции <code>switch</code> каждый блок <code>case</code>, якщо мы хочемо закончить на нем выполнение, завершуєся оператором <code>break</code>. И обычно так и есть, редко когда требуется выполнять 
-другие блоки case. И поцему в результате развития Java в язык бува добавлена новая форма конструкции <code>switch</code>:</p>
+<p>В класической версии конструкции <code>switch</code> каждый блок <code>case</code>, якщо мы хочемо закончить на нем виконання, завершуєся оператором <code>break</code>. И обычно так и есть, редко когда требуется выполнять 
+другие блоки case. И поцему в результаті развития Java в язык бува добавлена новая форма конструкции <code>switch</code>:</p>
 <pre class="line-numbers"><code class="language-java">
 switch (выражение)
 {
-    case значение1 -&gt;
-        код,выполняемый якщо выражение имїїт значение1
-    case значение2 -&gt;
-        код,выполняемый якщо выражение имїїт значение2
+    case значення1 -&gt;
+        код,выполняемый якщо выражение имїїт значення1
+    case значення2 -&gt;
+        код,выполняемый якщо выражение имїїт значення2
 	//.............
-	case значениеN -&gt;
-        код, выполняемый якщо выражение имїїт значениеN
+	case значенняN -&gt;
+        код, выполняемый якщо выражение имїїт значенняN
     default -&gt;
         код, выполняемый якщо выражение не имїїт ни одно из выше указанных значений
 }
@@ -158,34 +158,34 @@ class Program {
 
         switch (name){
 
-            case "Bob" -&gt; System.out.println("Ваше имя - Bob");
-            case "Tom" -&gt; System.out.println("Ваше имя - Tom");
-            case "Sam" -&gt; System.out.println("Ваше имя - Sam");
+            case "Bob" -&gt; System.out.println("Ваше ім'я - Bob");
+            case "Tom" -&gt; System.out.println("Ваше ім'я - Tom");
+            case "Sam" -&gt; System.out.println("Ваше ім'я - Sam");
         }
     }
 }
 </code></pre>
-<p>Если в блок <code>case</code> треба поместить декілька инструкций або болїї сложный код, то он оформляется в блок кода:</p>
+<p>Если в блок <code>case</code> треба поместить декілька инструкций або болїї сложный код, то он оформляется в блок коду:</p>
 <pre class="line-numbers"><code class="language-java">
 case "Tom" -&gt; {
-  System.out.println("Ваше имя - Tom");
+  System.out.println("Ваше ім'я - Tom");
   System.out.println("Привет, Tom");
 }
 </code></pre>
 
 <h3>Повернення значення з switch</h3>
-<p>Ключевое слово <span class="b">switch</span> також застосовується для создания выражения <code>switch</code>, которое дозволяє возвращать некоторое значение - то есть отримати результат виконання конструкции switch. 
-Для возвращения значения в блоках <span class="b">case</span> может применятся 
-оператор <span class="b">return</span>. Наприклад, определим следующую программу:</p>
+<p>Ключевое слово <span class="b">switch</span> також застосовується для створенняя выражения <code>switch</code>, которое дозволяє возвращать некоторое значення - то есть отримати результат виконання конструкции switch. 
+Для возвращения значення в блоках <span class="b">case</span> может применятся 
+оператор <span class="b">return</span>. Наприклад, визначимо следующую програму:</p>
 <pre class="line-numbers"><code class="language-java">
 class Program {
   
     public static void main(String[] args) {
           
-        int operation = 1;  // выполняемая операция
-        int a = 10, b = 6;  // числа, над которыми виконується операция
+        int operation = 1;  // выполняемая операція
+        int a = 10, b = 6;  // числа, над которыми виконується операція
 
-        int result = 0;     // результат операции
+        int result = 0;     // результат операції
 
         switch (operation)
         {
@@ -214,10 +214,10 @@ class Program {
   
     public static void main(String[] args) {
           
-        int operation = 1;  // выполняемая операция
-        int a = 10, b = 6;  // числа, над которыми виконується операция
+        int operation = 1;  // выполняемая операція
+        int a = 10, b = 6;  // числа, над которыми виконується операція
 
-        int result = 0;     // результат операции
+        int result = 0;     // результат операції
 
         switch (operation)
         {
@@ -231,17 +231,17 @@ class Program {
     }
 }
 </code></pre>
-<p>Тем не менїї ключевым моментом в данном случае, є то, что во всех случаях нам треба установить переменную result - передать ей нужный результат операции над числами. И выражения <code>switch</code> 
-дозволяють упростить эту задачу:</p>
+<p>Тем не менїї ключевым моментом у даному випадку, є то, что во всех случаях нам треба установить змінну result - передать ей нужный результат операції над числами. И выражения <code>switch</code> 
+дозволяють упростить эту завданьу:</p>
 <pre class="line-numbers"><code class="language-java">
 class Program {
   
     public static void main(String[] args) {
           
-        int operation = 1;  // выполняемая операция
-        int a = 10, b = 6;  // числа, над которыми виконується операция
+        int operation = 1;  // выполняемая операція
+        int a = 10, b = 6;  // числа, над которыми виконується операція
 
-        // результат операции
+        // результат операції
         int result = switch (operation)
         {
             case 1 -> a + b;
@@ -254,22 +254,22 @@ class Program {
     }
 }
 </code></pre>
-<p>В данном случае мы напрямую присваиваем змінної result то значение, которое вычисляет выражение switch. Вычисляемое значение ставится после стрелки в блоке <code>case</code></p>
+<p>У даному випадку мы напрямую присваиваем змінної result то значення, которое вычисляет выражение switch. Вычисляемое значення ставится після стрелки в блоке <code>case</code></p>
 <pre class="line-numbers"><code class="language-java">case 1 -> a + b;</code></pre>
 <p>Завдяки цьому код став простішим і зрозумілішим.</p>
-<p>Но, йде відзначити, что блоки <code>case</code> повинні охватывать все потенциальные значения. Наприклад, в данном случае случае мы получаем значение в переменную result - переменную типу <code>int</code>. 
-Тип <code>int</code> охватывает 32<sup>2</sup> значений. Естественно в данном случае для каждого из них визначати свой блок <code>case</code> нерационально, тем болїї нам нужны лише три значения - для каждой операции. 
-И в цем случае для всех остальных значений застосовується выражение <code>default</code>, которое в данном случае просто повертає 0.</p>
-<p>Если же нам треба выполнить декілька инструкций в каждом блоке <code>case</code>, то инструкции оформляются в отдельный блок кода:</p>
+<p>Но, йде відзначити, что блоки <code>case</code> повинні охватывать все потенциальные значення. Наприклад, у даному випадку случае мы отримуємо значення в змінну result - змінну типу <code>int</code>. 
+Тип <code>int</code> охватывает 32<sup>2</sup> значений. Естественно у даному випадку для каждого из них визначати свой блок <code>case</code> нерационально, тем болїї нам нужны лише три значення - для каждой операції. 
+И в цем случае для всех остальных значений застосовується выражение <code>default</code>, которое у даному випадку просто повертає 0.</p>
+<p>Если же нам треба выполнить декілька инструкций в каждом блоке <code>case</code>, то инструкции оформляются в отдельный блок коду:</p>
 <pre class="line-numbers"><code class="language-java">
 class Program {
   
     public static void main(String[] args) {
           
-        int operation = 1;  // выполняемая операция
-        int a = 10, b = 6;  // числа, над которыми виконується операция
+        int operation = 1;  // выполняемая операція
+        int a = 10, b = 6;  // числа, над которыми виконується операція
 
-        // результат операции
+        // результат операції
         int result = switch (operation)
         {
             case 1 -> {
@@ -291,19 +291,19 @@ class Program {
     }
 }
 </code></pre>
-<p>При цем для возвращения значения из блока кода застосовується оператор <span class="b">yield</span>, после которого ставится возвращаемое значение:</p>
+<p>При цем для возвращения значення из блока коду застосовується оператор <span class="b">yield</span>, після которого ставится повертаємоое значення:</p>
 <pre class="line-numbers"><code class="language-java">yield a - b;</code></pre>
 
-<p>Варто відзначити, что також существует другая форма выражения switch, где после операторов <code>case</code> ставится двоеточие:</p>
+<p>Варто відзначити, что також існує другая форма выражения switch, где після операторов <code>case</code> ставится двоеточие:</p>
 <pre class="line-numbers"><code class="language-java">
 class Program {
   
     public static void main(String[] args) {
           
-        int operation = 1;  // выполняемая операция
-        int a = 10, b = 6;  // числа, над которыми виконується операция
+        int operation = 1;  // выполняемая операція
+        int a = 10, b = 6;  // числа, над которыми виконується операція
 
-        // результат операции
+        // результат операції
         int result = switch (operation)
         {
             case 1:
@@ -322,7 +322,7 @@ class Program {
     }
 }
 </code></pre>
-<p>Но в цем случае в конце блока <code>case</code> треба обязательно використовувати оператор <code>yield</code> для возвращения значения</p>
+<p>Но в цем случае в конце блока <code>case</code> треба обязательно використовувати оператор <code>yield</code> для возвращения значення</p>
 
   </div>
 

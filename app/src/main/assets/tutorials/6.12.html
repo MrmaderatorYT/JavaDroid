@@ -3,7 +3,7 @@
 <head>
 <title>Java | Работа с ZIP архивами</title>
 <meta charset="utf-8" />
-<meta name="description" content="Створення, упаковка и распаковка zip архивов в языке программирования Java">
+<meta name="description" content="Створення, упаковка и распаковка zip архивов в языке програмирования Java">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -13,16 +13,16 @@
 <div class="item center menC">
      <h2>Робота з ZIP-архівами</h2><div class="date">Останнє оновлення: 26.04.2018</div>
 
-	<p>Кроме общего функционала для работы с файлами Java надає функциональность для работы с таким видом файлов як zip-архивы. 
-Для цього в пакеті <span class="ii">java.util.zip</span> определены два класса - <span class="b">ZipInputStream</span> и <span class="b">ZipOutputStream</span></p>
-<h3>ZipOutputStream. Запись архивов</h3>
-<p>Для создания архива використовується класс ZipOutputStream. Для создания об'єкта ZipOutputStream в его конструктор передаєся поток вывода:</p>
+	<p>Кроме общего функционала для работы с файлуми Java надає функциональность для работы с таким видом файлів як zip-архивы. 
+Для цього в пакеті <span class="ii">java.util.zip</span> визначенийы два класа - <span class="b">ZipInputStream</span> и <span class="b">ZipOutputStream</span></p>
+<h3>ZipOutputStream. Запис архівів</h3>
+<p>Для створенняя архива використовується клас ZipOutputStream. Для створенняя об'єкта ZipOutputStream в его конструктор передаєся потік вивіда:</p>
 <pre class="line-numbers"><code class="language-java">
 ZipOutputStream(OutputStream out)
 </code></pre>
-<p>Для записи файлов в архив для каждого файла створюєся об'єкт <code>ZipEntry</code>, в конструктор которого передаєся имя архивируемого файла. А чтобы 
+<p>Для записи файлів в архив для каждого файлу створюєся об'єкт <code>ZipEntry</code>, в конструктор которого передаєся ім'я архивируемого файлу. А чтобы 
 добавить каждый об'єкт ZipEntry в архив, застосовується метод <span class="bb">putNextEntry()</span>.</p>
-<p>Создадим архив:</p>
+<p>Створимо архив:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.io.*;
 import java.util.zip.*;
@@ -37,12 +37,12 @@ public class Program {
         {
             ZipEntry entry1=new ZipEntry("notes.txt");
             zout.putNextEntry(entry1);
-            // считываем содержимое файла в массив byte
+            // считываем вміст файлу в масив byte
             byte[] buffer = new byte[fis.available()];
             fis.read(buffer);
-            // добавляем содержимое к архиву
+            // додаємо вміст к архиву
             zout.write(buffer);
-            // закрываем текущую запись для новой записи
+            // закрываем текущую запис для новой записи
             zout.closeEntry();
         }
         catch(Exception ex){
@@ -52,14 +52,14 @@ public class Program {
     } 
 }
 </code></pre>
-<p>После добавления об'єкта ZipEntry в поток нам також треба добавить в него и содержимое файла. Для цього використовується метод write, записывающий в поток 
-массив байтов: <code>zout.write(buffer);</code>. В конце треба закрыть ZipEntry за допомогою метода <code>closeEntry()</code>. После цього можна добавлять в архив 
-новые файлы - в цем случае все вышеописанные действия для каждого нового файла повторяются.</p>
-<h3>Чтение архивов. ZipInputStream</h3>
-<p>Для чтения архивов застосовується класс <code>ZipInputStream</code>. В конструкторе он приймає поток, указывающий на zip-архив:</p>
+<p>Після добавления об'єкта ZipEntry в потік нам також треба добавить в него и вміст файлу. Для цього використовується метод write, записывающий в потік 
+масив байтов: <code>zout.write(buffer);</code>. В конце треба закрыть ZipEntry за допомогою методу <code>closeEntry()</code>. Після цього можна добавлять в архив 
+новые файли - в цем случае все вышеописанные действия для каждого нового файлу повторяются.</p>
+<h3>Читання архівів. ZipInputStream</h3>
+<p>Для читання архивов застосовується клас <code>ZipInputStream</code>. В конструкторе он приймає потік, указывающий на zip-архив:</p>
 <pre class="line-numbers"><code class="language-java">ZipInputStream(InputStream in)</code></pre>
-<p>Для считывания файлов из архива ZipInputStream использует метод <span class="b">getNextEntry()</span>, який повертає об'єкт <span class="b">ZipEntry</span>. 
-Об'єкт ZipEntry представляє отдельную запись в zip-архиве. Наприклад, считаем якой-нибудь архив:</p>
+<p>Для считывания файлів из архива ZipInputStream використовує метод <span class="b">getNextEntry()</span>, який повертає об'єкт <span class="b">ZipEntry</span>. 
+Об'єкт ZipEntry представляє отдельную запис в zip-архиве. Наприклад, считаємо якой-нибудь архив:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.io.*;
 import java.util.zip.*;
@@ -74,7 +74,7 @@ public class Program {
             String name;
             while((entry=zin.getNextEntry())!=null){
                  
-                name = entry.getName(); // получим название файла
+                name = entry.getName(); // получим название файлу
                 System.out.printf("File name: %s \n", name);
 				
 				// распаковка
@@ -94,8 +94,8 @@ public class Program {
     } 
 }
 </code></pre>
-<p>ZipInputStream в конструкторе отримує ссылку на поток ввода. И затем в цикле выводятся все файлы и их размер в байтах, которые находятся в данном архиве.</p>
-<p>Затем дані извлекаются из архива и сохраняются в новые файлы, которые находятся в той же папке и которые начинаются с "new".</p>
+<p>ZipInputStream в конструкторе отримує ссылку на потік ввода. И затем в цикле виводяться все файли и их размер в байтах, которые находятся в данном архиве.</p>
+<p>Затем дані извлекаются из архива и сохраняются в новые файли, которые находятся в той же папке и которые начинаются с "new".</p>
 
   </div>
 

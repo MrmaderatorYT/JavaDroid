@@ -3,7 +3,7 @@
 <head>
 <title>Java | Поля класу та клас Field</title>
 <meta charset="utf-8" />
-<meta name="description" content="Получение полей класса в программе на языке программирования Java за допомогою методів getFields, getDeclaredFields, класс Field, получение и изменение значения поля произвольного об'єкта">
+<meta name="description" content="Отримання полей класа в програме на языке програмирования Java за допомогою методів getFields, getDeclaredFields, клас Field, отримання и зміна значення поля произвольного об'єкта">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -13,26 +13,26 @@
 <div class="item center menC">
      <h1>Поля класу та клас Field</h1><div class="date">Останнє оновлення: 29.09.2025</div>
 
-<p>За работу с полями классов в пакеті <code>java.lang.reflect</code> отвечает класс <b>Field</b>. Для получения информации о полях и управления ими цей класс определеяет ряд методів, из которых отмечу основные:</p>
+<p>За работу с полями класов в пакеті <code>java.lang.reflect</code> отвечает клас <b>Field</b>. Для получения информации о полях и управления ими цей клас определеяет ряд методів, из которых отмечу основные:</p>
 <ul>
-<li><p><span class="b">String getName()</span>: повертає имя поля</p></li>
+<li><p><span class="b">String getName()</span>: повертає ім'я поля</p></li>
 <li><p><span class="b">Class getType()</span>: повертає тип поля в виде об'єкта Class</p></li>
-<li><p><span class="b">int getModifiers()</span>: повертає целое число с различными включенными и выключенными битами, которые описують используемые модификаторы.</p></li>
+<li><p><span class="b">int getModifiers()</span>: повертає целое число с различными включенными и выключенными битами, которые описують використовуємоые модификаторы.</p></li>
 <li><p><span class="b">Set&lt;AccessFlag&gt; accessFlags()</span>: повертає набор флагов доступа для цього поля</p></li>
-<li><p><span class="b">Object get(Object obj)</span>: повертає имя поля</p></li>
-<li><p><span class="b">void set(Object obj, Object value)</span>: повертає имя поля</p></li>
+<li><p><span class="b">Object get(Object obj)</span>: повертає ім'я поля</p></li>
+<li><p><span class="b">void set(Object obj, Object value)</span>: повертає ім'я поля</p></li>
 </ul>
-<h3>Получение полей</h3>
-<p>Для манипулирования полями нам прежде всего треба отримати их. Для получения полей типу застосовується ряд методів класса <code>Class</code>:</p>
+<h3>Отримання полей</h3>
+<p>Для манипулирования полями нам прежде всего треба отримати их. Для получения полей типу застосовується ряд методів класа <code>Class</code>:</p>
 <ul>
-<li><p><code>Field[] getFields()</code>:  повертає массив об'єктов <code>Field</code> для открытых полей (с модификатором <code>public</code>) данного класса або его суперклассов</p></li>
+<li><p><code>Field[] getFields()</code>:  повертає масив об'єктов <code>Field</code> для открытых полей (с модификатором <code>public</code>) данного класа або его суперкласов</p></li>
 
-<li><p><code>Field[] getDeclaredFields()</code>: повертає массив об'єктов <code>Field</code> для всех полей данного класса. Метод повертають массив нулевой длины, якщо таких полей нет або якщо об'єкт 
-представляє собой примитивный тип або массив.</p></li>
-<li><p><code>Field getField(String name)</code>:  повертає об'єкт <code>Field</code> для публичного поля, имя которого передаєся в качестве параметра. Поиск також идет среди полей суперклассов. Если подобное публичное поле отсутствует, то метод генерує исключение <code>NoSuchFieldException </code></p></li>
-<li><p><code>Field getDeclaredField(String name)</code>: повертає об'єкт <code>Field</code> для поля, имя которого передаєся в качестве параметра. Если подобное поле отсутствует, то метод генерує исключение <code>NoSuchFieldException </code></p></li>
+<li><p><code>Field[] getDeclaredFields()</code>: повертає масив об'єктов <code>Field</code> для всех полей данного класа. Метод повертають масив нулевой длины, якщо таких полей нет або якщо об'єкт 
+представляє собой примитивный тип або масив.</p></li>
+<li><p><code>Field getField(String name)</code>:  повертає об'єкт <code>Field</code> для публичного поля, ім'я которого передаєся в качестве параметра. Поиск також идет среди полей суперкласов. Если підобное публичное поле отсутствует, то метод генерує виняток <code>NoSuchFieldException </code></p></li>
+<li><p><code>Field getDeclaredField(String name)</code>: повертає об'єкт <code>Field</code> для поля, ім'я которого передаєся в качестве параметра. Если підобное поле отсутствует, то метод генерує виняток <code>NoSuchFieldException </code></p></li>
 </ul>
-<p>Наприклад, получим поля класса:</p>
+<p>Наприклад, получим поля класа:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.lang.reflect.*;
 
@@ -40,14 +40,14 @@ public class Program{
       
     public static void main(String[] args) {
         
-        // получаем класс для типу Person
+        // отримуємо клас для типу Person
         Class cl = Person.class;
 
-        // получаем поля 
+        // отримуємо поля 
         Field[] fields = cl.getDeclaredFields();
         for(Field f : fields){
 
-            // получаем тип и имя поля
+            // отримуємо тип и ім'я поля
             System.out.printf("%s %s;\n", f.getType().getName(), f.getName());
         }
     }
@@ -69,12 +69,12 @@ class Person {
     }
 } 
 </code></pre>
-<p>Консольный вывод:</p>
+<p>Консольный вивід:</p>
 <pre class="line-numbers"><code class="language-none">
 java.lang.String name;
 int age;
 </code></pre>
-<p>Теперь получим по отдельности поля, используя их имя:</p>
+<p>Теперь получим по отдельности поля, використовуючи их ім'я:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.lang.reflect.*;
 
@@ -82,11 +82,11 @@ public class Program{
       
     public static void main(String[] args) {
         
-        // получаем класс для типу Person
+        // отримуємо клас для типу Person
         Class cl = Person.class;
 
         try{
-            // получаем поля name и age
+            // отримуємо поля name и age
             Field nameField = cl.getDeclaredField("name");
             Field ageField = cl.getDeclaredField("age");
 
@@ -115,7 +115,7 @@ class Person {
     }
 } 
 </code></pre>
-<p>В данном случае за допомогою метода <code>getDeclaredField()</code> получаем поля name и age класса Person. Обратите внимание, что при передаче имени поля учитывается регистр имени. В итоге на консоль буде выведена 
+<p>У даному випадку за допомогою методу <code>getDeclaredField()</code> отримуємо поля name и age класа Person. Зверніть увагу, что при передаче імені поля учитывается регистр імені. В итоге на консоль буде выведена 
 информация о полученных полях:</p>
 <pre class="line-numbers"><code class="language-none">
 private java.lang.String Person.name
@@ -123,24 +123,24 @@ private int Person.age
 </code></pre>
 
 <h2>Манипуляции с полями</h2>
-<p>Манипуляции обычно включают получение значения поля або его установку. для цього класс <code>Field</code> надає методы <code>get()/set()</code>.</p>
+<p>Манипуляции обычно включают отримання значення поля або его установку. для цього клас <code>Field</code> надає методи <code>get()/set()</code>.</p>
 <h3>Обращение к приватным полям</h3>
 
-<p>По умолчанию механизм рефлексии учитывает контроль доступа Java. Так, при обращении к закрытым полям методы <code>get()</code> и <code>set()</code> по умолчанию вызываюют исключение <code>IllegalAccessException</code> - исключение недопустимого доступа. 
-И по умолчанию методы get и set можна використовувати лише с доступными полями. Механизм безопасности Java дозволяє узнать, якие поля есть у об'єкта, но не дозволяє читать и записывать 
-значения цих полей без соответствующего разрешения.</p>
-<p>Но мы можемо переопределить контроль доступа, вызвав метод <code>setAccessible()</code> для об'єкта Field и передав в метод <code>true</code>:</p>
+<p>По умолчанию механизм рефлексии учитывает контроль доступа Java. Так, при обращении к закрытым полям методи <code>get()</code> и <code>set()</code> по умолчанию вызываюют виняток <code>IllegalAccessException</code> - виняток недопустимого доступа. 
+И по умолчанию методи get и set можна використовувати лише с доступными полями. Механизм безопасности Java дозволяє узнать, якие поля есть у об'єкта, но не дозволяє читать и записывать 
+значення цих полей без соответствующего разрешения.</p>
+<p>Но мы можемо перевизначити контроль доступа, вызвав метод <code>setAccessible()</code> для об'єкта Field и передав в метод <code>true</code>:</p>
 <pre class="line-numbers"><code class="language-java">
 field.setAccessible(true);
 </code></pre>
-<p>Вызов setAccessible вызывает исключение, якщо доступ не предоставлен. Доступ может быть запрщен модульной системой.</p>
+<p>Вызов setAccessible вызывает виняток, якщо доступ не предоставлен. Доступ может быть запрщен модульной системой.</p>
 
-<h3>Получение значения поля</h3>
-<p>Для получения значения поля застосовується метод <code>get()</code>, який имїїт следующїї определение:</p>
+<h3>Отримання значення поля</h3>
+<p>Для получения значення поля застосовується метод <code>get()</code>, який имїїт следующїї визначенийие:</p>
 <pre class="line-numbers"><code class="language-java">
 public Object get(Object obj) throws IllegalArgumentException, IllegalAccessException
 </code></pre>
-<p>В качестве параметра в метод передаєся об'єкт, значение поля которого треба отримати. Наприклад, получим значения полей об'єкта Person:</p>
+<p>В качестве параметра в метод передаєся об'єкт, значення поля которого треба отримати. Наприклад, получим значення полей об'єкта Person:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.lang.reflect.*;
 
@@ -150,11 +150,11 @@ public class Program{
         
         // Исследуемый об'єкт
         Person tom = new Person("Tom", 41);
-        // получаем класс для типу Person
+        // отримуємо клас для типу Person
         Class cl = tom.getClass();
 
         try{
-            // получаем поля name и age
+            // отримуємо поля name и age
             Field nameField = cl.getDeclaredField("name");
             Field ageField = cl.getDeclaredField("age");
 
@@ -162,7 +162,7 @@ public class Program{
             nameField.setAccessible(true);
             ageField.setAccessible(true);
 
-            // получаем значения полей
+            // отримуємо значення полей
             Object name = nameField.get(tom);  // Tom
             Object age = ageField.get(tom);     // 41
 
@@ -191,12 +191,12 @@ class Person {
     }
 } 
 </code></pre>
-<h3>Изменение поля</h3>
-<p>Для изменения значения поля застосовується метод <code>set()</code>:</p>
+<h3>Зміна поля</h3>
+<p>Для изменения значення поля застосовується метод <code>set()</code>:</p>
 <pre class="line-numbers"><code class="language-java">
 public void set(Object obj, Object value) throws IllegalArgumentException, IllegalAccessException
 </code></pre>
-<p>ПЕрвый параметр (<code>obj</code>) представляє об'єкт, поле которого треба изменить, а второй параметр (<code>value</code>) - присваемое полю новое значение. Посмотрим на примере:</p>
+<p>ПЕрвый параметр (<code>obj</code>) представляє об'єкт, поле которого треба змінити, а второй параметр (<code>value</code>) - присваемое полю новое значення. Посмотрим на примере:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.lang.reflect.*;
 
@@ -206,11 +206,11 @@ public class Program{
         
         // Исследуемый об'єкт
         Person tom = new Person("Tom", 41);
-        // получаем класс для типу Person
+        // отримуємо клас для типу Person
         Class cl = tom.getClass();
 
         try{
-            // получаем поля name и age
+            // отримуємо поля name и age
             Field nameField = cl.getDeclaredField("name");
             Field ageField = cl.getDeclaredField("age");
 
@@ -218,7 +218,7 @@ public class Program{
             nameField.setAccessible(true);
             ageField.setAccessible(true);
 
-            // изменяем значения полей
+            // змінюємо значення полей
             nameField.set(tom, "Bob");
             ageField.set(tom, 22);
 

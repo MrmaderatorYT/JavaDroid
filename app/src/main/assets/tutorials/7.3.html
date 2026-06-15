@@ -3,7 +3,7 @@
 <head>
 <title>Java | StringBuffer и StringBuilder</title>
 <meta charset="utf-8" />
-<meta name="description" content="Створення строк за допомогою классов StringBuffer и StringBuilder в языке программирования Java, неизменяемая природа строк">
+<meta name="description" content="Створення рядків за допомогою класов StringBuffer и StringBuilder в языке програмирования Java, незмінюємоая природа рядків">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -13,35 +13,35 @@
 <div class="item center menC">
      <h1>StringBuffer и StringBuilder</h1><div class="date">Останнє оновлення: 16.09.2025</div>
 
-	<p>Об'єкты String є неизменяемыми, поцему все операции, которые изменяют строки, фактически приводят к созданию новой строки, 
-что сказывается на производительности приложения. Для решения цей проблемы, чтобы работа со строками проходила с меньшими издержками в 
-Java буви добавлены классы <span class="b">StringBuffer</span> и <span class="b">StringBuilder</span>. По сути они напоминает расширяемую строку, яку можна изменять без ущерба для производительности.</p>
-<p>Эти классы похожи, практически двойники, они имеют одинаковые конструкторы, одни и те же методы, которые одинаково використовуються. 
-Единственное их различие соварто в том, что класс <code>StringBuffer</code> синхронизированный и потокобезопасный. То есть класс 
-StringBuffer удобнїї використовувати в многопоточных приложениях, где об'єкт данного класса может меняться в различных потоках. 
-Если же речь о многопоточных приложениях не идет, то лучше використовувати класс StringBuilder, який <span class="b">не потокобезопасный</span>, но при цем работает быстрїї, 
-чем StringBuffer в однопоточных приложениях.</p>
-<p><code>StringBuffer</code> определяет четыре конструктора:</p>
+	<p>Об'єкты String є незмінюємоыми, поцему все операції, которые змінюють рядки, фактически приводят к створенняю новой рядки, 
+что сказывается на производительности додатки. Для решения цей проблемы, чтобы работа со рядокми проходила с меньшими издержками в 
+Java буви добавлены класы <span class="b">StringBuffer</span> и <span class="b">StringBuilder</span>. По сути они напоминает расширяемую рядок, яку можна изменять без ущерба для производительности.</p>
+<p>Эти класы похожи, практически двойники, они имеют одинаковые конструктори, одни и те же методи, которые одинаково використовуються. 
+Единственное их различие соварто в том, что клас <code>StringBuffer</code> синхронизированный и потікобезопасный. То есть клас 
+StringBuffer удобнїї використовувати в многопоточных додатких, где об'єкт данного класа может меняться в различных потіках. 
+Если же речь о многопоточных додатких не идет, то лучше використовувати клас StringBuilder, який <span class="b">не потікобезопасный</span>, но при цем работает быстрїї, 
+чем StringBuffer в однопоточных додатких.</p>
+<p><code>StringBuffer</code> визначає четыре конструктора:</p>
 <pre class="line-numbers"><code class="language-java">
 StringBuffer()
 StringBuffer(int capacity)
 StringBuffer(String str)
 StringBuffer(CharSequence chars)
 </code></pre>
-<p>Аналогичные конструкторы определяет <code>StringBuilder</code>:</p>
+<p>Аналогичные конструктори визначає <code>StringBuilder</code>:</p>
 <pre class="line-numbers"><code class="language-java">
 StringBuilder()
 StringBuilder(int capacity)
 StringBuilder(String str)
 StringBuilder(CharSequence chars)
 </code></pre>
-<p>Рассмотрим работу цих классов на примере функциональности StringBuilder.</p>
-<p>При всех операциях со строками StringBuffer / StringBuilder перераспределяет выделенную память. И чтобы избежать слишком частого перераспределения памяти, 
-StringBuffer/StringBuilder заранїї резервирует деяку область памяти, которая может використовуватися. Конструктор без параметров резервирует в памяти место для 16 символов. Если мы хочемо, чтобы количество символов буво иным, то мы можемо применить второй конструктор, 
-який в качестве параметра приймає количество символов.</p>
-<p>Третий и четвертый конструкторы обоих классов принимают строку и набор символов, при цем резервируя память для дополнительных 16 символов.</p>
-<p>С помощью метода <span class="b">capacity()</span> мы можемо отримати количество символов, для которых зарезервирована память. А за допомогою метода 
-<span class="b">ensureCapacity()</span> изменить минимальную емкость буфера символов:</p>
+<p>Рассмотрим работу цих класов на примере функциональности StringBuilder.</p>
+<p>При всех операціях со рядокми StringBuffer / StringBuilder перераспределяет выделенную память. И чтобы избежать слишком частого перераспределения памяти, 
+StringBuffer/StringBuilder заранїї резервирует деяку область памяти, которая может використовуватися. Конструктор без параметрів резервирует в памяти место для 16 символів. Если мы хочемо, чтобы кількість символів буво иным, то мы можемо пріменіть второй конструктор, 
+який в качестве параметра приймає кількість символів.</p>
+<p>Третий и четвертый конструктори обоих класов приймають рядок и набор символів, при цем резервируя память для дополнительных 16 символів.</p>
+<p>За допомогою методу <span class="b">capacity()</span> мы можемо отримати кількість символів, для которых зарезервирована память. А за допомогою методу 
+<span class="b">ensureCapacity()</span> змінити минимальную емкость буфера символів:</p>
 <pre class="line-numbers"><code class="language-java">
 String str = "Java";
 StringBuilder strBuilder = new StringBuilder(str);
@@ -50,19 +50,19 @@ strBuilder.ensureCapacity(32);
 System.out.println("Емкость: " + strBuilder.capacity()); // 42
 System.out.println("Длина: " + strBuilder.length()); // 4
 </code></pre>
-<p>Так як в самом начале StringBuilder ініціалізуєся строкой "Java", то его емкость составляет 4 + 16 = 20 символов. Затем мы увеличиваем емкость буфера 
-за допомогою вызова <code>strBuilder.ensureCapacity(32)</code> повышаем минимальную емкость буфера до 32 символов. Однак финальная емкость может отличаться в большую сторону. 
-Так, в данном случае я получаю емкость не 32 и не 32 + 4 = 36, а 42 символа. Дело в том, что в целях повышения эффективности Java может дополнительно выделять память.</p>
-<p>Но в любом случае вне зависимости от емкости длина строки, яку можна отримати за допомогою метода <code>length()</code>, в StringBuilder остается прежней - 4 символа (оскільки в "Java" 4 символа).</p>
-<p>Щоб отримати строку, которая хранится в StringBuilder, мы можемо використовувати стандартный метод <code>toString()</code>:</p>
+<p>Так як в самом начале StringBuilder ініціалізуєся рядківой "Java", то его емкость составляет 4 + 16 = 20 символів. Затем мы увеличиваем емкость буфера 
+за допомогою вызова <code>strBuilder.ensureCapacity(32)</code> повышаем минимальную емкость буфера до 32 символів. Однак финальная емкость может отличаться в большую сторону. 
+Так, у даному випадку я получаю емкость не 32 и не 32 + 4 = 36, а 42 символа. Дело в том, что в целях повышения эффективности Java может дополнительно выделять память.</p>
+<p>Но в любом случае вне зависимости от емкости длина рядки, яку можна отримати за допомогою методу <code>length()</code>, в StringBuilder остается прежней - 4 символа (оскільки в "Java" 4 символа).</p>
+<p>Щоб отримати рядок, которая хранится в StringBuilder, мы можемо використовувати стандартный метод <code>toString()</code>:</p>
 <pre class="line-numbers"><code class="language-java">
 String str = "Java";
 StringBuilder strBuilder = new StringBuilder(str);
 System.out.println(strBuilder.toString()); // Java
 </code></pre>
-<p>По всем своим операциям StringBuffer и StringBuilder напоминают класс String.</p>
-<h3>Получение и установка символов</h3>
-<p>Метод <span class="b">charAt()</span> отримує, а метод <span class="b">setCharAt()</span> устанавливает символ по определенному индексу:</p>
+<p>По всем своим операціям StringBuffer и StringBuilder напоминают клас String.</p>
+<h3>Отримання и встановлення символів</h3>
+<p>Метод <span class="b">charAt()</span> отримує, а метод <span class="b">setCharAt()</span> встановлює символ по визначенийному индексу:</p>
 <pre class="line-numbers"><code class="language-java">
 StringBuilder strBuilder = new StringBuilder("Java");
 char c = strBuilder.charAt(0); // J
@@ -70,7 +70,7 @@ System.out.println(c);
 strBuilder.setCharAt(0, 'c');
 System.out.println(strBuilder.toString()); // cava
 </code></pre>
-<p>Метод <span class="b">getChars()</span> отримує набор символов между определенными индексами:</p>
+<p>Метод <span class="b">getChars()</span> отримує набор символів між визначенийными индексами:</p>
 <pre class="line-numbers"><code class="language-java">
 StringBuilder strBuilder = new StringBuilder("world");
 int startIndex = 1;
@@ -79,14 +79,14 @@ char[] buffer = new char[endIndex-startIndex];
 strBuilder.getChars(startIndex, endIndex, buffer, 0);
 System.out.println(buffer); // orl
 </code></pre>
-<h3>Добавление в строку</h3>
-<p>Метод <span class="b">append()</span> додає подстроку в конец StringBuilder:</p>
+<h3>Додавання в рядок</h3>
+<p>Метод <span class="b">append()</span> додає підрядок в конец StringBuilder:</p>
 <pre class="line-numbers"><code class="language-java">
 StringBuilder strBuilder = new StringBuilder("hello");
 strBuilder.append(" world");
 System.out.println(strBuilder.toString()); // hello world
 </code></pre>
-<p>Метод <span class="b">insert()</span> додає строку або символ по определенному индексу в StringBuilder:</p>
+<p>Метод <span class="b">insert()</span> додає рядок або символ по визначенийному индексу в StringBuilder:</p>
 <pre class="line-numbers"><code class="language-java">
 StringBuilder strBuilder = new StringBuilder("word");
         
@@ -97,9 +97,9 @@ strBuilder.insert(0, "s");
 System.out.println(strBuilder.toString()); //sworld
 </code></pre>
 
-<h3>Видалення символов</h3>
-<p>Метод <span class="b">delete()</span> видаляє все символы с определенного индекса о определенной позиции, а метод <span class="b">deleteCharAt()</span> 
-видаляє один символ по определенному индексу:</p>
+<h3>Видалення символів</h3>
+<p>Метод <span class="b">delete()</span> видаляє все символи с визначенийного индекса о визначенийной позиции, а метод <span class="b">deleteCharAt()</span> 
+видаляє один символ по визначенийному индексу:</p>
 <pre class="line-numbers"><code class="language-java">
 StringBuilder strBuilder = new StringBuilder("assembler");
 strBuilder.delete(0,2);
@@ -108,19 +108,19 @@ System.out.println(strBuilder.toString()); //sembler
 strBuilder.deleteCharAt(6);
 System.out.println(strBuilder.toString()); //semble
 </code></pre>
-<h3>Обрезка строки</h3>
-<p>Метод <span class="b">substring()</span> обрезает строку с определенного индекса до конца, або до определенного индекса:</p>
+<h3>Обрезка рядки</h3>
+<p>Метод <span class="b">substring()</span> обрезает рядок с визначенийного индекса до конца, або до визначенийного индекса:</p>
 <pre class="line-numbers"><code class="language-java">
 StringBuilder strBuilder = new StringBuilder("hello java!");
-String str1 = strBuilder.substring(6); // обрезка строки с 6 символа до конца
+String str1 = strBuilder.substring(6); // обрезка рядки с 6 символа до конца
 System.out.println(str1); //java!
         
-String str2 = strBuilder.substring(3, 9); // обрезка строки с 3 по 9 символ 
+String str2 = strBuilder.substring(3, 9); // обрезка рядки с 3 по 9 символ 
 System.out.println(str2); //lo jav
 </code></pre>
-<h3>Изменение длины</h3>
-<p>Для изменения длины StringBuilder (не емкости буфера символов) застосовується метод <span class="b">setLength()</span>. Если StringBuilder 
-увеличивается, то его строка просто дополняется в конце пустыми символами, якщо уменьшается - то строка по сути обрезается:</p>
+<h3>Зміна длины</h3>
+<p>Для изменения длины StringBuilder (не емкости буфера символів) застосовується метод <span class="b">setLength()</span>. Если StringBuilder 
+увеличивается, то его рядок просто дополняется в конце пустыми символами, якщо уменьшается - то рядок по сути обрезается:</p>
 <pre class="line-numbers"><code class="language-java">
 StringBuilder strBuilder = new StringBuilder("hello");
 strBuilder.setLength(10);
@@ -129,15 +129,15 @@ System.out.println(strBuilder.toString()); //"hello     "
 strBuilder.setLength(4);
 System.out.println(strBuilder.toString()); //"hell"
 </code></pre>
-<h3>Замена в строке</h3>
-<p>Для замены подстроки между определенными позициями в StringBuilder на другую подстроку застосовується метод <span class="b">replace()</span>:</p>
+<h3>Замена в рядківе</h3>
+<p>Для замены підрядки між визначенийными позициями в StringBuilder на другую підрядок застосовується метод <span class="b">replace()</span>:</p>
 <pre class="line-numbers"><code class="language-java">
 StringBuilder strBuilder = new StringBuilder("hello world!");
 strBuilder.replace(6,11,"java");
 System.out.println(strBuilder.toString()); //hello java!
 </code></pre>
-<p>Первый параметр метода replace указывает, с якой позиции треба начать замену, второй параметр - до якой позиции, а третий параметр указывает на подстроку замены.</p>
-<h3>Обратный порядок в строке</h3>
+<p>Первый параметр методу replace вказує, с якой позиции треба начать замену, второй параметр - до якой позиции, а третий параметр вказує на підрядок замены.</p>
+<h3>Обратный порядок в рядківе</h3>
 <p>Метод <span class="b">reverse()</span> меняет порядок в StringBuilder на обратный:</p>
 <pre class="line-numbers"><code class="language-java">
 StringBuilder strBuilder = new StringBuilder("assembler");

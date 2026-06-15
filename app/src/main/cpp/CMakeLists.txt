@@ -56,3 +56,5 @@ target_compile_options(native_compiler PRIVATE
     -Wall
     -O2
 )
+# 16 KB page size alignment for Android 15+ (API 35)
+target_link_options(native_compiler PRIVATE -Wl,-z,max-page-size=16384)

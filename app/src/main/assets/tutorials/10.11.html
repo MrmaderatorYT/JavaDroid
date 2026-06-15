@@ -3,7 +3,7 @@
 <head>
 <title>Java | Операції зведення в Stream API</title>
 <meta charset="utf-8" />
-<meta name="description" content="Операції зведення данных из потоков в Stream API в Java, методы count, min, max, anyMatch, allMatch, noneMatch">
+<meta name="description" content="Операції зведення данных из потіков в Stream API в Java, методи count, min, max, anyMatch, allMatch, noneMatch">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -13,10 +13,10 @@
 <div class="item center menC">
      <h2>Операції зведення</h2><div class="date">Останнє оновлення: 29.04.2018</div>
 
-	<p>Операції зведення представляють терминальные операции, которые повертають некоторое значение - результат операции. 
-В Stream API есть ряд операций сведения.</p>
+	<p>Операції зведення представляютьь терминальные операції, которые повертають некоторое значення - результат операції. 
+В Stream API есть ряд операцій сведения.</p>
 <h3>count</h3>
-<p>Метод <code>count()</code> повертає количество элементов в потоке данных:</p>
+<p>Метод <code>count()</code> повертає кількість елементів у потоці данных:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.stream.Stream;
 import java.util.Optional;
@@ -29,13 +29,13 @@ public class Program {
 		names.addAll(Arrays.asList(new String[]{"Tom", "Sam", "Bob", "Alice"}));
         System.out.println(names.stream().count());	 // 4
 		
-		// количество элементов с длиной не больше 3 символов
+		// кількість елементів з довжиною не більше 3 символів
 		System.out.println(names.stream().filter(n-&gt;n.length()&lt;=3).count());	// 3
     } 
 }
 </code></pre>
 <h3>findFirst и findAny</h3>
-<p>Метод <span class="b">findFirst()</span> извлекает из потока первый элемент, а <span class="b">findAny()</span> извлекает случайный об'єкт из потока (нередко так же первый):</p>
+<p>Метод <span class="b">findFirst()</span> извлекает из потіка первый елемент, а <span class="b">findAny()</span> извлекает случайный об'єкт из потіка (нередко так же первый):</p>
 <pre class="line-numbers"><code class="language-java">
 ArrayList&lt;String&gt; names = new ArrayList&lt;String&gt;();
 names.addAll(Arrays.asList(new String[]{"Tom", "Sam", "Bob", "Alice"}));
@@ -47,13 +47,13 @@ Optional&lt;String&gt; any = names.stream().findAny();
 System.out.println(first.get());	// Tom
 </code></pre>
 <h3>allMatch, anyMatch, noneMatch</h3>
-<p>Ще одна группа операций сведения повертає логическое значение true або false:</p>
+<p>Ще одна группа операцій сведения повертає логическое значення true або false:</p>
 <ul>
-<li><p><code>boolean allMatch(Predicate&lt;? super T&gt; predicate)</code>: повертає true, якщо все элементы потока удовлетворяют условию в предикате</li>
-<li><p><code>boolean anyMatch(Predicate&lt;? super T&gt; predicate)</code>: повертає true, якщо хоть один элемент потока удовлетворяют условию в предикате</li>
-<li><p><code>boolean noneMatch(Predicate&lt;? super T&gt; predicate)</code>: повертає true, якщо ни один из элементов в потоке не удовлетворяет условию в предикате</li>
+<li><p><code>boolean allMatch(Predicate&lt;? super T&gt; predicate)</code>: повертає true, якщо всі елементи потіка удовлетворяют условию в предикате</li>
+<li><p><code>boolean anyMatch(Predicate&lt;? super T&gt; predicate)</code>: повертає true, якщо хоть один елемент потіка удовлетворяют условию в предикате</li>
+<li><p><code>boolean noneMatch(Predicate&lt;? super T&gt; predicate)</code>: повертає true, якщо ни один из елементов у потоці не удовлетворяет условию в предикате</li>
 </ul>
-<p>Пример использования функций:</p>
+<p>Пример использования функцій:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.stream.Stream;
 import java.util.Optional;
@@ -66,30 +66,30 @@ public class Program {
 		ArrayList&lt;String&gt; names = new ArrayList&lt;String&gt;();
 		names.addAll(Arrays.asList(new String[]{"Tom", "Sam", "Bob", "Alice"}));
 		
-		// есть ли в потоке строка, длина которой больше 3
+		// чи є в потоці рядок, довжина якого більше 3
 		boolean any = names.stream().anyMatch(s-&gt;s.length()&gt;3);
 		System.out.println(any);	// true
 		
-		// все ли строки имеют длину в 3 символа
+		// чи всі рядки мають довжину в 3 символи
         boolean all = names.stream().allMatch(s-&gt;s.length()==3);
 		System.out.println(all);	// false
 		
-		// НЕТ ЛИ в потоке строки "Bill". Если нет, то true, якщо есть, то false
+		// ЧИ НЕМАЄ у потоці рядки "Bill". Якщо немає, то true, якщо є, то false
 		boolean none = names.stream().noneMatch(s-&gt;s=="Bill");
 		System.out.println(none);	// true
     } 
 }
 </code></pre>
 <h3>min и max</h3>
-<p>Методи <span class="b">min()</span> и <span class="b">max()</span> повертають соответственно минимальное и максимальное значение. Поскольку дані в потоке 
-можуть представлять различные типы, в том числе сложные классы, то в качестве параметра в эти методы передаєся об'єкт інтерфейса 
-<a href="5.6.html">Comparator</a>, який указывает, як сравнивать об'єкты:</p>
+<p>Методи <span class="b">min()</span> и <span class="b">max()</span> повертають соответственно минимальное и максимальное значення. Поскольку дані у потоці 
+можуть представлять различные типи, в том числе сложные класы, то в качестве параметра в эти методи передаєся об'єкт інтерфейса 
+<a href="5.6.html">Comparator</a>, який вказує, як сравнивать об'єкты:</p>
 <pre class="line-numbers"><code class="language-java">
 Optional&lt;T&gt; min(Comparator&lt;? super T&gt; comparator)
 Optional&lt;T&gt; max(Comparator&lt;? super T&gt; comparator)
 </code></pre>
-<p>Оба метода повертають элемент потока (минимальный або максимальный), обернутый в об'єкт Optional.</p>
-<p>Наприклад, найдем минимальное и максимальное число в числовом потоке:</p>
+<p>Оба методу повертають елемент потіка (минимальный або максимальный), обернутый в об'єкт Optional.</p>
+<p>Наприклад, найдем минимальное и максимальное число в числовом потіке:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.stream.Stream;
 import java.util.Optional;
@@ -109,10 +109,10 @@ public class Program {
     } 
 }
 </code></pre>
-<p>Интерфейс Comparator - це функциональный інтерфейс, який определяет один метод compare, принимающий два сравниваемых об'єкта и возвращающий число (якщо первый об'єкт больше, повертаєся положительное число, иначе 
-повертаєся отрицательное число). Тому вместо конкретной реализации компаратора мы можемо передать лямбда-выражение або метод, який соответствует методу 
+<p>Інтерфейс Comparator - це функциональный інтерфейс, який визначає один метод compare, принимающий два сравниваемых об'єкта и возвращающий число (якщо первый об'єкт больше, повертаєся положительное число, иначе 
+повертаєся отрицательное число). Тому вместо конкретной реалізації компаратора мы можемо передать лямбда-выражение або метод, який відповідає методу 
 compare інтерфейса Comparator.  Поскольку сравниваются числа, то в метод передаєся в качестве компаратора статический метод <code>Integer.compare()</code>.</p>
-<p>При цем методы min и max повертають именно Optional, и чтобы отримати непосредственно результат операции из Optional, необхідно вызвать метод <code>get()</code>.</p>
+<p>При цем методи min и max повертають именно Optional, и чтобы отримати непосредственно результат операції из Optional, необхідно вызвать метод <code>get()</code>.</p>
 <p>Рассмотрим болїї сложный случай, когда нам треба сравнивать болїї сложные об'єкты:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.stream.Stream;
@@ -155,10 +155,10 @@ class Phone{
     public int getPrice() { return price;}
 }
 </code></pre>
-<p>В данном случае мы находим минимальный и максимальный об'єкт Phone: фактически об'єкты с максимальной и минимальной ценой. Для определения функциональности 
-сравнения в классе Phone реализован статический метод <code>compare</code>, який соответствует сигнатуре метода compare інтерфейса Comparator. 
-И в методах min и max применяем цей статический метод для сравнения об'єктов.</p>
-<p>Консольный вывод:</p>
+<p>У даному випадку мы находим минимальный и максимальный об'єкт Phone: фактически об'єкты с максимальной и минимальной ценой. Для визначенийия функциональности 
+сравнения в класе Phone реалізований статический метод <code>compare</code>, який відповідає сигнатуре методу compare інтерфейса Comparator. 
+И в методух min и max застосовуємо цей статический метод для сравнения об'єктов.</p>
+<p>Консольный вивід:</p>
 <div class="console">
 <pre class="consoletext">
 MIN Name: Nokia 9 Price: 35000

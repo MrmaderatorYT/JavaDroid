@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html  lang="uk">
 <head>
-<title>Java | Очереди и стеки. Классы ArrayDeque и PriorityQueue</title>
+<title>Java | Очереди и стеки. Класы ArrayDeque и PriorityQueue</title>
 <meta charset="utf-8" />
-<meta name="description" content="Очереди и стеки в языке программирования Java, классы ArrayDeque и PriorityQueue, інтерфейсы Queue и Deque и их методы, структуры данных на основе механизма FIFO и LIFO">
+<meta name="description" content="Очереди и стеки в языке програмирования Java, класы ArrayDeque и PriorityQueue, інтерфейсы Queue и Deque и их методи, структуры данных на основе механизма FIFO и LIFO">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -11,34 +11,34 @@
 <body>
 <div id="container">
 <div class="item center menC">
-     <h1>Очереди и стеки. Классы ArrayDeque и PriorityQueue</h1><div class="date">Останнє оновлення: 12.10.2025</div>
+     <h1>Очереди и стеки. Класы ArrayDeque и PriorityQueue</h1><div class="date">Останнє оновлення: 12.10.2025</div>
 
-	<p><span class="b">Очереди</span> представляють структуру данных, работающую по принципу <b>FIFO</b> (first in - first out). То есть чем раньше був добавлен элемент 
-в коллекцию, тем раньше он из нїї видаляєся. Це стандартная модель однонаправленной очереди. Однак бывают и двунаправленные - то есть такие, 
-в которых мы можемо добавить элемент не лише в начала, но и в конец. И соответственно удалить элемент не лише из конца, но и из начала.</p>
-<p>Особенностью классов очередей є то, что они реализуют специальные інтерфейсы <span class="b">Queue</span> або <span class="b">Deque</span>.</p>
-<h3>Интерфейс Queue</h3>
-<p>Обобщенный інтерфейс <code>Queue&lt;E&gt;</code> расширяет базовый інтерфейс <code>Collection</code> и определяет поведение класса в качестве однонаправленной 
-очереди. Свою функциональность он раскрывает через следующие методы:</p>
+	<p><span class="b">Очереди</span> представляютьь структуру данных, работающую по принципу <b>FIFO</b> (first in - first out). То есть чем раньше був добавлен елемент 
+в колекцію, тем раньше он из нїї видаляєся. Це стандартная модель однонаправленной очереди. Однак бывают и двунаправленные - то есть такие, 
+в которых мы можемо добавить елемент не лише в начала, но и в конец. И соответственно удалить елемент не лише из конца, но и из начала.</p>
+<p>Особенностью класов очередей є то, что они реалізують специальные інтерфейсы <span class="b">Queue</span> або <span class="b">Deque</span>.</p>
+<h3>Інтерфейс Queue</h3>
+<p>Обобщенный інтерфейс <code>Queue&lt;E&gt;</code> расширяет базовый інтерфейс <code>Collection</code> и визначає поведение класа в качестве однонаправленной 
+очереди. Свою функциональность он раскрывает через следующие методи:</p>
 <ul>
-<li><p><span class="b">E element()</span>: повертає, но не видаляє, элемент из начала очереди. Если очередь пуста, генерує исключение 
+<li><p><span class="b">E element()</span>: повертає, но не видаляє, елемент из начала очереди. Если очередь пуста, генерує виняток 
 <code>NoSuchElementException</code></p></li>
-<li><p><span class="b">boolean offer(E obj)</span>: додає элемент obj в конец очереди. Если элемент удачно добавлен, повертає true, иначе - false</p></li>
-<li><p><span class="b">E peek()</span>: повертає без удаления элемент из начала очереди. Если очередь пуста, повертає значение <code>null</code></p></li>
-<li><p><span class="b">E poll()</span>: повертає с удалением элемент из начала очереди. Если очередь пуста, повертає значение <code>null</code></p></li>
-<li><p><span class="b">E remove()</span>: повертає с удалением элемент из начала очереди. Если очередь пуста, генерує исключение 
+<li><p><span class="b">boolean offer(E obj)</span>: додає елемент obj в конец очереди. Если елемент удачно добавлен, повертає true, иначе - false</p></li>
+<li><p><span class="b">E peek()</span>: повертає без удаления елемент из начала очереди. Если очередь пуста, повертає значення <code>null</code></p></li>
+<li><p><span class="b">E poll()</span>: повертає с видаленням елемент из начала очереди. Если очередь пуста, повертає значення <code>null</code></p></li>
+<li><p><span class="b">E remove()</span>: повертає с видаленням елемент из начала очереди. Если очередь пуста, генерує виняток 
 <code>NoSuchElementException</code></p></li>
 </ul>
-<p>Таким чином, у всех классов, которые реализуют данный інтерфейс, буде метод <code>offer</code> для добавления в очередь, метод <code>poll</code> 
-для извлечения элемента из головы очереди, и методы <code>peek</code> и <code>element</code>, позволяющие просто отримати элемент из головы очереди.</p>
-<p>Таким чином, у <code>Queue</code> есть декілька методів, которые дозволяють добавлять, удалять и получать дані, но эти методы различаются в зависимости от того, генерують они исключение або повертають специальное значение - 
-результат успешности операции. Краткая сводка по методам <code>Queue</code></p>
+<p>Таким чином, у всех класов, которые реалізують данный інтерфейс, буде метод <code>offer</code> для добавления в очередь, метод <code>poll</code> 
+для извлечения елемента из головы очереди, и методи <code>peek</code> и <code>element</code>, позволяющие просто отримати елемент из головы очереди.</p>
+<p>Таким чином, у <code>Queue</code> есть декілька методів, которые дозволяють добавлять, удалять и получать дані, но эти методи различаются в зависимости от того, генерують они виняток або повертають специальное значення - 
+результат успешности операції. Краткая сводка по методум <code>Queue</code></p>
 
 <table class="tab">
  <tr class="tabhead>
    <td></td>
-   <td><p>Генерує исключение</p></td>
-   <td><p>Повертає значение</p></td>
+   <td><p>Генерує виняток</p></td>
+   <td><p>Повертає значення</p></td>
  </tr>
  <tr>
    <td><p>Вставка</p></td>
@@ -51,54 +51,54 @@
    <td><p><code>poll()</code></p></td>
  </tr>
  <tr>
-   <td><p>Получение</p></td>
+   <td><p>Отримання</p></td>
    <td><p><code>element()</code></p></td>
    <td><p><code>peek()</code></p></td>
  </tr>
 </table>
 
-<h3>Интерфейс Deque</h3>
-<p>Интерфейс <b>Deque</b> (сокращение от "double ended queue") расширяет вышеописанный інтерфейс <code>Queue</code> и определяет поведение <span class="b">двунаправленной очереди</span>, которая работает як обычная однонаправленная 
-очередь, або як <span class="b">стек</span>, действующий по принципу LIFO (последний вошел - первый вышел).</p>
-<p>Интерфейс <code>Deque</code> определяет следующие методы:</p>
+<h3>Інтерфейс Deque</h3>
+<p>Інтерфейс <b>Deque</b> (сокращение от "double ended queue") расширяет вышеописанный інтерфейс <code>Queue</code> и визначає поведение <span class="b">двунаправленной очереди</span>, которая работает як обычная однонаправленная 
+очередь, або як <span class="b">стек</span>, действующий по принципу LIFO (післядний вошел - первый вышел).</p>
+<p>Інтерфейс <code>Deque</code> визначає следующие методи:</p>
 <ul>
-<li><p><span class="b">void addFirst(E obj)</span>: додає элемент в начало очереди (унаследован от інтерфейса <code>SequencedCollection&lt;E&gt;</code>)</p></li>
-<li><p><span class="b">void addLast(E obj)</span>: додає элемент obj в конец очереди (унаследован от інтерфейса <code>SequencedCollection&lt;E&gt;</code>)</p></li>
-<li><p><span class="b">E getFirst()</span>: повертає без удаления элемент из головы очереди. Если очередь пуста, генерує исключение 
+<li><p><span class="b">void addFirst(E obj)</span>: додає елемент в начало очереди (унаследован от інтерфейса <code>SequencedCollection&lt;E&gt;</code>)</p></li>
+<li><p><span class="b">void addLast(E obj)</span>: додає елемент obj в конец очереди (унаследован от інтерфейса <code>SequencedCollection&lt;E&gt;</code>)</p></li>
+<li><p><span class="b">E getFirst()</span>: повертає без удаления елемент из головы очереди. Если очередь пуста, генерує виняток 
 <code>NoSuchElementException</code> (унаследован от інтерфейса <code>SequencedCollection&lt;E&gt;</code>)</p></li>
-<li><p><span class="b">E getLast()</span>: повертає без удаления последний элемент очереди. Если очередь пуста, генерує исключение 
+<li><p><span class="b">E getLast()</span>: повертає без удаления післядний елемент очереди. Если очередь пуста, генерує виняток 
 <code>NoSuchElementException</code> (унаследован от інтерфейса <code>SequencedCollection&lt;E&gt;</code>)</p></li>
-<li><p><span class="b">boolean offerFirst(E obj)</span>: додає элемент obj в самое начало очереди. Если элемент удачно добавлен, повертає true, иначе - false</p></li>
-<li><p><span class="b">boolean offerLast(E obj)</span>: додає элемент obj в конец очереди. Если элемент удачно добавлен, повертає true, иначе - false</p></li>
-<li><p><span class="b">E peekFirst()</span>: повертає без удаления элемент из начала очереди. Если очередь пуста, повертає значение <code>null</code></p></li>
-<li><p><span class="b">E peekLast()</span>: повертає без удаления последний элемент очереди. Если очередь пуста, повертає значение <code>null</code></p></li>
-<li><p><span class="b">E pollFirst()</span>: повертає с удалением элемент из начала очереди. Если очередь пуста, повертає значение <code>null</code></p></li>
-<li><p><span class="b">E pollLast()</span>: повертає с удалением последний элемент очереди. Если очередь пуста, повертає значение <code>null</code></p></li>
-<li><p><span class="b">E pop()</span>: повертає с удалением элемент из начала очереди. Если очередь пуста, генерує исключение 
+<li><p><span class="b">boolean offerFirst(E obj)</span>: додає елемент obj в самое начало очереди. Если елемент удачно добавлен, повертає true, иначе - false</p></li>
+<li><p><span class="b">boolean offerLast(E obj)</span>: додає елемент obj в конец очереди. Если елемент удачно добавлен, повертає true, иначе - false</p></li>
+<li><p><span class="b">E peekFirst()</span>: повертає без удаления елемент из начала очереди. Если очередь пуста, повертає значення <code>null</code></p></li>
+<li><p><span class="b">E peekLast()</span>: повертає без удаления післядний елемент очереди. Если очередь пуста, повертає значення <code>null</code></p></li>
+<li><p><span class="b">E pollFirst()</span>: повертає с видаленням елемент из начала очереди. Если очередь пуста, повертає значення <code>null</code></p></li>
+<li><p><span class="b">E pollLast()</span>: повертає с видаленням післядний елемент очереди. Если очередь пуста, повертає значення <code>null</code></p></li>
+<li><p><span class="b">E pop()</span>: повертає с видаленням елемент из начала очереди. Если очередь пуста, генерує виняток 
 <code>NoSuchElementException</code></p></li>
-<li><p><span class="b">void push(E element)</span>: додає элемент в самое начало очереди</p></li>
-<li><p><span class="b">E removeFirst()</span>: повертає с удалением элемент из начала очереди. Если очередь пуста, генерує исключение 
+<li><p><span class="b">void push(E element)</span>: додає елемент в самое начало очереди</p></li>
+<li><p><span class="b">E removeFirst()</span>: повертає с видаленням елемент из начала очереди. Если очередь пуста, генерує виняток 
 <code>NoSuchElementException</code> (унаследован от інтерфейса <code>SequencedCollection&lt;E&gt;</code>)</p></li>
-<li><p><span class="b">E removeLast()</span>: повертає с удалением элемент из конца очереди. Если очередь пуста, генерує исключение 
+<li><p><span class="b">E removeLast()</span>: повертає с видаленням елемент из конца очереди. Если очередь пуста, генерує виняток 
 <code>NoSuchElementException</code>< (унаследован от інтерфейса <code>SequencedCollection&lt;E&gt;</code>)/p></li>
-<li><p><span class="b">boolean removeFirstOccurrence(Object obj)</span>: видаляє первый встреченный элемент obj из очереди. Если удаление произшло, то повертає true, иначе повертає false.</code></p></li>
-<li><p><span class="b">boolean removeLastOccurrence(Object obj)</span>: видаляє последний встреченный элемент obj из очереди. Если удаление произшло, то повертає true, иначе повертає false.</code></p></li>
+<li><p><span class="b">boolean removeFirstOccurrence(Object obj)</span>: видаляє первый встреченный елемент obj из очереди. Если видалення произшло, то повертає true, иначе повертає false.</code></p></li>
+<li><p><span class="b">boolean removeLastOccurrence(Object obj)</span>: видаляє післядний встреченный елемент obj из очереди. Если видалення произшло, то повертає true, иначе повертає false.</code></p></li>
 </ul>
-<p>Таким чином, наличие методів <code>pop</code> и <code>push</code> дозволяє классам, реализующим цей элемент, действовать в качестве стека. 
-В тоже час имеющийся функционал також дозволяє создавать двунаправленные очереди, что робить классы, применяющие данный інтерфейс, 
-довольно гибкими.</p>
-<p>И також, як и <code>Queue</code>, <b>Deque</b> имїїт пары методів для разных операций, которые або генерують исключение при неудаче операции, або повертають некоторое значение:</p>
+<p>Таким чином, наличие методів <code>pop</code> и <code>push</code> дозволяє класам, реализующим цей елемент, действовать в качестве стека. 
+В тоже час имеющийся функционал також дозволяє создавать двунаправленные очереди, что робить класы, применяющие данный інтерфейс, 
+досить гибкими.</p>
+<p>И також, як и <code>Queue</code>, <b>Deque</b> имїїт пары методів для разных операцій, которые або генерують виняток при неудаче операції, або повертають некоторое значення:</p>
 <table class="tab">
  <tr class="tabhead">
    <td rowspan="2"></p></td>
-   <td colspan="2">Первый элемент (Head)</p></td>
-   <td colspan="2">Последний элемент (Tail)</p></td>
+   <td colspan="2">Первый елемент (Head)</p></td>
+   <td colspan="2">Післядний елемент (Tail)</p></td>
  </tr>
  <tr>
-   <td><p>Генерация исключение</p></td>
-   <td><p>Підзвращение значения</p></td>
-   <td><p>Генерация исключение</p></td>
-   <td><p>Підзвращение значения</p></td>
+   <td><p>Генерація винятків</p></td>
+   <td><p>Підзвращение значення</p></td>
+   <td><p>Генерація винятків</p></td>
+   <td><p>Підзвращение значення</p></td>
  </tr>
  <tr>
    <td><p>Вставка</p></td>
@@ -115,7 +115,7 @@
    <td><p><code>pollLast()</code></a></p></td>
  </tr>
  <tr>
-   <td><p>Получение</p></td>
+   <td><p>Отримання</p></td>
    <td><p><code>getFirst()</code></a></p></td>
    <td><p><code>peekFirst()</code></a></p></td>
    <td><p><code>getLast()</code></a></p></td>
@@ -155,18 +155,18 @@
  </tr>
 </table>
 
-<h3>Класс ArrayDeque</h3>
-<p>В Java очереди представлены рядом классов. Одни из низ - класс <span class="b">ArrayDeque&lt;E&gt;</span>. 
-Цет класс представляють обобщенную двунаправленную очередь, наследуя функционал от класса <code>AbstractCollection</code> и применяя інтерфейс 
+<h3>Клас ArrayDeque</h3>
+<p>В Java очереди представлены рядом класов. Одни из низ - клас <span class="b">ArrayDeque&lt;E&gt;</span>. 
+Цет клас представляютьь обобщенную двунаправленную очередь, наследуя функционал от класа <code>AbstractCollection</code> и применяя інтерфейс 
 <code>Deque</code>.</p>
-<p>В классе ArrayDeque определены следующие конструкторы:</p>
+<p>В класе ArrayDeque визначенийы следующие конструктори:</p>
 <ul>
 <li><p><code>ArrayDeque()</code>: створює пустую очередь</p></li>
-<li><p><code>ArrayDeque(Collection&lt;? extends E&gt; col)</code>: створює очередь, наполненную элементами из коллекции col</p></li>
+<li><p><code>ArrayDeque(Collection&lt;? extends E&gt; col)</code>: створює очередь, наполненную елементами из колекції col</p></li>
 <li><p><code>ArrayDeque(int capacity)</code>: створює очередь с начальной емкостью capacity. Если мы явно не указываем начальную емкость, то 
 емкость по умолчанию буде равна 16</p></li>
 </ul>
-<p>Добавление в <code>ArrayDeque</code>:</p>
+<p>Додавання в <code>ArrayDeque</code>:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.ArrayDeque;
  
@@ -177,30 +177,30 @@ public class Program{
         ArrayDeque&lt;String&gt; people = new ArrayDeque&lt;String&gt;();
         System.out.println(people);      // []
           
-        // добавим ряд элементов
+        // додамо ряд елементов
         people.add("Tom");              // [Tom]
         people.add("Bob");              // [Tom, Bob]
-        // добавляем элемент в самое начало
+        // додаємо елемент в самое начало
         people.push("Sam");             // [Sam, Tom, Bob]
-        // добавляем элемент в самое начало
+        // додаємо елемент в самое начало
         people.addFirst("Alice");       // [Alice, Sam, Tom, Bob]
-        // добавляем элемент в конец коллекции
+        // додаємо елемент в конец колекції
         people.addLast("Kate");         // [Alice, Sam, Tom, Bob, Kate]
 
-        // добавляем элемент в самое начало
+        // додаємо елемент в самое начало
         people.offerFirst("Alex");       // [Alex, Alice, Sam, Tom, Bob]
-        // добавляем элемент в конец коллекции
+        // додаємо елемент в конец колекції
         people.offerLast("Bill");         // [Alex, Alice, Sam, Tom, Bob, Kate, Bill]
-        // добавляем элемент в конец коллекции
+        // додаємо елемент в конец колекції
         people.offer("Tim");            // [Alex, Alice, Sam, Tom, Bob, Kate, Bill, Tim]
 
-        // выводим все
+        // вивідим все
         System.out.println(people);      // [Alex, Alice, Sam, Tom, Bob, Kate, Bill, Tim]
     }
 }
 </code></pre>
 
-<p>Видалення элементов из <code>ArrayDeque</code>:</p>
+<p>Видалення елементов из <code>ArrayDeque</code>:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.ArrayDeque;
 import java.util.Collections;
@@ -210,52 +210,52 @@ public class Program{
     public static void main(String[] args) {
           
         ArrayDeque&lt;String&gt; people = new ArrayDeque&lt;String&gt;();
-        // добавляем ряд об'єктов
+        // додаємо ряд об'єктов
         Collections.addAll(people, new String[]{ "Alex", "Alice", "Sam", "Tom", "Bob", "Kate", "Bill", "Tim"});
         System.out.println(people);      // [Alex, Alice, Sam, Tom, Bob, Kate, Bill, Tim]
 
-        // удаляем элемент из начала
+        // видаляємо елемент из начала
         var person = people.poll();
         System.out.println(person);      // Alex
 
-        // удаляем элемент из начала в [Alice, Sam, Tom, Bob, Kate, Bill, Tim]
+        // видаляємо елемент из начала в [Alice, Sam, Tom, Bob, Kate, Bill, Tim]
         person = people.poll();
         System.out.println(person);      // Alice
 
-        // удаляем элемент из конца в [Sam, Tom, Bob, Kate, Bill, Tim]
+        // видаляємо елемент из конца в [Sam, Tom, Bob, Kate, Bill, Tim]
         person = people.pollLast();
         System.out.println(person);      // Tim
 
-        // удаляем элемент из начала  в [Sam, Tom, Bob, Kate, Bill]
+        // видаляємо елемент из начала  в [Sam, Tom, Bob, Kate, Bill]
         person = people.remove();
         System.out.println(person);      // Sam
 
-        // удаляем элемент из начала в [Tom, Bob, Kate, Bill]
+        // видаляємо елемент из начала в [Tom, Bob, Kate, Bill]
         person = people.removeFirst();
         System.out.println(person);      // Tom
 
-        // удаляем элемент из конца в [Bob, Kate, Bill]
+        // видаляємо елемент из конца в [Bob, Kate, Bill]
         person = people.removeLast();
         System.out.println(person);      // Bill
 
-        // удаление произвольного элемента из [Bob, Kate]
+        // видалення произвольного елемента из [Bob, Kate]
         boolean removed = people.remove("Kate");
         System.out.println("Kate is removed: " + removed);  // Kate is removed: true
-        // удаление произвольного элемента из [Bob]
+        // видалення произвольного елемента из [Bob]
         removed = people.remove("Charl");
         System.out.println("Charl is removed: " + removed);  // Charl is removed: false
 
-        // выводим оставшиеся
+        // вивідим оставшиеся
         System.out.println(people);      // [Bob]
 
         people.clear();
-        // удаляем оставшиеся
+        // видаляємо оставшиеся
         System.out.println(people);      // [Bob]
     }
 }
 </code></pre>
 
-<p>Получение элементов из очереди:</p>
+<p>Отримання елементов из очереди:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.ArrayDeque;
 import java.util.Collections;
@@ -265,10 +265,10 @@ public class Program{
     public static void main(String[] args) {
           
         ArrayDeque&lt;String&gt; people = new ArrayDeque&lt;String&gt;();
-        // добавляем ряд об'єктов
+        // додаємо ряд об'єктов
         Collections.addAll(people, new String[]{"Tom", "Bob", "Sam"});
 
-        // получаем элемент из начала
+        // отримуємо елемент из начала
         var first = people.element();
         System.out.println(first);      // Tom
 
@@ -281,7 +281,7 @@ public class Program{
         first = people.getFirst();
         System.out.println(first);      // Tom
 
-        // получаем элемент из конца
+        // отримуємо елемент из конца
         var last = people.getLast();
         System.out.println(last);      // Sam
 
@@ -300,7 +300,7 @@ public class Program{
             System.out.println(p);
         }
 
-        // перебор коллекции с извлечением      
+        // перебор колекції с извлечением      
         while(people.peek() != null){
             // извлечение c начала
             System.out.println(people.pop());
@@ -310,23 +310,23 @@ public class Program{
 </code></pre>
 
 <h3>Очереди приоритетов PriorityQueue</h3>
-<p>Очередь приоритетов, представленная в мові Java классом <b>PriorityQueue</b>, извлекает элементы в отсортированном порядке. То есть, при каждом получении або удалении элемента с начала очереди 
-мы будем получать условно говоря "наименьший элемент". Однак очередь приоритетов не сортує все свои элементы. При итерации по элементам они не обязательно будуть отсортированы. 
-Очередь приоритетов использует структуру данных под названием <span class="b">куча</span>. Куча — це самоорганизующїїся двоичное дерево, в котором операции добавления и удаления перемещают наименьший 
-элемент в корень, не тратя час на сортировку всех элементов.</p>
-<p>Часто очередь приоритетов використовується для планирования заданий. Каждое задание имїїт приоритет. Задания добавляются в случайном порядке. Всякий раз, когда удается запустить новое задание, задание с наивысшим приоритетом видаляєся из очереди.</p>
-<p>Поскольку при работе очереди приоритетов застосовується сортировка, то <b>PriorityQueue</b> может містятьь або элементы класса, який реализет інтерфейс <b>Comparable</b>, або через конструктор 
-при создании очереди приоритетов треба передать об'єкт <b>Comparator</b>, який определяет логику сортировки. Конструкторы класса <code>PriortyQueue</code>:</p>
+<p>Очередь приоритетов, представленная в мові Java класом <b>PriorityQueue</b>, извлекает елементы в отсортированном порядке. То есть, при каждом получении або удалении елемента с начала очереди 
+мы будем получать условно говоря "наименьший елемент". Однак очередь приоритетов не сортує все свои елементы. При итерации по елементам они не обязательно будуть отсортированы. 
+Очередь приоритетов використовує структуру данных під названием <span class="b">куча</span>. Куча — це самоорганизующїїся двоичное дерево, в котором операції добавления и удаления перемещают наименьший 
+елемент в корень, не тратя час на сортировку всех елементов.</p>
+<p>Часто очередь приоритетов використовується для планирования заданий. Каждое задание имїїт приоритет. Задания додаються в случайном порядке. Всякий раз, когда удается запустить новое задание, задание с наивысшим приоритетом видаляєся из очереди.</p>
+<p>Поскольку при работе очереди приоритетов застосовується сортування, то <b>PriorityQueue</b> может містятьь або елементы класа, який реализет інтерфейс <b>Comparable</b>, або через конструктор 
+при створенні очереди приоритетов треба передать об'єкт <b>Comparator</b>, який визначає логику сортировки. Конструктори класа <code>PriortyQueue</code>:</p>
 <ul>
-<li><p><code>PriorityQueue()</code>: створює очередь PriorityQueue с начальной вместимостью по умолчанию (11), элементы которой упорядочены в соответствии с их естественным порядком</p></li>
-<li><p><code>PriorityQueue(int initialCapacity)</code>: створює очередь PriorityQueue с указанной начальной вместимостью, элементы которой упорядочены в соответствии с их естественным порядком</p></li>
-<li><p><code>PriorityQueue(int initialCapacity, Comparator&lt;? super E&gt; comparator)</code>: створює очередь PriorityQueue с указанной начальной вместимостью, элементы которой упорядочены в соответствии с указанным компаратором</p></li>
-<li><p><code>PriorityQueue(Collection&lt;? extends E&gt; c)</code>: створює очередь PriorityQueue, которая містить элементы изуказанной коллекции</p></li>
-<li><p><code>PriorityQueue(Comparator&lt;? super E&gt; comparator)</code>: створює очередь PriorityQueue с начальной вместимостью по умолчанию, элементы которой упорядочены в соответствии с указанным компаратором</p></li>
-<li><p><code>PriorityQueue(PriorityQueue&lt;? extends E&gt; c)</code>: створює PriorityQueue, которая містить элементы из другой PriorityQueue</p></li>
-<li><p><code>PriorityQueue(SortedSet&lt;? extends E&gt; c)</code>: створює PriorityQueue, которая містить элементы из SortedSet</p></li>
+<li><p><code>PriorityQueue()</code>: створює очередь PriorityQueue с начальной вместимостью по умолчанию (11), елементы которой упорядочены в соответствии с их естественным порядком</p></li>
+<li><p><code>PriorityQueue(int initialCapacity)</code>: створює очередь PriorityQueue с указанной начальной вместимостью, елементы которой упорядочены в соответствии с их естественным порядком</p></li>
+<li><p><code>PriorityQueue(int initialCapacity, Comparator&lt;? super E&gt; comparator)</code>: створює очередь PriorityQueue с указанной начальной вместимостью, елементы которой упорядочены в соответствии с указанным компаратором</p></li>
+<li><p><code>PriorityQueue(Collection&lt;? extends E&gt; c)</code>: створює очередь PriorityQueue, которая містить елементы изуказанной колекції</p></li>
+<li><p><code>PriorityQueue(Comparator&lt;? super E&gt; comparator)</code>: створює очередь PriorityQueue с начальной вместимостью по умолчанию, елементы которой упорядочены в соответствии с указанным компаратором</p></li>
+<li><p><code>PriorityQueue(PriorityQueue&lt;? extends E&gt; c)</code>: створює PriorityQueue, которая містить елементы из другой PriorityQueue</p></li>
+<li><p><code>PriorityQueue(SortedSet&lt;? extends E&gt; c)</code>: створює PriorityQueue, которая містить елементы из SortedSet</p></li>
 </ul>
-<p><code>PriorityQueue</code> реализует інтерфейсы <code>Collection&lt;E&gt;</code> и <code>Queue&lt;E&gt;</code> и соответственно методы цих інтерфейсов. Застосування <code>PriorityQueue</code>:</p>
+<p><code>PriorityQueue</code> реалізує інтерфейсы <code>Collection&lt;E&gt;</code> и <code>Queue&lt;E&gt;</code> и соответственно методи цих інтерфейсов. Застосування <code>PriorityQueue</code>:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.PriorityQueue;
  
@@ -335,7 +335,7 @@ public class Program{
     public static void main(String[] args) {
           
         var people = new PriorityQueue&lt;String&gt;();
-        // добавляем ряд об'єктов
+        // додаємо ряд об'єктов
         people.add("Tom");
         people.add("Bob");
         people.add("Sam");
@@ -343,7 +343,7 @@ public class Program{
         System.out.println(people);      // [Bob, Tom, Sam]
 
         var numbers = new PriorityQueue&lt;Integer&gt;();
-        // добавляем ряд об'єктов
+        // додаємо ряд об'єктов
         numbers.add(3);
         numbers.add(1);
         numbers.add(5);
@@ -353,7 +353,7 @@ public class Program{
     }
 }
 </code></pre>
-<p>Здесь определены две очереди приоритетов - для строк и чисел. И в обоих случаях "наименьший" элемент располагается в самом начале. Хотя в целом коллекция не сортуєся.</p>
+<p>Здесь визначенийы две очереди приоритетов - для рядків и чисел. И в обоих случаях "наименьший" елемент располагается в самом начале. Хотя в целом колекція не сортуєся.</p>
 
   </div>
 

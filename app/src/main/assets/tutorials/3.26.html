@@ -3,7 +3,7 @@
 <head>
 <title>Java | Pattern матч. Патер типів</title>
 <meta charset="utf-8" />
-<meta name="description" content="Pattern матч. Патер типів (type pattern) в языке программирования Java, проверка типу за допомогою оператора instanceof и конструкции switch, оператор when, защитные условия guards">
+<meta name="description" content="Pattern матч. Патер типів (type pattern) в языке програмирования Java, проверка типу за допомогою оператора instanceof и конструкции switch, оператор when, защитные условия guards">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -13,15 +13,15 @@
 <div class="item center menC">
      <h1>Pattern матч. Патер типів</h1><div class="date">Останнє оновлення: 27.09.2025</div>
 
-<p><span class="b">Патер типів</span> (<span class="b">type pattern</span>) дозволяє сопоставить значение або результат выражения с определенным типом. Для применения цього паттерна можна використовувати оператор <span class="b">instanceof</span> 
+<p><span class="b">Патер типів</span> (<span class="b">type pattern</span>) дозволяє сопоставить значення або результат выражения с визначенийным типом. Для применения цього паттерна можна використовувати оператор <span class="b">instanceof</span> 
 или выражения <b>switch</b></p>
 <h3>instanceof</h3>
 
-<p>Традиционно оператор <b>instanceof</b> позволял проверить принадлежность об'єкта определенному типу. Но в последних версиях Java при его применении також можна  автоматически преобразовать об'єкт в сопоставленный тип и 
-передать преобразованное значение в определенную переменную. Наприклад, пусть у нас есть следующая система типов:</p>
+<p>Традиционно оператор <b>instanceof</b> позволял проверить принадлежность об'єкта визначенийному типу. Но в післядних версиях Java при его применении також можна  автоматически преобразовать об'єкт в сопоставленный тип и 
+передать преобразованное значення в визначенийную змінну. Наприклад, пусть у нас есть следующая система типів:</p>
 
 <pre class="line-numbers"><code class="language-java">
-// класс человека
+// клас человека
 class Person {
      
     private String name;
@@ -42,10 +42,10 @@ class Employee extends Person{
         this.company = company;
     }
 }
-// класс клиента банка
+// клас клієнта банка
 class Client extends Person{
        
-    private String bank; // банк клиента
+    private String bank; // банк клієнта
     String getBank(){ return bank; }
        
     Client(String name, String bank) {
@@ -55,7 +55,7 @@ class Client extends Person{
     }
 }
 </code></pre>
-<p>Рассмотрим применение паттерна типов за допомогою оператора <code>instanceof</code>:</p>
+<p>Рассмотрим застосування паттерна типів за допомогою оператора <code>instanceof</code>:</p>
 <pre class="line-numbers"><code class="language-java">
 class Program{
       
@@ -86,13 +86,13 @@ class Program{
     }
 }
 </code></pre>
-<p>В статическом методе <code>printPerson</code> получаем об'єкт Person и за допомогою оператора <code>instanceof</code> проверяем принадлежность об'єкта определенному типу. Так, выражение</p>
+<p>В статическом методі <code>printPerson</code> отримуємо об'єкт Person и за допомогою оператора <code>instanceof</code> проверяем принадлежность об'єкта визначенийному типу. Так, выражение</p>
 <pre class="line-numbers"><code class="language-java">person instanceof Employee empl</code></pre>
-<p>проверяет, представляє ли параметр <code>person</code> класс <code>Employee</code>, и якщо представляє (то есть оператор <code>instanceof</code> 
-повертає <code>true</code>), то передає ссылку на цей об'єкт змінної <code>empl</code> типу <code>Employee</code>. И в дальнейшем мы можемо використовувати эту переменную empl и производить 
-с ней различные операции.</p>
+<p>проверяет, представляє ли параметр <code>person</code> клас <code>Employee</code>, и якщо представляє (то есть оператор <code>instanceof</code> 
+повертає <code>true</code>), то передає ссылку на цей об'єкт змінної <code>empl</code> типу <code>Employee</code>. И в дальнейшем мы можемо використовувати эту змінну empl и производить 
+с ней различные операції.</p>
 
-<p>Також можна використовувати паттерн типов с <code>instanceof</code> в тернарном операторе:</p>
+<p>Також можна використовувати паттерн типів с <code>instanceof</code> в тернарном операторе:</p>
 <pre class="line-numbers"><code class="language-java">
 class Program{
       
@@ -118,7 +118,7 @@ class Program{
 </code></pre>
 
 <h3>Вирази/конструкції switch</h3>
-<p>Конструкции/выражения <span class="b">switch</span> дозволяють упростить паттерн типов и применение проверки типов:</p>
+<p>Конструкции/выражения <span class="b">switch</span> дозволяють упростить паттерн типів и застосування проверки типів:</p>
 <pre class="line-numbers"><code class="language-java">
 class Program{
       
@@ -145,7 +145,7 @@ class Program{
     }
 }
 </code></pre>
-<p>Выражения типу <code>case Employee empl</code> аналогично оператору <code>instaceof</code> проверяют принадлежность значения типу Employee и при положительном результате передаются ссылку на об'єкт в переменную empl.</p>
+<p>Выражения типу <code>case Employee empl</code> аналогично оператору <code>instaceof</code> проверяют принадлежность значення типу Employee и при положительном результаті передаються ссылку на об'єкт в змінну empl.</p>
 
 <p>Якщо зіставляємо з типом, то треба обов&#x27;язково вказати змінну. Наприклад, ми можемоо написати так:</p>
 <pre class="line-numbers"><code class="language-java">
@@ -153,8 +153,8 @@ switch(person){
     case Employee -&gt;
         System.out.println("Person is Employee");
 </code></pre>
-<p>После типу <code>Employee</code> нам обязательно треба указать переменную. Однак в случае выше переменная не требуется - даже якщо мы її определим, мы її нияк не используем. И в цем случае можна 
-указать прочерк _ (так называемая "неименованная переменная"):</p>
+<p>Після типу <code>Employee</code> нам обязательно треба указать змінну. Однак в случае выше змінна не требуется - даже якщо мы її визначимо, мы її нияк не використовуємо. И в цем случае можна 
+указать прочерк _ (так называемая "неименованная змінна"):</p>
 <pre class="line-numbers"><code class="language-java">
 static void printPerson(Person person){
     switch(person){
@@ -171,7 +171,7 @@ static void printPerson(Person person){
 </code></pre>
 
 <h3>Обробка null</h3>
-<p>Теоретически да и практически переменная может хранить значение <b>null</b>. При использовании оператора <code>instanceof</code> мы не столкнемся с проблемами, оскільки цей оператор повертає 
+<p>Теоретически да и практически змінна может хранить значення <b>null</b>. При использовании оператора <code>instanceof</code> мы не столкнемся с проблемами, оскільки цей оператор повертає 
 <code>true</code>, якщо выражение не равно <code>null</code>:</p>
 <pre class="line-numbers"><code class="language-java">
 class Program{
@@ -195,7 +195,7 @@ class Program{
         
             System.out.println("Person " + person.getName());
         }
-        else{       // обрабатываем null
+        else{       // обробляємо null
                                 
             System.out.println("Person Undefined");
         }
@@ -211,7 +211,7 @@ else if(person == null){
 <p>Але в будь-якому випадку, навіть якщо вираз представляє тип Person, може мати сенс порівняти його тип з типом Person, щоб відсіяти можливість нульових посилань:</p>
 <pre class="line-numbers"><code class="language-java">else if(person instanceof Person){ ....</code></pre>
 <h4>switch</h4>
-<p>Классический оператор <b>switch</b> генерує исключение NullPointerException, якщо выражение, которое передаєся оператору <code>switch</code>, равно <code>null</code>. 
+<p>Класический оператор <b>switch</b> генерує виняток NullPointerException, якщо выражение, которое передаєся оператору <code>switch</code>, равно <code>null</code>. 
 Цего можна избежать, добавив <code>case null</code>:</p>
 <pre class="line-numbers"><code class="language-java">
 class Program{
@@ -230,7 +230,7 @@ class Program{
     static void printPerson(Person person){
         switch(person){
 
-            case null -&gt;     // обрабатываем null
+            case null -&gt;     // обробляємо null
                 System.out.println("Person is Undefined");
 
             case Employee _ -&gt;
@@ -262,7 +262,7 @@ class Program{
     }
     static void printPerson(Person person){
 
-        // по цепочке используем переменную empl
+        // по цепочке використовуємо змінну empl
         if(person instanceof Employee empl && empl.getCompany() == "Yandex"){
         
             System.out.println("Employee " + empl.getName() + " works in Yandex");
@@ -285,7 +285,7 @@ if(person instanceof Employee empl && empl.getCompany() == "Yandex"){
     System.out.println("Employee " + empl.getName() + " works in Yandex");
 }
 </code></pre>
-<p>указывает, что об'єкт person не лише повинен представлять тип Employee, но и его компания повинна быть "Yandex". Таким чином, подвыражение <code>empl.getCompany() == "Yandex"</code> и 
+<p>вказує, что об'єкт person не лише повинен представлять тип Employee, но и его компания повинна быть "Yandex". Таким чином, підвыражение <code>empl.getCompany() == "Yandex"</code> и 
 есть то, что називається "guard" або условие паттерна. И блок <code>if</code> виконується, якщо верно це условие. Если условие не верно, то виконується следующий блок:</p>
 <pre class="line-numbers"><code class="language-java">
 else if(person instanceof Employee){

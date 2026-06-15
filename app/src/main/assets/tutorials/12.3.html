@@ -3,7 +3,7 @@
 <head>
 <title>Java | Робота із датами. LocalDate</title>
 <meta charset="utf-8" />
-<meta name="description" content="Работа с датами в языке программирования Java, получение текущей даты, класс LocalDate">
+<meta name="description" content="Работа с датами в языке програмирования Java, отримання текущей даты, клас LocalDate">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -13,27 +13,27 @@
 <div class="item center menC">
      <h1>Робота із датами. LocalDate</h1><div class="date">Останнє оновлення: 17.09.2025</div>
 
-	<p>Класс <span class="b">LocalDate</span> из пакета <span class="b">java.time</span> призначений для работы с датами. Функционал цього класса 
-дозволяє создавать даты и изменять их, добавляя и отнимая необхідное количество дней/месяцев/лет.</p>
-<p>Основные методы LocalDate:</p>
+	<p>Клас <span class="b">LocalDate</span> из пакету <span class="b">java.time</span> призначений для работы с датами. Функционал цього класа 
+дозволяє создавать даты и изменять их, добавляя и отнимая необхідное кількість дней/месяцев/лет.</p>
+<p>Основные методи LocalDate:</p>
 <ul>
 <li><p><code>static LocalDate now()</code>: повертає об'єкт, який представляє текущую дату</p></li>
-<li><p><code>static LocalDate of(int year, int month, int day)</code>: повертає об'єкт, який представляє дату с определенными годом, месяцем и днем</p></li>
+<li><p><code>static LocalDate of(int year, int month, int day)</code>: повертає об'єкт, який представляє дату с визначенийными годом, месяцем и днем</p></li>
 <li><p><code>int getYear()</code>: повертає год даты</p></li>
 <li><p><code>int getMonthValue()</code>: повертає месяц</p></li>
-<li><p><code>int getDayOfMonth()</code>: повертає день месяца (значение от 1 до 31)</p></li>
-<li><p><code>int getDayOfYear()</code>: повертає номер дня года (значение от 1 до 365)</p></li>
-<li><p><code>DayOfWeek getDayOfWeek()</code>: повертає день недели в виде значения перечисления <span class="b">DayOfWeek</span></p></li>
-<li><p><code>LocalDate plusDays(int n)</code>: додає к дате некоторое количество дней</p></li>
-<li><p><code>LocalDate plusWeeks(int n)</code>: додає к дате некоторое количество недель</p></li>
-<li><p><code>LocalDate plusMonths(int n)</code>: додає к дате некоторое количество месяцев</p></li>
-<li><p><code>LocalDate plusYears(int n)</code>: додає к дате некоторое количество лет</p></li>
-<li><p><code>LocalDate minusDays(int n)</code>: отнимает от даты некоторое количество дней</p></li>
-<li><p><code>LocalDate minusMonths(int n)</code>: отнимает от даты некоторое количество месяцев</p></li>
-<li><p><code>LocalDate minusWeeks(int n)</code>: отнимает от даты некоторое количество недель</p></li>
-<li><p><code>LocalDate minusYears(int n)</code>: отнимает от даты некоторое количество лет</p></li>
+<li><p><code>int getDayOfMonth()</code>: повертає день месяца (значення от 1 до 31)</p></li>
+<li><p><code>int getDayOfYear()</code>: повертає номер дня года (значення от 1 до 365)</p></li>
+<li><p><code>DayOfWeek getDayOfWeek()</code>: повертає день недели в виде значення перечисления <span class="b">DayOfWeek</span></p></li>
+<li><p><code>LocalDate plusDays(int n)</code>: додає к дате некоторое кількість дней</p></li>
+<li><p><code>LocalDate plusWeeks(int n)</code>: додає к дате некоторое кількість недель</p></li>
+<li><p><code>LocalDate plusMonths(int n)</code>: додає к дате некоторое кількість месяцев</p></li>
+<li><p><code>LocalDate plusYears(int n)</code>: додає к дате некоторое кількість лет</p></li>
+<li><p><code>LocalDate minusDays(int n)</code>: отнимает от даты некоторое кількість дней</p></li>
+<li><p><code>LocalDate minusMonths(int n)</code>: отнимает от даты некоторое кількість месяцев</p></li>
+<li><p><code>LocalDate minusWeeks(int n)</code>: отнимает от даты некоторое кількість недель</p></li>
+<li><p><code>LocalDate minusYears(int n)</code>: отнимает от даты некоторое кількість лет</p></li>
 </ul>
-<p>Получение информации о текущей дате:</p>
+<p>Отримання информации о текущей дате:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -42,7 +42,7 @@ public class Program {
   
     public static void main(String[] args) {
         
-        LocalDate date = LocalDate.now(); // получаем текущую дату
+        LocalDate date = LocalDate.now(); // отримуємо текущую дату
         int year = date.getYear();
         int month = date.getMonthValue();
         int dayOfMonth = date.getDayOfMonth();
@@ -53,18 +53,18 @@ public class Program {
     }
 }
 </code></pre>
-<p>Консольный вывод:</p>
+<p>Консольный вивід:</p>
 <pre class="line-numbers"><code class="language-none">
 2025-09-17
 WEDNESDAY
 17.9.2025 
 </code></pre>
-<p>Створення и получение информации по случайной дате:</p>
+<p>Створення и отримання информации по случайной дате:</p>
 <pre class="line-numbers"><code class="language-java">
 LocalDate date = LocalDate.of(1914, 12, 31);
 System.out.println(date);
 </code></pre>
-<p>Операции с датами - добавление и удаление:</p>
+<p>Операції с датами - додавання и видалення:</p>
 <pre class="line-numbers"><code class="language-java">
 LocalDate date = LocalDate.of(1914, 7, 28);
         

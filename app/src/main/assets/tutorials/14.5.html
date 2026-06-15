@@ -3,7 +3,7 @@
 <head>
 <title>Java | Клас Constructor та створення об'єктів</title>
 <meta charset="utf-8" />
-<meta name="description" content="Получение конструкторов за допомогою рефлексии в программе на языке программирования Java, методы getConstructors и getDeclaredConstructors, створення об'єкта произвольного класса за допомогою метода newInstance">
+<meta name="description" content="Отримання конструкторов за допомогою рефлексии в програме на языке програмирования Java, методи getConstructors и getDeclaredConstructors, створення об'єкта произвольного класа за допомогою методу newInstance">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -13,29 +13,29 @@
 <div class="item center menC">
      <h1>Клас Constructor та створення об'єктів</h1><div class="date">Останнє оновлення: 29.09.2025</div>
 
-<p>Класс <span class="b">Constructor</span> из пакета <code>java.lang.reflect</code> представляє конструктор класса. Он надає функционал для получения информации о конструкторе, а також возможнасти для создания новых об'єктов. 
+<p>Клас <span class="b">Constructor</span> из пакету <code>java.lang.reflect</code> представляє конструктор класа. Он надає функционал для получения информации о конструкторе, а також возможнасти для створенняя новых об'єктов. 
 Отмечу основные его возможнасти:</p>
 <ul>
-<li><p><span class="b">String getName()</span>: повертає имя конструктора</p></li>
-<li><p><span class="b">int getModifiers()</span>: повертає целое число с различными включенными и выключенными битами, которые описують используемые модификаторы.</p></li>
+<li><p><span class="b">String getName()</span>: повертає ім'я конструктора</p></li>
+<li><p><span class="b">int getModifiers()</span>: повертає целое число с различными включенными и выключенными битами, которые описують використовуємоые модификаторы.</p></li>
 
-<li><p><code>Object newInstance(Object... initargs)</code>: створює новый экземпляр класса, передавая конструктору аргументы через параметр <code> initargs</code>.</p></li>
-<li><p><code>Class[] getParameterTypes()</code>: повертає массив об'єктов Class, которые представляють типы параметров.</p></li>
-<li><p><code>Class[] getExceptionTypes()</code>: повертає массив об'єктов Class, представляющих типы исключений, генерируемых методом.</p></li>
+<li><p><code>Object newInstance(Object... initargs)</code>: створює новый экземпляр класа, передавая конструктору аргументы через параметр <code> initargs</code>.</p></li>
+<li><p><code>Class[] getParameterTypes()</code>: повертає масив об'єктов Class, которые представляютьь типи параметрів.</p></li>
+<li><p><code>Class[] getExceptionTypes()</code>: повертає масив об'єктов Class, представляющих типи винятків, генерируемых методом.</p></li>
 </ul>
 
-<h3>Получение конструктора</h3>
-<p>Для получения конструктора класса в виде об'єкта <code>Constructor</code> застосовується ряд методів об'єкта <code>Class</code>:</p>
+<h3>Отримання конструктора</h3>
+<p>Для получения конструктора класа в виде об'єкта <code>Constructor</code> застосовується ряд методів об'єкта <code>Class</code>:</p>
 <ul>
-<li><p><code>Constructor[] getConstructors()</code>:  повертає массив об'єктов <code>Constructor</code> для открытых конструкторов (с модификатором <code>public</code>) данного класса</p></li>
+<li><p><code>Constructor[] getConstructors()</code>:  повертає масив об'єктов <code>Constructor</code> для открытых конструкторов (с модификатором <code>public</code>) данного класа</p></li>
 
-<li><p><code>Constructor[] getDeclaredConstructors()</code>: повертає массив об'єктов <code>Constructor</code> для всех конструкторов данного класса. Метод повертають массив нулевой длины, якщо таких конструкторов нет або якщо об'єкт 
-представляє собой примитивный тип або массив.</p></li>
+<li><p><code>Constructor[] getDeclaredConstructors()</code>: повертає масив об'єктов <code>Constructor</code> для всех конструкторов данного класа. Метод повертають масив нулевой длины, якщо таких конструкторов нет або якщо об'єкт 
+представляє собой примитивный тип або масив.</p></li>
 <li><p><code>Constructor getConstructor(Class... parameterTypes)</code>:  повертає об'єкт <code>Constructor</code> для публичного конструктора. 
-Параметр parameterTypes — це массив об'єктов Class, которые идентифицируют формальные типы параметров конструктора в порядке их оголошення. Благодаря цим определениям параметров Java может выбрать нужную версию, якщо определено декілька конструкторов. Если подобный публичный конструктор отсутствует, то метод генерує исключение <code>NoSuchConstructorException </code></p></li>
-<li><p><code>Constructor getDeclaredConstructor(String name)</code>: повертає об'єкт <code>Constructor</code> для любого конструктора класса. Параметр parameterTypes — це массив об'єктов Class, которые идентифицируют формальные типы параметров конструктора в порядке их оголошення. Благодаря цим определениям параметров Java может выбрать нужную версию, якщо определено декілька конструкторов. Если подобный публичный конструктор отсутствует, то метод генерує исключение <code>NoSuchConstructorException </code></p></li>
+Параметр parameterTypes — це масив об'єктов Class, которые идентифицируют формальные типи параметрів конструктора в порядке их оголошення. Благодаря цим визначенийиям параметрів Java может выбрать нужную версию, якщо визначенийо декілька конструкторов. Если підобный публичный конструктор отсутствует, то метод генерує виняток <code>NoSuchConstructorException </code></p></li>
+<li><p><code>Constructor getDeclaredConstructor(String name)</code>: повертає об'єкт <code>Constructor</code> для любого конструктора класа. Параметр parameterTypes — це масив об'єктов Class, которые идентифицируют формальные типи параметрів конструктора в порядке их оголошення. Благодаря цим визначенийиям параметрів Java может выбрать нужную версию, якщо визначенийо декілька конструкторов. Если підобный публичный конструктор отсутствует, то метод генерує виняток <code>NoSuchConstructorException </code></p></li>
 </ul>
-<p>Наприклад, возьмем следующий класс:</p>
+<p>Наприклад, возьмем следующий клас:</p>
 <pre class="line-numbers"><code class="language-java">
 class Person {
      
@@ -57,7 +57,7 @@ class Person {
     }
 }
 </code></pre>
-<p>Получим конструкторы цього класса:</p>
+<p>Получим конструктори цього класа:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.lang.reflect.*;
 
@@ -74,12 +74,12 @@ public class Program{
     }
 }
 </code></pre>
-<p>Консольный вывод:</p>
+<p>Консольный вивід:</p>
 <pre class="line-numbers"><code class="language-none">
 Person()
 Person(java.lang.String,int)
 </code></pre>
-<p>Теперь получим один конструктор, исходя из его параметров. Параметы передаются в виде набора об'єктов Class, який представляють типы соответствующих параметров. Наприклад, в случае с классом Person второй конструктор приймає два параметра 
+<p>Теперь получим один конструктор, исходя из его параметрів. Параметы передаються в виде набора об'єктов Class, який представляютьь типи соответствующих параметрів. Наприклад, в случае с класом Person второй конструктор приймає два параметра 
 с типуми <code>String</code> и <code>int</code>. Получим цей конструктор:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.lang.reflect.*;
@@ -100,8 +100,8 @@ public class Program{
     }
 }
 </code></pre>
-<h3>Получение параметров</h3>
-<p>С помощью метода <code>getParameterTypes()</code> можна отримати массив параметров, где каждый параметр представляє тип <code>Class</code>:</p>
+<h3>Отримання параметрів</h3>
+<p>За допомогою методу <code>getParameterTypes()</code> можна отримати масив параметрів, где каждый параметр представляє тип <code>Class</code>:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.lang.reflect.*;
 
@@ -113,11 +113,11 @@ public class Program{
         Constructor[] ctors = cl.getDeclaredConstructors();
         for(Constructor ctor : ctors){
 
-            // получаем имя конструктора
+            // отримуємо ім'я конструктора
             String name = ctor.getName();
             System.out.print(name + "(");
 
-            // получаем типы параметров
+            // отримуємо типи параметрів
             Class[] params = ctor.getParameterTypes();
             for(Class p : params){  
                 System.out.printf("%s, ", p.getName());
@@ -128,13 +128,13 @@ public class Program{
     }
 }
 </code></pre>
-<p>Консольный вывод:</p>
+<p>Консольный вивід:</p>
 <pre class="line-numbers"><code class="language-none">
 Person()
 Person(java.lang.String, int, )
 </code></pre>
 <h2>Створення об'єкта</h2>
-<p>С помощью метода <code>Object newInstance(Object... initargs)</code> можна создать новый об'єкт класса:</p>
+<p>За допомогою методу <code>Object newInstance(Object... initargs)</code> можна створити новый об'єкт класа:</p>
 <pre class="line-numbers"><code class="language-java">
 public T newInstance(Object... initargs)
               throws InstantiationException,
@@ -142,7 +142,7 @@ public T newInstance(Object... initargs)
                     IllegalArgumentException,
                     InvocationTargetException
 </code></pre>
-<p>Параметры метода представляють набор об'єктов, которые предоставляют значения параметрам конструктора. Наприклад, создадим об'єкт Person:</p>
+<p>Параметри методу представляютьь набор об'єктов, которые предоставляют значення параметрам конструктора. Наприклад, створимо об'єкт Person:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.lang.reflect.*;
 
@@ -162,9 +162,9 @@ public class Program{
     }
 }
 </code></pre>
-<p>Здесь сначала получаем конструктор с двумя параметрами:</p>
+<p>Здесь сначала отримуємо конструктор с двумя параметрами:</p>
 <pre class="line-numbers"><code class="language-java">Constructor ctor = cl.getDeclaredConstructor(String.class, int.class);</code></pre>
-<p>А затем используем полученный конструктор, передавая в метод <code>newInstance()</code> параметры для него</p>
+<p>А затем використовуємо полученный конструктор, передавая в метод <code>newInstance()</code> параметри для него</p>
 <pre class="line-numbers"><code class="language-java">Person person = (Person) ctor.newInstance("Sam", 23); </code></pre>
 
   </div>

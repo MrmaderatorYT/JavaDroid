@@ -3,7 +3,7 @@
 <head>
 <title>Java | Блокування. ReentrantLock</title>
 <meta charset="utf-8" />
-<meta name="description" content="Блокування. ReentrantLock в многопоточных приложениях на языке программирования Java, пакет java.util.concurrent.locks">
+<meta name="description" content="Блокування. ReentrantLock в многопоточных додатких на языке програмирования Java, пакет java.util.concurrent.locks">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -15,23 +15,23 @@
 
 	<p>Для управления доступом к общему ресурсу в качестве альтернативы оператору synchronized мы можемо використовувати блокировки. Функциональность 
 блокировок заключена в пакеті <span class="b">java.util.concurrent.locks</span>.</p>
-<p>Вначале поток пытается отримати доступ к общему ресурсу. Если он свободен, то на него накладывает блокировку. 
-После завершения работы блокировка с общего ресурса снимается. Если же ресурс не свободен и на него вже наложена блокировка, то поток очікує, поки эта блокировка не буде снята.</p>
-<p>Классы блокировок реализуют інтерфейс <span class="b">Lock</span>, який определяет следующие методы:</p>
+<p>Вначале потік пытается отримати доступ к общему ресурсу. Если он свободен, то на него накладывает блокировку. 
+Після завершення работы блокировка с общего ресурса снимается. Если же ресурс не свободен и на него вже наложена блокировка, то потік очікує, поки эта блокировка не буде снята.</p>
+<p>Класы блокировок реалізують інтерфейс <span class="b">Lock</span>, який визначає следующие методи:</p>
 <ul>
 <li><p><span class="b">void lock()</span>: очікує, поки не буде получена блокировка</p></li>
-<li><p><span class="b">void lockInterruptibly() throws InterruptedException</span>: очікує, поки не буде получена блокировка, якщо поток не прерван</p></li>
+<li><p><span class="b">void lockInterruptibly() throws InterruptedException</span>: очікує, поки не буде получена блокировка, якщо потік не прерван</p></li>
 <li><p><span class="b">boolean tryLock()</span>: пытается отримати блокировку, якщо блокировка получена, то повертає true. Если блокировка не получена, 
-то повертає false. В отличие от метода <code>lock()</code> не очікує получения блокировки, якщо она недоступна</p></li>
+то повертає false. В отличие от методу <code>lock()</code> не очікує получения блокировки, якщо она недоступна</p></li>
 <li><p><span class="b">void unlock()</span>: снимает блокировку</p></li>
 <li><p><span class="b">Condition newCondition()</span>: повертає об'єкт Condition, який связан с текущей блокировкой</p></li>
 </ul>
-<p>Организация блокировки в общем случае довольно проста: для получения блокировки вызывается метод <code>lock()</code>, а после окончания работы с общими ресурсами 
+<p>Организация блокировки в общем случае досить проста: для получения блокировки вызывается метод <code>lock()</code>, а після окончания работы с общими ресурсами 
 вызывается метод <code>unlock()</code>, який снимает блокировку.</p>
 <p>Об'єкт Condition дозволяє управлять блокировкой.</p>
-<p>Как правило, для работы с блокировками використовується класс <span class="b">ReentrantLock</span> из пакета <span class="ii">java.util.concurrent.locks</span>. 
-Данный класс реализует інтерфейс Lock.</p>
-<p>Для примера возьмем код из темы про оператор synchronized и перепишем данный код с использованием заглушки ReentrantLock:</p>
+<p>Как правило, для работы с блокировками використовується клас <span class="b">ReentrantLock</span> из пакету <span class="ii">java.util.concurrent.locks</span>. 
+Данный клас реалізує інтерфейс Lock.</p>
+<p>Для примера возьмем код из темы про оператор synchronized и перепишем данный код с використанням заглушки ReentrantLock:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -40,7 +40,7 @@ public class Program {
     public static void main(String[] args) {
          
         CommonResource commonResource= new CommonResource();
-        ReentrantLock locker = new ReentrantLock(); // создаем заглушку
+        ReentrantLock locker = new ReentrantLock(); // створюємо заглушку
         for (int i = 1; i &lt; 6; i++){
              
             new Thread(new CountThread(commonResource, locker), "Thread "+ i).start();
@@ -81,19 +81,19 @@ class CountThread implements Runnable{
     }
 }
 </code></pre>
-<p>Здесь також використовується общий ресурс CommonResource, для управления которым створюєся пять потоков. На входе в критическую секцию устанавливается 
+<p>Здесь також використовується общий ресурс CommonResource, для управления которым створюєся пять потіков. На входе в критическую секцию встановлюєся 
 заглушка:</p>
 <pre class="line-numbers"><code class="language-java">locker.lock();</code></pre>
-<p>После цього лише один поток имїїт доступ к критической секции, яку образыет блок <code>try</code>, а остальные потоки очікують снятия блокировки. В блоке <code>finally</code> после всей 
-окончания основной работы потока эта блокировка снимается.</p>
+<p>Після цього лише один потік имїїт доступ к критической секции, яку образыет блок <code>try</code>, а остальные потіки очікують снятия блокировки. В блоке <code>finally</code> після всей 
+окончания основной работы потіка эта блокировка снимается.</p>
 <pre class="line-numbers"><code class="language-java">
 finally{
     locker.unlock(); // снимаем блокировку
 }
 </code></pre>
 <p>Причем робиться це обязательно в блоке <code>finally</code>, оскільки в случае 
-возникновения ошибки все остальные потоки окажутся заблокированными.</p>
-<p>В итоге мы получим консольный вывод, аналогичный следующему:</p>
+возникновения ошибки все остальные потіки окажутся заблокированными.</p>
+<p>В итоге мы получим консольный вивід, аналогичный следующему:</p>
 <pre class="line-numbers"><code class="language-none">
 Thread 4 1 
 Thread 4 2 

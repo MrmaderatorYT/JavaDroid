@@ -66,6 +66,7 @@ public class FileTreeAdapter extends RecyclerView.Adapter<FileTreeAdapter.FileVi
         } else {
             String lower = name.toLowerCase();
             if (lower.endsWith(".java")) holder.icon.setText("☕");
+            else if (lower.endsWith(".class")) holder.icon.setText("🅒");
             else if (lower.endsWith(".xml")) holder.icon.setText("📜");
             else if (lower.endsWith(".properties")) holder.icon.setText("⚙");
             else if (lower.endsWith(".c") || lower.endsWith(".cpp") || lower.endsWith(".h") || lower.endsWith(".hpp")) holder.icon.setText("🛠️");

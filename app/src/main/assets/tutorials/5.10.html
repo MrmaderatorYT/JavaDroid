@@ -3,7 +3,7 @@
 <head>
 <title>Java | Ітератори. Iterator та Iterable</title>
 <meta charset="utf-8" />
-<meta name="description" content="Итераторы в языке программирования Java, перебор коллекций, інтерфейс Iterator и его методы hasNext и next, тип ListIterator, инерфейс Iterable и створення коллекций">
+<meta name="description" content="Ітераторы в языке програмирования Java, перебор колекцій, інтерфейс Iterator и его методи hasNext и next, тип ListIterator, инерфейс Iterable и створення колекцій">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -13,8 +13,8 @@
 <div class="item center menC">
      <h1>Ітератори. Iterator та Iterable</h1><div class="date">Останнє оновлення: 13.10.2025</div>
 
-	<p>Одним из ключевых інтерфейсов коллекций в мові Java є інтерфейс <span class="b">Iterator</span>. Он дозволяє проходить по элементам коллекции. 
-<p>Интерфейс <span class="b">Iterator</span> имїїт следующїї определение:</p>
+	<p>Одним из ключевых інтерфейсов колекцій в мові Java є інтерфейс <span class="b">Iterator</span>. Он дозволяє проходить по елементам колекції. 
+<p>Інтерфейс <span class="b">Iterator</span> имїїт следующїї визначенийие:</p>
 <pre class="line-numbers"><code class="language-java">
 public interface Iterator &lt;E&gt;{
     
@@ -24,12 +24,12 @@ public interface Iterator &lt;E&gt;{
    default void forEachRemaining(Consumer&lt;? super E&gt; action);
 }
 </code></pre>
-<p>Реализация інтерфейса предполагает, что за допомогою вызова метода <code>next()</code> можна отримати следующий элемент. С помощью 
-метода <code>hasNext()</code> можна узнать, есть ли следующий элемент, и не достигнут ли конец коллекции. И якщо элементы ще имеются, то <code>hasNext()</code>
-вернет значение <code>true</code>. Метод <code>hasNext()</code> йде вызывать перед методом <code>next()</code>, оскільки при достижении конца коллекции метод <code>next()</code> выбрасывает исключение 
-<code>NoSuchElementException</code>. И метод <code>remove()</code> видаляє текущий элемент, який був получен последним вызовом <code>next()</code>.</p>
+<p>Реалізація інтерфейса предполагает, что за допомогою вызова методу <code>next()</code> можна отримати следующий елемент. За допомогою 
+методу <code>hasNext()</code> можна узнать, чи є следующий елемент, и не достигнут ли конец колекції. И якщо елементы ще имеются, то <code>hasNext()</code>
+вернет значення <code>true</code>. Метод <code>hasNext()</code> йде вызывать перед методом <code>next()</code>, оскільки при достижении конца колекції метод <code>next()</code> выбрасывает виняток 
+<code>NoSuchElementException</code>. И метод <code>remove()</code> видаляє текущий елемент, який був получен післядним вызовом <code>next()</code>.</p>
 
-<p>Наприклад, используем итератор для перебора коллекции ArrayList:</p>
+<p>Наприклад, використовуємо ітератор для перебора колекції ArrayList:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.Collection;
 import java.util.ArrayList;
@@ -44,9 +44,9 @@ public class Program{
         people.add("Bob");
         people.add("Sam");
          
-        // получаем интератор коллекции people
+        // отримуємо интератор колекції people
         Iterator&lt;String&gt; iter = people.iterator();
-        // используя итератор, перебираем коллекцию
+        // використовуючи ітератор, перебираем колекцію
         while(iter.hasNext()){
          
             System.out.println(iter.next());
@@ -54,13 +54,13 @@ public class Program{
     }
 }
 </code></pre>
-<p>Консольный вывод:</p>
+<p>Консольный вивід:</p>
 <pre class="line-numbers"><code class="language-none">
 Tom
 Bob
 Sam
 </code></pre>
-<p>Конечно, для перебора коллекции гораздо проще використовувати стандартный цикл <code>for each</code>:</p>
+<p>Конечно, для перебора колекції гораздо проще використовувати стандартный цикл <code>for each</code>:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.Collection;
 import java.util.ArrayList;
@@ -80,27 +80,27 @@ public class Program{
     }
 }
 </code></pre>
-<p>Однак "под капотом" компилятор преобразует цикл <code>for-each</code> в цикл с итератором.</p>
+<p>Однак "під капотом" компилятор преобразует цикл <code>for-each</code> в цикл с ітератором.</p>
 
-<h3>Встроенные реализации итераторов</h3>
-<p>Интерфейс <code>Iterator</code> надає ограниченный функционал. Но Java имїїт встроенные типы, которые расширяют его функционал и призначенийы для перебора определенных типов коллекций. 
-Наприклад, інтерфейс <span class="b">ListIterator</span> використовується классами, которые реализуют інтерфейс <code>List</code> и представляють списки, то есть классами 
+<h3>Встроенные реалізації ітераторов</h3>
+<p>Інтерфейс <code>Iterator</code> надає ограниченный функционал. Но Java имїїт встроенные типи, которые расширяют его функционал и призначенийы для перебора визначенийных типів колекцій. 
+Наприклад, інтерфейс <span class="b">ListIterator</span> використовується класами, которые реалізують інтерфейс <code>List</code> и представляютьь списки, то есть класами 
 LinkedList, ArrayList и др.</p>
-<p>Интерфейс <b>ListIterator</b> расширяет інтерфейс <code>Iterator</code> и определяет ряд дополнительных методів:</p>
+<p>Інтерфейс <b>ListIterator</b> расширяет інтерфейс <code>Iterator</code> и визначає ряд дополнительных методів:</p>
 <ul>
-<li><p><span class="b">void add(E obj)</span>: вставляет об'єкт obj перед элементом, який повинен быть возвращен наступним вызовом <code>next()</code></p></li>
-<li><p><span class="b">boolean hasNext()</span>: повертає <code>true</code>, якщо в коллекции имїїтся следующий элемент, иначе повертає false</p></li>
-<li><p><span class="b">boolean hasPrevious()</span>: повертає <code>true</code>, якщо в коллекции имїїтся предыдущий элемент, иначе повертає false</p></li>
-<li><p><span class="b">E next()</span>: повертає текущий элемент и переходит к следующему, якщо такого нет, то генеруєся исключение <code>NoSuchElementException</code></p></li>
-<li><p><span class="b">E previous()</span>: повертає текущий элемент и переходит к предыдущему, якщо такого нет, то генеруєся исключение <code>NoSuchElementException</code></p></li>
-<li><p><span class="b">int nextIndex()</span>: повертає индекс следующего элемента. Если такого нет, то повертаєся размер списка</p></li>
-<li><p><span class="b">int previousIndex()</span>: повертає индекс предыдущего элемента. Если такого нет, то повертаєся число -1</p></li>
-<li><p><span class="b">void remove()</span>: видаляє текущий элемент из списка. Таким чином, цей метод повинен быть вызван после методів 
-<code>next()</code> або <code>previous()</code>, иначе буде сгенерировано исключение <code>IlligalStateException</code></p></li>
-<li><p><span class="b">void set(E obj)</span>: присваивает текущему элементу, выбранному вызовом методів <code>next()</code> або <code>previous()</code>, 
+<li><p><span class="b">void add(E obj)</span>: вставляет об'єкт obj перед елементом, який повинен быть возвращен наступним вызовом <code>next()</code></p></li>
+<li><p><span class="b">boolean hasNext()</span>: повертає <code>true</code>, якщо в колекції имїїтся следующий елемент, иначе повертає false</p></li>
+<li><p><span class="b">boolean hasPrevious()</span>: повертає <code>true</code>, якщо в колекції имїїтся предыдущий елемент, иначе повертає false</p></li>
+<li><p><span class="b">E next()</span>: повертає текущий елемент и переходит к следующему, якщо такого нет, то генеруєся виняток <code>NoSuchElementException</code></p></li>
+<li><p><span class="b">E previous()</span>: повертає текущий елемент и переходит к предыдущему, якщо такого нет, то генеруєся виняток <code>NoSuchElementException</code></p></li>
+<li><p><span class="b">int nextIndex()</span>: повертає индекс следующего елемента. Если такого нет, то повертаєся размер списку</p></li>
+<li><p><span class="b">int previousIndex()</span>: повертає индекс предыдущего елемента. Если такого нет, то повертаєся число -1</p></li>
+<li><p><span class="b">void remove()</span>: видаляє текущий елемент из списку. Таким чином, цей метод повинен быть вызван після методів 
+<code>next()</code> або <code>previous()</code>, иначе буде сгенерировано виняток <code>IlligalStateException</code></p></li>
+<li><p><span class="b">void set(E obj)</span>: присваивает текущему елементу, выбранному вызовом методів <code>next()</code> або <code>previous()</code>, 
 ссылку на об'єкт obj</p></li>
 </ul>
-<p>Используем ListIterator:</p>
+<p>Використовуємо ListIterator:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.ListIterator;
 import java.util.ArrayList;
@@ -120,10 +120,10 @@ public class Program{
          
             System.out.println(listIter.next());
         }
-        // сейчас текущий элемент - Sam
-        // изменим значение цього элемента
+        // сейчас текущий елемент - Sam
+        // изменим значення цього елемента
         listIter.set("Sammy");
-        // пройдемся по элементам в обратном порядке
+        // пройдемся по елементам в обратном порядке
         while(listIter.hasPrevious()){
          
             System.out.println(listIter.previous());
@@ -131,7 +131,7 @@ public class Program{
     }
 }
 </code></pre>
-<p>Консольный вывод программы:</p>
+<p>Консольный вивід програми:</p>
 <pre class="line-numbers"><code class="language-none">
 Tom
 Bob
@@ -141,8 +141,8 @@ Bob
 Tom
 </code></pre>
 
-<h3>Интерфейс Iterable</h3>
-<p>Цикл <code>for-each</code> работает с любым об'єктом, який реализует інтерфейс <b>Iterable</b> и реализует его метод <code>iterator()</code>:</p>
+<h3>Інтерфейс Iterable</h3>
+<p>Цикл <code>for-each</code> работает с любым об'єктом, який реалізує інтерфейс <b>Iterable</b> и реалізує его метод <code>iterator()</code>:</p>
 <pre class="line-numbers"><code class="language-java">
 public interface Iterable&lt;E&gt;
 {
@@ -150,8 +150,8 @@ public interface Iterable&lt;E&gt;
     ....
 }
 </code></pre>
-<p>В частности, цей метод повертає итератор - то есть об'єкт, реализующий інтерфейс <span class="b">Iterator</span>. И за допомогою цього итератора буде осуществляться перебор об'єкта класса, которые реализует інтерфейс <code>Iterable</code>.</p>
-<p>Интерфейс <code>Collection</code>, а через него и все остальные коллекции, як раз расширяет інтерфейс <code>Iterable</code> и найде метод <code>Iterator&lt;E&gt; iterator()</code>.:</p>
+<p>Зокрема, цей метод повертає ітератор - то есть об'єкт, реализующий інтерфейс <span class="b">Iterator</span>. И за допомогою цього ітератора буде осуществляться перебор об'єкта класа, которые реалізує інтерфейс <code>Iterable</code>.</p>
+<p>Інтерфейс <code>Collection</code>, а через него и все остальные колекції, як раз расширяет інтерфейс <code>Iterable</code> и найде метод <code>Iterator&lt;E&gt; iterator()</code>.:</p>
 <pre class="line-numbers"><code class="language-java">
 public interface Collection&lt;E&gt;
 {
@@ -160,9 +160,9 @@ public interface Collection&lt;E&gt;
 </code></pre>
 <p>Тому вы можете використовувати цикл "for each" с любой коллекцией в Java Collections Framework.</p>
 
-<h3>Кастомная реализация итераторов</h3>
-<p>Хотя итераторы и інтерфейс Iterable призначенийы прежде всего для работы с коллекциями, но фактически мы можемо их використовувати с любыми классами, рассматривая класс як набор некоторых об'єктов. 
-Наприклад, реализуем інтерфейсы <code>Iterable</code> и <code>Iterator</code> для перебора об'єкта кастомного класса:</p>
+<h3>Кастомная реалізація ітераторов</h3>
+<p>Хотя ітераторы и інтерфейс Iterable призначенийы прежде всего для работы с колекціями, но фактически мы можемо их використовувати с любыми класами, рассматривая клас як набор некоторых об'єктов. 
+Наприклад, реализуем інтерфейсы <code>Iterable</code> и <code>Iterator</code> для перебора об'єкта кастомного класа:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.Iterator;
  
@@ -224,8 +224,8 @@ class Person implements Iterable{
     }
 }
 </code></pre>
-<p>В данном случае демонстрируется, як сделать собственный класс итерируемым, то есть дать возможнасть перебирать его в цикле "for-each". И для начала определяем класс, об'єкт которого буде перебираться - 
-класс <code>Person</code>, який описує человека:</p>
+<p>У даному випадку демонстрируется, як сделать собственный клас итерируемым, то есть дать возможнасть перебирать его в цикле "for-each". И для начала определяем клас, об'єкт которого буде перебираться - 
+клас <code>Person</code>, який описує человека:</p>
 <pre class="line-numbers"><code class="language-java">
 class Person implements Iterable{
     // ... поля и конструктор ...
@@ -240,11 +240,11 @@ class Person implements Iterable{
 </code></pre>
 <p>Основные моменты:</p>
 <ul>
-<li><p><code>implements Iterable</code>: реализуя цей інтерфейс, класс Person обязуется предоставить метод <b>iterator()</b>, який неявно вызывается циклом "for-each".</p></li> 
-<li><p><code>public PersonIterator iterator()</code>: цей метод повинен вернуть об'єкт, який, в свою очередь, реализует інтерфейс <b>Iterator</b>. В данном случае он повертає экземпляр 
-нашего кастомного итератора <code>PersonIterator</code>.</p></li>
+<li><p><code>implements Iterable</code>: реализуя цей інтерфейс, клас Person обязуется предоставить метод <b>iterator()</b>, який неявно вызывается циклом "for-each".</p></li> 
+<li><p><code>public PersonIterator iterator()</code>: цей метод повинен вернуть об'єкт, який, в свою очередь, реалізує інтерфейс <b>Iterator</b>. У даному випадку он повертає экземпляр 
+нашего кастомного ітератора <code>PersonIterator</code>.</p></li>
 </ul>
-<p>Класс <code>PersonIterator</code> містить всю логику перебора свойств об'єкта <code>Person</code>:</p>
+<p>Клас <code>PersonIterator</code> містить всю логику перебора свойств об'єкта <code>Person</code>:</p>
 <pre class="line-numbers"><code class="language-java">
 class PersonIterator implements Iterator&lt;String&gt;{
     // ... поля и конструктор ...
@@ -260,15 +260,15 @@ class PersonIterator implements Iterator&lt;String&gt;{
 </code></pre>
 <p>Основные моменты:</p>
 <ul>
-<li><p><code>implements Iterator&lt;String&gt;</code>: применяем інтерфейс, який буде перебирать значения типу String</p></li>
-<li><p><code>boolean hasNext()</code>: цей метод вызывается перед каждой итерацией цикла "for-each". Он повинен вернуть <code>true</code>, якщо есть следующий элемент для перебора, и 
-<code>false</code>, якщо элементы закончились. Здесь логика проста: поскольку у <code>Person</code> три свойства, метод повертає  <code>true</code>, поки счетчик <code>currentProp</code> меньше 3.</p></li>
-<li><p><code>String next()</code>: цей метод повертає следующий элемент. Он вызывается, якщо <code>hasNext()</code> вернул  <code>true</code>. С помощью оператора <code>switch</code> 
-он последовательно повертає значения полей id, name и age в виде строки (String), увеличивая счетчик <code>currentProp</code> на единицу после каждого вызова.</p></li>
+<li><p><code>implements Iterator&lt;String&gt;</code>: застосовуємо інтерфейс, який буде перебирать значення типу String</p></li>
+<li><p><code>boolean hasNext()</code>: цей метод вызывается перед каждой итерацией цикла "for-each". Он повинен вернуть <code>true</code>, якщо есть следующий елемент для перебора, и 
+<code>false</code>, якщо елементы закончились. Здесь логика проста: поскольку у <code>Person</code> три свойства, метод повертає  <code>true</code>, поки счетчик <code>currentProp</code> меньше 3.</p></li>
+<li><p><code>String next()</code>: цей метод повертає следующий елемент. Он вызывается, якщо <code>hasNext()</code> вернул  <code>true</code>. За допомогою оператора <code>switch</code> 
+он післядовательно повертає значення полей id, name и age в виде рядки (String), увеличивая счетчик <code>currentProp</code> на единицу після каждого вызова.</p></li>
 </ul>
-<p>Таким чином, код створює специальную конструкцию в виде PersonIterator о том, як пошагово перебрать свойства об'єкта Person, и связывает эту конструкцию с самим классом Person через інтерфейс 
+<p>Таким чином, код створює специальную конструкцию в виде PersonIterator о том, як пошагово перебрать свойства об'єкта Person, и связывает эту конструкцию с самим класом Person через інтерфейс 
 <code>Iterable</code></p>
-<p>И далїї в методе <code>main</code> мы можемо создать об'єкт класса Person и перебрать его свойства:</p>
+<p>И далїї в методі <code>main</code> мы можемо створити об'єкт класа Person и перебрать его свойства:</p>
 <pre class="line-numbers"><code class="language-java">
 public static void main(String[] args) {
       
@@ -285,14 +285,14 @@ Tom
 41
 </code></pre>
 <h3>Метод forEach</h3>
-<p>Вместо цикла "for each" для перебора коллекции можна вызвать методы <b>Collection.forEach</b> або <b>Iterator.forEachRemaining</b> с лямбда-выражением, которое использует элемент. 
-Лямбда-выражение застосовується ко всем элементам коллекции або к оставшимся элементам, которые может обойти итератор:</p>
+<p>Вместо цикла "for each" для перебора колекції можна вызвать методи <b>Collection.forEach</b> або <b>Iterator.forEachRemaining</b> с лямбда-выражением, которое використовує елемент. 
+Лямбда-выражение застосовується ко всем елементам колекції або к оставшимся елементам, которые может обойти ітератор:</p>
 
 <pre class="line-numbers"><code class="language-java">
 coll.forEach(element -&gt; действия с element);
 iter.forEachRemaining(element -&gt; действия с element);
 </code></pre>
-<p>Например:</p>
+<p>Наприклад:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.ArrayList;
  

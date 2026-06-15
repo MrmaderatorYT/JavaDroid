@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html  lang="uk">
 <head>
-<title>Java | Буферизовані потоки BufferedInputStream та BufferedOutputStream</title>
+<title>Java | Буферизовані потіки BufferedInputStream та BufferedOutputStream</title>
 <meta charset="utf-8" />
-<meta name="description" content="Буферизация данных при их записи и чтении в языке программирования Java, классы BufferedInputStream и BufferedOutputStream">
+<meta name="description" content="Буферизация данных при их записи и чтении в языке програмирования Java, класы BufferedInputStream и BufferedOutputStream">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -11,19 +11,19 @@
 <body>
 <div id="container">
 <div class="item center menC">
-     <h2>Буферизовані потоки BufferedInputStream та BufferedOutputStream</h2><div class="date">Останнє оновлення: 26.04.2018</div>
+     <h2>Буферизовані потіки BufferedInputStream та BufferedOutputStream</h2><div class="date">Останнє оновлення: 26.04.2018</div>
 
-	<p>Для оптимизации операций ввода-вывода використовуються буферизуемые потоки. Эти потоки добавляют к стандартным специальный буфер в памяти, за допомогою которого 
-повышается производительность при чтении и записи потоков.</p>
-<h3>Класс BufferedInputStream</h3>
-<p>Класс BufferedInputStream накапливает вводимые дані в специальном буфере без постоянного обращения к устройству ввода. Класс BufferedInputStream 
-определяет два конструктора:</p>
+	<p>Для оптимизации операцій ввода-вивіда використовуються буферизуемые потіки. Эти потіки додають к стандартным специальный буфер в памяти, за допомогою которого 
+повышается производительность при чтении и записи потіков.</p>
+<h3>Клас BufferedInputStream</h3>
+<p>Клас BufferedInputStream накапливает вводимые дані в специальном буфере без постоянного обращения к устройству ввода. Клас BufferedInputStream 
+визначає два конструктора:</p>
 <pre class="line-numbers"><code class="language-java">
 BufferedInputStream(InputStream inputStream)
 BufferedInputStream(InputStream inputStream, int bufSize)
 </code></pre>
-<p>Первый параметр - це поток ввода, с которого дані будуть считываться в буфер. Второй параметр - размер буфера.</p>
-<p>Наприклад, буферизируем считывание данных из потока ByteArrayInputStream:</p>
+<p>Первый параметр - це потік ввода, с которого дані будуть считываться в буфер. Второй параметр - размер буфера.</p>
+<p>Наприклад, буферизируем считывание данных из потіка ByteArrayInputStream:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.io.*;
 
@@ -51,21 +51,21 @@ public class Program {
     } 
 }
 </code></pre>
-<p>Класс BufferedInputStream в конструкторе приймає об'єкт <code>InputStream</code>. В данном случае таким об'єктом є экземпляр класса 
+<p>Клас BufferedInputStream в конструкторе приймає об'єкт <code>InputStream</code>. У даному випадку таким об'єктом є экземпляр класа 
 <code>ByteArrayInputStream</code>.</p>
-<p>Как и все потоки ввода BufferedInputStream обладает методом <code>read()</code>, який считывает дані. И здесь мы считываем за допомогою метода <code>read</code> 
-каждый байт из массива buffer.</p>
-<p>Фактические все то же самое можна буво сделать и за допомогою одного ByteArrayInputStream, не прибегая к буферизированному потоку. Класс BufferedInputStream 
-просто оптимизирует производительность при работе с потоком ByteArrayInputStream. Естественно вместо ByteArrayInputStream может використовуватися любой другой класс, який унаследован от InputStream.</p>
-<h3>Класс BufferedOutputStream</h3>
-<p>Класс BufferedOutputStream аналогично створює буфер для потоков вывода. Цет буфер накапливает выводимые байты без постоянного обращения к устройству. 
-И когда буфер заполнен, производится запись данных.</p>
-<p>BufferedOutputStream определяет два конструктора:</p>
+<p>Как и все потіки ввода BufferedInputStream обладает методом <code>read()</code>, який считывает дані. И здесь мы считываем за допомогою методу <code>read</code> 
+каждый байт из масива buffer.</p>
+<p>Фактические все то же самое можна буво сделать и за допомогою одного ByteArrayInputStream, не прибегая к буферизированному потіку. Клас BufferedInputStream 
+просто оптимизирует производительность при работе с потіком ByteArrayInputStream. Естественно вместо ByteArrayInputStream может використовуватися любой другой клас, який унаследован от InputStream.</p>
+<h3>Клас BufferedOutputStream</h3>
+<p>Клас BufferedOutputStream аналогично створює буфер для потіков вивіда. Цет буфер накапливает вивідимые байты без постоянного обращения к устройству. 
+И когда буфер заполнен, производится запис данных.</p>
+<p>BufferedOutputStream визначає два конструктора:</p>
 <pre class="line-numbers"><code class="language-java">
 BufferedOutputStream(OutputStream outputStream)
 BufferedOutputStream(OutputStream outputStream, int bufSize)
 </code></pre>
-<p>Первый параметр - це поток вывода, який унаследован от OutputStream, а второй параметр - размер буфера.</p>
+<p>Первый параметр - це потік вивіда, який унаследован от OutputStream, а второй параметр - размер буфера.</p>
 <p>Рассмотрим на примере записи в файл:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.io.*;
@@ -74,11 +74,11 @@ public class Program {
 
     public static void main(String[] args) {
         
-        String text = "Hello world!"; // строка для записи
+        String text = "Hello world!"; // рядок для записи
         try(FileOutputStream out=new FileOutputStream("notes.txt"); 
                 BufferedOutputStream bos = new BufferedOutputStream(out))
         {
-			// перевод строки в байты
+			// перевод рядки в байты
             byte[] buffer = text.getBytes();
             bos.write(buffer, 0, buffer.length);
         }
@@ -89,8 +89,8 @@ public class Program {
     } 
 }
 </code></pre>
-<p>Класс BufferedOutputStream в конструкторе приймає в качестве параметра об'єкт <b>OutputStream</b> - в данном случае це файловый поток вывода 
-FileOutputStream. И також производится запись в файл. Опять же BufferedOutputStream не додає много новой функциональности, он просто оптимизирует действие потока вывода.</p>
+<p>Клас BufferedOutputStream в конструкторе приймає в качестве параметра об'єкт <b>OutputStream</b> - у даному випадку це файлівый потік вивіда 
+FileOutputStream. И також производится запис в файл. Опять же BufferedOutputStream не додає много новой функциональности, он просто оптимизирует действие потіка вивіда.</p>
 
   </div>
 

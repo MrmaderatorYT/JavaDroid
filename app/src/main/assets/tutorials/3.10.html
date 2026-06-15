@@ -3,7 +3,7 @@
 <head>
 <title>Java | Ієрархія успадкування та перетворення типів</title>
 <meta charset="utf-8" />
-<meta name="description" content="Преобразование типов в Java, от базового к производному и от производного к базовому, створення иерархии наследования из классов и інтерфейсов, оператор instanceof">
+<meta name="description" content="Перетворення типів в Java, від базового до похідного та від похідного до базового, створення иерархии наследования из класов и інтерфейсов, оператор instanceof">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -28,7 +28,7 @@ public class Program{
         bob.print();    // Client Bob has account in SberBank
     }
 }
-// класс человека
+// клас человека
 class Person {
      
     private String name;
@@ -61,7 +61,7 @@ class Employee extends Person{
         System.out.printf("Employee %s works in %s \n", getName(), company);
     }
 }
-// класс клиента банка
+// клас клієнта банка
 class Client extends Person{
        
     private String bank;
@@ -80,7 +80,7 @@ class Client extends Person{
 }
 </code></pre>
 <p>У цій ієрархії класів можна простежити наступний ланцюг успадкування: Object (всі класи неявно успадковуються від типу Object) -&gt; Person -&gt; Employee | Client.</p>
-<img src="pics/3.12.png" alt="Преобразование типов в мові Java" />
+<img src="pics/3.12.png" alt="Перетворення типів в мові Java" />
 <p>Суперкласи зазвичай розміщуються вище підкласів, тому на вершині успадкування знаходиться клас Object, а в самому низу Employee та Client.</p>
 <h3>upcasting або висхідні перетворення</h3>
 <p>Об&#x27;єкт підкласу також представляє об&#x27;єкт суперкласу. Тож у програмі ми можемоо написати так:</p>
@@ -97,18 +97,18 @@ public class Program{
     }
 }
 </code></pre>
-<p>Це так называемое <span class="b">висхідне перетворення</span> (от подкласса внизу к суперклассу вверху иерархии) або <span class="b">upcasting</span>. Такое преобразование осуществляется 
+<p>Це так называемое <span class="b">висхідне перетворення</span> (от підкласа внизу к суперкласу вверху иерархии) або <span class="b">upcasting</span>. Такое преобразование осуществляется 
 автоматически.</p>
 <h3>downcasting або низхідне перетворення</h3>
 <p>Обратное не всегда верно. Наприклад, об'єкт Person не всегда є об'єктом Employee або Client. Тому <span class="b">низхідне перетворення</span> або <span class="b">downcasting</span> 
-от суперкласса к подклассу автоматически не виконується. В цем случае нам треба використовувати операцию преобразования типов. Например:</p>
+от суперкласа к підкласу автоматически не виконується. В цем случае нам треба використовувати операцію преобразования типів. Наприклад:</p>
 <pre class="line-numbers"><code class="language-java">
 Object sam = new Employee("Sam", "Yandex");
 sam.print(); // ! Ошибка
 </code></pre>
-<p>Здесь хотя переменная <code>sam</code> и хранит ссылку на об'єкт типу Employee, но є змінної типу <code>Object</code>. Тому при компиляции мы столкнемся с ошибкой - поскольку об'єкт типу Object 
-не обязательно представляє тип Employee або Person, у него может и не быть метода <code>print()</code>. 
-И в цем случае нам треба применить <span class="b">низхідне перетворення</span> от типу Object к типу Employee або Person:</p>
+<p>Здесь хотя змінна <code>sam</code> и хранит ссылку на об'єкт типу Employee, но є змінної типу <code>Object</code>. Тому при компиляции мы столкнемся с ошибкой - поскольку об'єкт типу Object 
+не обязательно представляє тип Employee або Person, у него может и не быть методу <code>print()</code>. 
+И в цем случае нам треба пріменіть <span class="b">низхідне перетворення</span> от типу Object к типу Employee або Person:</p>
 <pre class="line-numbers"><code class="language-java">
 Object sam = new Employee("Sam", "Yandex");
 
@@ -148,12 +148,12 @@ public class Program{
     }
 }
 </code></pre>
-<p>В данном случае переменная <code>kate</code>, которая имїїт тип Person, хранит ссылку на об'єкт Client. Мы можемо без ошибок привести цей об'єкт к типу Client. Но при попытке преобразования 
+<p>У даному випадку змінна <code>kate</code>, которая имїїт тип Person, хранит ссылку на об'єкт Client. Мы можемо без ошибок привести цей об'єкт к типу Client. Но при попытке преобразования 
 к типу Employee мы получим ошибку во час виконання. Так як <code>kate</code> НЕ представляє об'єкт типу Employee.</p>
 
 <h3>Оператор взаємодії</h3>
-<p>В примере выше мы явно видим, что переменная kate - це ссылка на об'єкт Client, а не Employee. Однак нередко дані приходят зовні, и мы можемо точно не знать, якой именно 
-об'єкт эти дані представляють. Соответственно возникает большая вероятность столкнуться с ошибкой. И перед тем, як провести преобразование типов, 
+<p>В примере выше мы явно видим, что змінна kate - це ссылка на об'єкт Client, а не Employee. Однак нередко дані приходят зовні, и мы можемо точно не знать, якой именно 
+об'єкт эти дані представляютьь. Соответственно возникает большая вероятность столкнуться с ошибкой. И перед тем, як провести преобразование типів, 
 мы можемо проверить, а можемо ли мы выполнить приведение за допомогою оператора <span class="b">instanceof</span>:</p>
 <pre class="line-numbers"><code class="language-java">
 public class Program{
@@ -180,15 +180,15 @@ public class Program{
     }
 }
 </code></pre>
-<p>В методе <code>printPerson</code> выражение <code>person instanceof Employee</code> проверяет, представляє ли параметр person об'єкт типу Employee. И якщо не є, то такая 
-проверка вернет значение <code>false</code>, и преобразование не сработает, и виконується блок <code>else</code>:</p>
+<p>В методі <code>printPerson</code> выражение <code>person instanceof Employee</code> проверяет, представляє ли параметр person об'єкт типу Employee. И якщо не є, то такая 
+проверка вернет значення <code>false</code>, и преобразование не сработает, и виконується блок <code>else</code>:</p>
 <pre class="line-numbers"><code class="language-java">
 else{
                             
     System.out.println("Person is not an employee");
 }
 </code></pre>
-<p>Если же параметр <code>person</code> представляє тип Employee, то виконується блко <code>if</code>, где преобразуем в тип Employee и выводим на консоль информацию об об'єкте:
+<p>Если же параметр <code>person</code> представляє тип Employee, то виконується блко <code>if</code>, где преобразуем в тип Employee и вивідим на консоль информацию об об'єкте:
 <pre class="line-numbers"><code class="language-java">
 if(person instanceof Employee){
      

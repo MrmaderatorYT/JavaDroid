@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html  lang="uk">
 <head>
-<title>Java | Методи и класс Method</title>
+<title>Java | Методи и клас Method</title>
 <meta charset="utf-8" />
-<meta name="description" content="Получение методів за допомогою рефлексии в программе на языке программирования Java, класс java.lang.reflect.Method, методы getMethods и getDeclaredMethods, вызов метода произвольного класса за допомогою метода invoke, получение возвращаемого типу и типов параметров и методы getParameterTypes и getReturnType">
+<meta name="description" content="Отримання методів за допомогою рефлексии в програме на языке програмирования Java, клас java.lang.reflect.Method, методи getMethods и getDeclaredMethods, вызов методу произвольного класа за допомогою методу invoke, отримання повертаємоого типу и типів параметрів и методи getParameterTypes и getReturnType">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -11,29 +11,29 @@
 <body>
 <div id="container">
 <div class="item center menC">
-     <h1>Методи и класс Method</h1><div class="date">Останнє оновлення: 29.09.2025</div>
+     <h1>Методи и клас Method</h1><div class="date">Останнє оновлення: 29.09.2025</div>
 
-<p>Класс <b>java.lang.reflect.Method</b> надає информацию об одном методе класса або інтерфейса и доступ к нему. Для получения информации о методах и управления ими класс <code>Method</code> 
+<p>Клас <b>java.lang.reflect.Method</b> надає информацию об одном методі класа або інтерфейса и доступ к нему. Для получения информации о методух и управления ими клас <code>Method</code> 
 определеяет ряд методів. Отмечу основные из них:</p>
 <ul>
-<li><p><span class="b">String getName()</span>: повертає имя метода</p></li>
-<li><p><span class="b">Class[] getExceptionTypes()</span>: повертає генерируемые методом типы исключений в виде массива об'єктов Class</p></li>
-<li><p><span class="b">int getModifiers()</span>: повертає целое число с различными включенными и выключенными битами, которые описують используемые модификаторы.</p></li>
-<li><p><span class="b">int getParameterCount()</span>: повертає количество параметров</p></li>
-<li><p><span class="b">Class[] getParameterTypes()</span>: повертає типы параметров метода</p></li>
-<li><p><span class="b">Class getReturnType()</span>: повертає тип возвращаемого значения метода</p></li>
-<li><p><span class="b">Object invoke(Object obj, Object... args)</span>: вызывает метод, представленный цим об'єктом метода, для указанного об'єкта с указанными параметрами.</p></li>
+<li><p><span class="b">String getName()</span>: повертає ім'я методу</p></li>
+<li><p><span class="b">Class[] getExceptionTypes()</span>: повертає генерируемые методом типи винятків в виде масива об'єктов Class</p></li>
+<li><p><span class="b">int getModifiers()</span>: повертає целое число с различными включенными и выключенными битами, которые описують використовуємоые модификаторы.</p></li>
+<li><p><span class="b">int getParameterCount()</span>: повертає кількість параметрів</p></li>
+<li><p><span class="b">Class[] getParameterTypes()</span>: повертає типи параметрів методу</p></li>
+<li><p><span class="b">Class getReturnType()</span>: повертає тип повертаємоого значення методу</p></li>
+<li><p><span class="b">Object invoke(Object obj, Object... args)</span>: вызывает метод, представленный цим об'єктом методу, для указанного об'єкта с указанными параметрами.</p></li>
 </ul>
-<h3>Получение методів</h3>
-<p>Для получения методів типу застосовується ряд методів класса <code>Class</code>:</p>
+<h3>Отримання методів</h3>
+<p>Для получения методів типу застосовується ряд методів класа <code>Class</code>:</p>
 <ul>
-<li><p><code>Method[] getMethods()</code>:  повертає массив об'єктов <code>Method</code> для открытых методів (с модификатором <code>public</code>) данного класса або его суперклассов</p></li>
-<li><p><code>Method[] getDeclaredКласс <b>java.lang.reflect.Methods()</code>: повертає массив об'єктов <code>Method</code> для всех методів данного класса. Метод повертають массив нулевой длины, якщо таких методів нет або якщо об'єкт 
-представляє собой примитивный тип або массив.</p></li>
-<li><p><code>Method getMethod(String name, Class... parameterTypes)</code>:  повертає об'єкт <code>Method</code> для публичного метода, имя которого передаєся в качестве параметра. Второй параметр указывает на типы параметров метода. Поиск також идет среди методів суперклассов. Если подобное публичный метод отсутствует, то метод генерує исключение <code>NoSuchMethodException </code></p></li>
-<li><p><code>Method getDeclaredMethod(String name, Class... parameterTypes)</code>: повертає об'єкт <code>Method</code> для метода, имя которого передаєся в качестве параметра. Второй параметр указывает на типы параметров метода. Если подобный метод отсутствует, то метод генерує исключение <code>NoSuchMethodException </code></p></li>
+<li><p><code>Method[] getMethods()</code>:  повертає масив об'єктов <code>Method</code> для открытых методів (с модификатором <code>public</code>) данного класа або его суперкласов</p></li>
+<li><p><code>Method[] getDeclaredКлас <b>java.lang.reflect.Methods()</code>: повертає масив об'єктов <code>Method</code> для всех методів данного класа. Метод повертають масив нулевой длины, якщо таких методів нет або якщо об'єкт 
+представляє собой примитивный тип або масив.</p></li>
+<li><p><code>Method getMethod(String name, Class... parameterTypes)</code>:  повертає об'єкт <code>Method</code> для публичного методу, ім'я которого передаєся в качестве параметра. Второй параметр вказує на типи параметрів методу. Поиск також идет среди методів суперкласов. Если підобное публичный метод отсутствует, то метод генерує виняток <code>NoSuchMethodException </code></p></li>
+<li><p><code>Method getDeclaredMethod(String name, Class... parameterTypes)</code>: повертає об'єкт <code>Method</code> для методу, ім'я которого передаєся в качестве параметра. Второй параметр вказує на типи параметрів методу. Если підобный метод отсутствует, то метод генерує виняток <code>NoSuchMethodException </code></p></li>
 </ul>
-<p>Наприклад, получим все методы некоторого класса:</p>
+<p>Наприклад, получим все методи некоторого класа:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.lang.reflect.*;
 
@@ -64,14 +64,14 @@ class Operation{
     }
 }
 </code></pre>
-<p>В данном случае получаем методы класса Operation. И консоль повинна нам вывести следующие строки:</p>
+<p>У даному випадку отримуємо методи класа Operation. И консоль повинна нам вывести следующие рядки:</p>
 <pre class="line-numbers"><code class="language-none">
 static int Operation.sum(int,int)
 static double Operation.sum(double, double)
 static int Operation.subtract(int,int)
 </code></pre>
-<h3>Исследование метода</h3>
-<p>Исследуем метод sum из выше определенного класса Operation:</p>
+<h3>Исследование методу</h3>
+<p>Исследуем метод sum из выше визначенийного класа Operation:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.lang.reflect.*;
 
@@ -81,21 +81,21 @@ public class Program{
         
         Class cl = Operation.class;
         try{
-            // получаем метод sum с двумя параметрами типу int
+            // отримуємо метод sum с двумя параметрами типу int
             Method m = cl.getDeclaredMethod("sum", int.class, int.class);
-            // получаем имя метода
+            // отримуємо ім'я методу
             String methodName = m.getName();
-            // получаем модификаторы
+            // отримуємо модификаторы
             String modifiers = Modifier.toString(m.getModifiers());
 
-            // получаем количество параметров
+            // отримуємо кількість параметрів
             int paramsCount = m.getParameterCount();
-            // получаем возвращаемый тип
+            // отримуємо повертаємоый тип
             Class retType = m.getReturnType();
-            // получаем типы параметров
+            // отримуємо типи параметрів
             Class[] paramTypes = m.getParameterTypes();
 
-            // выводим информацию о методе
+            // вивідим информацию о методі
             System.out.print(modifiers + " " + retType.getName() + " " + methodName + "(");
             for (int j = 0; j &lt; paramsCount; j++)
             {
@@ -126,23 +126,23 @@ class Operation{
     }
 }
 </code></pre>
-<p>В данном случае получаем метод <code>sum</code>, який приймає два параметра типу <code>int</code>:</p>
+<p>У даному випадку отримуємо метод <code>sum</code>, який приймає два параметра типу <code>int</code>:</p>
 <pre class="line-numbers"><code class="language-java">Method m = cl.getDeclaredMethod("sum", int.class, int.class);</code></pre>
-<p>Далїї последовательно получаем имя, возвращаемый тип, модификаторы и типы параметров метода и выводим их на консоль. В итоге консоль повинна нам вывести следующую строку:</p>
+<p>Далїї післядовательно отримуємо ім'я, повертаємоый тип, модификаторы и типи параметрів методу и вивідим их на консоль. В итоге консоль повинна нам вывести следующую рядок:</p>
 <pre class="line-numbers"><code class="language-none">static int sum(int, int);</code></pre>
 
-<h2>Вызов метода</h2>
-<p>Для вызова метода в классе <code>Method</code> определен метод <span class="b">invoke()</span>:</p>
+<h2>Вызов методу</h2>
+<p>Для вызова методу в класе <code>Method</code> визначений метод <span class="b">invoke()</span>:</p>
 <pre class="line-numbers"><code class="language-java">
 public Object invoke(Object obj, Object... args)
               throws IllegalAccessException, InvocationTargetException
 </code></pre>
 <p>Первый параметр (<code>obj</code>) представляє об'єкт, для которого буде вызываться метод. Если вызываемый метод статический, то параметр <code>obj</code> игнорируется.</p>
 <p>Второй параметр (<code>args</code>) представляє аргументы, передаваемые вызываемому методу. Если вызываемый 
-метод не приймає нияких параметров, то параметр <code>args</code> опускается.</p>
-<p>Підзвращаемое значение - це результат вызываемого метода.</p>
-<h3>Вызов статического метода</h3>
-<p>Вызовем статический метод sum класса Operation:</p>
+метод не приймає нияких параметрів, то параметр <code>args</code> опускается.</p>
+<p>Підзвращаемое значення - це результат вызываемого методу.</p>
+<h3>Вызов статического методу</h3>
+<p>Вызовем статический метод sum класа Operation:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.lang.reflect.*;
 
@@ -152,11 +152,11 @@ public class Program{
         
         Class cl = Operation.class;
         try{
-            // получаем метод sum с двумя параметрами типу int
+            // отримуємо метод sum с двумя параметрами типу int
             Method m = cl.getDeclaredMethod("sum", int.class, int.class);
             int val1 = 23;
             int val2 = 4;
-            // вызываем метод и получаем результат
+            // вызываем метод и отримуємо результат
             int result = (int) m.invoke(null, val1, val2);
 
             System.out.printf("sum(%d, %d) = %d\n", val1, val2, result);        // sum(23, 4) = 27
@@ -181,11 +181,11 @@ class Operation{
 </code></pre>
 <p>Поскольку вызываемый метод sum - статический, то в качестве первого параметра передаєся <code>null</code>:</p>
 <pre class="line-numbers"><code class="language-java">int result = (int) m.invoke(null, val1, val2);</code></pre>
-<p>Результаи преобразуется к типу <code>int</code>, оскільки мы значем, что метод повинен возвратить значение цього типу. Консольный вывод программы:</p>
+<p>Результаи преобразуется к типу <code>int</code>, оскільки мы значем, что метод повинен возвратить значення цього типу. Консольный вивід програми:</p>
 <pre class="line-numbers"><code class="language-none">sum(23, 4) = 27</code></pre>
 
-<h3>Вызов нестатического метода</h3>
-<p>Рассмотрим вызов нестатического метода:</p>
+<h3>Вызов нестатического методу</h3>
+<p>Рассмотрим вызов нестатического методу:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.lang.reflect.*;
 
@@ -197,9 +197,9 @@ public class Program{
         Person tom = new Person("Tom");
         Class cl = tom.getClass();
         try{
-            // получаем метод setName с параметром типу String
+            // отримуємо метод setName с параметром типу String
             Method m = cl.getDeclaredMethod("setName", String.class);
-            // новое имя
+            // новое ім'я
             String name = "Eugene";
             // вызываем метод
             m.invoke(tom, name);
@@ -225,10 +225,10 @@ class Person {
     }
 } 
 </code></pre>
-<p>В данном случае для об'єкта Person вызываем метод <code>setName()</code>, який змінює значение поля name.</p>
-<h3>Приватные методы</h3>
-<p>Как и в случае с полями и конструкторами, механизм рефлексии Java запрещает обращение к приватным методам (определенным с модификатором <code>private</code>). В цем случае для доступа к методу 
-необхідно сделать его доступным за допомогою метода <code>setAccessible()</code>, передав в него <code>true</code>:</p>
+<p>У даному випадку для об'єкта Person вызываем метод <code>setName()</code>, який змінює значення поля name.</p>
+<h3>Приватные методи</h3>
+<p>Как и в случае с полями и конструкторами, механизм рефлексии Java запрещает обращение к приватным методум (визначенийным с модификатором <code>private</code>). В цем случае для доступа к методу 
+необхідно сделать его доступным за допомогою методу <code>setAccessible()</code>, передав в него <code>true</code>:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.lang.reflect.*;
 

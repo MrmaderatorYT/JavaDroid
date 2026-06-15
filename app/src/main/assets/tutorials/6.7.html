@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html  lang="uk">
 <head>
-<title>Классы DataOutputStream и DataInputStream | Java</title>
+<title>Класы DataOutputStream и DataInputStream | Java</title>
 <meta charset="utf-8" />
-<meta name="description" content="Запись в файл данных примитивных типов в языке программирования Java, классы DataInputStream и DataOutputStream">
+<meta name="description" content="Запис в файл данных примитивных типів в языке програмирования Java, класы DataInputStream и DataOutputStream">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -11,39 +11,39 @@
 <body>
 <div id="container">
 <div class="item center menC">
-     <h2>Классы DataOutputStream и DataInputStream</h2><div class="date">Останнє оновлення: 26.04.2018</div>
+     <h2>Класы DataOutputStream и DataInputStream</h2><div class="date">Останнє оновлення: 26.04.2018</div>
 
-	<p>Классы DataOutputStream и DataInputStream дозволяють записывать и считывать дані примитивных типов.</p>
-<h3>Запись данных и DataOutputStream</h3>
-<p>Класс DataOutputStream представляє поток вывода и призначений для записи данных примитивных типов, таких, як int, double и т.д. Для записи каждого из 
-примитивных типов призначений свой метод:</p>
+	<p>Класы DataOutputStream и DataInputStream дозволяють записывать и считывать дані примитивных типів.</p>
+<h3>Запис данных и DataOutputStream</h3>
+<p>Клас DataOutputStream представляє потік вивіда и призначений для записи данных примитивных типів, таких, як int, double и т.д. Для записи каждого из 
+примитивных типів призначений свой метод:</p>
 <ul>
-<li><p><span class="bb">writeBoolean(boolean v) </span>: записує в поток булевое однобайтовое значение</p></li>
-<li><p><span class="bb">writeByte(int v)</span>: записує в поток 1 байт, которые представлен в виде целочисленного значения</p></li>
-<li><p><span class="bb">writeChar(int v)</span>: записує 2-байтовое значение char</p></li>
-<li><p><span class="bb">writeDouble(double v)</span>: записує в поток 8-байтовое значение double</p></li>
-<li><p><span class="bb">writeFloat(float v)</span>: записує в поток 4-байтовое значение float</p></li>
-<li><p><span class="bb">writeInt(int v)</span>: записує в поток целочисленное значение int</p></li>
-<li><p><span class="bb">writeLong(long v)</span>: записує в поток значение long</p></li>
-<li><p><span class="bb">writeShort(int v)</span>: записує в поток значение short</p></li>
-<li><p><span class="bb">writeUTF(String str)</span>: записує в поток строку в кодировке UTF-8</p></li>
+<li><p><span class="bb">writeBoolean(boolean v) </span>: записує в потік булевое однобайтовое значення</p></li>
+<li><p><span class="bb">writeByte(int v)</span>: записує в потік 1 байт, которые представлен в виде целочисленного значення</p></li>
+<li><p><span class="bb">writeChar(int v)</span>: записує 2-байтовое значення char</p></li>
+<li><p><span class="bb">writeDouble(double v)</span>: записує в потік 8-байтовое значення double</p></li>
+<li><p><span class="bb">writeFloat(float v)</span>: записує в потік 4-байтовое значення float</p></li>
+<li><p><span class="bb">writeInt(int v)</span>: записує в потік целочисленное значення int</p></li>
+<li><p><span class="bb">writeLong(long v)</span>: записує в потік значення long</p></li>
+<li><p><span class="bb">writeShort(int v)</span>: записує в потік значення short</p></li>
+<li><p><span class="bb">writeUTF(String str)</span>: записує в потік рядок в кодировке UTF-8</p></li>
 </ul>
 <h3>Считывание данных и DataInputStream</h3>
-<p>Класс DataInputStream действует противоположным чином - он считывает из потока дані примитивных типов. Соответственно для каждого примитивного типу определен 
+<p>Клас DataInputStream действует противоположным чином - он считывает из потіка дані примитивных типів. Соответственно для каждого примитивного типу визначений 
 свой метод для считывания:</p>
 <ul>
-<li><p><span class="bb">boolean readBoolean()</span>: считывает из потока булевое однобайтовое значение</p></li>
-<li><p><span class="bb">byte readByte()</span>: считывает из потока 1 байт</p></li>
-<li><p><span class="bb">char readChar()</span>: считывает из потока значение char</p></li>
-<li><p><span class="bb">double readDouble()</span>: считывает из потока 8-байтовое значение double</p></li>
-<li><p><span class="bb">float readFloat()</span>: считывает из потока 4-байтовое значение float</p></li>
-<li><p><span class="bb">int readInt()</span>: считывает из потока целочисленное значение int</p></li>
-<li><p><span class="bb">long readLong()</span>: считывает из потока значение long</p></li>
-<li><p><span class="bb">short readShort()</span>: считывает значение short</p></li>
-<li><p><span class="bb">String readUTF()</span>: считывает из потока строку в кодировке UTF-8</p></li>
-<li><p><span class="bb">int skipBytes(int n)</span>: пропускает при чтении из потока n байтов</p></li>
+<li><p><span class="bb">boolean readBoolean()</span>: считывает из потіка булевое однобайтовое значення</p></li>
+<li><p><span class="bb">byte readByte()</span>: считывает из потіка 1 байт</p></li>
+<li><p><span class="bb">char readChar()</span>: считывает из потіка значення char</p></li>
+<li><p><span class="bb">double readDouble()</span>: считывает из потіка 8-байтовое значення double</p></li>
+<li><p><span class="bb">float readFloat()</span>: считывает из потіка 4-байтовое значення float</p></li>
+<li><p><span class="bb">int readInt()</span>: считывает из потіка целочисленное значення int</p></li>
+<li><p><span class="bb">long readLong()</span>: считывает из потіка значення long</p></li>
+<li><p><span class="bb">short readShort()</span>: считывает значення short</p></li>
+<li><p><span class="bb">String readUTF()</span>: считывает из потіка рядок в кодировке UTF-8</p></li>
+<li><p><span class="bb">int skipBytes(int n)</span>: пропускает при чтении из потіка n байтов</p></li>
 </ul>
-<p>Рассмотрим применение классов на примере:</p>
+<p>Рассмотрим застосування класов на примере:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.io.*;
 
@@ -52,10 +52,10 @@ public class Program {
     public static void main(String[] args) {
          
         Person tom = new Person("Tom", 34, 1.68, false);
-		// запись в файл
+		// запис в файл
         try(DataOutputStream dos = new DataOutputStream(new FileOutputStream("data.bin")))
         {
-           // записываем значения
+           // записуємо значення
             dos.writeUTF(tom.name);
             dos.writeInt(tom.age);
             dos.writeDouble(tom.height);
@@ -67,10 +67,10 @@ public class Program {
             System.out.println(ex.getMessage());
         }  
          
-        // обратное считывание из файла
+        // обратное считывание из файлу
         try(DataInputStream dos = new DataInputStream(new FileInputStream("data.bin")))
         {
-           // записываем значения
+           // записуємо значення
             String name = dos.readUTF();
             int age = dos.readInt();
             double height = dos.readDouble();
@@ -101,12 +101,12 @@ class Person
     }
 }
 </code></pre>
-<p>Здесь мы последовательно записываем в файл дані об'єкта Person.</p>
-<p>Об'єкт DataOutputStream в конструкторе приймає поток вывода: <code>DataOutputStream (OutputStream out)</code>. В данном случае в качестве потока вывода 
-використовується об'єкт <code>FileOutputStream</code>, поцему вывод буде происходить в файл. И за допомогою выше рассмотренных методів типу <code>writeUTF()</code> 
-производится запись значений в бинарный файл.</p>
-<p>Затем происходит чтение ранїї записанных данных. Об'єкт DataInputStream в конструкторе приймає поток для чтения: <code>DataInputStream(InputStream in)</code>. 
-Здесь таким потоком выступает об'єкт <code>FileInputStream</code></p>
+<p>Здесь мы післядовательно записуємо в файл дані об'єкта Person.</p>
+<p>Об'єкт DataOutputStream в конструкторе приймає потік вивіда: <code>DataOutputStream (OutputStream out)</code>. У даному випадку в качестве потіка вивіда 
+використовується об'єкт <code>FileOutputStream</code>, поцему вивід буде происходить в файл. И за допомогою выше рассмотренных методів типу <code>writeUTF()</code> 
+производится запис значений в бинарный файл.</p>
+<p>Затем происходит читання ранїї записанных данных. Об'єкт DataInputStream в конструкторе приймає потік для читання: <code>DataInputStream(InputStream in)</code>. 
+Здесь таким потіком выступает об'єкт <code>FileInputStream</code></p>
 
   </div>
 

@@ -3,7 +3,7 @@
 <head>
 <title>Java | Пошук та виклик зовнішніх функцій</title>
 <meta charset="utf-8" />
-<meta name="description" content="Пошук та виклик зовнішніх функцій в Foreign Functions та Memory API в языке программирования Java, типы Linker, MethodHandle, FunctionDescriptor, получение дескриптора функций и методів, downcallHandle, SymbolLookup.libraryLookup">
+<meta name="description" content="Пошук та виклик зовнішніх функцій в Foreign Functions та Memory API в языке програмирования Java, типи Linker, MethodHandle, FunctionDescriptor, отримання дескриптора функцій и методів, downcallHandle, SymbolLookup.libraryLookup">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -13,56 +13,56 @@
 <div class="item center menC">
      <h1>Пошук та виклик зовнішніх функцій</h1><div class="date">Останнє оновлення: 21.12.2025</div>
 
-<p>Для поиска библиотечных функций языка Си и их подготовке для вызова в API FFM застосовується класс <span class="b">java.lang.foreign.Linker</span>. Для создания линкера, связанного с текущей нативной платформой ОС застосовується 
+<p>Для поиска библиотечных функцій языка Си и их підготовке для вызова в API FFM застосовується клас <span class="b">java.lang.foreign.Linker</span>. Для створенняя линкера, связанного с текущей нативной платформой ОС застосовується 
 статический метод <span class="b">Linker.nativeLinker()</span>:</p>
 <pre class="line-numbers"><code class="language-java">Linker linker = Linker.nativeLinker();</code></pre>
-<p>Фактически, часть "поиска" делегируется экземпляру <span class="b">SymbolLookup</span>, який определяется за допомогою метода <code>defaultLookup()</code> линкера:</p>
+<p>Фактически, часть "поиска" делегируется экземпляру <span class="b">SymbolLookup</span>, який визначаєся за допомогою методу <code>defaultLookup()</code> линкера:</p>
 <pre class="line-numbers"><code class="language-java">
 Linker linker = Linker.nativeLinker();
 SymbolLookup stdlib = linker.defaultLookup();
 </code></pre>
-<p>Библиотеки, о которых знает поиск по умолчанию, зависят от платформы. В Linux це libc и libm. Цет поиск достаточен для таких известных функций, як printf и malloc.</p>
-<p>Для использования со специализированной библиотекой (или своей) в метод <code>SymbolLookup.libraryLookup()</code> передаєся путь к файлу библиотеки (в виде строки або об'єкта <code>Path</code>) и арена:</p>
+<p>Бібліотеки, о которых знает поиск по умолчанию, зависят от платформы. В Linux це libc и libm. Цет поиск достаточен для таких известных функцій, як printf и malloc.</p>
+<p>Для использования со специализированной библиотекой (или своей) в метод <code>SymbolLookup.libraryLookup()</code> передаєся путь к файлу бібліотеки (в виде рядки або об'єкта <code>Path</code>) и арена:</p>
 <pre class="line-numbers"><code class="language-java">
 SymbolLookup somelib = SymbolLookup.libraryLookup("/lib/x86_64-linux-gnu/libsxxx.so", arena);
 </code></pre>
-<p>Метод <code>libraryLookup</code> загружает библиотеку. А когда арена закрывается, библиотека выгружается.</p>
+<p>Метод <code>libraryLookup</code> загружает бібліотеку. А когда арена закрывается, бібліотека выгружается.</p>
 
-<h3>Поиск функций</h3>
-<p>Получив об'єкт <code>SymbolLookup</code>, мы можемо перейти к поиску функций. Для цього <code>SymbolLookup</code> надає два метода:</p>
+<h3>Поиск функцій</h3>
+<p>Получив об'єкт <code>SymbolLookup</code>, мы можемо перейти к поиску функцій. Для цього <code>SymbolLookup</code> надає два методу:</p>
 <ul>
 <li><p><code>Optional&lt;MemorySegment&gt; find(String name)</code>: повертає адрес символа с заданным именем</p></li>
-<li><p><code>MemorySegment findOrThrow(String name)</code>: повертає адрес символа с заданным именем або генерує исключение, якщо функция не найдена</p></li>
+<li><p><code>MemorySegment findOrThrow(String name)</code>: повертає адрес символа с заданным именем або генерує виняток, якщо функція не найдена</p></li>
 </ul>
-<p>В обоих случаях указатель на полученную функцию повертаєся через об'єкт <code>MemorySegment</code>, работа с которым бува рассмотрена в предыдущеихз статьях. Наприклад, поиск функції <code>printf</code>:</p>
+<p>В обоих случаях указатель на полученную функцію повертаєся через об'єкт <code>MemorySegment</code>, работа с которым бува рассмотрена в предыдущеихз статьях. Наприклад, поиск функції <code>printf</code>:</p>
 <pre class="line-numbers"><code class="language-java">
 Linker linker = Linker.nativeLinker();
 SymbolLookup stdlib = linker.defaultLookup();
 MemorySegment printf_addr = stdlib.findOrThrow("printf");
 </code></pre>
-<h3>Дескриптор функції/метода</h3>
-<p>Получив адрес вызываемой функції, можн создать дескриптор метода для її вызова. <span class="b">Дескриптор метода</span> - це об'єкт, через який можна передавать аргументы, вызывать метод и 
-получать возвращаемое значение.</p>
-<p>Дескриптор метода представляє тип <span class="b">MethodHandle</span>. Для его создания линкер - об'єкт <code>Linker</code> надає метода <span class="b">downcallHandle()</span></p>
+<h3>Дескриптор функції/методу</h3>
+<p>Получив адрес вызываемой функції, можн створити дескриптор методу для її вызова. <span class="b">Дескриптор методу</span> - це об'єкт, через який можна передавать аргументы, вызывать метод и 
+получать повертаємоое значення.</p>
+<p>Дескриптор методу представляє тип <span class="b">MethodHandle</span>. Для его створенняя линкер - об'єкт <code>Linker</code> надає методу <span class="b">downcallHandle()</span></p>
 <ul>
 <li><p><code>downcallHandle(FunctionDescriptor function, Linker.Option... options)</code></p>
-<p>Створює дескриптор метода, используемый для вызова внешней функції с заданной сигнатурой</p></li>
+<p>Створює дескриптор методу, використовуємоый для вызова внешней функції с заданной сигнатурой</p></li>
 <li><p><code>downcallHandle(MemorySegment address, FunctionDescriptor function, Linker.Option... options)</code></p>
-<p>Створює дескриптор метода, используемый для вызова внешней функції с заданной сигнатурой и адресом</p></li>
+<p>Створює дескриптор методу, використовуємоый для вызова внешней функції с заданной сигнатурой и адресом</p></li>
 </ul>
 
-<p>Цет метод приймає до трех параметров:</p>
+<p>Цет метод приймає до трех параметрів:</p>
 <ul>
-<li><p><code>address</code>: сегмент памяти, базовый адрес которого совпадает с адресом вызываемой внешней функції</p></li>
+<li><p><code>address</code>: сегмент памяти, базовый адрес которого збігається с адресом вызываемой внешней функції</p></li>
 <li><p><code>function</code>: дескриптор вызываемой внешней функції</p></li>
-<li><p><code>options</code>: параметры линкера, связанные с цим запросом на компоновку</p></li>
+<li><p><code>options</code>: параметри линкера, связанные с цим запросом на компоновку</p></li>
 </ul>
-<p>Ключевой здесь параметр - це десткриптор функції, представленный інтерфейсом <span class="b">FunctionDescriptor</span>. Для определения цього об'єкта обычно застосовується статический метод 
+<p>Ключевой здесь параметр - це десткриптор функції, представленный інтерфейсом <span class="b">FunctionDescriptor</span>. Для визначенийия цього об'єкта обычно застосовується статический метод 
 <code>FunctionDescriptor.of</code></p>
 <pre class="line-numbers"><code class="language-java">FunctionDescriptor.of(MemoryLayout resLayout, MemoryLayout... argLayouts)</code></pre>
-<p>Его первый параметр представляє компоновку памяти типу результата функції, а второй параметр - компоновки памяти для параметров функції.</p>
+<p>Его первый параметр представляє компоновку памяти типу результата функції, а второй параметр - компоновки памяти для параметрів функції.</p>
 
-<p>Наприклад, получим десткриптор метода для функції <code>printf</code>:</p>
+<p>Наприклад, получим десткриптор методу для функції <code>printf</code>:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.lang.foreign.*;
 import java.lang.invoke.*;
@@ -71,30 +71,30 @@ public class Program {
 
     public static void main(String[] args) {
 
-        // получаем линкер/компоновщик 
+        // отримуємо линкер/компоновщик 
         Linker linker = Linker.nativeLinker();
-        // получаем стандартную библиотеку
+        // отримуємо стандартную бібліотеку
         SymbolLookup stdlib = linker.defaultLookup();
-        // получаем адрес функції printf
+        // отримуємо адрес функції printf
         MemorySegment printf_addr = stdlib.findOrThrow("printf");
         // дескриптор функції printf
         FunctionDescriptor printf_desc = FunctionDescriptor.of(ValueLayout.JAVA_INT, ValueLayout.ADDRESS);
-        // дескриптор метода для функції printf
+        // дескриптор методу для функції printf
         MethodHandle printf = linker.downcallHandle(printf_addr, printf_desc);
         System.out.println(printf);     // MethodHandle(MemorySegment)int
     }
 }
 </code></pre>
-<p>При передаче указателя в функцию C або получении результата указателя використовується <code>ValueLayout.ADDRESS</code>. Тип блока памяти не имїїт значения. Крім того, необхідно точно указать тип 
-возвращаемого значения функції и типы параметров. Если предоставить неверную информацию, виртуальная машина может завершиться с ошибкой.</p>
-<p>Так, функция <code>printf</code> в C повертає целое число <code>int</code>, а в качестве параметра приймає строку (по сути указатель на символы), поцему її дескриптор имїїт форму</p>
+<p>При передаче указателя в функцію C або получении результата указателя використовується <code>ValueLayout.ADDRESS</code>. Тип блока памяти не имїїт значення. Крім того, необхідно точно указать тип 
+повертаємоого значення функції и типи параметрів. Если предоставить неверную информацию, виртуальная машина может завершиться с ошибкой.</p>
+<p>Так, функція <code>printf</code> в C повертає целое число <code>int</code>, а в качестве параметра приймає рядок (по сути указатель на символи), поцему її дескриптор имїїт форму</p>
 <pre class="line-numbers"><code class="language-java">FunctionDescriptor.of(ValueLayout.JAVA_INT, ValueLayout.ADDRESS)</code></pre>
 <h3>Вызов функції</h3>
-<p>Получив дескриптор метода, наконец мы можемо вызвать функцию. Для цього у типу <code>MethodHandle</code> застосовується метод <span class="b">invoke()</span></p>
+<p>Получив дескриптор методу, наконец мы можемо вызвать функцію. Для цього у типу <code>MethodHandle</code> застосовується метод <span class="b">invoke()</span></p>
 <pre class="line-numbers"><code class="language-java">public final Object invoke(Object... args) throws Throwable</code></pre>
-<p>В качестве аргументов в вызов метода передаются значения для параметров внешней функції. ПРи цем параметры повинні соответствовать типум языка Си, а не Java. Наприклад, мы не можемо написать так:</p>
+<p>В качестве аргументов в вызов методу передаються значення для параметрів внешней функції. ПРи цем параметри повинні соответствовать типум языка Си, а не Java. Наприклад, мы не можемо написать так:</p>
 <pre class="line-numbers"><code class="language-java">printf.invoke("Hello");</code></pre>
-<p>Хотя, казалось бы функция <code>printf()</code> приймає строку. Однак це повинна быть строка языка Си. Соответственно нам треба сконвертировать строку Java в строку Си (UTF-8). 
+<p>Хотя, казалось бы функція <code>printf()</code> приймає рядок. Однак це повинна быть рядок языка Си. Соответственно нам треба сконвертировать рядок Java в рядок Си (UTF-8). 
 Пример такого преобразования и вызова функції <code>printf</code>:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.lang.foreign.*;
@@ -104,41 +104,41 @@ public class Program {
 
     public static void main(String[] args) throws Throwable{
 
-        // получаем линкер/компоновщик 
+        // отримуємо линкер/компоновщик 
         Linker linker = Linker.nativeLinker();
-        // получаем стандартную библиотеку
+        // отримуємо стандартную бібліотеку
         SymbolLookup stdlib = linker.defaultLookup();
 
-        // получаем адрес функції printf
+        // отримуємо адрес функції printf
         MemorySegment printf_addr = stdlib.findOrThrow("printf");
         // дескриптор функції printf
         FunctionDescriptor printf_desc = FunctionDescriptor.of(ValueLayout.JAVA_INT, ValueLayout.ADDRESS);
-        // дескриптор метода для функції printf
+        // дескриптор методу для функції printf
         MethodHandle printf = linker.downcallHandle(printf_addr, printf_desc);
 
-        // создаем арену
+        // створюємо арену
         try (Arena arena = Arena.ofConfined()) {
             
-            // строка для вывода
+            // рядок для вивіда
             String str = "Hello \n";
-            // преобразуем строку Java в строку UTF-8
+            // преобразуем рядок Java в рядок UTF-8
             MemorySegment str_seg = arena.allocateFrom(str);
 
-            // вызываем функцию printf и получаем результат
+            // вызываем функцію printf и отримуємо результат
             int char_count = (int) printf.invoke(str_seg);  // Hello 
             
-            System.out.println("Длина строки: " + char_count + " символов");  // Длина строки: 18 символов
+            System.out.println("Длина рядки: " + char_count + " символів");  // Длина рядки: 18 символів
         }
     }
 }
 </code></pre>
 <h4>Підзвращаемый тип void</h4>
-<p>Отдельно варто сказать про функції, який повертають <span class="b">void</span>. В цем случае для определения дескриптора функції застосовується метод <span class="b">FunctionDescriptor.ofVoid</span></p>
+<p>Отдельно варто сказать про функції, який повертають <span class="b">void</span>. В цем случае для визначенийия дескриптора функції застосовується метод <span class="b">FunctionDescriptor.ofVoid</span></p>
 <pre class="line-numbers"><code class="language-java">
 FunctionDescriptor ofVoid(MemoryLayout... argLayouts)
 </code></pre>
-<p>В качестве параметров методу також передаются значения, которые передаются вызываемой внешней функції. Указатель на <code>void</code> (<code>void*</code>), як и все указатели, представляють тип <code>ValueLayout.ADDRESS</code>. 
-Наприклад, получим дескрипторы методів для функций <code>malloc</code> (выделение памяти) и <code>free</code> (освобождение памяти)</p>
+<p>В качестве параметрів методу також передаються значення, которые передаються вызываемой внешней функції. Указатель на <code>void</code> (<code>void*</code>), як и все указатели, представляютьь тип <code>ValueLayout.ADDRESS</code>. 
+Наприклад, получим дескрипторы методів для функцій <code>malloc</code> (выделение памяти) и <code>free</code> (освобождение памяти)</p>
 <pre class="line-numbers"><code class="language-java">
 import java.lang.foreign.*;
 import java.lang.invoke.*;
@@ -147,18 +147,18 @@ public class Program {
 
     public static void main(String[] args) throws Throwable{
 
-        // получаем линкер/компоновщик 
+        // отримуємо линкер/компоновщик 
         Linker linker = Linker.nativeLinker();
-        // получаем стандартную библиотеку
+        // отримуємо стандартную бібліотеку
         SymbolLookup stdlib = linker.defaultLookup();
 
-        // получаем адрес функції malloc
+        // отримуємо адрес функції malloc
         MemorySegment mallocAddr = stdlib.findOrThrow("malloc");
         // void* malloc(size_t)
         MethodHandle mallocHandle = linker.downcallHandle(mallocAddr, FunctionDescriptor.of(ValueLayout.ADDRESS, ValueLayout.JAVA_LONG));
         System.out.println(mallocHandle);   // MethodHandle(long)MemorySegment
 
-        // получаем адрес функції free
+        // отримуємо адрес функції free
         MemorySegment freeAddr = stdlib.findOrThrow("free");
         // void free(void *ptr)
         MethodHandle freeHandle = linker.downcallHandle(freeAddr, FunctionDescriptor.ofVoid(ValueLayout.ADDRESS));

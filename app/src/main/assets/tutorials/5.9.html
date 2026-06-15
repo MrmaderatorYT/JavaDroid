@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html  lang="uk">
 <head>
-<title>Java | Інтерфейси SortedMap и NavigableMap. Класс TreeMap</title>
+<title>Java | Інтерфейси SortedMap и NavigableMap. Клас TreeMap</title>
 <meta charset="utf-8" />
-<meta name="description" content="Класс TreeMap в языке программирования Java, древовидные коллекции, інтерфейсы SortedMap и NavigableMap, сортировка об'єктов в дереве">
+<meta name="description" content="Клас TreeMap в языке програмирования Java, древовидные колекції, інтерфейсы SortedMap и NavigableMap, сортування об'єктов в дереве">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -11,74 +11,74 @@
 <body>
 <div id="container">
 <div class="item center menC">
-     <h1>Інтерфейси SortedMap и NavigableMap. Класс TreeMap</h1><div class="date">Останнє оновлення: 13.10.2025</div>
+     <h1>Інтерфейси SortedMap и NavigableMap. Клас TreeMap</h1><div class="date">Останнє оновлення: 13.10.2025</div>
 
-	<p>Интерфейс <code>Map</code>, який застосовується в мові Java для создания словарей, не предусматривает нияких возможнастей для сортировки. Но Java також надає ряд 
+	<p>Інтерфейс <code>Map</code>, який застосовується в мові Java для створенняя словарей, не предусматривает нияких возможнастей для сортировки. Но Java також надає ряд 
 дополнительных інтерфейсов: <b>SortedMap</b> и <b>NavigableMap</b></p>
 <h3>SortedMap</h3>
-<p>Интерфейс <span class="b">SortedMap</span> расширяет <code>Map</code> и дозволяє обеспечить полное упорядочение своих ключей. По умолчанию элементы упорядочиваются в соответствии с естественным порядком  
-ключей (по возрастанию) або за допомогою компаратора. Цет порядок, наприклад, отражается при переборе коллекции.</p>
+<p>Інтерфейс <span class="b">SortedMap</span> расширяет <code>Map</code> и дозволяє обеспечить полное упорядочение своих ключей. По умолчанию елементы упорядочиваются в соответствии с естественным порядком  
+ключей (за зростанням) або за допомогою компаратора. Цет порядок, наприклад, отражается при переборе колекції.</p>
 <p><b>SortedMap</b> додає ряд методів:</p>
 <ul>
-<li><p><code>K firstKey()</code>: повертає ключ первого элемента коллекции</p></li>
-<li><p><code>K lastKey()</code>: повертає ключ последнего элемента коллекции</p></li>
-<li><p><code>SortedMap&lt;K, V&gt; headMap(K end)</code>: повертає об'єкт <code>SortedMap</code>, який містить все элементы оригинального SortedMap вплоть до элемента с ключом end</p></li>
-<li><p><code>SortedMap&lt;K, V&gt; tailMap(K start)</code>: повертає об'єкт <code>SortedMap</code>, який містить все элементы оригинального SortedMap, начиная с 
-элемента с ключом start</p></li>
-<li><p><code>SortedMap&lt;K, V&gt; subMap(K start, K end)</code>: повертає об'єкт <code>SortedMap</code>, которые містить все элементы оригинального 
-SortedMap вплоть от элемента с ключом start до элемента с ключом end</p></li>
+<li><p><code>K firstKey()</code>: повертає ключ первого елемента колекції</p></li>
+<li><p><code>K lastKey()</code>: повертає ключ післяднего елемента колекції</p></li>
+<li><p><code>SortedMap&lt;K, V&gt; headMap(K end)</code>: повертає об'єкт <code>SortedMap</code>, який містить всі елементи оригинального SortedMap вплоть до елемента с ключом end</p></li>
+<li><p><code>SortedMap&lt;K, V&gt; tailMap(K start)</code>: повертає об'єкт <code>SortedMap</code>, який містить всі елементи оригинального SortedMap, начиная с 
+елемента с ключом start</p></li>
+<li><p><code>SortedMap&lt;K, V&gt; subMap(K start, K end)</code>: повертає об'єкт <code>SortedMap</code>, которые містить всі елементи оригинального 
+SortedMap вплоть от елемента с ключом start до елемента с ключом end</p></li>
 </ul>
 <h3>NavigableMap</h3>
-<p>Интерфейс <span class="b">NavigableMap</span> расширяет інтерфейс <code>SortedMap</code> и забезпечує возможнасть получения элементов коллекции относительно других элементов (условно говоря, навигацию). 
-Его основные методы:</p>
+<p>Інтерфейс <span class="b">NavigableMap</span> расширяет інтерфейс <code>SortedMap</code> и забезпечує возможнасть получения елементов колекції относительно других елементов (условно говоря, навигацию). 
+Его основные методи:</p>
 <ul>
-<li><p><code>Map.Entry&lt;K, V&gt; ceilingEntry(K key)</code>: повертає элемент с наименьшим ключом k, який больше або равен ключу key 
+<li><p><code>Map.Entry&lt;K, V&gt; ceilingEntry(K key)</code>: повертає елемент с наименьшим ключом k, який больше або равен ключу key 
 (k &gt;=key). Если такого ключа нет, то повертаєся null.</p></li>
-<li><p><code>Map.Entry&lt;K, V&gt; floorEntry(K key)</code>: повертає элемент с наибольшим ключом k, який меньше або равен ключу key (k &lt;=key). 
+<li><p><code>Map.Entry&lt;K, V&gt; floorEntry(K key)</code>: повертає елемент с наибольшим ключом k, який меньше або равен ключу key (k &lt;=key). 
 Если такого ключа нет, то повертаєся null.</p></li>
-<li><p><code>Map.Entry&lt;K, V&gt; higherEntry(K key)</code>: повертає элемент с наименьшим ключом k, який больше ключа key (k &gt;key). 
+<li><p><code>Map.Entry&lt;K, V&gt; higherEntry(K key)</code>: повертає елемент с наименьшим ключом k, який больше ключа key (k &gt;key). 
 Если такого ключа нет, то повертаєся null.</p></li>
-<li><p><code>Map.Entry&lt;K, V&gt; lowerEntry(K key)</code>: повертає элемент с наибольшим ключом k, який меньше ключа key (k &lt;key). 
+<li><p><code>Map.Entry&lt;K, V&gt; lowerEntry(K key)</code>: повертає елемент с наибольшим ключом k, який меньше ключа key (k &lt;key). 
 Если такого ключа нет, то повертаєся null.</p></li>
-<li><p><code>Map.Entry&lt;K, V&gt; firstEntry()</code>: повертає первый элемент коллекции</p></li>
-<li><p><code>Map.Entry&lt;K, V&gt; lastEntry()</code>: повертає последний элемент коллекции</p></li>
+<li><p><code>Map.Entry&lt;K, V&gt; firstEntry()</code>: повертає первый елемент колекції</p></li>
+<li><p><code>Map.Entry&lt;K, V&gt; lastEntry()</code>: повертає післядний елемент колекції</p></li>
 
-<li><p><code>Map.Entry&lt;K, V&gt; pollFirstEntry()</code>: повертає и одновременно видаляє первый элемент из коллекции</p></li>
-<li><p><code>Map.Entry&lt;K, V&gt; pollLastEntry()</code>: повертає и одновременно видаляє последний элемент из коллекции</p></li>
+<li><p><code>Map.Entry&lt;K, V&gt; pollFirstEntry()</code>: повертає и одновременно видаляє первый елемент из колекції</p></li>
+<li><p><code>Map.Entry&lt;K, V&gt; pollLastEntry()</code>: повертає и одновременно видаляє післядний елемент из колекції</p></li>
 
 <li><p><code>K ceilingKey(K key)</code>: повертає наименьший ключ k, який больше або равен ключу key (k &gt;=key). Если такого ключа нет, то повертаєся null.</p></li>
 <li><p><code>K floorKey(K key)</code>: повертає наибольший ключ k, який меньше або равен ключу key (k &lt;=key). Если такого ключа нет, то повертаєся null.</p></li>
 <li><p><code>K lowerKey(K key)</code>: повертає наибольший ключ k, який меньше ключа key (k &lt;key). Если такого ключа нет, то повертаєся null.</p></li>
 <li><p><code>K higherKey(K key)</code>: повертає наименьший ключ k, який больше ключа key (k &gt;key). Если такого ключа нет, то повертаєся null.</p></li>
 
-<li><p><code>NavigableSet&lt;K&gt; descendingKeySet()</code>: повертає об'єкт NavigableSet, який містить все ключи коллекции в обратном порядке</p></li>
-<li><p><code>NavigableMap&lt;K, V&gt; descendingMap()</code>: повертає коллекцию NavigableMap, которое містить все элементы в обратном порядке</p></li>
-<li><p><code>NavigableSet&lt;K&gt; navigableKeySet()</code>: повертає об'єкт NavigableSet, який містить все ключи коллекции</p></li>
+<li><p><code>NavigableSet&lt;K&gt; descendingKeySet()</code>: повертає об'єкт NavigableSet, який містить все ключи колекції в обратном порядке</p></li>
+<li><p><code>NavigableMap&lt;K, V&gt; descendingMap()</code>: повертає колекцію NavigableMap, которое містить всі елементи в обратном порядке</p></li>
+<li><p><code>NavigableSet&lt;K&gt; navigableKeySet()</code>: повертає об'єкт NavigableSet, який містить все ключи колекції</p></li>
 
-<li><p><code>NavigableMap&lt;K, V&gt; headMap(K upperBound, boolean incl)</code>: повертає коллекцию NavigableMap, которое містить все 
-элементы оригинальной коллекции <code>NavigableMap</code> вплоть от элемента с ключом upperBound. Параметр incl при значении true указывает, что элемент с ключом upperBound також включается в выходной набор.</p></li>
-<li><p><code>NavigableMap&lt;K, V&gt; tailMap(K lowerBound, boolean incl)</code>: повертає коллекцию NavigableMap, которое містить все 
-элементы оригинальной коллекции <code>NavigableMap</code>, начиная с элемента с ключом lowerBound. Параметр incl при значении true указывает, что элемент с ключом lowerBound також включается в выходной набор.</p></li>
-<li><p><code>NavigableMap&lt;K, V&gt; subMap(K lowerBound, boolean lowIncl, K upperBound, boolean highIncl)</code>: повертає коллекцию 
+<li><p><code>NavigableMap&lt;K, V&gt; headMap(K upperBound, boolean incl)</code>: повертає колекцію NavigableMap, которое містить все 
+елементы оригинальной колекції <code>NavigableMap</code> вплоть от елемента с ключом upperBound. Параметр incl при значении true вказує, что елемент с ключом upperBound також включается в выходной набор.</p></li>
+<li><p><code>NavigableMap&lt;K, V&gt; tailMap(K lowerBound, boolean incl)</code>: повертає колекцію NavigableMap, которое містить все 
+елементы оригинальной колекції <code>NavigableMap</code>, начиная с елемента с ключом lowerBound. Параметр incl при значении true вказує, что елемент с ключом lowerBound також включается в выходной набор.</p></li>
+<li><p><code>NavigableMap&lt;K, V&gt; subMap(K lowerBound, boolean lowIncl, K upperBound, boolean highIncl)</code>: повертає колекцію 
 NavigableMap, которое містить все 
-элементы оригинальной коллекции <code>NavigableMap</code> от элемента с ключом lowerBound до элемента с ключом upperBound. Параметры lowIncl и highIncl 
-при значении true включают в выходной набор элементы с ключами lowerBound и upperBound соответственно.</p></li>
+елементы оригинальной колекції <code>NavigableMap</code> от елемента с ключом lowerBound до елемента с ключом upperBound. Параметри lowIncl и highIncl 
+при значении true включают в выходной набор елементы с ключами lowerBound и upperBound соответственно.</p></li>
 </ul>
 <h3>TreeMap</h3>
-<p>Встроенной реализацией выше упомянутых інтерфейсов є класс <span class="b">TreeMap&lt;K, V&gt;</span>. Он представляє коллекцию в виде дерева, где все элементы отсортированы. 
-Цет класс найдеся от класса <code>AbstractMap</code> и реализует інтерфейс <code>NavigableMap</code>, а следовательно, також и 
-інтерфейсы <code>SortedMap</code> и <code>Map</code>. Тому для управления элементами в дереве можна використовувати методы інтерфейса <code>Map</code>. Но в отличие от коллекции <code>HashMap</code> в <b>TreeMap</b> все об'єкты автоматически сортируются по возрастанию их ключей. 
-<p>Класс TreeMap имїїт следующие конструкторы:</p>
+<p>Встроенной реализацией выше упомянутых інтерфейсов є клас <span class="b">TreeMap&lt;K, V&gt;</span>. Он представляє колекцію в виде дерева, где всі елементи отсортированы. 
+Цет клас найдеся от класа <code>AbstractMap</code> и реалізує інтерфейс <code>NavigableMap</code>, а следовательно, також и 
+інтерфейсы <code>SortedMap</code> и <code>Map</code>. Тому для управления елементами в дереве можна використовувати методи інтерфейса <code>Map</code>. Но в отличие от колекції <code>HashMap</code> в <b>TreeMap</b> все об'єкты автоматически ортуються за зростанням их ключей. 
+<p>Клас TreeMap имїїт следующие конструктори:</p>
 <ul>
-<li><p><code>TreeMap()</code>: створює пустое коллекцию в виде дерева</p></li>
-<li><p><code>TreeMap(Map&lt;? extends K, ? extends V&gt; map)</code>: створює дерево, в которое додає все элементы из коллекции map</p></li>
-<li><p><code>TreeMap(SortedMap&lt;K, ? extends V&gt; smap)</code>: створює дерево, в которое додає все элементы из коллекции smap</p></li>
-<li><p><code>TreeMap(Comparator&lt;? super K&gt; comparator)</code>: створює пустое дерево, где все добавляемые элементы впоследствии будуть 
+<li><p><code>TreeMap()</code>: створює пустое колекцію в виде дерева</p></li>
+<li><p><code>TreeMap(Map&lt;? extends K, ? extends V&gt; map)</code>: створює дерево, в которое додає всі елементи из колекції map</p></li>
+<li><p><code>TreeMap(SortedMap&lt;K, ? extends V&gt; smap)</code>: створює дерево, в которое додає всі елементи из колекції smap</p></li>
+<li><p><code>TreeMap(Comparator&lt;? super K&gt; comparator)</code>: створює пустое дерево, где все додаємоые елементы впіслядствии будуть 
 отсортированы компаратором.</p></li>
 </ul>
-<p>Элементы дерева повинні реализовать інтерфейс <code>Comparable()</code> для сортировки, або необхідно предоставлять компаратор через последнюю версию конструктора. При цем порядок, 
-поддерживаемый в <code>TreeMap</code>, (независимо от того, предоставлен ли явный компаратор), повинен быть согласован с <code>equals()</code>, чтобы эта сортированная 
-коллекция правильно реализовала інтерфейс <code>Map</code>. Примеры создания дерева:</p>
+<p>Елементы дерева повинні реализовать інтерфейс <code>Comparable()</code> для сортировки, або необхідно предоставлять компаратор через післяднюю версию конструктора. При цем порядок, 
+піддерживаемый в <code>TreeMap</code>, (независимо от того, предоставлен ли явный компаратор), повинен быть согласован с <code>equals()</code>, чтобы эта сортированная 
+колекція правильно реализовала інтерфейс <code>Map</code>. Примеры створенняя дерева:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.Map;
 import java.util.TreeMap;
@@ -91,7 +91,7 @@ public class Program{
         var treeMap = new TreeMap&lt;String,String&gt;();
         System.out.println(treeMap);     // {}
 
-        // дерево на основе другого словаря
+        // дерево на основе другого словника
         var dict = new TreeMap&lt;String,String&gt;(
                                 Map.ofEntries( 
                                     Map.entry("+79876543210", "Tom"),
@@ -103,12 +103,12 @@ public class Program{
     }
 }
 </code></pre>
-<p>Обратите внимание на вывод второго дерева-словаря - dict:</p>
+<p>Зверніть увагу на вивід второго дерева-словника - dict:</p>
 <pre class="line-numbers"><code class="language-none">{blue=синий, green=зеленый, red=красный, yellow=желтый}</code></pre>
-<p>Вне зависимости в яком порядке об'єкты буви добавлены в дерево, они упорядочиваются по возрастанию. Так, в данном случае у нас переменная dict представляє условный словарь, а <code>TreeMap</code> дозволяє 
-упорядочить дані словаря по возрастанию.</p>
+<p>Вне зависимости в яком порядке об'єкты буви добавлены в дерево, они упорядочиваются за зростанням. Так, у даному випадку у нас змінна dict представляє условный словник, а <code>TreeMap</code> дозволяє 
+упорядочить дані словника за зростанням.</p>
 
-<p>Добавление элементов:</p>
+<p>Додавання елементов:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.Map;
 import java.util.TreeMap;
@@ -120,13 +120,13 @@ public class Program{
         // пустое дерево
         var dict = new TreeMap&lt;String,String&gt;();
  
-        // добавляем в него элементы
+        // додаємо в него елементы
         dict.put("red", "красный");
         dict.put("green", "зеленый");
         dict.put("blue", "синий");
         System.out.println(dict);   // {blue=синий, green=зеленый, red=красный}
  
-        // добавляем другой словарь с данными
+        // додаємо другой словник с данными
         var map = Map.ofEntries( 
                 Map.entry("yellow", "желтый"),
                 Map.entry("black", "черный") 
@@ -138,7 +138,7 @@ public class Program{
 }
 </code></pre>
 
-<p>Получение элементов:</p>
+<p>Отримання елементов:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.Map;
 import java.util.Set;
@@ -149,7 +149,7 @@ public class Program{
       
     public static void main(String[] args) {
           
-        // пустой словарь
+        // порожній словник
         var dict = new TreeMap&lt;String,String&gt;(
             Map.ofEntries( 
                 Map.entry("red", "красный"),
@@ -160,7 +160,7 @@ public class Program{
             )
         );
 
-        // перебор элементов
+        // перебор елементов
        for(var word : dict.entrySet()){
          
            System.out.printf("%s: %s \n", word.getKey(), word.getValue());
@@ -178,22 +178,22 @@ public class Program{
         Collection&lt;String&gt; values = dict.values();
         System.out.println(values);     // [черный, синий, зеленый, красный, желтый]
             
-        // получаем все об'єкты, которые стоят начиная с об'єкта с ключом "green"
+        // отримуємо все об'єкты, которые стоят начиная с об'єкта с ключом "green"
         Map&lt;String, String&gt; afterGreen = dict.tailMap("green");
         System.out.println(afterGreen);     // {green=зеленый, red=красный, yellow=желтый}
             
-        // получаем все об'єкты, которые стоят до об'єкта с ключом "green"
+        // отримуємо все об'єкты, которые стоят до об'єкта с ключом "green"
         Map&lt;String, String&gt; beforeGreen = dict.headMap("green");
         System.out.println(beforeGreen);    // {black=черный, blue=синий}
          
-        // получим последний элемент дерева
+        // получим післядний елемент дерева
         Map.Entry&lt;String, String&gt; lastItem = dict.lastEntry();
         System.out.println(lastItem);   // yellow=желтый
     }
 }
 </code></pre>
 
-<p>Изменение и удаление элементов:</p>
+<p>Зміна и видалення елементов:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.Map;
 import java.util.TreeMap;
@@ -202,7 +202,7 @@ public class Program{
       
     public static void main(String[] args) {
           
-        // пустой словарь
+        // порожній словник
         var dict = new TreeMap&lt;String,String&gt;(
             Map.ofEntries( 
                 Map.entry("red", "красный"),
@@ -213,26 +213,26 @@ public class Program{
             )
         );
 
-        // меняем по ключу "red" значение на "червонный"
+        // меняем по ключу "red" значення на "червонный"
         dict.replace("red", "червонный");
         System.out.println(dict);   // {black=черный, blue=синий, green=зеленый, red=червонный, yellow=желтый}
  
-        // меняем по ключу "red" значение на "алый", лише якщо значение "красный"
+        // меняем по ключу "red" значення на "алый", лише якщо значення "красный"
         dict.replace("red", "алый", "красный");
  
-        // удаляем yellow
+        // видаляємо yellow
         dict.remove("yellow");
         System.out.println(dict);   // {black=черный, blue=синий, green=зеленый, red=червонный}
 
-        // получаем с удалением первый элемент
+        // отримуємо с видаленням первый елемент
         Map.Entry&lt;String, String&gt; firstWord = dict.pollFirstEntry();
         System.out.println(firstWord);      // black=черный
 
-        // получаем с удалением последний элемент
+        // отримуємо с видаленням післядний елемент
         Map.Entry&lt;String, String&gt; lastWord = dict.pollLastEntry();
         System.out.println(lastWord);       // red=червонный
  
-        // удаляем все элементы
+        // видаляємо всі елементи
         dict.clear();
         System.out.println(dict);   // {}
     }

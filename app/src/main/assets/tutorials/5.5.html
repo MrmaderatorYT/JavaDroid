@@ -3,7 +3,7 @@
 <head>
 <title>Java | Дерева TreeSet та інтерфейси SortedSet та NavigableSet</title>
 <meta charset="utf-8" />
-<meta name="description" content="Деревья TreeSet в языке программирования Java, інтерфейсы SortedSet и NavigableSet, древовидные структуры данных, харнение неупорядоченных данных в отсортированном виде в дереве">
+<meta name="description" content="Деревья TreeSet в языке програмирования Java, інтерфейсы SortedSet и NavigableSet, древовидные структуры данных, харнение неупорядоченных данных в отсортированном виде в дереве">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -14,83 +14,83 @@
      <h1>Дерева TreeSet та інтерфейси SortedSet та NavigableSet</h1><div class="date">Останнє оновлення: 11.10.2025</div>
 
 	<h3>SortedSet</h3>
-<p>Интерфейс <span class="b">SortedSet</span> призначений для создания коллекций, який хранят элементы в отсортированном виде (сортировка по 
-возрастанию). <b>SortedSet</b> расширяет інтерфейс <code>Set</code>, поцему такая коллекция опять же хранит лише уникальные значения. 
-SortedSet надає следующие методы:</p>
+<p>Інтерфейс <span class="b">SortedSet</span> призначений для створенняя колекцій, який хранят елементы в отсортированном виде (сортування по 
+возрастанию). <b>SortedSet</b> расширяет інтерфейс <code>Set</code>, поцему такая колекція опять же хранит лише уникальные значення. 
+SortedSet надає следующие методи:</p>
 <ul>
-<li><p><span class="b">E first()</span>: повертає первый элемент набора</p></li>
-<li><p><span class="b">E last()</span>: повертає последний элемент набора</p></li>
-<li><p><span class="b">SortedSet&lt;E&gt; headSet(E end)</span>: повертає об'єкт SortedSet, який містить все элементы первичного набора до элемента end</p></li>
-<li><p><span class="b">SortedSet&lt;E&gt; subSet(E start, E end)</span>: повертає об'єкт SortedSet, який містить все элементы первичного набора между элементами start и end</p></li>
-<li><p><span class="b">SortedSet&lt;E&gt; tailSet(E start)</span>: повертає об'єкт SortedSet, який містить все элементы первичного набора, начиная с элемента start</p></li>
+<li><p><span class="b">E first()</span>: повертає первый елемент набора</p></li>
+<li><p><span class="b">E last()</span>: повертає післядний елемент набора</p></li>
+<li><p><span class="b">SortedSet&lt;E&gt; headSet(E end)</span>: повертає об'єкт SortedSet, який містить всі елементи первичного набора до елемента end</p></li>
+<li><p><span class="b">SortedSet&lt;E&gt; subSet(E start, E end)</span>: повертає об'єкт SortedSet, який містить всі елементи первичного набора між елементами start и end</p></li>
+<li><p><span class="b">SortedSet&lt;E&gt; tailSet(E start)</span>: повертає об'єкт SortedSet, який містить всі елементи первичного набора, начиная с елемента start</p></li>
 </ul>
 <h3>NavigableSet</h3>
-<p>Интерфейс <span class="b">NavigableSet</span> расширяет інтерфейс <span class="b">SortedSet</span> и дозволяє извлекать элементы на основании их значений. 
-NavigableSet определяет следующие методы:</p>
+<p>Інтерфейс <span class="b">NavigableSet</span> расширяет інтерфейс <span class="b">SortedSet</span> и дозволяє извлекать елементы на основании их значений. 
+NavigableSet визначає следующие методи:</p>
 <ul>
-<li><p><span class="b">E ceiling(E obj)</span>: ищет в наборе наименьший элемент e, який больше obj (e &gt;=obj). Если такой элемент найден, 
+<li><p><span class="b">E ceiling(E obj)</span>: ищет в наборе наименьший елемент e, який больше obj (e &gt;=obj). Если такой елемент найден, 
 то он повертаєся в качестве результата. Иначе повертаєся null.</p></li>
-<li><p><span class="b">E floor(E obj)</span>: ищет в наборе наибольший элемент e, який меньше элемента obj (e &lt;=obj). Если такой элемент найден, 
+<li><p><span class="b">E floor(E obj)</span>: ищет в наборе наибольший елемент e, який меньше елемента obj (e &lt;=obj). Если такой елемент найден, 
 то он повертаєся в качестве результата. Иначе повертаєся null.</p></li>
-<li><p><span class="b">E higher(E obj)</span>: ищет в наборе наименьший элемент e, який больше элемента obj (e &gt;obj). Если такой элемент найден, 
+<li><p><span class="b">E higher(E obj)</span>: ищет в наборе наименьший елемент e, який больше елемента obj (e &gt;obj). Если такой елемент найден, 
 то он повертаєся в качестве результата. Иначе повертаєся null.</p></li>
-<li><p><span class="b">E lower(E obj)</span>: ищет в наборе наибольший элемент e, який меньше элемента obj (e &lt;obj). Если такой элемент найден, 
+<li><p><span class="b">E lower(E obj)</span>: ищет в наборе наибольший елемент e, який меньше елемента obj (e &lt;obj). Если такой елемент найден, 
 то он повертаєся в качестве результата. Иначе повертаєся null.</p></li>
-<li><p><span class="b">E pollFirst()</span>: повертає первый элемент и видаляє его из набора</p></li>
-<li><p><span class="b">E pollLast()</span>: повертає последний элемент и видаляє его из набора</p></li>
-<li><p><span class="b">NavigableSet&lt;E&gt; descendingSet()</span>: повертає об'єкт NavigableSet, який містить все элементы первичного набора NavigableSet в обратном порядке</p></li>
+<li><p><span class="b">E pollFirst()</span>: повертає первый елемент и видаляє его из набора</p></li>
+<li><p><span class="b">E pollLast()</span>: повертає післядний елемент и видаляє его из набора</p></li>
+<li><p><span class="b">NavigableSet&lt;E&gt; descendingSet()</span>: повертає об'єкт NavigableSet, який містить всі елементи первичного набора NavigableSet в обратном порядке</p></li>
 <li><p><span class="b">NavigableSet&lt;E&gt; headSet(E upperBound, boolean incl)</span>: повертає об'єкт NavigableSet, який містить все 
-элементы первичного набора NavigableSet до upperBound. Параметр incl при значении true, дозволяє включить в выходной набор элемент upperBound</p></li>
+елементы первичного набора NavigableSet до upperBound. Параметр incl при значении true, дозволяє включить в выходной набор елемент upperBound</p></li>
 <li><p><span class="b">NavigableSet&lt;E&gt; tailSet(E lowerBound, boolean incl)</span>: повертає об'єкт NavigableSet, який містить все 
-элементы первичного набора NavigableSet, начиная с lowerBound. Параметр incl при значении true, дозволяє включить в выходной набор элемент lowerBound</p></li>
+елементы первичного набора NavigableSet, начиная с lowerBound. Параметр incl при значении true, дозволяє включить в выходной набор елемент lowerBound</p></li>
 <li><p><span class="b">NavigableSet&lt;E&gt; subSet(E lowerBound, boolean lowerIncl, E upperBound, boolean highIncl)</span>: повертає об'єкт 
-NavigableSet, який містить все элементы первичного набора NavigableSet от lowerBound до upperBound.</p></li>
+NavigableSet, який містить всі елементи первичного набора NavigableSet от lowerBound до upperBound.</p></li>
 </ul>
 <h3>TreeSet</h3>
-<p>Обобщенный класс TreeSet&lt;E&gt; представляє структуру данных в виде дерева, в котором все об'єкты хранятся в отсортированном виде по возрастанию. 
-TreeSet є наследником класса <code>AbstractSet</code> и реализует інтерфейс <code>NavigableSet</code>, а следовательно, и інтерфейс <code>SortedSet</code>.</p>
-<p>Добавление элемента в дерево происходит медленнїї, чем добавление его в хеш-таблицу HashSet, но всt равно намного быстрїї, чем проверка на наличие дубликатов в массиве або связном списке. 
-Если дерево містить n элементов, то для поиска правильной позиции нового элемента требуется в среднем <code>log<sub>2</sub>n</code> сравнений. Наприклад, якщо дерево вже містить 1000 элементов, добавление нового элемента потребует около 10 сравнений.</p>
+<p>Обобщенный клас TreeSet&lt;E&gt; представляє структуру данных в виде дерева, в котором все об'єкты хранятся в отсортированном виде за зростанням. 
+TreeSet є наследником класа <code>AbstractSet</code> и реалізує інтерфейс <code>NavigableSet</code>, а следовательно, и інтерфейс <code>SortedSet</code>.</p>
+<p>Додавання елемента в дерево происходит медленнїї, чем додавання его в хеш-таблицю HashSet, но всt равно намного быстрїї, чем проверка на наличие дубликатов в масиве або связном списке. 
+Если дерево містить n елементов, то для поиска правильной позиции нового елемента требуется в среднем <code>log<sub>2</sub>n</code> сравнений. Наприклад, якщо дерево вже містить 1000 елементов, додавання нового елемента потребует около 10 сравнений.</p>
 
 <p>И поскольку <code>TreeSet</code> при добавлении сравнивает об'єкты, они повинні реализовывать інтерфейс <b>Comparable</b>. Або необхідно предоставить об'єкт інтерфейса <b>Comparator</b> 
-при создании дерева TreeSet.</p>
+при створенні дерева TreeSet.</p>
 
-<p>В классе TreeSet определены следующие конструкторы:</p>
+<p>В класе TreeSet визначенийы следующие конструктори:</p>
 <ul>
 <li><p><code>TreeSet()</code>: створює пустое дерево</p></li>
-<li><p><code>TreeSet(Collection&lt;? extends E&gt; col)</code>: створює дерево, в которое додає все элементы коллекции col</p></li>
-<li><p><code>TreeSet(SortedSet &lt;E&gt; set)</code>: створює дерево, в которое додає все элементы сортированного набора set</p></li>
-<li><p><code>TreeSet(Comparator&lt;? super E&gt; comparator)</code>: створює пустое дерево, где все добавляемые элементы впоследствии будуть 
+<li><p><code>TreeSet(Collection&lt;? extends E&gt; col)</code>: створює дерево, в которое додає всі елементи колекції col</p></li>
+<li><p><code>TreeSet(SortedSet &lt;E&gt; set)</code>: створює дерево, в которое додає всі елементи сортированного набора set</p></li>
+<li><p><code>TreeSet(Comparator&lt;? super E&gt; comparator)</code>: створює пустое дерево, где все додаємоые елементы впіслядствии будуть 
 отсортированы компаратором.</p></li>
 </ul>
-<p>TreeSet поддерживает все стандартные методы для вставки и удаления элементов и ряд других методів:</p>
+<p>TreeSet піддерживает все стандартные методи для вставки и удаления елементов и ряд других методів:</p>
 <ul>
-<li><p><code>boolean add(E e)</code>: Додає указанный элемент в цей набор, якщо он ще отсутствует</p></li>
-<li><p><code>boolean addAll(Collection&lt;? extends E&gt; c)</code>: Додає все элементы указанной коллекции в цей набор</p></li>
-<li><p><code>E ceiling(E e)</code>: Повертає наименьший элемент в цем наборе, больший або равный заданному, або null, якщо такого элемента нет</p></li>
-<li><p><code>void clear()</code>: Видаляє все элементы из цього набора</p></li>
+<li><p><code>boolean add(E e)</code>: Додає указанный елемент в цей набор, якщо он ще отсутствует</p></li>
+<li><p><code>boolean addAll(Collection&lt;? extends E&gt; c)</code>: Додає всі елементи указанной колекції в цей набор</p></li>
+<li><p><code>E ceiling(E e)</code>: Повертає наименьший елемент в цем наборе, больший або равный заданному, або null, якщо такого елемента нет</p></li>
+<li><p><code>void clear()</code>: Видаляє всі елементи из цього набора</p></li>
 <li><p><code>Object clone()</code>: Повертає поверхностную копию данного экземпляра TreeSet</p></li>
-<li><p><code>Comparator&lt;? super E&gt; comparator()</code>: Повертає компаратор, используемый для упорядочивания элементов в цем наборе, або null, якщо набор использует естественный порядок своих элементов</p></li>
-<li><p><code>boolean contains(Object o)</code>: Повертає true, якщо набор містить указанный элемент</p></li>
-<li><p><code>Iterator&lt;E&gt; descendingIterator()</code>: Повертає итератор по элементам набора в порядке убывания</p></li>
-<li><p><code>NavigableSet&lt;E&gt; descendingSet()</code>: Повертає обратный порядок элементов набора</p></li>
-<li><p><code>E first()</code>: Повертає первый (самый низкий) элемент в наборе</p></li>
-<li><p><code>E floor(E e)</code>: Повертає наибольший элемент набора, меньший або равный заданному, або null, якщо такого элемента нет</p></li>
-<li><p><code>SortedSet&lt;E&gt; headSet(E toElement)</code>: Повертає представление части набора, элементы которой строго меньше toElement</p></li>
-<li><p><code>NavigableSet&lt;E&gt; headSet(E toElement, boolean inclusive)</code>: Повертає представление части данного множества, элементы которой меньше (или равны, якщо inclusive равно true) toElement</p></li>
-<li><p><code>E higher(E e)</code>: Повертає наименьший элемент в данном множестве, строго больший заданного элемента, або null, якщо такого элемента нет</p></li>
-<li><p><code>boolean isEmpty()</code>: Повертає true, якщо в данном множестве нет элементов</p></li>
-<li><p><code>Iterator&lt;E&gt; iterator()</code>: Повертає итератор по элементам данного множества в порядке возрастания</p></li>
-<li><p><code>E last()</code>: Повертає последний (наивысший) элемент в данном множестве в данный момент</p></li>
-<li><p><code>E lower(E e)</code>: Повертає наибольший элемент в данном множестве, строго меньший заданного элемента, або null, якщо такого элемента нет</p></li>
-<li><p><code>E pollFirst()</code>: Извлекает и видаляє первый (наименьший) элемент або повертає null, якщо данное множество пусто (необязательная операция)</p></li>
-<li><p><code>E pollLast()</code>: Извлекает и видаляє последний (самый высокий) элемент або повертає null, якщо набор пуст (необязательная операция)</p></li>
-<li><p><code>boolean remove(Object o)</code>: Видаляє указанный элемент из набора, якщо он присутствует</p></li>
-<li><p><code>int size()</code>: Повертає количество элементов в дереве</p></li>
-<li><p><code>NavigableSet&lt;E&gt; subSet(E fromElement, boolean fromInclusive, E toElement, boolean toInclusive)</code>: Повертає представление части набора, элементы которой находятся в диапазоне от fromElement до toElement</p></li>
-<li><p><code>SortedSet&lt;E&gt; subSet(E fromElement, E toElement)</code>: Повертає представление части набора, элементы которой находятся в диапазоне от fromElement (включительно) до toElement (исключительно)</p></li>
-<li><p><code>SortedSet&lt;E&gt; tailSet(E fromElement)</code>: Повертає представление части данного набора, элементы которой больше або равны fromElement</p></li>
-<li><p><code>NavigableSet&lt;E&gt; tailSet(E fromElement, boolean inclusive)</code>: Повертає представление части данного набора, элементы которой больше (или равны, якщо inclusive равно true) fromElement</p></li>
+<li><p><code>Comparator&lt;? super E&gt; comparator()</code>: Повертає компаратор, використовуємоый для упорядочивания елементов в цем наборе, або null, якщо набор використовує естественный порядок своих елементов</p></li>
+<li><p><code>boolean contains(Object o)</code>: Повертає true, якщо набор містить указанный елемент</p></li>
+<li><p><code>Iterator&lt;E&gt; descendingIterator()</code>: Повертає ітератор по елементам набора в порядке убывания</p></li>
+<li><p><code>NavigableSet&lt;E&gt; descendingSet()</code>: Повертає обратный порядок елементов набора</p></li>
+<li><p><code>E first()</code>: Повертає первый (самый низкий) елемент в наборе</p></li>
+<li><p><code>E floor(E e)</code>: Повертає наибольший елемент набора, меньший або равный заданному, або null, якщо такого елемента нет</p></li>
+<li><p><code>SortedSet&lt;E&gt; headSet(E toElement)</code>: Повертає представление части набора, елементы которой строго меньше toElement</p></li>
+<li><p><code>NavigableSet&lt;E&gt; headSet(E toElement, boolean inclusive)</code>: Повертає представление части данного множини, елементы которой меньше (или равны, якщо inclusive равно true) toElement</p></li>
+<li><p><code>E higher(E e)</code>: Повертає наименьший елемент в данном множестве, строго больший заданного елемента, або null, якщо такого елемента нет</p></li>
+<li><p><code>boolean isEmpty()</code>: Повертає true, якщо в данном множестве нет елементов</p></li>
+<li><p><code>Iterator&lt;E&gt; iterator()</code>: Повертає ітератор по елементам данного множини в порядке возрастания</p></li>
+<li><p><code>E last()</code>: Повертає післядний (наивысший) елемент в данном множестве в данный момент</p></li>
+<li><p><code>E lower(E e)</code>: Повертає наибольший елемент в данном множестве, строго меньший заданного елемента, або null, якщо такого елемента нет</p></li>
+<li><p><code>E pollFirst()</code>: Извлекает и видаляє первый (наименьший) елемент або повертає null, якщо данное множина пусто (необязательная операція)</p></li>
+<li><p><code>E pollLast()</code>: Извлекает и видаляє післядний (самый высокий) елемент або повертає null, якщо набор пуст (необязательная операція)</p></li>
+<li><p><code>boolean remove(Object o)</code>: Видаляє указанный елемент из набора, якщо он присутствует</p></li>
+<li><p><code>int size()</code>: Повертає кількість елементів в дереве</p></li>
+<li><p><code>NavigableSet&lt;E&gt; subSet(E fromElement, boolean fromInclusive, E toElement, boolean toInclusive)</code>: Повертає представление части набора, елементы которой находятся в диапазоне от fromElement до toElement</p></li>
+<li><p><code>SortedSet&lt;E&gt; subSet(E fromElement, E toElement)</code>: Повертає представление части набора, елементы которой находятся в диапазоне от fromElement (включительно) до toElement (исключительно)</p></li>
+<li><p><code>SortedSet&lt;E&gt; tailSet(E fromElement)</code>: Повертає представление части данного набора, елементы которой больше або равны fromElement</p></li>
+<li><p><code>NavigableSet&lt;E&gt; tailSet(E fromElement, boolean inclusive)</code>: Повертає представление части данного набора, елементы которой больше (или равны, якщо inclusive равно true) fromElement</p></li>
 </ul>
 
 <pre class="line-numbers"><code class="language-java">
@@ -102,7 +102,7 @@ public class Program{
           
         TreeSet&lt;String&gt; langs = new TreeSet&lt;String&gt;();
           
-        // добавим в список ряд элементов
+        // додамо в список ряд елементов
         langs.add("Java");
         langs.add("JavaScript");
         langs.add("Python");
@@ -112,19 +112,19 @@ public class Program{
 
         System.out.println(langs);  // [C++, Java, JavaScript, Python]
          
-        // удаление элемента
+        // видалення елемента
         langs.remove("JavaScript");
         System.out.println(langs);  // [C++, Java, Python]
     }
 }
 </code></pre>
-<p>И поскольку при вставке об'єкты відразу же сортируются по возрастанию, то при выводе мы получим отсортированный набор:</p>
+<p>И поскольку при вставке об'єкты відразу же ортуються за зростанням, то при вивіде мы получим отсортированный набор:</p>
 <pre class="line-numbers"><code class="language-none">
 langs size: 4 
 [C++, Java, JavaScript, Python]
 [C++, Java, Python]
 </code></pre>
-<p>Так як TreeSet реализует інтерфейс NavigableSet, а через него и SortedSet, то мы можемо применить к структуре дерева различные методы для получения элементов:</p>
+<p>Так як TreeSet реалізує інтерфейс NavigableSet, а через него и SortedSet, то мы можемо пріменіть к структуре дерева различные методи для получения елементов:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.TreeSet;
 import java.util.SortedSet;
@@ -136,7 +136,7 @@ public class Program{
           
         TreeSet&lt;String&gt; langs = new TreeSet&lt;String&gt;();
           
-        // добавим в список ряд элементов
+        // додамо в список ряд елементов
         langs.add("Java");
         langs.add("JavaScript");
         langs.add("Python");
@@ -144,36 +144,36 @@ public class Program{
         langs.add("C++");
         langs.add("Go");
         
-        // сначала выводим все
+        // сначала вивідим все
         System.out.println(langs);      // [C#, C++, Go, Java, JavaScript, Python]
 
-        // получим первый - самый меньший элемент
+        // получим первый - самый меньший елемент
         System.out.println(langs.first());      // C#
 
-        // получим последний - самый больший элемент
+        // получим післядний - самый больший елемент
         System.out.println(langs.last());       // Python
 
-        // получим поднабор от одного элемента до другого
+        // получим піднабор от одного елемента до другого
         SortedSet&lt;String&gt; set = langs.subSet("Go", "Python");
         System.out.println(set);                // [Go, Java, JavaScript]
 
-        // элемент из набора, який идет перед JavaScript ("больше" JavaScript)
+        // елемент из набора, який идет перед JavaScript ("больше" JavaScript)
         String greater = langs.higher("JavaScript");    // Python
         System.out.println(greater);
 
-        // элемент из набора, який идет перед Go ("меньше" Go)
+        // елемент из набора, який идет перед Go ("меньше" Go)
         String lower = langs.lower("Go");
         System.out.println(lower);          // C++
 
-        // возвращаем набор элементов, которые идут перед Go
+        // повертаємо набор елементов, которые идут перед Go
         SortedSet&lt;String&gt; goHead=langs.headSet("Go");
         System.out.println(goHead);       // [C#, C++]
 
-        // возвращаем набор элементов, которые идут начиная с JavaScript
+        // повертаємо набор елементов, которые идут начиная с JavaScript
         SortedSet&lt;String&gt; jsTail =langs.tailSet("JavaScript");  
         System.out.println(jsTail);     // [JavaScript, Python]
 
-        // возвращаем набор в обратном порядке
+        // повертаємо набор в обратном порядке
         NavigableSet&lt;String&gt; reversedSet = langs.descendingSet();
         System.out.println(reversedSet);     // [Python, JavaScript, Java, Go, C++, C#]
     }

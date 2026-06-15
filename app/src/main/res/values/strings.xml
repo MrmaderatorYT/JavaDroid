@@ -7,6 +7,7 @@
     <string name="menu_redo">Redo</string>
     <string name="menu_save">Save</string>
     <string name="menu_run">Run</string>
+    <string name="menu_debug">Debug</string>
     <string name="menu_find_replace">Find / Replace</string>
     <string name="menu_bytecode">Bytecode</string>
     <string name="menu_new_java_file">New Java File</string>
@@ -19,6 +20,9 @@
     <string name="menu_copy_console">Copy console</string>
     <string name="menu_share_file">Share current file</string>
     <string name="menu_split_screen">Split Screen</string>
+    <string name="menu_auto_import">Auto-import</string>
+    <string name="menu_view_formatted">View formatted (JSON/XML)</string>
+    <string name="menu_md_preview">Markdown preview</string>
 
     <!-- Main layout -->
     <string name="drawer_project_label">PROJECT</string>
@@ -30,6 +34,8 @@
     <string name="tab_run">▶  Run</string>
     <string name="tab_problems">Problems</string>
     <string name="tab_bytecode">Bytecode</string>
+    <string name="tab_debug">Threads &amp; Variables</string>
+    <string name="tab_debug_console">Console</string>
     <string name="status_line">Ln %1$d, Col %2$d</string>
     <string name="status_encoding">UTF-8</string>
     <string name="status_language_java">Java</string>
@@ -105,6 +111,11 @@
     <string name="bytecode_compiling">Compiling…</string>
     <string name="bytecode_only_java">Open a .java file to view JVM bytecode (ASM / javap-style).</string>
     <string name="bytecode_failed">Bytecode: %1$s</string>
+    <string name="bytecode_search_hint">Search opcode…</string>
+    <string name="bytecode_no_methods">No methods</string>
+    <string name="bytecode_empty">No bytecode to show</string>
+    <string name="bytecode_class_loaded">%1$s  ·  %2$d fields, %3$d methods</string>
+    <string name="bytecode_select_method">Select a method on the left</string>
 
     <!-- Settings screen -->
     <string name="settings_section_theme">Theme</string>
@@ -235,4 +246,24 @@
     <string name="settings_verbose_logging">Detailed logging (Logcat)</string>
     <string name="kotlin_run_warning_title">Run Kotlin</string>
     <string name="kotlin_run_warning_message">Running and compiling Kotlin files (.kt) directly on-device is not supported due to resource constraints. \n\nPlease use syntax highlighting for code editing, and perform compilation on an external server or PC.</string>
+
+    <!-- Debug -->
+    <string name="console_debug_running">▶ Debugging %1$s…</string>
+    <string name="console_debug_hit_breakpoint">⏸ Paused at line %1$d</string>
+    <string name="console_debug_ended">Debug session ended.</string>
+    <string name="console_debug_resumed">▶ Resumed</string>
+    <string name="debug_step_over">Step Over (F6)</string>
+    <string name="debug_step_into">Step Into (F5)</string>
+    <string name="debug_step_out">Step Out (F7)</string>
+    <string name="debug_resume">Resume (F9)</string>
+    <string name="debug_stop">Stop</string>
+    <string name="debug_add_watch">Add Watch</string>
+    <string name="debug_watch_hint">Enter expression (e.g. x, obj.name, list.size())</string>
+    <string name="debug_evaluate">Evaluate Expression</string>
+    <string name="debug_evaluate_hint">Expression</string>
+    <string name="dialog_debug_evaluate_title">Evaluate Expression</string>
+    <string name="dialog_debug_watch_title">Add Watch Expression</string>
+    <string name="debug_no_variables">No variables in scope</string>
+    <string name="debug_no_stack">No call stack</string>
+    <string name="debug_not_debugging">Not debugging</string>
 </resources>

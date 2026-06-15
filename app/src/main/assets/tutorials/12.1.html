@@ -3,7 +3,7 @@
 <head>
 <title>Java | Математичні обчислення та клас Math</title>
 <meta charset="utf-8" />
-<meta name="description" content="Математические вычисления в языке программирования Java, класс Math и его методы, окугление чисел">
+<meta name="description" content="Математические вычисления в языке програмирования Java, клас Math и его методи, окугление чисел">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -13,10 +13,10 @@
 <div class="item center menC">
      <h1>Математичні обчислення та клас Math</h1><div class="date">Останнє оновлення: 16.09.2025</div>
 
-	<p>Для виконання различных математических операций в Java в пакеті <span class="ii">java.lang</span> определен класс 
-<span class="b">Math</span>. Рассмотрим его основные методы:</p>
+	<p>Для виконання различных математических операцій в Java в пакеті <span class="ii">java.lang</span> визначений клас 
+<span class="b">Math</span>. Рассмотрим его основные методи:</p>
 <ul>
-<li><p><code>abs(double value)</code>: повертає абсолютное значение для аргумента value</p>
+<li><p><code>abs(double value)</code>: повертає абсолютное значення для аргумента value</p>
 <pre class="line-numbers"><code class="language-java">
 import java.lang.Math;
 
@@ -29,12 +29,12 @@ public class Program{
 }
 </code></pre>
 </li>
-<li><p><code>acos(double value)</code>: повертає арккосинус value. Параметр value повинен иметь значение от -1 до 1</p>
+<li><p><code>acos(double value)</code>: повертає арккосинус value. Параметр value повинен иметь значення от -1 до 1</p>
 <pre class="line-numbers"><code class="language-java">
 double result = Math.acos(1); // 0.0
 </code></pre>
 </li>
-<li><p><code>asin(double value)</code>: повертає арксинус value. Параметр value повинен иметь значение от -1 до 1</p></li>
+<li><p><code>asin(double value)</code>: повертає арксинус value. Параметр value повинен иметь значення от -1 до 1</p></li>
 <li><p><code>atan(double value)</code>: повертає арктангенс value</p></li>
 <li><p><code>cbrt(double value)</code>: повертає кубический корень числа value</p>
 <pre class="line-numbers"><code class="language-java">
@@ -46,7 +46,7 @@ double result = Math.cbrt(27); // 3
 double result = Math.ceil(2.34); // 3
 </code></pre>
 </li>
-<li><p><code>clamp(double num, double a, double b)</code>: заставляет число num вписываться в задані границы - между a и b - якщо num меньше a, то повертаєся a, якщо num больше b, то повертаєся b</p>:
+<li><p><code>clamp(double num, double a, double b)</code>: заставляет число num вписываться в задані границы - між a и b - якщо num меньше a, то повертаєся a, якщо num больше b, то повертаєся b</p>:
 <pre class="line-numbers"><code class="language-java">
 import java.lang.Math;
 
@@ -66,7 +66,7 @@ public class Program{
 <li><p><code>cosh(double d)</code>: повертає гиперболический косинус угла d</p></li>
 
 <li><p><code>exp(double d)</code>: повертає основание натурального логарифма, возведенное в степень d</p></li>
-<li><p><code>floor(double d)</code>: повертає наибольшїї целое число, которое не больше d</p>
+<li><p><code>floor(double d)</code>: повертає наибольшїї целое число, которое не більше d</p>
 <pre class="line-numbers"><code class="language-java">
 double result = Math.floor(2.56); // 2
 </code></pre>
@@ -105,7 +105,7 @@ System.out.println(Math.round(2.8)); // 3
 System.out.println(Math.scalb(5, 3)); // 5*2*2*2 = 40
 System.out.println(Math.scalb(3, 4)); // 3*2*2*2*2 = 48
 </code></pre></li>
-<li><p><code>signum(double value)</code>: повертає число 1, якщо число value положительное, и -1, якщо значение value отрицательное. Если value равно 0, то повертає 0</p>
+<li><p><code>signum(double value)</code>: повертає число 1, якщо число value положительное, и -1, якщо значення value отрицательное. Если value равно 0, то повертає 0</p>
 <pre class="line-numbers"><code class="language-java">
 System.out.println(Math.signum(2.3)); // 1
 System.out.println(Math.signum(-2.3)); // -1
@@ -124,7 +124,7 @@ System.out.println(Math.toDegrees(3.14159)); // 180
 System.out.println(Math.toRadians(90)); // 1,57079....
 </code></pre></li>
 </ul>
-<p>Також класс Math определяет три константы: <code>Math.E</code>, <code>Math.TAU</code> и <code>Math.PI</code>. Наприклад, вычислим площадь круга:</p>
+<p>Також клас Math визначає три константи: <code>Math.E</code>, <code>Math.TAU</code> и <code>Math.PI</code>. Наприклад, вычислим площадь круга:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.lang.Math;
 import java.util.Scanner;
@@ -142,7 +142,7 @@ public class Program {
     }
 }
 </code></pre>
-<p>Консольный вывод:</p>
+<p>Консольный вивід:</p>
 <pre class="line-numbers"><code class="language-none">
 Введите радиус круга: 10
 Площадь круга с радиусом 10 равна 314

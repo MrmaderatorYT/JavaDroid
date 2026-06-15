@@ -3,7 +3,7 @@
 <head>
 <title>Java | Створення своїх виняткових класів</title>
 <meta charset="utf-8" />
-<meta name="description" content="Створення своїх виняткових класів в языке программирования Java, наследование от классов Throwable и Exception, примеры использования">
+<meta name="description" content="Створення своїх виняткових класів в языке програмирования Java, наследование от класов Throwable и Exception, примеры использования">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -13,10 +13,10 @@
 <div class="item center menC">
      <h1>Створення своїх виняткових класів</h1><div class="date">Останнє оновлення: 06.10.2025</div>
 
-	<p>Хотя имеющиеся в стандартной библиотеке классов Java классы исключений описують большинство исключительных ситуаций, которые можуть возникнуть 
-при выполнении программы, все-таки иногда требуется создать свои собственные классы исключений со своей логикой.</p>
-<p>Щоб создать свой класс исключений, треба унаследовать его от класса Exception. Наприклад, у нас есть класс, вычисляющий факториал, и нам треба 
-выбрасывать специальное исключение, якщо число, передаваемое в метод, меньше 1:</p>
+	<p>Хотя имеющиеся в стандартной библиотеке класов Java класы винятків описують большинство исключительных ситуаций, которые можуть возникнуть 
+при выполнении програми, все-таки иногда требуется створити свои собственные класы винятків со своей логикой.</p>
+<p>Щоб створити свой клас винятків, треба унаследовать его от класа Exception. Наприклад, у нас есть клас, вычисляющий факториал, и нам треба 
+выбрасывать специальное виняток, якщо число, передаваемое в метод, менше 1:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.Scanner;
 
@@ -48,7 +48,7 @@ class Person{
 
     Person(String name, int age) throws Exception{
 
-        if(name.length() &lt; 2) throw new Exception("Недостаточная длина имени: " + name.length());
+        if(name.length() &lt; 2) throw new Exception("Недостаточная длина імені: " + name.length());
         if(age &lt; 1 || age &gt; 110) throw new Exception("Некорректный возраст: " + age);
         this.name = name; 
         this.age = age;
@@ -57,19 +57,19 @@ class Person{
     void print(){ System.out.printf("Name: %s; Age: %d\n", name, age); }
 }
 </code></pre>
-<p>В классе Person в конструкторе получаем имя и возраст пользователя и проверяем их на соответствие некоторым условиям. В частности, якщо длина имени меньше 2 символов або 
-возраст меньше 1 або больше 110, то выбрасываются исключения. В качестве типу генерируемого исключения застосовується базовый класс <code>Exception</code>, в конструктор которого передаєся сообщение об ошибке:</p>
+<p>В класе Person в конструкторе отримуємо ім'я и возраст пользователя и проверяем их на соответствие некоторым условиям. Зокрема, якщо длина імені меньше 2 символів або 
+возраст менше 1 або больше 110, то выбрасываются винятки. В качестве типу генерируемого винятки застосовується базовый клас <code>Exception</code>, в конструктор которого передаєся сообщение об ошибке:</p>
 <pre class="line-numbers"><code class="language-java">
 Person(String name, int age) throws Exception{
 
-    if(name.length() &lt; 2) throw new Exception("Недостаточная длина имени: " + name.length());
+    if(name.length() &lt; 2) throw new Exception("Недостаточная длина імені: " + name.length());
     if(age &lt; 1 || age &gt; 110) throw new Exception("Некорректный возраст: " + age);
     this.name = name; 
     this.age = age;
 }
 </code></pre>
-<p>И поскольку конструктор сам не обробляє эти исключения, то в его оголошенийии за допомогою оператора <code>throws</code> указываем компилятору, что конструктор генерує исключения типу Exception.</p>
-<p>В методе <code>createPerson()</code> собственно обрабатываем исключения при вызове конструктора и создании об'єкта Person:</p>
+<p>И поскольку конструктор сам не обробляє эти винятки, то в его оголошенийии за допомогою оператора <code>throws</code> указываем компилятору, что конструктор генерує винятки типу Exception.</p>
+<p>В методі <code>createPerson()</code> собственно обробляємо винятки при вызове конструктора и створенні об'єкта Person:</p>
 <pre class="line-numbers"><code class="language-java">
 try{
     var person = new Person(name, age);
@@ -80,8 +80,8 @@ catch(Exception ex){
     System.out.println(ex.getMessage());
 }
 </code></pre>
-<p>Подобный подход вполне можна використовувати. Но иногда удобнїї використовувати свои классы исключений. Наприклад, в якой-то ситуации мы хочемо обработать определенным чином лише те исключения, 
-которые относятся к классу Person. Или выделить исключительные случаи и ошибки для класса Person в отдельные классы. Для цих целей мы можемо сделать специальный класс <code>PersonException</code>:</p>
+<p>Підобный підход вполне можна використовувати. Но иногда удобнїї використовувати свои класы винятків. Наприклад, в якой-то ситуации мы хочемо обпрацювати визначенийным чином лише те винятки, 
+которые относятся к класу Person. Или выделить исключительные случаи и ошибки для класа Person в отдельные класы. Для цих целей мы можемо сделать специальный клас <code>PersonException</code>:</p>
 <pre class="line-numbers"><code class="language-java">
 class PersonException extends Exception{
 
@@ -91,8 +91,8 @@ class PersonException extends Exception{
     }
 }
 </code></pre>
-<p>По сути класс кроме пустого конструктора ничего не имїїт, и то в конструкторе мы просто обращаемся к конструктору базового класса <code>Exception</code>, передавая в него строку с сообщением об ошибке. Но теперь мы можемо изменить класс Person, чтобы он выбрасывал 
-исключение именно цього типу и соответственно в основной программе обробляти це исключение:</p>
+<p>По сути клас кроме пустого конструктора ничего не имїїт, и то в конструкторе мы просто обращаемся к конструктору базового класа <code>Exception</code>, передавая в него рядок с сообщением об ошибке. Но теперь мы можемо змінити клас Person, чтобы он выбрасывал 
+виняток именно цього типу и соответственно в основной програме обробляти це виняток:</p>
 <pre class="line-numbers"><code class="language-java">
 class Program{
      
@@ -131,7 +131,7 @@ class Person{
 
     Person(String name, int age) throws PersonException{
 
-        if(name.length() &lt; 2) throw new PersonException("Недостаточная длина имени: " + name.length());
+        if(name.length() &lt; 2) throw new PersonException("Недостаточная длина імені: " + name.length());
         if(age &gt; 1 || age &gt; 110) throw new PersonException("Некорректный возраст: " + age);
         this.name = name; 
         this.age = age;
@@ -140,13 +140,13 @@ class Person{
     void print(){ System.out.printf("Name: %s; Age: %d\n", name, age); }
 }
 </code></pre>
-<p>Консольный вывод программы:</p>
+<p>Консольный вивід програми:</p>
 <pre class="line-numbers"><code class="language-none">
 Некорректный возраст: -10
-Недостаточная длина имени: 1
+Недостаточная длина імені: 1
 </code></pre>
 
-<p>Но мы можемо пойти дальше и создать для отдельных ситуаций свои типы исключений. Например:</p>
+<p>Но мы можемо пойти дальше и створити для отдельных ситуаций свои типи винятків. Наприклад:</p>
 <pre class="line-numbers"><code class="language-java">
 class Program{
      
@@ -165,7 +165,7 @@ class Program{
         }
         catch(PersonNameException ex){
 
-            System.out.println("Ошибка в имени:");
+            System.out.println("Ошибка в імені:");
             System.out.println(ex.getMessage());
         }
         catch(PersonAgeException ex){
@@ -180,7 +180,7 @@ class PersonNameException extends Exception{
 
     PersonNameException(String name, int minLength){
         
-        String message = "Недостаточная длина имени. Текущїї значення: " + name + ". Минимальная длина имени: " + minLength; 
+        String message = "Недостаточная длина імені. Текущїї значення: " + name + ". Минимальная длина імені: " + minLength; 
         super(message);
     }
 }
@@ -215,17 +215,17 @@ class Person{
 }
 </code></pre>
 
-<p>Здесь для ошибок имени определен тип <code>PersonNameException</code>, а для ошибок при указании возраста - тип <code>PersonAgeException</code>. Оба типу наследуются от <code>Exception</code> и 
+<p>Здесь для ошибок імені визначений тип <code>PersonNameException</code>, а для ошибок при указании возраста - тип <code>PersonAgeException</code>. Оба типу наследуются от <code>Exception</code> и 
 через конструктор отримують дані об ошибке.</p>
-<p>Конструктор класса Person генерує исключения цих типов:</p>
+<p>Конструктор класа Person генерує винятки цих типів:</p>
 <pre class="line-numbers"><code class="language-java">
 Person(String name, int age) throws PersonNameException, PersonAgeException {
 </code></pre>
-<p>А в методе <code>createPerson()</code> при создании об'єктов Person обрабатываем по отдельности оба цих вида исключений:</p>
+<p>А в методі <code>createPerson()</code> при створенні об'єктов Person обробляємо по отдельности оба цих вида винятків:</p>
 <pre class="line-numbers"><code class="language-java">
 catch(PersonNameException ex){
 
-    System.out.println("Ошибка в имени:");
+    System.out.println("Ошибка в імені:");
     System.out.println(ex.getMessage());
 }
 catch(PersonAgeException ex){
@@ -234,12 +234,12 @@ catch(PersonAgeException ex){
     System.out.println(ex.getMessage());
 }
 </code></pre>
-<p>В итоге мы получим следующий консольный вывод:</p>
+<p>В итоге мы получим следующий консольный вивід:</p>
 <pre class="line-numbers"><code class="language-none">
 Ошибка в возрасте:
 Некорректный возраст. Текущїї значення: -10. Минимальный возраст: 1. Максимальный возраст: 110
-Ошибка в имени:
-Недостаточная длина имени. Текущїї значення: m. Минимальная длина имени: 2
+Ошибка в імені:
+Недостаточная длина імені. Текущїї значення: m. Минимальная длина імені: 2
 </code></pre>
 
   </div>

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html  lang="uk">
 <head>
-<title>Java | Работа со строками. Класс String</title>
+<title>Java | Работа со рядокми. Клас String</title>
 <meta charset="utf-8" />
-<meta name="description" content="Работа со строками в языке программирования Java, класс String и его методы">
+<meta name="description" content="Работа со рядокми в языке програмирования Java, клас String и его методи">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -13,16 +13,16 @@
 <div class="item center menC">
      <h1>Введення у рядки. Клас String</h1><div class="date">Останнє оновлення: 16.09.2025</div>
 
-	<p>Строка представляє собой последовательность символов. Для работы со строками в Java определен класс <b>String</b>, який надає ряд методів для манипуляции строками. 
-Физически об'єкт String представляє собой ссылку на область в памяти, в которой размщены символы.</p>
-<p>Для создания новой строки мы можемо використовувати один из конструкторов класса String, або напрямую присвоить строку в двойных кавычках:</p>
+	<p>Рядок представляє собой післядовательность символів. Для работы со рядокми в Java визначений клас <b>String</b>, який надає ряд методів для манипуляции рядокми. 
+Физически об'єкт String представляє собой ссылку на область в памяти, в которой размщены символи.</p>
+<p>Для створенняя новой рядки мы можемо використовувати один из конструкторов класа String, або напрямую присвоить рядок в двойных кавычках:</p>
 <pre class="line-numbers"><code class="language-java">
 public static void main(String[] args) {
         
     String str1 = "Java";
-    String str2 = new String(); // пустая строка
+    String str2 = new String(); // пустая рядок
     String str3 = new String(new char[] {'h', 'e', 'l', 'l', 'o'});
-    String str4 = new String(new char[]{'w', 'e', 'l', 'c', 'o', 'm', 'e'}, 3, 4);//3 -начальный индекс, 4 -кол-во символов
+    String str4 = new String(new char[]{'w', 'e', 'l', 'c', 'o', 'm', 'e'}, 3, 4);//3 -начальный индекс, 4 -кол-во символів
         
     System.out.println(str1); // Java
     System.out.println(str2); //
@@ -31,67 +31,67 @@ public static void main(String[] args) {
 }
 </code></pre>
 
-<p>При работе со строками важно понимать, что об'єкт String є неизменяемым (<span class="b">immutable</span>). То есть при любых операциях 
-над строкой, которые изменяют эту строку, фактически буде создаваться новая строка.</p>
-<h3>Длина строк. Пустые строки и null</h3>
-<p>Поскольку строка рассматривается як набор символов, то мы можемо применить метод <span class="b">length()</span> для нахождения длины строки або длины набора символов:</p>
+<p>При работе со рядокми важливо понимать, что об'єкт String є незмінюємоым (<span class="b">immutable</span>). То есть при любых операціях 
+над рядківой, которые змінюють эту рядок, фактически буде создаваться новая рядок.</p>
+<h3>Длина рядків. Пустые рядки и null</h3>
+<p>Поскольку рядок рассматривается як набор символів, то мы можемо пріменіть метод <span class="b">length()</span> для нахождения длины рядки або длины набора символів:</p>
 <pre class="line-numbers"><code class="language-java">
 String str1 = "Java";
 System.out.println(str1.length()); // 4
 </code></pre>
-<p>А за допомогою метода <span class="b">toCharArray()</span> можна обратно преобразовать строку в массив символов:</p>
+<p>А за допомогою методу <span class="b">toCharArray()</span> можна обратно преобразовать рядок в масив символів:</p>
 <pre class="line-numbers"><code class="language-java">
 String str1 = new String(new char[] {'h', 'e', 'l', 'l', 'o'});
 char[] helloArray = str1.toCharArray();
 </code></pre>
-<p>Строка может быть пустой. Для цього ей можна присвоить пустые кавычки або удалить из стоки все символы:</p>
+<p>Рядок может быть порожній. Для цього ей можна присвоить пустые кавычки або удалить из стоки все символи:</p>
 <pre class="line-numbers"><code class="language-java">
-String s = "";   // пустая строка
+String s = "";   // пустая рядок
 if(s.length() == 0) System.out.println("String is empty");
 </code></pre>
-<p>В цем случае длина строки, возвращаемая методом length(), равна 0.</p>
-<p>Класс String имїїт специальный метод, який дозволяє проверить строку на пустоту - <span class="b">isEmpty()</span>. Если строка пуста, он повертає true:</p>
+<p>В цем случае длина рядки, повертаємоая методом length(), равна 0.</p>
+<p>Клас String имїїт специальный метод, який дозволяє проверить рядок на пустоту - <span class="b">isEmpty()</span>. Если рядок пуста, он повертає true:</p>
 <pre class="line-numbers"><code class="language-java">
-String s = "";   // пустая строка
+String s = "";   // пустая рядок
 if(s.isEmpty()) System.out.println("String is empty");
 </code></pre>
-<p>Переменная String может не указывать на якой-або об'єкт и иметь значение <span class="b">null</span>:</p>
+<p>Змінна String может не указывать на якой-або об'єкт и иметь значення <span class="b">null</span>:</p>
 <pre class="line-numbers"><code class="language-java">
-String s = null;   // строка не указывает на об'єкт
+String s = null;   // рядок не вказує на об'єкт
 if(s == null) System.out.println("String is null");
 </code></pre>
-<p>Значение null не эквивалентно пустой строке. Наприклад, в следующем случае мы столкнемся с ошибкой виконання:</p>
+<p>Значення null не эквивалентно порожній рядківе. Наприклад, в следующем случае мы столкнемся с ошибкой виконання:</p>
 <pre class="line-numbers"><code class="language-java">
-String s = null;   // строка не указывает на об'єкт
+String s = null;   // рядок не вказує на об'єкт
 if(s.length()==0) System.out.println("String is empty");	// ! Ошибка
 </code></pre>
-<p>Так як переменная не указывает ни на якой об'єкт String, то соответственно мы не можемо обращаться к методам об'єкта String. 
-Щоб избежать подобных ошибок, можна предварительно проверять строку на null:</p>
+<p>Так як змінна не вказує ни на якой об'єкт String, то соответственно мы не можемо обращаться к методум об'єкта String. 
+Щоб избежать підобных ошибок, можна предварительно проверять рядок на null:</p>
 <pre class="line-numbers"><code class="language-java">
-String s = null;   // строка не указывает на об'єкт
+String s = null;   // рядок не вказує на об'єкт
 if(s==null || s.length()==0) System.out.println("String is empty");
 </code></pre>
-<h3>Основные методы класса String</h3>
-<p>Основні операції з рядками раскрывается через методы класса String, среди которых можна выделить следующие:</p>
+<h3>Основные методи класа String</h3>
+<p>Основні операції з рядками раскрывается через методи класа String, среди которых можна выделить следующие:</p>
 <ul>
-<li><p><span class="b">concat()</span>: об'єднує строки</p></li>
-<li><p><span class="b">valueOf()</span>: преобразует об'єкт в строковый вид</p></li>
-<li><p><span class="b">join()</span>: соединяет строки с учетом разделителя</p></li>
-<li><p><span class="b">сompareTo()</span>: сравнивает две строки</p></li>
-<li><p><span class="b">charAt()</span>: повертає символ строки по индексу</p></li>
-<li><p><span class="b">getChars()</span>: повертає группу символов</p></li>
-<li><p><span class="b">equals()</span>: сравнивает строки с учетом регистра</p></li>
-<li><p><span class="b">equalsIgnoreCase()</span>: сравнивает строки без учета регистра</p></li>
-<li><p><span class="b">regionMatches()</span>: сравнивает подстроки в строках</p></li>
-<li><p><span class="b">indexOf()</span>: находит индекс первого вхождения подстроки в строку</p></li>
-<li><p><span class="b">lastIndexOf()</span>: находит индекс последнего вхождения подстроки в строку</p></li>
-<li><p><span class="b">startsWith()</span>: определяет, начинается ли строка с подстроки</p></li>
-<li><p><span class="b">endsWith()</span>: определяет, заканчивается ли строка на определенную подстроку</p></li>
-<li><p><span class="b">replace()</span>: заменяет в строке одну подстроку на другую</p></li>
+<li><p><span class="b">concat()</span>: об'єднує рядки</p></li>
+<li><p><span class="b">valueOf()</span>: преобразует об'єкт в рядківовый вид</p></li>
+<li><p><span class="b">join()</span>: соединяет рядки с учетом розділителя</p></li>
+<li><p><span class="b">сompareTo()</span>: сравнивает две рядки</p></li>
+<li><p><span class="b">charAt()</span>: повертає символ рядки по индексу</p></li>
+<li><p><span class="b">getChars()</span>: повертає группу символів</p></li>
+<li><p><span class="b">equals()</span>: сравнивает рядки с учетом регистра</p></li>
+<li><p><span class="b">equalsIgnoreCase()</span>: сравнивает рядки без учета регистра</p></li>
+<li><p><span class="b">regionMatches()</span>: сравнивает підрядки в рядокх</p></li>
+<li><p><span class="b">indexOf()</span>: находит индекс первого вхождения підрядки в рядок</p></li>
+<li><p><span class="b">lastIndexOf()</span>: находит индекс післяднего вхождения підрядки в рядок</p></li>
+<li><p><span class="b">startsWith()</span>: визначає, начинается ли рядок с підрядки</p></li>
+<li><p><span class="b">endsWith()</span>: визначає, заканчивается ли рядок на визначенийную підрядок</p></li>
+<li><p><span class="b">replace()</span>: заменяет в рядківе одну підрядок на другую</p></li>
 <li><p><span class="b">strip()</span>: видаляє начальные и конечные пробелы</p></li>
-<li><p><span class="b">substring()</span>: повертає подстроку, начиная с определенного индекса до конца або до определенного индекса</p></li>
-<li><p><span class="b">toLowerCase()</span>: переводит все символы строки в нижний регистр</p></li>
-<li><p><span class="b">toUpperCase()</span>: переводит все символы строки в верхний регистр</p></li>
+<li><p><span class="b">substring()</span>: повертає підрядок, начиная с визначенийного индекса до конца або до визначенийного индекса</p></li>
+<li><p><span class="b">toLowerCase()</span>: переводит все символи рядки в нижний регистр</p></li>
+<li><p><span class="b">toUpperCase()</span>: переводит все символи рядки в верхний регистр</p></li>
 </ul>
 <p>Разберем работу цих методів.</p>
 

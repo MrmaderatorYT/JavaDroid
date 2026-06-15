@@ -183,14 +183,19 @@ public final class ProjectCompiler {
                     }
                     postProblems(callback, context, null, "", logicalSourceFile);
 
-                    File classFile = new File(cacheDir, className + ".class");
-                    if (!classFile.exists()) {
+                    File classFile = findClassFile(cacheDir, className);
+                    if (classFile == null) {
                         postResult(callback, "Error: " + className + ".class not found.");
                         return;
                     }
 
                     runD8Dex(androidJar, dexDir, classFile);
-                    runDexMain(context, null, dexDir, className, callback);
+                    // Derive FQN from class file path (e.g. com/ccs/crr/App.class → com.ccs.crr.App)
+                    String fqName = classFile.getAbsolutePath()
+                            .substring(cacheDir.getAbsolutePath().length() + 1)
+                            .replace(".class", "")
+                            .replace('/', '.');
+                    runDexMain(context, null, dexDir, fqName, callback);
                 }
             } catch (ClassNotFoundException e) {
                 postResult(callback, "Error: Kotlin compiler library not integrated. Please verify kotlin-compiler-embeddable in build.gradle.");
@@ -198,6 +203,343 @@ public final class ProjectCompiler {
                 postResult(callback, "System Error: " + e.getMessage() + "\n" + Log.getStackTraceString(e));
             }
         }).start();
+    }
+
+    /**
+     * Compile and run a single source in debug mode: instruments bytecode
+     * with debug hooks, loads DexClassLoader, and starts a debug session.
+     */
+    public static void debugSingleSource(Context context, String sourceCode, File logicalSourceFile,
+                                          Callback rawCallback) {
+        final Callback callback = wrapCallback(context, rawCallback);
+        new Thread(() -> {
+            try {
+                boolean isKotlin = logicalSourceFile != null
+                        && logicalSourceFile.getName().toLowerCase(java.util.Locale.ROOT).endsWith(".kt");
+                if (isKotlin) {
+                    postResult(callback, "Debugging is not supported for Kotlin files yet.");
+                    return;
+                }
+
+                String className = extractClassName(sourceCode);
+                File cacheDir = new File(context.getCacheDir(), "debug_compile_cache");
+                // Clean the directory to avoid stale class files
+                if (cacheDir.exists()) {
+                    File[] oldFiles = cacheDir.listFiles();
+                    if (oldFiles != null) {
+                        for (File f : oldFiles) {
+                            if (f.getName().equals("android.jar")) continue; // keep android.jar
+                            f.delete();
+                        }
+                    }
+                }
+                if (!cacheDir.exists()) cacheDir.mkdirs();
+
+
+                File androidJar = ensureAndroidJar(context, cacheDir);
+                File dexDir = new File(cacheDir, "debug_dex");
+                if (!dexDir.exists()) {
+                    dexDir.mkdirs();
+                } else {
+                    File[] oldFiles = dexDir.listFiles();
+                    if (oldFiles != null) {
+                        for (File f : oldFiles) f.delete();
+                    }
+                }
+
+                File srcFile = new File(cacheDir, className + ".java");
+                writeUtf8(srcFile, sourceCode);
+
+
+                postProgress(callback, "Compiling...");
+                String ecjErr = compileEcj(androidJar, null, cacheDir, javaTarget(context), srcFile);
+                if (ecjErr != null) {
+                    postCompileFailure(callback, context, null, ecjErr, logicalSourceFile,
+                            "Compilation Error:\n" + ecjErr);
+                    return;
+                }
+                postProblems(callback, context, null, "", logicalSourceFile);
+
+                // Direct check for the class file
+                File directClass = new File(cacheDir, className + ".class");
+
+                // Log directory contents after compilation
+                File[] afterFiles = cacheDir.listFiles();
+                if (afterFiles != null) {
+                    for (File f : afterFiles) {
+                    }
+                } else {
+                    android.util.Log.e("JavaDroidDebug", "cacheDir.listFiles() returned null!");
+                }
+
+                File classFile = findClassFile(cacheDir, className);
+                if (classFile == null) {
+                    android.util.Log.e("JavaDroidDebug", "Class file not found: " + className + " in " + cacheDir);
+                    // Build detailed error message with directory listing
+                    StringBuilder sb = new StringBuilder("Error: " + className + ".class not found.\nDirectory contents of " + cacheDir + ":\n");
+                    File[] allFiles = cacheDir.listFiles();
+                    if (allFiles != null) {
+                        for (File f : allFiles) {
+                            sb.append("  ").append(f.isDirectory() ? "[DIR] " : "").append(f.getName()).append(" (").append(f.length()).append(" bytes)\n");
+                        }
+                    }
+                    postResult(callback, sb.toString());
+                    return;
+                }
+
+
+                // Compile native sources for debug mode
+                File jniLibsDir = null;
+                if (logicalSourceFile != null) {
+                    File projectRoot = logicalSourceFile.getParentFile();
+                    while (projectRoot != null && !new File(projectRoot, "pom.xml").exists()
+                            && !new File(projectRoot, ".project").exists()) {
+                        projectRoot = projectRoot.getParentFile();
+                    }
+                    if (projectRoot != null) {
+                        jniLibsDir = compileNativeSources(context, projectRoot, callback);
+                    }
+                }
+
+                // Instrument bytecode with debug hooks
+                postProgress(callback, "Instrumenting for debugging...");
+                java.util.Map<Integer, String> bpMap = com.ccs.javadroid.debug.DebuggerController.getInstance().getBreakpoints();
+                java.util.Set<Integer> bpLines = new java.util.HashSet<>(bpMap.keySet());
+                com.ccs.javadroid.debug.DebugInstrumenter.instrumentFile(classFile, bpLines);
+
+                postProgress(callback, "Converting to DEX...");
+                runD8Dex(androidJar, dexDir, classFile);
+
+                postProgress(callback, "Starting debug session...");
+
+                // Derive fully qualified class name from the class file path
+                // e.g. cacheDir/com/ccs/crr/App.class → com.ccs.crr.App
+                String fqClassName = classFile.getAbsolutePath()
+                        .substring(cacheDir.getAbsolutePath().length() + 1)
+                        .replace(".class", "")
+                        .replace('/', '.');
+
+                postResult(callback, "DEBUG_SESSION:" + fqClassName + ":" + cacheDir.getAbsolutePath()
+                        + ":" + dexDir.getAbsolutePath()
+                        + ":" + (jniLibsDir != null ? jniLibsDir.getAbsolutePath() : ""));
+            } catch (Exception e) {
+                postResult(callback, "System Error: " + e.getMessage() + "\n" + Log.getStackTraceString(e));
+            }
+        }).start();
+    }
+
+    /**
+     * Load and run dex in debug mode with debug classpath.
+     */
+    public static void debugRunDex(Context context, String className, File dexDir,
+                                   File debugCacheDir, File jniLibsDir, Callback callback) {
+        try {
+            File dexFile = new File(dexDir, "classes.dex");
+            if (!dexFile.exists()) {
+                postResult(callback, "Error: classes.dex not found in " + dexDir.getAbsolutePath());
+                return;
+            }
+
+            File optDir = new File(dexDir, "opt");
+            if (optDir.exists()) deleteRecursive(optDir);
+            optDir.mkdirs();
+
+            File nativeLibDir;
+            if (jniLibsDir != null && jniLibsDir.exists()) {
+                nativeLibDir = jniLibsDir;
+            } else {
+                nativeLibDir = findLatestJniLibsDir(context);
+                if (nativeLibDir == null) {
+                    nativeLibDir = new File(context.getCacheDir(), "jni_libs");
+                }
+            }
+            if (!nativeLibDir.exists()) nativeLibDir.mkdirs();
+
+            // Use a classpath that includes the debug bridge
+            String debugCp = debugCacheDir.getAbsolutePath();
+            DexClassLoader cl = new DexClassLoader(
+                    dexFile.getAbsolutePath(),
+                    optDir.getAbsolutePath(),
+                    nativeLibDir.getAbsolutePath(),
+                    context.getClassLoader()
+            );
+
+            Class<?> cls = cl.loadClass(className);
+            Method main = cls.getMethod("main", String[].class);
+
+            final boolean verbose = new AppPreferences(context).isVerboseLoggingEnabled();
+            ByteArrayOutputStream execOut = new ByteArrayOutputStream();
+            java.io.OutputStream interceptor = new java.io.OutputStream() {
+                private StringBuilder line = new StringBuilder();
+                @Override
+                public void write(int b) throws java.io.IOException {
+                    execOut.write(b);
+                    if (b == '\n') {
+                        line.setLength(0);
+                    } else if (b != '\r') {
+                        line.append((char) b);
+                    }
+                }
+                @Override
+                public void write(byte[] b, int off, int len) throws java.io.IOException {
+                    execOut.write(b, off, len);
+                    for (int i = off; i < off + len; i++) {
+                        if (b[i] == '\n') {
+                            line.setLength(0);
+                        } else if (b[i] != '\r') {
+                            line.append((char) b[i]);
+                        }
+                    }
+                }
+                @Override
+                public void flush() throws java.io.IOException {
+                    execOut.flush();
+                    if (line.length() > 0) {
+                        line.setLength(0);
+                    }
+                }
+            };
+            PrintStream ps = new PrintStream(interceptor, true);
+            PrintStream oldOut = System.out;
+            PrintStream oldErr = System.err;
+            System.setOut(ps);
+            System.setErr(ps);
+            try {
+                main.invoke(null, new Object[]{new String[]{}});
+                ps.flush();
+                postResult(callback, execOut.toString("UTF-8"));
+            } catch (Throwable e) {
+                Log.e("JavaDroidDebug", "Debug execution exception", e);
+                e.printStackTrace(ps);
+                ps.flush();
+                postResult(callback, "Execution Exception:\n" + execOut.toString("UTF-8"));
+            } finally {
+                System.setOut(oldOut);
+                System.setErr(oldErr);
+            }
+        } catch (Throwable e) {
+            postResult(callback, "System Error: " + e.getMessage() + "\n" + Log.getStackTraceString(e));
+        }
+    }
+
+    private static File findLatestJniLibsDir(Context context) {
+        File[] cacheFiles = context.getCacheDir().listFiles();
+        if (cacheFiles == null) return null;
+        File newest = null;
+        long newestTime = 0;
+        for (File f : cacheFiles) {
+            if (f.isDirectory() && f.getName().startsWith("jni_libs_")) {
+                long mod = f.lastModified();
+                if (mod >= newestTime) {
+                    newestTime = mod;
+                    newest = f;
+                }
+            }
+        }
+        return newest;
+    }
+
+    private static File compileNativeSources(Context context, File projectRoot, Callback callback) {
+        File jniLibsDir = new File(context.getCacheDir(), "jni_libs_" + System.currentTimeMillis());
+        if (!jniLibsDir.exists()) jniLibsDir.mkdirs();
+
+        File srcMain = new File(projectRoot, "src/main");
+        File cppDir = new File(srcMain, "cpp");
+        File jniDir = new File(srcMain, "jni");
+        List<File> nativeCSources = new ArrayList<>();
+        List<File> nativeCppSources = new ArrayList<>();
+        if (cppDir.exists() && cppDir.isDirectory()) {
+            File[] files = cppDir.listFiles();
+            if (files != null) {
+                for (File f : files) {
+                    if (f.getName().endsWith(".c")) nativeCSources.add(f);
+                    else if (f.getName().endsWith(".cpp") || f.getName().endsWith(".cxx")) nativeCppSources.add(f);
+                }
+            }
+        }
+        if (jniDir.exists() && jniDir.isDirectory()) {
+            File[] files = jniDir.listFiles();
+            if (files != null) {
+                for (File f : files) {
+                    if (f.getName().endsWith(".c")) nativeCSources.add(f);
+                    else if (f.getName().endsWith(".cpp") || f.getName().endsWith(".cxx")) nativeCppSources.add(f);
+                }
+            }
+        }
+
+        if (nativeCSources.isEmpty() && nativeCppSources.isEmpty()) {
+            return null;
+        }
+
+        postProgress(callback, "Compiling native sources...");
+
+        // Compile C sources with TCC
+        if (!nativeCSources.isEmpty()) {
+            NativeCompiler.init(context);
+            if (!NativeCompiler.isLoaded() || !NativeCompiler.isAvailable()) {
+                postProgress(callback, "Warning: built-in C compiler not available, skipping native compilation");
+                return null;
+            }
+            String includePath = NativeCompiler.getIncludePath();
+            for (File nativeSrc : nativeCSources) {
+                String simpleName = nativeSrc.getName();
+                String baseName = simpleName.substring(0, simpleName.lastIndexOf('.'));
+                String libName = "lib" + baseName + ".so";
+                File destSo = new File(jniLibsDir, libName);
+                String sourceCode;
+                try {
+                    sourceCode = new String(java.nio.file.Files.readAllBytes(nativeSrc.toPath()), java.nio.charset.StandardCharsets.UTF_8);
+                } catch (IOException ex) {
+                    postProgress(callback, "Warning: Cannot read " + simpleName + ": " + ex.getMessage());
+                    continue;
+                }
+                String error = NativeCompiler.compileToSharedLib(sourceCode, destSo.getAbsolutePath(), includePath);
+                if (error != null) {
+                    postProgress(callback, "Warning: C compilation error (" + simpleName + "): " + error);
+                    continue;
+                }
+                destSo.setExecutable(true, false);
+                postProgress(callback, "Compiled (TCC) " + simpleName + " → " + libName);
+            }
+        }
+
+        // Compile C++ sources with NDK
+        if (!nativeCppSources.isEmpty()) {
+            if (!NdkManager.isNdkInstalled(context)) {
+                postProgress(callback, "Warning: C++ sources require external NDK. Skipping.");
+                return null;
+            }
+            File clang = NdkManager.getClangPath(context);
+            for (File nativeSrc : nativeCppSources) {
+                String simpleName = nativeSrc.getName();
+                String baseName = simpleName.substring(0, simpleName.lastIndexOf('.'));
+                String libName = "lib" + baseName + ".so";
+                File destSo = new File(jniLibsDir, libName);
+                List<String> cmd = new ArrayList<>();
+                cmd.add(clang.getAbsolutePath());
+                cmd.add("-shared");
+                cmd.add("-o");
+                cmd.add(destSo.getAbsolutePath());
+                cmd.add(nativeSrc.getAbsolutePath());
+                try {
+                    ProcessBuilder pb = new ProcessBuilder(cmd);
+                    pb.redirectErrorStream(true);
+                    Process p = pb.start();
+                    String output = new String(p.getInputStream().readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
+                    p.waitFor();
+                    if (p.exitValue() != 0) {
+                        postProgress(callback, "Warning: C++ compilation error (" + simpleName + "): " + output);
+                        continue;
+                    }
+                    destSo.setExecutable(true, false);
+                    postProgress(callback, "Compiled (Clang++) " + simpleName + " → " + libName);
+                } catch (Exception e) {
+                    postProgress(callback, "Warning: C++ compilation failed (" + simpleName + "): " + e.getMessage());
+                }
+            }
+        }
+
+        return jniLibsDir;
     }
 
     public static void mavenCompileAndRun(Context context, File projectRoot, PomModel pom,
@@ -575,18 +917,59 @@ public final class ProjectCompiler {
         PrintWriter errWriter = new PrintWriter(new OutputStreamWriter(ecjErr, StandardCharsets.UTF_8), true);
         Main ecj = new Main(outWriter, errWriter, false, null, null);
         List<String> args = new ArrayList<>();
-        args.add(ecjVersionFlag(javaTarget));
+        for (String flag : ecjVersionFlags(javaTarget)) args.add(flag);
         args.add("-proc:none");
-        args.add("-bootclasspath");
-        args.add(androidJar.getAbsolutePath());
-        if (classpath != null && !classpath.isEmpty()) {
+        boolean isJava9OrAbove = javaTarget != null && !javaTarget.equals("1.8") && !javaTarget.startsWith("1.");
+        if (isJava9OrAbove) {
             args.add("-classpath");
-            args.add(classpath);
+            if (classpath != null && !classpath.isEmpty()) {
+                args.add(androidJar.getAbsolutePath() + File.pathSeparator + classpath);
+            } else {
+                args.add(androidJar.getAbsolutePath());
+            }
+        } else {
+            args.add("-bootclasspath");
+            args.add(androidJar.getAbsolutePath());
+            if (classpath != null && !classpath.isEmpty()) {
+                args.add("-classpath");
+                args.add(classpath);
+            }
         }
         args.add("-d");
         args.add(outDir.getAbsolutePath());
         for (File s : srcFiles) args.add(s.getAbsolutePath());
-        boolean ok = ecj.compile(args.toArray(new String[0]));
+        
+        // Filter out non-jar files from classpath to suppress ZipException warnings
+        String filteredCp = filterClasspath(classpath);
+        if (filteredCp != null && !filteredCp.equals(classpath)) {
+            // Rebuild args with filtered classpath
+            args.clear();
+            for (String flag : ecjVersionFlags(javaTarget)) args.add(flag);
+            args.add("-proc:none");
+            if (isJava9OrAbove) {
+                args.add("-classpath");
+                args.add(androidJar.getAbsolutePath() + File.pathSeparator + filteredCp);
+            } else {
+                args.add("-bootclasspath");
+                args.add(androidJar.getAbsolutePath());
+                args.add("-classpath");
+                args.add(filteredCp);
+            }
+            args.add("-d");
+            args.add(outDir.getAbsolutePath());
+            for (File s : srcFiles) args.add(s.getAbsolutePath());
+        }
+        
+        PrintStream oldErr = System.err;
+        // Silence ECJ's internal System.err prints (like ZipException for non-jar classpath entries)
+        System.setErr(new PrintStream(new ByteArrayOutputStream()));
+        boolean ok;
+        try {
+            ok = ecj.compile(args.toArray(new String[0]));
+        } finally {
+            System.setErr(oldErr);
+        }
+        
         outWriter.flush();
         errWriter.flush();
         if (!ok) {
@@ -612,15 +995,28 @@ public final class ProjectCompiler {
         }
     }
 
+    private static String filterClasspath(String classpath) {
+        if (classpath == null || classpath.isEmpty()) return classpath;
+        StringBuilder filtered = new StringBuilder();
+        for (String entry : classpath.split(File.pathSeparator)) {
+            File f = new File(entry);
+            if (f.isDirectory() || entry.endsWith(".jar") || entry.endsWith(".zip")) {
+                if (filtered.length() > 0) filtered.append(File.pathSeparator);
+                filtered.append(entry);
+            }
+        }
+        return filtered.toString();
+    }
+
     private static String compileEcjMulti(File androidJar, String classpath, File outDir,
                                           String javaTarget, File[] srcFiles) {
         return compileEcj(androidJar, classpath, outDir, javaTarget, srcFiles);
     }
 
-    /** Перетворює "1.8"/"11"/"17"/"21" → "-1.8"/"-11"/"-17"/"-21" (формат, який очікує ECJ). */
-    private static String ecjVersionFlag(String javaTarget) {
-        if (javaTarget == null || javaTarget.isEmpty()) return "-1.8";
-        return javaTarget.startsWith("1.") ? "-" + javaTarget : "-" + javaTarget;
+    /** Повертає ECJ опції для версії Java: "-source X -target X". */
+    private static String[] ecjVersionFlags(String javaTarget) {
+        if (javaTarget == null || javaTarget.isEmpty()) javaTarget = "1.8";
+        return new String[]{"-source", javaTarget, "-target", javaTarget};
     }
 
     private static String classpath(List<File> jars) {
@@ -764,6 +1160,21 @@ public final class ProjectCompiler {
         if (m.find()) return m.group(1);
         m = Pattern.compile("(?m)\\bclass\\s+(\\w+)").matcher(source);
         return m.find() ? m.group(1) : "Main";
+    }
+
+    private static File findClassFile(File dir, String className) {
+        File direct = new File(dir, className + ".class");
+        if (direct.exists()) return direct;
+        File[] children = dir.listFiles();
+        if (children != null) {
+            for (File child : children) {
+                if (child.isDirectory()) {
+                    File found = findClassFile(child, className);
+                    if (found != null) return found;
+                }
+            }
+        }
+        return null;
     }
 
     private static void postProgress(Callback cb, String msg) {

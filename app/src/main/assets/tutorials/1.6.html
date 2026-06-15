@@ -3,7 +3,7 @@
 <head>
 <title>Java | Встановлення JDK</title>
 <meta charset="utf-8" />
-<meta name="description" content="Установка Java, JRE, JDK на Windows и Linux, OpenJDK и JDK от Oracle, установка через пакетный менеджер">
+<meta name="description" content="Встановлення Java, JRE, JDK на Windows и Linux, OpenJDK и JDK от Oracle, встановлення через пакетный менеджер">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -14,52 +14,52 @@
      <h1>Встановлення JDK</h1><div class="date">Останнє оновлення: 16.09.2025</div>
 
 <p>Для розробки програм на Java нам зтребабиться спеціальний комплект для розробки JDK 
-(Java Development Kit). JDK включає ряд програм та утиліт, які дозволяють компілювати, запускати програми на Java, 
+(Java Development Kit). JDK включає ряд програм та утиліт, які дозволяють компілювати, запускути програми на Java, 
 а також виконувати низку інших функцій.</p>
 <p>JDK от Oracle для Windows (x64), Linux (x64, ARM64) и MacOS (x64, ARM64) доступны по адресу <a href="https://www.oracle.com/java/technologies/downloads/" rel="nofollow">https://www.oracle.com/java/technologies/downloads/</a></p>
 <p>OpenJDK для Windows (x64), Linux (x64, ARM64) и MacOS (x64, ARM64) доступны по адресу <a href="https://jdk.java.net/25/" rel="nofollow">https://jdk.java.net/25/</a></p>
 <p>OpenJDK надає лише архіви, Oracle також надає інсталяційні пакети. Розглянемо інсталяцію JDK для різних систем.</p>
 
-<h3>Установка Windows</h3>
-<h4>Установка за допомогою установника</h4>
-<p>Наиболїї распространенный вариант установки JDK на Windows - це применение установщика с официального сайта Oracle. В частности, перейдем на страницу: 
+<h3>Встановлення Windows</h3>
+<h4>Встановлення за допомогою установника</h4>
+<p>Наиболїї распространенный вариант установки JDK на Windows - це застосування установщика с официального сайта Oracle. Зокрема, перейдем на сторінку: 
 <a href="https://www.oracle.com/java/technologies/downloads/#jdk25-windows" rel="nofollow">https://www.oracle.com/java/technologies/downloads/#jdk25-windows</a></p>
 <img src="./pics/1.11.png" alt="Встановлення JDK" style="width:800px; />
 <p>Для Windows є три варіанти завантаження: у вигляді інсталятора exe (x64 Installer) або msi (x64 MSI Installer), або у вигляді архіву, який не потрібно встановлювати. 
-Великої різниці між двома установниками - &quot;x64 Installer&quot; та &quot;x64 MSI Installer&quot; немає. Наприклад, виберіть пункт &quot;x64 Installer&quot;. Після завантаження запустимо програму встановлення:</p>
-<img src="pics/1.12.png" alt="Установка Java Development Kit" style="width:600px;" />
-<p>Натисніть кнопку Next. На наступному екрані необхідно вказати, в яку папку проводитиметься установка:</p>
-<img src="pics/1.13.png" alt="Установка компонентов Java Development Kit"  style="width:600px;" />
+Великої різниці між двома установниками - &quot;x64 Installer&quot; та &quot;x64 MSI Installer&quot; немає. Наприклад, виберіть пункт &quot;x64 Installer&quot;. Після завантаження запустимоо програму встановлення:</p>
+<img src="pics/1.12.png" alt="Встановлення Java Development Kit" style="width:600px;" />
+<p>Натисніть кнопку Next. На наступному екрані необхідно вказати, в яку папку проводитиметься встановлення:</p>
+<img src="pics/1.13.png" alt="Встановлення компонентов Java Development Kit"  style="width:600px;" />
 <p>Залишимо вибір папки за замовчуванням і натисніть Next для виконання установки.</p>
 <p>Після завершення установки JDK ми побачимо таке вікно:</p>
-<img src="pics/1.15.png" alt="Завершение установки JDK"  style="width:600px;" />
-<p>При установке JDK все файлы по умолчанию помещаются в каталог <span class="ii">C:\Program Files\Java\jdk-[номер_версії]</span> (якщо при установке не буво изменено расположение). 
-Так, якщо мы откроем в нем подкаталог <span class="ii">bin</span>, то мы сможемо увидеть в нем ряд утилит. 
+<img src="pics/1.15.png" alt="Завершення установки JDK"  style="width:600px;" />
+<p>При встановленні JDK всі файли за замовчуванням поміщаються в каталог <span class="ii">C:\Program Files\Java\jdk-[номер_версії]</span> (якщо при встановленні не було змінено розташування). 
+Так, якщо мы откроем в нем підкаталог <span class="ii">bin</span>, то мы сможемо увидеть в нем ряд утилит. 
 Нас прежде всего интересует утилита компилятора <span class="b">javac</span> и утилита <span class="b">java.exe</span>. <span class="b">javac</span> компилирует код на мові Java в бинарный файл, а 
-<span class="b">java.exe</span> дозволяє запускать скомпилированный файл:</p>
+<span class="b">java.exe</span> дозволяє запускуть скомпилированный файл:</p>
 <img src="pics/1.21.png" alt="Компилятор javac в Java" style="width:600px;"/>
 
-<h4>Установка через пакетний менеджер</h4>
+<h4>Встановлення через пакетний менеджер</h4>
 <p>Через пакетний менеджер winget можна також встановити OpenJDK від Microsoft. Для цього у командному рядку/PowerShell треба виконати команду:</p>
 <pre class="line-numbers"><code class="language-none">winget install Microsoft.OpenJDK.25</code></pre>
 <p>У цьому випадку встановлюється 25-версія JDK.</p>
 
 <h3>Встановлення на Linux</h3>
-<p>Если мы используем JDK от Oracle, то в данном случае нам доступен ряд вариантов установки. В частности, перейдем на страницу: 
+<p>Если мы використовуємо JDK от Oracle, то у даному випадку нам доступен ряд вариантов установки. Зокрема, перейдем на сторінку: 
 <a href="https://www.oracle.com/java/technologies/downloads/#jdk25-linux" rel="nofollow">https://www.oracle.com/java/technologies/downloads/#jdk25-linux</a></p>
 <img src="pics/1.29.png" alt="Встановлення JDK на Linux" style="width:800px;" />
 <ul>
 <li><p><b>ARM64 Compressed Archive</b>: архив для систем на архитектуре ARM64</p></li>
-<li><p><b>ARM64 RPM Package</b>: RPM-пакет для систем на архитектуре ARM64, которые для управления пакетами применяют RPM (наприклад, Fedora, Suse и т.д.)</p></li>
+<li><p><b>ARM64 RPM Package</b>: RPM-пакет для систем на архитектуре ARM64, которые для управления пакетуми застосовують RPM (наприклад, Fedora, Suse и т.д.)</p></li>
 <li><p><b>x64 Compressed Archive</b>: архив для систем на архитектуре Intel x86-64</p></li>
 <li><p><b>x64 Debian Package</b>: Debian-пакет для систем на архитектуре Intel x86-64 (наприклад, Ubuntu, Debian и т.д.)</p></li>
-<li><p><b>x64 RPM Package</b>: RPM-пакет для систем на архитектуре Intel x86-64, которые для управления пакетами применяют RPM (наприклад, Fedora, Suse и т.д.)</p></li>
+<li><p><b>x64 RPM Package</b>: RPM-пакет для систем на архитектуре Intel x86-64, которые для управления пакетуми застосовують RPM (наприклад, Fedora, Suse и т.д.)</p></li>
 </ul>
-<p>Если наша операционная система Ubuntu (на платформе Intel x86-64), то выберем пункт <b>x64 Debian Package</b>, и нам загрузится debian-пакет (в моем случае файл "jdk-25_linux-x64_bin.deb"). 
-Для его установки выполним команду</p>
+<p>Якщо наша операційна система Ubuntu (на платформі Intel x86-64), то оберемо пункт <b>x64 Debian Package</b>, і нам завантажиться debian-пакет (у моєму випадку файл "jdk-25_linux-x64_bin.deb"). 
+Для его установки виконаємо команду</p>
 <pre class="line-numbers"><code class="language-none">sudo dpkg -i jdk-25_linux-x64_bin.deb</code></pre>
 
-<p>Если у нас операционная система, которая для управления пакетами применяет RPM, наприклад, Fedora, Suse и др, на платформе Intel x86-64, 
+<p>Якщо у нас операційна система, яка для керування пакетами застосовує RPM, наприклад, Fedora, Suse та інші, на платформі Intel x86-64, 
 то необхідно выбрать пункт <b>x64 RPM Package</b>. И затем установить загрвженный пакет командой</p>
 <pre class="line-numbers"><code class="language-none">sudo rpm -ivh jdk-25_linux-x64_bin.rpm</code></pre>
 
@@ -68,15 +68,15 @@
 
 <p>Також для різних операційних систем репозиторії можуть бути доступні пакети JDK для установки. Наприклад, встановлення за допомогою пакетного менеджера snap:</p>
 <pre class="line-numbers"><code class="language-none">sudo snap install openjdk</code></pre>
-<p>Установка за допомогою пакетного менеджера apt:</p>
+<p>Встановлення за допомогою пакетного менеджера apt:</p>
 <pre class="line-numbers"><code class="language-none">sudo apt install default-jdk </code></pre>
 <p>Встановлення певної версії JDK за допомогою пакетного менеджера apt:</p>
 <pre class="line-numbers"><code class="language-none">sudo apt install openjdk-25-jdk-headless</code></pre>
 <p>У випадку встановлення архівів все ідентично для всіх основних систем на базі Linux - завантажується архів, розпаковується в певне місце. Потім змінні середовища додається шлях до папки bin розпакованого архіву.</p>
 
 <h3>Встановлення Java на MacOS</h3>
-<p>Для установки Java на MacOS перейдем на страницу загрузок на сайте Oracle по адресу <a href="https://www.oracle.com/java/technologies/downloads/#jdk25-mac" rel="nofollow">https://www.oracle.com/java/technologies/downloads/#jdk25-mac</a>:</p>
-<img src="pics/mac_java1.png" alt="Установка Java на MacOS" style="width: 600px;" />
+<p>Для установки Java на MacOS перейдем на сторінку загрузок на сайте Oracle по адресу <a href="https://www.oracle.com/java/technologies/downloads/#jdk25-mac" rel="nofollow">https://www.oracle.com/java/technologies/downloads/#jdk25-mac</a>:</p>
+<img src="pics/mac_java1.png" alt="Встановлення Java на MacOS" style="width: 600px;" />
 <p>Тут нам доступно 4 варіанти пакетів:</p>
 <ul>
 <li><p><span class="b">ARM64 Compressed Archive</span>: архивный пакет для MacOS на ARM</p></li>	
@@ -84,8 +84,8 @@
 <li><p><span class="b">x64 Compressed Archive</span>: архивный пакет для MacOS на архитектуре Intel x86-64</p></li>	
 <li><p><span class="b">x64 DMG Installer</span>: установщик для MacOS на архитектуре Intel x86-64</p></li>	
 </ul>
-<p>Завантажимо та після завантаження запустимо пакет установника. Спочатку нам відобразиться вітальне вікно.</p>
-<img src="pics/mac_java2.png" alt="Установка Java sdk на MacOS" style="width: 600px;" />
+<p>Завантажимо та після завантаження запустимоо пакет установника. Спочатку нам відобразиться вітальне вікно.</p>
+<img src="pics/mac_java2.png" alt="Встановлення Java sdk на MacOS" style="width: 600px;" />
 
 <p>Далі на всіх наступних кроках залишимо всі налаштування за замовчуванням. І після встановлення нам відобразиться вікно про її успішне закінчення:</p>
 <img src="pics/mac_java3.png" alt="настройка установки Java sdk на MacOS" style="width: 600px;" />
@@ -101,9 +101,9 @@ Java HotSpot(TM) 64-Bit Server VM (build 25+37-LTS-3491, mixed mode, sharing)
 </code></pre>
 
 <h3>Документація</h3>
-<p>Документация є важным вспомогательным элементом при разработке на любом языке программирования, и Java - не исключения. Всю документацию по Java можна найти на оф. сайте Oracle по адресу 
-<a href="https://docs.oracle.com/en/java/javase/25/docs/" rel="nofollow">https://docs.oracle.com/en/java/javase/25/docs/</a> (для 25-й версии JDK, для других версий треба заменить номер на соответствующий).</p>
-<p>Також документация доступна офлайн - її також можна загрузить с оф. сайта в виде архива со страницы <a href="https://www.oracle.com/java/technologies/javase-jdk25-doc-downloads.html" rel="nofollow">https://www.oracle.com/java/technologies/javase-jdk25-doc-downloads.html</a> (для 
+<p>Документация є важным вспомогательным елементом при разработке на любом языке програмирования, и Java - не винятки. Всю документацию по Java можна найти на оф. сайте Oracle по адресу 
+<a href="https://docs.oracle.com/en/java/javase/25/docs/" rel="nofollow">https://docs.oracle.com/en/java/javase/25/docs/</a> (для 25-ї версії JDK, для інших версій треба замінити номер на відповідний).</p>
+<p>Також документація доступна офлайн - її також можна завантажити з оф. сайту у вигляді архіву зі сторінки <a href="https://www.oracle.com/java/technologies/javase-jdk25-doc-downloads.html" rel="nofollow">https://www.oracle.com/java/technologies/javase-jdk25-doc-downloads.html</a> (для 
 25-й версии JDK).</p>
 
 <p>Отже, після встановлення JDK створимо першу програму Java.</p>

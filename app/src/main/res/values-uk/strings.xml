@@ -98,6 +98,11 @@
     <string name="bytecode_compiling">Компіляція…</string>
     <string name="bytecode_only_java">Відкрийте .java файл для перегляду JVM-байткоду (ASM, стиль javap).</string>
     <string name="bytecode_failed">Байткод: %1$s</string>
+    <string name="bytecode_search_hint">Пошук опкоду…</string>
+    <string name="bytecode_no_methods">Методів немає</string>
+    <string name="bytecode_empty">Немає байткоду для показу</string>
+    <string name="bytecode_class_loaded">%1$s  ·  %2$d полів, %3$d методів</string>
+    <string name="bytecode_select_method">Оберіть метод ліворуч</string>
 
     <!-- Settings screen -->
     <string name="settings_section_theme">Тема</string>
@@ -228,4 +233,29 @@
     <string name="settings_verbose_logging">Детальне логування (Logcat)</string>
     <string name="kotlin_run_warning_title">Запуск Kotlin</string>
     <string name="kotlin_run_warning_message">Запуск та компіляція файлів Kotlin (.kt) безпосередньо на пристрої не підтримується через обмеження продуктивності. \n\nБудь ласка, використовуйте підсвітку синтаксису для написання коду, а компіляцію виконуйте на зовнішньому сервері або ПК.</string>
+    <string name="menu_auto_import">Автоімпорт</string>
+    <string name="menu_view_formatted">Форматований перегляд (JSON/XML)</string>
+    <string name="menu_md_preview">Попередній перегляд Markdown</string>
+    <string name="menu_debug">Дебаг</string>
+    <string name="menu_split_screen">Розділити екран</string>
+    <string name="tab_debug">Потоки та змінні</string>
+    <string name="tab_debug_console">Консоль</string>
+    <string name="console_debug_running">▶ Зневадження %1$s…</string>
+    <string name="console_debug_hit_breakpoint">⏸ Зупинка на рядку %1$d</string>
+    <string name="console_debug_ended">Сесію зневадження завершено.</string>
+    <string name="console_debug_resumed">▶ Продовжено</string>
+    <string name="debug_step_over">Крок (F6)</string>
+    <string name="debug_step_into">Вхід у метод (F5)</string>
+    <string name="debug_step_out">Вихід з методу (F7)</string>
+    <string name="debug_resume">Продовжити (F9)</string>
+    <string name="debug_stop">Зупинити</string>
+    <string name="debug_add_watch">Додати спостереження</string>
+    <string name="debug_watch_hint">Введіть вираз (напр. x, obj.name, list.size())</string>
+    <string name="debug_evaluate">Обчислити вираз</string>
+    <string name="debug_evaluate_hint">Вираз</string>
+    <string name="dialog_debug_evaluate_title">Обчислити вираз</string>
+    <string name="dialog_debug_watch_title">Додати вираз спостереження</string>
+    <string name="debug_no_variables">Немає змінних в області видимості</string>
+    <string name="debug_no_stack">Немає стеку викликів</string>
+    <string name="debug_not_debugging">Не в режимі зневадження</string>
 </resources>

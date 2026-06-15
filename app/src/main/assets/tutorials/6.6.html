@@ -3,7 +3,7 @@
 <head>
 <title>Java | Форматований висновок. PrintStream та PrintWriter</title>
 <meta charset="utf-8" />
-<meta name="description" content="Вывод данных на консоль и считывание данных с консоли в языке программирования Java, Форматируемый ввод и вывод, классы PrintStream и PrintWriter">
+<meta name="description" content="Вивід данных на консоль и считывание данных с консоли в языке програмирования Java, Форматируемый ввод и вивід, класы PrintStream и PrintWriter">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -11,13 +11,13 @@
 <body>
 <div id="container">
 <div class="item center menC">
-     <h2>Форматируемый ввод и вывод. PrintStream и PrintWriter</h2><div class="date">Останнє оновлення: 26.04.2018</div>
+     <h2>Форматируемый ввод и вивід. PrintStream и PrintWriter</h2><div class="date">Останнє оновлення: 26.04.2018</div>
 
-	<h3>Класс PrintStream</h3><p>Класс PrintStream - це именно тот класс, який використовується для вывода на консоль. Когда мы выводим на консоль деяку информацию за допомогою 
-вызова <code>System.out.println()</code>, то тем самым мы задействует <span class="b">PrintStream</span>, оскільки переменная <code>out</code> в 
-классе System як раз и представляє об'єкт класса PrintStream, а метод <code>println()</code> - це метод класса PrintStream.</p>
-<p>Но PrintStream полезен не лише для вывода на консоль. Мы можемо використовувати данный класс для записи информации в поток вывода. Для цього PrintStream 
-определяет ряд конструкторов:</p> 
+	<h3>Клас PrintStream</h3><p>Клас PrintStream - це именно тот клас, який використовується для вивіда на консоль. Когда мы вивідим на консоль деяку информацию за допомогою 
+вызова <code>System.out.println()</code>, то тем самым мы задействует <span class="b">PrintStream</span>, оскільки змінна <code>out</code> в 
+класе System як раз и представляє об'єкт класа PrintStream, а метод <code>println()</code> - це метод класа PrintStream.</p>
+<p>Но PrintStream полезен не лише для вивіда на консоль. Мы можемо використовувати данный клас для записи информации в потік вивіда. Для цього PrintStream 
+визначає ряд конструкторов:</p> 
 <pre class="line-numbers"><code class="language-java">
 PrintStream(OutputStream outputStream)
 PrintStream(OutputStream outputStream, boolean autoFlushingOn)
@@ -27,14 +27,14 @@ PrintStream(File outputFile, String charSet) throws FileNotFoundException, Unsup
 PrintStream(String outputFileName) throws FileNotFoundException
 PrintStream(String outputFileName, String charSet) throws FileNotFoundException, UnsupportedEncodingException
 </code></pre>
-<p>Параметр <code>outputStream</code> - це об'єкт OutputStream, в який производится запись. Параметр <code>autoFlushingOn</code> при значении 
-true дозволяє автоматически записывать дані в поток вывода. По умолчанию цей параметр равен false. Параметр <code>charSet</code> дозволяє указать кодировку символов.</p>
-<p>В качестве источника для записи данных вместо OutputStream можна використовувати об'єкт File або строковый путь, по которому буде создаваться файл.</p>
-<p>Для вывода информации в выходной поток PrintStream использует следующие методы:</p>
+<p>Параметр <code>outputStream</code> - це об'єкт OutputStream, в який производится запис. Параметр <code>autoFlushingOn</code> при значении 
+true дозволяє автоматически записывать дані в потік вивіда. По умолчанию цей параметр равен false. Параметр <code>charSet</code> дозволяє указать кодировку символів.</p>
+<p>В качестве источника для записи данных вместо OutputStream можна використовувати об'єкт File або рядківовый путь, по которому буде создаваться файл.</p>
+<p>Для вивіда информации в выходной потік PrintStream використовує следующие методи:</p>
 <ul>
-<li><p><code>println()</code>: вывод строковой информации с переводом строки</p></li>
-<li><p><code>print()</code>: вывод строковой информации без перевода строки</p></li>
-<li><p><code>printf()</code>: форматированный вывод</p></li>
+<li><p><code>println()</code>: вивід рядківовой информации с переводом рядки</p></li>
+<li><p><code>print()</code>: вивід рядківовой информации без перевода рядки</p></li>
+<li><p><code>printf()</code>: форматированный вивід</p></li>
 </ul>
 <p>Наприклад, запишем информацию в файл:</p>
 <pre class="line-numbers"><code class="language-java">
@@ -44,12 +44,12 @@ public class Program {
 
     public static void main(String[] args) {
         
-        String text = "Привет мир!"; // строка для записи
+        String text = "Привет мир!"; // рядок для записи
         try(FileOutputStream fos=new FileOutputStream("C://SomeDir//notes3.txt");
                 PrintStream printStream = new PrintStream(fos))
         {
             printStream.println(text);
-            System.out.println("Запись в файл произведена");
+            System.out.println("Запис в файл произведена");
         }
         catch(IOException ex){
             
@@ -58,12 +58,12 @@ public class Program {
     } 
 }
 </code></pre>
-<p>В данном случае застосовується форма конструктора PrintStream, которая в качестве параметра приймає поток вывода: <code>PrintStream (OutputStream out)</code>. Крім того, 
-мы могли бы використовувати ряд других форм конструктора, наприклад, указывая названия файла для записи: <code>PrintStream (string filename)</code></p>
-<p>В качестве потока вывода використовується об'єкт <code>FileOutputStream</code>. С помощью метода <code>println()</code> производится запись информации 
-в выходной поток - то есть в об'єкт FileOutputStream. (В случае с выводом на консоль за допомогою <code>System.out.println()</code> в качестве потока вывода выступает 
+<p>У даному випадку застосовується форма конструктора PrintStream, которая в качестве параметра приймає потік вивіда: <code>PrintStream (OutputStream out)</code>. Крім того, 
+мы могли бы використовувати ряд других форм конструктора, наприклад, указывая названия файлу для записи: <code>PrintStream (string filename)</code></p>
+<p>В качестве потіка вивіда використовується об'єкт <code>FileOutputStream</code>. За допомогою методу <code>println()</code> производится запис информации 
+в выходной потік - то есть в об'єкт FileOutputStream. (В случае с вивідом на консоль за допомогою <code>System.out.println()</code> в качестве потіка вивіда выступает 
 консоль)</p>
-<p>Крім того, як и любой поток вывода и наследник класса OutputStream он имїїт метод <code>write</code>:</p>
+<p>Крім того, як и любой потік вивіда и наследник класа OutputStream он имїїт метод <code>write</code>:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.io.*;
 
@@ -91,37 +91,37 @@ public class Program {
     } 
 }
 </code></pre>
-<p>После виконання цей программы получится файл со наступним вмістм:</p>
+<p>Після виконання цей програми получится файл со наступним вмістм:</p>
 <pre>
 Hello World!Welcome to Java!
 Name: Tom Age: 34 
 PrintStream
 </pre>
 <h3>PrintWriter</h3>
-<p>На PrintStream похож другой класс <span class="b">PrintWriter</span>. Его можна використовувати як для вывода информации на консоль, так и в файл або 
-любой другой поток вывода. Данный класс имїїт ряд конструкторов:</p>
+<p>На PrintStream похож другой клас <span class="b">PrintWriter</span>. Его можна використовувати як для вивіда информации на консоль, так и в файл або 
+любой другой потік вивіда. Данный клас имїїт ряд конструкторов:</p>
 <ul>
 <li><p><code>PrintWriter(File file)</code>: автоматически додає информацию в указанный файл</p></li>
 <li><p><code>PrintWriter(File file, String csn)</code>: автоматически додає информацию в указанный файл с учетом кодировки csn</p></li>
-<li><p><code>PrintWriter(OutputStream out)</code>: для вывода информации використовується существующий об'єкт OutputStream, автоматически сбрасывая в него дані</p></li>
-<li><p><code>PrintWriter(OutputStream out, boolean autoFlush)</code>: для вывода информации використовується существующий об'єкт OutputStream, второй параметр указывает, 
+<li><p><code>PrintWriter(OutputStream out)</code>: для вивіда информации використовується существующий об'єкт OutputStream, автоматически сбрасывая в него дані</p></li>
+<li><p><code>PrintWriter(OutputStream out, boolean autoFlush)</code>: для вивіда информации використовується существующий об'єкт OutputStream, второй параметр вказує, 
 треба ли автоматически добавлять в OutputStream дані</p></li>
-<li><p><code>PrintWriter(String fileName)</code>: автоматически додає информацию в файл по указанному имени</p></li>
-<li><p><code>PrintWriter(String fileName, String csn)</code>: автоматически додає информацию в файл по указанному имени, используя кодировку csn</p></li>
-<li><p><code>PrintWriter(Writer out)</code>: для вывода информации використовується существующий об'єкт Writer, в який автоматически идет запись данных</p></li>
-<li><p><code>PrintWriter(Writer out, boolean autoFlush)</code>: для вывода информации використовується существующий об'єкт Writer, второй параметр указывает, 
+<li><p><code>PrintWriter(String fileName)</code>: автоматически додає информацию в файл по указанному імені</p></li>
+<li><p><code>PrintWriter(String fileName, String csn)</code>: автоматически додає информацию в файл по указанному імені, використовуючи кодировку csn</p></li>
+<li><p><code>PrintWriter(Writer out)</code>: для вивіда информации використовується существующий об'єкт Writer, в який автоматически идет запис данных</p></li>
+<li><p><code>PrintWriter(Writer out, boolean autoFlush)</code>: для вивіда информации використовується существующий об'єкт Writer, второй параметр вказує, 
 треба ли автоматически добавлять в Writer дані</p></li>
 </ul>
-<p>PrintWriter реализует інтерфейсы Appendable, Closable и Flushable, и поцему после использования представляемый им поток треба закрывать.</p>
-<p>Для записи данных в поток он також використовується методы <span class="b">printf()</span> и <span class="b">println()</span>.</p>
-<p>Наприклад, применим данный класс для вывода на консоль:</p>
+<p>PrintWriter реалізує інтерфейсы Appendable, Closable и Flushable, и поцему після использования представляемый им потік треба закрывать.</p>
+<p>Для записи данных в потік он також використовується методи <span class="b">printf()</span> и <span class="b">println()</span>.</p>
+<p>Наприклад, застосуємо данный клас для вивіда на консоль:</p>
 <pre class="line-numbers"><code class="language-java">
 try(PrintWriter pw = new PrintWriter(System.out))
 {
     pw.println("Hello world!");
 }
 </code></pre>
-<p>В качестве потока вывода здесь застосовується System.out, а на консоль буде выведена строка "Hello world!"</p>
+<p>В качестве потіка вивіда здесь застосовується System.out, а на консоль буде выведена рядок "Hello world!"</p>
 
   </div>
 

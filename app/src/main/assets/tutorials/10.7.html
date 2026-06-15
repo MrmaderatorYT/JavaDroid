@@ -3,7 +3,7 @@
 <head>
 <title>Java | Групування в Stream API</title>
 <meta charset="utf-8" />
-<meta name="description" content="Групування данных в Stream API в языке программирования Java, метод Collectors.groupingBy">
+<meta name="description" content="Групування данных в Stream API в языке програмирования Java, метод Collectors.groupingBy">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -14,7 +14,7 @@
      <h2>Групування</h2><div class="date">Останнє оновлення: 30.04.2018</div>
 
 	<p>Щоб сгруппировать дані по якому-нибудь признаку, нам треба використовувати в связке метод <code>collect()</code> об'єкта Stream и метод 
-<span class="b">Collectors.groupingBy()</span>. Допустим, у нас есть следующий класс:</p>
+<span class="b">Collectors.groupingBy()</span>. Допустим, у нас есть следующий клас:</p>
 <pre class="line-numbers"><code class="language-java">
 class Phone{
     
@@ -65,7 +65,7 @@ public class Program {
     } 
 }
 </code></pre>
-<p>Консольный вывод:</p>
+<p>Консольный вивід:</p>
 <div class="console">
 <pre class="consoletext">
 Google
@@ -80,12 +80,12 @@ Galaxy S9
 Galaxy S8
 </pre>
 </div>
-<p>Итак, для создания групп в метод <code>phoneStream.collect()</code> передаєся вызов функції <code>Collectors.groupingBy()</code>, 
+<p>Итак, для створенняя групп в метод <code>phoneStream.collect()</code> передаєся вызов функції <code>Collectors.groupingBy()</code>, 
 которая за допомогою выражения <code>Phone::getCompany</code> группирует об'єкты по компании. В итоге буде создан об'єкт Map, в котором ключами є названия компаний, 
-а значениями - список связанных с компаниями телефонов.</p>
+а значеннями - список связанных с компаниями телефонов.</p>
 <h3>Метод Collectors.partitioningBy</h3>
-<p>Метод <span class="b">Collectors.partitioningBy()</span> имїїт похожїї действие, лише он делит элементы на группы по принципу, соответствует ли элемент определенному условию. 
-Например:</p>
+<p>Метод <span class="b">Collectors.partitioningBy()</span> имїїт похожїї действие, лише он делит елементы на группы по принципу, відповідає ли елемент визначенийному условию. 
+Наприклад:</p>
 <pre class="line-numbers"><code class="language-java">
 Map&lt;Boolean, List&lt;Phone&gt;&gt; phonesByCompany = phoneStream.collect(
                 Collectors.partitioningBy(p-&gt;p.getCompany()=="Apple"));
@@ -100,10 +100,10 @@ for(Map.Entry&lt;Boolean, List&lt;Phone&gt;&gt; item : phonesByCompany.entrySet(
     System.out.println();
 }
 </code></pre>
-<p>В данном случае за допомогою условия <code>p-&gt;p.getCompany()=="Apple"</code> мы смотрим, принадлежит ли телефон компании Apple. Если телефон принадлежит цей 
+<p>У даному випадку за допомогою условия <code>p-&gt;p.getCompany()=="Apple"</code> мы смотрим, принадлежит ли телефон компании Apple. Если телефон принадлежит цей 
 компании, то он попадает в одну группу, якщо нет, то в другую.</p>
 <h3>Метод Coollectors.counting</h3>
-<p>Метод <span class="b">Collectors.counting</span> застосовується в <code>Collectors.groupingBy()</code> для вычисления количества элементов в каждой группе:</p>
+<p>Метод <span class="b">Collectors.counting</span> застосовується в <code>Collectors.groupingBy()</code> для вычисления количества елементов в каждой группе:</p>
 <pre class="line-numbers"><code class="language-java">
 Map&lt;String, Long&gt; phonesByCompany = phoneStream.collect(
         Collectors.groupingBy(Phone::getCompany, Collectors.counting()));
@@ -113,7 +113,7 @@ for(Map.Entry&lt;String, Long&gt; item : phonesByCompany.entrySet()){
     System.out.println(item.getKey() + " - " + item.getValue());
 }
 </code></pre>
-<p>Консольный вывод:</p>
+<p>Консольный вивід:</p>
 <div class="console">
 <pre class="consoletext">
 Google -1
@@ -123,8 +123,8 @@ Samsung - 2
 </div>
 
 <h3>Метод Collectors.summing</h3>
-<p>Метод Collectors.summing застосовується для подсчета суммы. В зависимости от типу данных, к которым застосовується метод, он имїїт следующие формы: 
-<code>summingInt()</code>, <code>summingLong()</code>, <code>summingDouble()</code>. Применим цей метод для подсчета стоимости всех смартфонов по компаниям:</p>
+<p>Метод Collectors.summing застосовується для підсчета суммы. В зависимости от типу данных, к которым застосовується метод, он имїїт следующие формы: 
+<code>summingInt()</code>, <code>summingLong()</code>, <code>summingDouble()</code>. Застосуємо цей метод для підсчета стоимости всех смартфонов по компаниям:</p>
 <pre class="line-numbers"><code class="language-java">
 Map&lt;String, Integer&gt; phonesByCompany = phoneStream.collect(
         Collectors.groupingBy(Phone::getCompany, Collectors.summingInt(Phone::getPrice)));
@@ -134,10 +134,10 @@ for(Map.Entry&lt;String, Integer&gt; item : phonesByCompany.entrySet()){
     System.out.println(item.getKey() + " - " + item.getValue());
 }
 </code></pre>
-<p>С помощью выражения <code>Collectors.summingInt(Phone::getPrice))</code> мы указываем, что для каждой компании буде вычислять совокупная цена 
-всех її смартфонов. И поскольку вычисляется результат - сумма для значений типу int, то в качестве типу возвращаемой коллекции використовується тип 
+<p>За допомогою выражения <code>Collectors.summingInt(Phone::getPrice))</code> мы указываем, что для каждой компании буде вычислять совокупная цена 
+всех її смартфонов. И поскольку вычисляется результат - сумма для значений типу int, то в качестве типу повертаємоой колекції використовується тип 
 <code>Map&lt;String, Integer&gt;</code></p>
-<p>Консольный вывод:</p>
+<p>Консольный вивід:</p>
 <div class="console">
 <pre class="consoletext">
 Google - 500
@@ -146,8 +146,8 @@ Samsung - 780
 </pre>
 </div>
 <h3>Методи maxBy и minBy</h3>
-<p>Методи maxBy и minBy застосовуються для подсчета минимального и максимального значения в каждой группе. В качестве параметра эти методы принимают 
-функцию компаратора, которая нужна для сравнения значений. Наприклад, найдем для каждой компании телефон с минимальной ценой:</p>
+<p>Методи maxBy и minBy застосовуються для підсчета минимального и максимального значення в каждой группе. В качестве параметра эти методи приймають 
+функцію компаратора, которая нужна для сравнения значений. Наприклад, найдем для каждой компании телефон с минимальной ценой:</p>
 <pre class="line-numbers"><code class="language-java">
 Map&lt;String, Optional&lt;Phone&gt;&gt; phonesByCompany = phoneStream.collect(
         Collectors.groupingBy(Phone::getCompany, 
@@ -158,7 +158,7 @@ for(Map.Entry&lt;String, Optional&lt;Phone&gt;&gt; item : phonesByCompany.entryS
     System.out.println(item.getKey() + " - " + item.getValue().get().getName());
 }
 </code></pre>
-<p>Консольный вывод:</p>
+<p>Консольный вивід:</p>
 <div class="console">
 <pre class="consoletext">
 Google - Pixel 2
@@ -166,10 +166,10 @@ Apple - iPhone 8
 Samsung - Galaxy S8
 </pre>
 </div>
-<p>В качестве возвращаемого значения операции группировки використовується об'єкт <code>Map&lt;String, Optional&lt;Phone&gt;&gt;</code>. Опять же поскольку 
-группируем по компаниям, то ключом буде выступать строка, а значением - об'єкт <code>Optional&lt;Phone&gt;</code>.</p>
+<p>В качестве повертаємоого значення операції группировки використовується об'єкт <code>Map&lt;String, Optional&lt;Phone&gt;&gt;</code>. Опять же поскольку 
+группируем по компаниям, то ключом буде выступать рядок, а значенням - об'єкт <code>Optional&lt;Phone&gt;</code>.</p>
 <h3>Метод summarizing</h3>
-<p>Методи <code>summarizingInt() / summarizingLong() / summarizingDouble()</code> дозволяють об'єднати в набор значения соответствующих типов:</p>
+<p>Методи <code>summarizingInt() / summarizingLong() / summarizingDouble()</code> дозволяють об'єднати в набор значення соответствующих типів:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.IntSummaryStatistics;
 //....................................
@@ -184,19 +184,19 @@ for(Map.Entry&lt;String, IntSummaryStatistics&gt; item : priceSummary.entrySet()
 }
 </code></pre>
 <p>Метод <code>Collectors.summarizingInt(Phone::getPrice))</code> створює набор, в який помещаются цены для всех телефонов каждой из групп. Данный набор 
-инкапсулируется в об'єкте <span class="b">IntSummaryStatistics</span>. Соответственно якщо бы мы применяли методы <code>summarizingLong()</code> або <code>summarizingDouble()</code>, то 
+инкапсулируется в об'єкте <span class="b">IntSummaryStatistics</span>. Соответственно якщо бы мы применяли методи <code>summarizingLong()</code> або <code>summarizingDouble()</code>, то 
 соответственно бы получали об'єкты LongSummaryStatistics або DoubleSummaryStatistics.</p>
-<p>У цих об'єктов есть ряд методів, який дозволяють выполнить различные атомарные операции над набором:</p>
+<p>У цих об'єктов есть ряд методів, який дозволяють выполнить различные атомарные операції над набором:</p>
 <ul>
 <li><p><span class="b">getAverage()</span>: повертає среднїї значення</p></li>
-<li><p><span class="b">getCount()</span>: повертає количество элементов в наборе</p></li>
-<li><p><span class="b">getMax()</span>: повертає максимальное значение</p></li>
-<li><p><span class="b">getMin()</span>: повертає минимальное значение</p></li>
-<li><p><span class="b">getSum()</span>: повертає сумму элементов</p></li>
-<li><p><span class="b">accept()</span>: додає в набор новый элемент</p></li>
+<li><p><span class="b">getCount()</span>: повертає кількість елементів в наборе</p></li>
+<li><p><span class="b">getMax()</span>: повертає максимальное значення</p></li>
+<li><p><span class="b">getMin()</span>: повертає минимальное значення</p></li>
+<li><p><span class="b">getSum()</span>: повертає сумму елементов</p></li>
+<li><p><span class="b">accept()</span>: додає в набор новый елемент</p></li>
 </ul>
-<p>В данном случае мы получаем среднюю цену смартфонов для каждой группы.</p>
-<p>Консольный вывод:</p>
+<p>У даному випадку мы отримуємо среднюю цену смартфонов для каждой группы.</p>
+<p>Консольный вивід:</p>
 <div class="console">
 <pre class="consoletext">
 Google - 500.0
@@ -205,7 +205,7 @@ Samsung - 390.0
 </pre>
 </div>
 <h3>Метод mapping</h3>
-<p>Метод mapping дозволяє дополнительно обработать дані и задать функцию отображения об'єктов из потока на якой-нибудь другой тип данных. Например:</p>
+<p>Метод mapping дозволяє дополнительно обпрацювати дані и задать функцію отображения об'єктов из потіка на якой-нибудь другой тип данных. Наприклад:</p>
 <pre class="line-numbers"><code class="language-java">
 Map&lt;String, List&lt;String&gt;&gt; phonesByCompany = phoneStream.collect(
     Collectors.groupingBy(Phone::getCompany,
@@ -219,7 +219,7 @@ for(Map.Entry&lt;String, List&lt;String&gt;&gt; item : phonesByCompany.entrySet(
     }
 }
 </code></pre>
-<p>Выражение <code>Collectors.mapping(Phone::getName, Collectors.toList())</code> указывает, что в группу будуть выделятся названия смартфонов, причем 
+<p>Выражение <code>Collectors.mapping(Phone::getName, Collectors.toList())</code> вказує, что в группу будуть выделятся названия смартфонов, причем 
 группа буде представлять об'єкт List.</p>
 
   </div>

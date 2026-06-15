@@ -3,7 +3,7 @@
 <head>
 <title>Java | Процеси. Process та ProcessBuilder</title>
 <meta charset="utf-8" />
-<meta name="description" content="Управление процессами в языке программирования Java, классы Process и ProcessBuilder, створення, настройка, запуск и завершение процессов, направление вывода процессов на консоль и в файл, запуск произвольных программ">
+<meta name="description" content="Управление процесами в языке програмирования Java, класы Process и ProcessBuilder, створення, настройка, запуск и завершення процесов, направление вивіда процесов на консоль и в файл, запуск произвольных програм">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -13,24 +13,24 @@
 <div class="item center menC">
      <h1>Процеси. Process та ProcessBuilder</h1> <div class="date">Останнє оновлення: 29.10.2025</div>
 
-<p>Иногда в рамках одной программы на мові Java требуется выполнить другую, произвольную программу. И стандартная библиотека мови Java надає для цей цели класс <b>Process</b>.  
-Класс <b>Process</b> выполняет команду в отдельном процессе операционной системы  и дозволяє взаємодіяти с его стандартными потоками ввода, вывода и ошибок. В частности, цей класс забезпечує управление процессами и надає методы для передачи данных в процесс и, наоборот, получения данных из процесса, а також ожидания завершения процесса, 
-проверки статуса процесса и его завершения.</p>
-<h3>Створення процесса</h3>
-<p>Для создания и настройки об'єкта <code>Process</code> застосовується класс <b>ProcessBuilder</b>. Цет класс имїїт два похожих конструктора</p>
+<p>Иногда в рамках одной програми на мові Java требуется выполнить другую, произвольную програму. И стандартная бібліотека мови Java надає для цей цели клас <b>Process</b>.  
+Клас <b>Process</b> виконує команду в отдельном процесе операционной системы  и дозволяє взаємодіяти с его стандартными потіками ввода, вивіда и ошибок. Зокрема, цей клас забезпечує управление процесами и надає методи для передачи данных в процес и, наоборот, получения данных из процеса, а також ожидания завершення процеса, 
+проверки статуса процеса и его завершення.</p>
+<h3>Створення процеса</h3>
+<p>Для створенняя и настройки об'єкта <code>Process</code> застосовується клас <b>ProcessBuilder</b>. Цет клас имїїт два похожих конструктора</p>
 <pre class="line-numbers"><code class="language-java">
 ProcessBuilder(String... command)
 ProcessBuilder(List&lt;String&gt; command)
 </code></pre>
-<p>Оба цих конструктора принимают путь к запускаемой программе и набор її аргументов в виде строк. Например:</p>
+<p>Оба цих конструктора приймають путь к запускуємоой програме и набор її аргументов в виде рядків. Наприклад:</p>
 <pre class="line-numbers"><code class="language-java">var builder = new ProcessBuilder("java", "--version");</code></pre>
-<p>Первый аргумент - "java" представляє имя приложения, которае буде запускаться в процессе. Второй параметр - "--version" - аргумент, який передаєся приложению. То есть в данном случае будем запускать 
+<p>Первый аргумент - "java" представляє ім'я додатки, которае буде запускуться в процесе. Второй параметр - "--version" - аргумент, який передаєся приложению. То есть у даному випадку будем запускуть 
 команду "java --version", пытаясь отримати текущую версию Java.</p>
 
-<h3>Запуск процесса</h3>
-<p>Для запуска процесса в классе <code>ProcessBuilder</code> определен метод <b>start()</b></p>
+<h3>Запуск процеса</h3>
+<p>Для запуску процеса в класе <code>ProcessBuilder</code> визначений метод <b>start()</b></p>
 <pre class="line-numbers"><code class="language-java">Process start()</code></pre>
-<p>Цет метод повертає об'єкт запущенного процесса. Например:</p>
+<p>Цет метод повертає об'єкт запущенного процеса. Наприклад:</p>
 <pre class="line-numbers"><code class="language-java">
 class Program{
  
@@ -41,42 +41,42 @@ class Program{
     }
 }
 </code></pre>
-<p>Однак после компиляции и запуска программы мы ничего не увидим. Для цього нам треба дополнительно выполнить деяку настройку.</p>
+<p>Однак після компиляции и запуску програми мы ничего не увидим. Для цього нам треба дополнительно выполнить деяку настройку.</p>
 
-<h3>Настройка создания процесса</h3>
-<p>С помощью ряда методів <b>ProcessBuilder</b> можна настроить створення и выполнение процесса. Все эти методы повертають об'єкт <code>ProcessBuilder</code>:</p>
+<h3>Настройка створенняя процеса</h3>
+<p>За допомогою ряда методів <b>ProcessBuilder</b> можна настроить створення и виконання процеса. Все эти методи повертають об'єкт <code>ProcessBuilder</code>:</p>
 <ul>
-<li><p><code>ProcessBuilder command(String... command) / command(List<String> command)</code>: устанавливает запускаемую программу и аргументы для її запускав.</p></li>
-<li><p><code>ProcessBuilder directory(File directory)</code>: устанавливает рабочий каталог для построителя процессов.</p></li>
-<li><p><code>ProcessBuilder inheritIO()</code>: устанавливает источник ввода и назначение вывода подпроцесса такими же, як у текущего процесса Java.</p></li>
-<li><p><code>ProcessBuilder redirectError(File file)</code>: устанавливает файл для вывода ошибок.</p></li>
-<li><p><code>ProcessBuilder redirectError(ProcessBuilder.Redirect destination)</code>: устанавливает стандартный вывод ошибок.</p></li>
-<li><p><code>ProcessBuilder redirectInput(File file)</code>: устанавливает файл в качестве стандартного источника ввода.</p></li>
-<li><p><code>ProcessBuilder redirectInput(ProcessBuilder.Redirect source)</code>: устанавливает источник стандартного ввода.</p></li>
-<li><p><code>ProcessBuilder redirectOutput(File file)</code>: устанавливает файл в качестве стандартного вывода.</p></li>
-<li><p><code>ProcessBuilder redirectOutput(ProcessBuilder.Redirect destination)</code>: устанавливает место вывода.</p></li></ul>
-<li><p><code>ProcessBuilder redirectErrorStream(boolean redirectErrorStream)</code>: устанавливает свойство redirectErrorStream - якщо оно равно <code>true</code>, то стандартный вывод и вывод ошибок производятся в одно место.</p></li>
+<li><p><code>ProcessBuilder command(String... command) / command(List<String> command)</code>: встановлює запускуємоую програму и аргументы для її запускув.</p></li>
+<li><p><code>ProcessBuilder directory(File directory)</code>: встановлює рабочий каталог для построителя процесов.</p></li>
+<li><p><code>ProcessBuilder inheritIO()</code>: встановлює источник ввода и назначення вивіда підпроцеса такими же, як у текущего процеса Java.</p></li>
+<li><p><code>ProcessBuilder redirectError(File file)</code>: встановлює файл для вивіда ошибок.</p></li>
+<li><p><code>ProcessBuilder redirectError(ProcessBuilder.Redirect destination)</code>: встановлює стандартный вивід ошибок.</p></li>
+<li><p><code>ProcessBuilder redirectInput(File file)</code>: встановлює файл в качестве стандартного источника ввода.</p></li>
+<li><p><code>ProcessBuilder redirectInput(ProcessBuilder.Redirect source)</code>: встановлює источник стандартного ввода.</p></li>
+<li><p><code>ProcessBuilder redirectOutput(File file)</code>: встановлює файл в качестве стандартного вивіда.</p></li>
+<li><p><code>ProcessBuilder redirectOutput(ProcessBuilder.Redirect destination)</code>: встановлює место вивіда.</p></li></ul>
+<li><p><code>ProcessBuilder redirectErrorStream(boolean redirectErrorStream)</code>: встановлює свойство redirectErrorStream - якщо оно равно <code>true</code>, то стандартный вивід и вивід ошибок производятся в одно место.</p></li>
 </ul>
 
 <p>Здесь треба відзначити следующие важные аспекты:</p>
 <ul>
-<li><p><span class="b">Вывод</span>: куда буде идти вывод запускаемого процесса. Задается методом <code>redirectOutput()</code></p></li>
-<li><p><span class="b">Ввод</span>: откуда буде идти ввод данных для запускаемого процесса. Задается методом <code>redirectInput()</code></p></li>
-<li><p><span class="b">Вывод ошибок</span>: куда буде идти вывод ошибок процесса. Задается методом <code>redirectError()</code> и <code>redirectErrorStream()</code></p></li>
+<li><p><span class="b">Вивід</span>: куда буде йти вивід запускуємоого процеса. Задаєся методом <code>redirectOutput()</code></p></li>
+<li><p><span class="b">Ввод</span>: откуда буде йти ввод данных для запускуємоого процеса. Задаєся методом <code>redirectInput()</code></p></li>
+<li><p><span class="b">Вивід ошибок</span>: куда буде йти вивід ошибок процеса. Задаєся методом <code>redirectError()</code> и <code>redirectErrorStream()</code></p></li>
 </ul>
 
-<p>Мы також можемо отримати устанавливаемые параметры за допомогою одноименных методів:</p>
+<p>Мы також можемо отримати устанавливаемые параметри за допомогою одноименных методів:</p>
 <ul>
-<li><p><code>List&lt;String>&gt; command()</code></p><p>Повертає запускаемую программу и аргументы для її запуска.</p></li>
-<li><p><code>File directory()</code></p><p>Повертає рабочий каталог для построителя процессов.</p></li>
-<li><p><code>boolean redirectErrorStream()</code>: Указывает, об'єднує ли цей построитель процессов стандартный вывод ошибок и стандартный вывод.</p></li>
-<li><p><code>ProcessBuilder.Redirect redirectError()</code>: Повертає стандартный приемник ошибок цього построителя процессов.</p></li>
+<li><p><code>List&lt;String>&gt; command()</code></p><p>Повертає запускуємоую програму и аргументы для її запуску.</p></li>
+<li><p><code>File directory()</code></p><p>Повертає рабочий каталог для построителя процесов.</p></li>
+<li><p><code>boolean redirectErrorStream()</code>: Вказує, об'єднує ли цей построитель процесов стандартный вивід ошибок и стандартный вивід.</p></li>
+<li><p><code>ProcessBuilder.Redirect redirectError()</code>: Повертає стандартный приемник ошибок цього построителя процесов.</p></li>
 <li><p><code>ProcessBuilder.Redirect redirectInput()</code>: Повертає стандартный источник ввода.</p></li>
-<li><p><code>ProcessBuilder.Redirect redirectOutput()</code>: Повертає стандартный вывод.</p></li>
+<li><p><code>ProcessBuilder.Redirect redirectOutput()</code>: Повертає стандартный вивід.</p></li>
 </ul>
-<p>Можете указать, что потоки ввода, вывода и ошибок нового процесса повинні совпадать с потоками JVM. Если пользователь запускає JVM в консоли, любой пользовательский ввод перенаправляется в процесс, 
-а вывод процесса отображается в консоли. Для цього застосовується метод <b>inheritIO()</b>. Наприклад, наша основная программа запускаєся в консоли, и мы хочемо, чтобы запускаемый процесс також 
-выводил дані на консоль:</p>
+<p>Можете указать, что потіки ввода, вивіда и ошибок нового процеса повинні совпадать с потіками JVM. Если пользователь запускує JVM в консоли, любой пользовательский ввод перенаправляется в процес, 
+а вивід процеса отображается в консоли. Для цього застосовується метод <b>inheritIO()</b>. Наприклад, наша основная програма запускуєся в консоли, и мы хочемо, чтобы запускуємоый процес також 
+вивідил дані на консоль:</p>
 <pre class="line-numbers"><code class="language-java">
 class Program{
  
@@ -84,19 +84,19 @@ class Program{
           
         var builder = new ProcessBuilder("java", "--version");
         Process javac = builder
-                            .inheritIO()    // запускаемый процесс найде параметры ввода/вывода текущего процесса
-                            .start();       // запускаем процесс
+                            .inheritIO()    // запускуємоый процес найде параметри ввода/вивіда текущего процеса
+                            .start();       // запускуємо процес
     }
 }
 </code></pre>
-<p>В итоге при запуске мы увидим версию Java - по сути вывод запущенного подпроцесса:</p>
+<p>В итоге при запуску мы увидим версию Java - по сути вивід запущенного підпроцеса:</p>
 <pre class="line-numbers"><code class="language-none">
 eugene@Eugene:/workspace/java/hello$ javac Program.java && java Program
 java 25 2025-09-16 LTS
 Java(TM) SE Runtime Environment (build 25+37-LTS-3491)
 Java HotSpot(TM) 64-Bit Server VM (build 25+37-LTS-3491, mixed mode, sharing)
 </code></pre>
-<p>Також можна по отдельности направить потоки подпроцесса на текущие процессы JVM. Для цього використовується константа <span class="b">ProcessBuilder.Redirect.INHERIT</span></p>
+<p>Також можна по отдельности направить потіки підпроцеса на текущие процесы JVM. Для цього використовується константа <span class="b">ProcessBuilder.Redirect.INHERIT</span></p>
 <pre class="line-numbers"><code class="language-java">
 class Program{
  
@@ -109,7 +109,7 @@ class Program{
     }
 }
 </code></pre>
-<p>Ще один распространенный способ вывода - вывод в файл. Для цього в метод <code>redirectOutput()</code> передаєся об'єкт <span class="b">File</span>:</p>
+<p>Ще один распространенный способ вивіда - вивід в файл. Для цього в метод <code>redirectOutput()</code> передаєся об'єкт <span class="b">File</span>:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.nio.file.Path;
 
@@ -124,21 +124,21 @@ class Program{
     }
 }
 </code></pre>
-<p>Здесь для создания пути застосовується встроенный інтерфейс <code>java.nio.file.Path</code>. С помощью статического метода <code>Path.of()</code> определяем путь к файлу. В данном случае буде використовуватися 
-файл "output.txt" из текущего каталога (якщо такого файла нет, то он створюєся). А метод <code>.toFile()</code> преобразует путь <code>Path</code> в об'єкт <code>File</code>. В итоге вывод команды 
+<p>Здесь для створенняя пути застосовується встроенный інтерфейс <code>java.nio.file.Path</code>. За допомогою статического методу <code>Path.of()</code> определяем путь к файлу. У даному випадку буде використовуватися 
+файл "output.txt" из текущего каталогу (якщо такого файлу нет, то он створюєся). А метод <code>.toFile()</code> преобразует путь <code>Path</code> в об'єкт <code>File</code>. В итоге вивід команди 
 "java --version" буде записан в файл "output.txt"</p>
-<p>Нередо потоки вывода и ошибок пишут свои дані в один поток. Щоб об'єднати потоки вывода и ошибок можна выполнить вызов</p>
+<p>Нередо потіки вивіда и ошибок пишут свои дані в один потік. Щоб об'єднати потіки вивіда и ошибок можна выполнить вызов</p>
 <pre class="line-numbers"><code class="language-java">builder.redirectErrorStream(true);</code></pre>
 <h4>Рабочий каталог</h4>
-<p>У каждого процесса есть рабочий каталог (working directory), який використовується для вычисления относительных имен каталогов. По умолчанию рабочий каталог процесса совпадает с рабочим каталогом 
-виртуальной машины - обычно це каталог текущей программы на Java. С помощью метода <code>directory()</code> можна отримати данный каталог в виде об'єкта <span class="b">File</span>:</p>
+<p>У каждого процеса есть рабочий каталог (working directory), який використовується для вычисления относительных имен каталогов. По умолчанию рабочий каталог процеса збігається с рабочим каталогом 
+виртуальной машины - обычно це каталог текущей програми на Java. За допомогою методу <code>directory()</code> можна отримати данный каталог в виде об'єкта <span class="b">File</span>:</p>
 <pre class="line-numbers"><code class="language-java">
 var builder = new ProcessBuilder("java", "--version");
 System.out.println(builder.directory());  // null - текущий каталог
 </code></pre>
-<p>Если метод повертає <code>null</code>, то в качестве рабочего каталога установлен каталог текуй программы на Java.</p>
-<p>Но також можна изменить рабочий каталог за допомогою одноіменного метода <code>directory()</code>, який приймає об'єкт File.</p>
-<p>Наприклад, создадим в текущей папке программы новый каталог с именем "test". А в цем каталоге определим файл с именем "Main.java" и наступним содержимым:</p>
+<p>Если метод повертає <code>null</code>, то в качестве рабочего каталогу установлен каталог текуй програми на Java.</p>
+<p>Но також можна змінити рабочий каталог за допомогою одноіменного методу <code>directory()</code>, який приймає об'єкт File.</p>
+<p>Наприклад, створимо в текущей папке програми новый каталог с именем "test". А в цем каталогу визначимо файл с именем "Main.java" и наступним содержимым:</p>
 <pre class="line-numbers"><code class="language-java">
 class Main{
  
@@ -148,7 +148,7 @@ class Main{
     }
 }
 </code></pre>
-<p>То есть файл Main.java из папки "test" містить простейшую программу на Java. И допустим, мы хочемо, чтобы наша программа запускала на выполнение цей файл. Для цього определеим следующую программу:</p>
+<p>То есть файл Main.java из папки "test" містить простейшую програму на Java. И допустим, мы хочемо, чтобы наша програма запускула на виконання цей файл. Для цього определеим следующую програму:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.nio.file.Path;
 
@@ -158,62 +158,62 @@ class Program{
           
         var builder = new ProcessBuilder("java", "Main.java");
         builder
-            .directory(Path.of("test").toFile())                // устанавливаем рабочий каталог на подкаталог "test"
-            .redirectOutput(ProcessBuilder.Redirect.INHERIT)    // устанавливаем вывод на консоль
-            .redirectErrorStream(true)                          // вывод ошибок також идет на консоль
+            .directory(Path.of("test").toFile())                // устанавливаем рабочий каталог на підкаталог "test"
+            .redirectOutput(ProcessBuilder.Redirect.INHERIT)    // устанавливаем вивід на консоль
+            .redirectErrorStream(true)                          // вивід ошибок також идет на консоль
             .start();
     }
 }
 </code></pre>
-<p>То есть фактически наша программу буде запускать команду <code>"java Main.java"</code>. И поскольку мы установили в качестве рабочего каталога подпадку "test", то процесс сможет найти файл "Main.java". 
-Запустим данную программу, и в отдельном подпроцессе буде выполняться команда <code>java Main.java</code>:</p>
+<p>То есть фактически наша програму буде запускуть команду <code>"java Main.java"</code>. И поскольку мы установили в качестве рабочего каталогу підпадку "test", то процес сможет найти файл "Main.java". 
+Запустимо данную програму, и в отдельном підпроцесе буде выполняться команда <code>java Main.java</code>:</p>
 <pre class="line-numbers"><code class="language-none">
 eugene@Eugene:/workspace/java$ java Program.java
 Hello 
 eugene@Eugene:/workspace/java$ 
 </code></pre>
 
-<h2>Управление процессами</h2>
-<p>Класс <span class="b">Process</span> надає ряд методів для управления процессом:</p>
+<h2>Управление процесами</h2>
+<p>Клас <span class="b">Process</span> надає ряд методів для управления процесом:</p>
 
 <ul>
-<li><p><code>abstract InputStream getErrorStream()</code></p><p>Повертає входной поток, подключенный к потоку ошибок процесса.</p></li>
-<li><p><code>abstract InputStream getInputStream()</code></p><p>Повертає поток ввода, подключенный к обычному выводу процесса.</p></li>
-<li><p><code>abstract OutputStream getOutputStream()</code></p><p>Повертає поток вывода, подключенный к обычному вводу процесса.</p></li>
+<li><p><code>abstract InputStream getErrorStream()</code></p><p>Повертає входной потік, підключенный к потіку ошибок процеса.</p></li>
+<li><p><code>abstract InputStream getInputStream()</code></p><p>Повертає потік ввода, підключенный к обычному вивіду процеса.</p></li>
+<li><p><code>abstract OutputStream getOutputStream()</code></p><p>Повертає потік вивіда, підключенный к обычному вводу процеса.</p></li>
 
-<li><p><code>final BufferedReader errorReader()</code></p><p>Повертає об'єкт BufferedReader, подключенный к стандартному потоку ошибок процесса.</p></li>
-<li><p><code>final BufferedReader inputReader()</code></p><p>Повертає об'єкт BufferedReader, подключенный к стандартному выводу процесса.</p></li>
-<li><p><code>final BufferedWriter outputWriter()</code></p><p>Повертає об'єкт BufferedWriter, подключенный к обычному входу процесса, используя собственную кодировку.</p></li>
+<li><p><code>final BufferedReader errorReader()</code></p><p>Повертає об'єкт BufferedReader, підключенный к стандартному потіку ошибок процеса.</p></li>
+<li><p><code>final BufferedReader inputReader()</code></p><p>Повертає об'єкт BufferedReader, підключенный к стандартному вивіду процеса.</p></li>
+<li><p><code>final BufferedWriter outputWriter()</code></p><p>Повертає об'єкт BufferedWriter, підключенный к обычному входу процеса, використовуючи собственную кодировку.</p></li>
 
-<li><p><code>Stream&lt;ProcessHandle&gt; children()</code></p><p>Повертає поток прямых дочерних процессов процесса.</p></li>
-<li><p><code>Stream&lt;ProcessHandle&gt; descendants()</code></p><p>Повертає поток потомков процесса.</p></li>
+<li><p><code>Stream&lt;ProcessHandle&gt; children()</code></p><p>Повертає потік прямых дочерних процесов процеса.</p></li>
+<li><p><code>Stream&lt;ProcessHandle&gt; descendants()</code></p><p>Повертає потік потомков процеса.</p></li>
 
-<li><p><code>abstract void destroy()</code></p><p>Завершує процесс.</p></li>
-<li><p><code>Process destroyForcibly()</code></p><p>Принудительно завершує процесс.</p></li>
+<li><p><code>abstract void destroy()</code></p><p>Завершує процес.</p></li>
+<li><p><code>Process destroyForcibly()</code></p><p>Принудительно завершує процес.</p></li>
 
-<li><p><code>boolean isAlive()</code></p><p>Проверяет, активен ли запущенный процесс.</p></li>
-<li><p><code>long pid()</code></p><p>Повертає идентификатор запущенного процесса.</p></li>
-<li><p><code>ProcessHandle toHandle()</code></p><p>Повертає об'єкт ProcessHandle для процесса.</p></li>
+<li><p><code>boolean isAlive()</code></p><p>Проверяет, активен ли запущенный процес.</p></li>
+<li><p><code>long pid()</code></p><p>Повертає идентификатор запущенного процеса.</p></li>
+<li><p><code>ProcessHandle toHandle()</code></p><p>Повертає об'єкт ProcessHandle для процеса.</p></li>
 
-<li><p><code>CompletableFuture<Process> onExit()</code></p><p>Повертає об'єкт CompletableFuture<Process> для завершения процесса.</p></li>
-<li><p><code>boolean supportsNormalTermination()</code></p><p>Повертає true, якщо метод destroy() завершує процесс нормально. Повертає false, якщо метод destroy завершує процесс принудительно и немедленно.</p></li>
+<li><p><code>CompletableFuture<Process> onExit()</code></p><p>Повертає об'єкт CompletableFuture<Process> для завершення процеса.</p></li>
+<li><p><code>boolean supportsNormalTermination()</code></p><p>Повертає true, якщо метод destroy() завершує процес нормально. Повертає false, якщо метод destroy завершує процес принудительно и немедленно.</p></li>
 
-<li><p><code>abstract int waitFor()</code></p><p>При необхідности заставляет текущий поток ожидать завершения запущенного процесса. Модификации метода дозволяють передать период ожидания до завершения процесса</p>
+<li><p><code>abstract int waitFor()</code></p><p>При необхідности заставляет текущий потік ожидать завершення запущенного процеса. Модификации методу дозволяють передать период ожидания до завершення процеса</p>
 <p><code>boolean waitFor(long timeout, TimeUnit unit)</code></p><p><code>boolean waitFor(Duration duration)</code></p>
 </li>
 </ul>
-<h3>Получение потоков ввода-вывода процесса</h3>
-<p>Ряд методів дозволяють отримати потоки ввода-вывода процесса:</p>
+<h3>Отримання потіков ввода-вивіда процеса</h3>
+<p>Ряд методів дозволяють отримати потіки ввода-вивіда процеса:</p>
 
 <ul>
-<li><p><code>abstract InputStream getErrorStream()</code></p><p>Повертає входной поток, подключенный к потоку ошибок процесса.</p></li>
-<li><p><code>abstract InputStream getInputStream()</code></p><p>Повертає поток ввода, подключенный к обычному выводу процесса.</p></li>
-<li><p><code>abstract OutputStream getOutputStream()</code></p><p>Повертає поток вывода, подключенный к обычному вводу процесса.</p></li>
-<li><p><code>final BufferedReader errorReader()</code></p><p>Повертає об'єкт BufferedReader, подключенный к стандартному потоку ошибок процесса.</p></li>
-<li><p><code>final BufferedReader inputReader()</code></p><p>Повертає об'єкт BufferedReader, подключенный к стандартному выводу процесса.</p></li>
-<li><p><code>final BufferedWriter outputWriter()</code></p><p>Повертає об'єкт BufferedWriter, подключенный к обычному входу процесса, используя собственную кодировку.</p></li>
+<li><p><code>abstract InputStream getErrorStream()</code></p><p>Повертає входной потік, підключенный к потіку ошибок процеса.</p></li>
+<li><p><code>abstract InputStream getInputStream()</code></p><p>Повертає потік ввода, підключенный к обычному вивіду процеса.</p></li>
+<li><p><code>abstract OutputStream getOutputStream()</code></p><p>Повертає потік вивіда, підключенный к обычному вводу процеса.</p></li>
+<li><p><code>final BufferedReader errorReader()</code></p><p>Повертає об'єкт BufferedReader, підключенный к стандартному потіку ошибок процеса.</p></li>
+<li><p><code>final BufferedReader inputReader()</code></p><p>Повертає об'єкт BufferedReader, підключенный к стандартному вивіду процеса.</p></li>
+<li><p><code>final BufferedWriter outputWriter()</code></p><p>Повертає об'єкт BufferedWriter, підключенный к обычному входу процеса, використовуючи собственную кодировку.</p></li>
 </ul>
-<p>Конечно, мы можемо в целом перенаправить поток вывода або ошибок в заданное место (наприклад, в файл або на консоль). Однак потоки ввода-вывода дозволяють вручную настроить взаимодействие с потоком. Например:</p>
+<p>Конечно, мы можемо в целом перенаправить потік вивіда або ошибок в заданное место (наприклад, в файл або на консоль). Однак потіки ввода-вивіда дозволяють вручную настроить взаимодействие с потіком. Наприклад:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.Scanner;
 
@@ -226,23 +226,23 @@ class Program{
         try (var in = new Scanner(process.getInputStream()))
         {
             int i = 0;
-            // проходим по каждой строке из потока
+            // проходим по каждой рядківе из потіка
             while (in.hasNextLine()){
-                // при выводе на консоль добавляем перед строкой її номер
+                // при вивіде на консоль додаємо перед рядківой її номер
                 System.out.println(++i + ". " + in.nextLine());
             }
         }
     }
 }
 </code></pre>
-<p>В данном случае запускаем команду <code>"java --version"</code>, которая выводит версию Java. Но цей вывод может включать в себя декілька строк. И в данном случае мы вручную обрабатываем кажду строку из входного потока, 
-добавляя к строке вначале її номер. В итоге мы получим консольный вывод на подобие следующего:</p>
+<p>У даному випадку запускуємо команду <code>"java --version"</code>, которая виводить версию Java. Но цей вивід может включать в себя декілька рядків. И у даному випадку мы вручную обробляємо кажду рядок из входного потіка, 
+добавляя к рядківе вначале її номер. В итоге мы получим консольный вивід на підобие следующего:</p>
 <pre class="line-numbers"><code class="language-none">
 1. java 25 2025-09-16 LTS
 2. Java(TM) SE Runtime Environment (build 25+37-LTS-3491)
 3. Java HotSpot(TM) 64-Bit Server VM (build 25+37-LTS-3491, mixed mode, sharing)
 </code></pre>
-<p>Аналогично можна буво бы отримати поток ввода за допомогою другого метода:</p>
+<p>Аналогично можна буво бы отримати потік ввода за допомогою другого методу:</p>
 <pre class="line-numbers"><code class="language-java">
 class Program{
  
@@ -262,26 +262,26 @@ class Program{
     }
 }
 </code></pre>
-<p>Варто відзначити, что буферное пространство для потоков процессов ограничено. Тому не йде перегружать входные дані, а выходные йде считывать быстро.</p>
-<h3>Завершение процесса</h3>
+<p>Варто відзначити, что буферное пространство для потіков процесов ограничено. Тому не йде перегружать входные дані, а выходные йде считывать быстро.</p>
+<h3>Завершення процеса</h3>
 <h4>destroy и destroyForcibly</h4>
-<p>Для завершения процесса застосовуються методы <b>destroy()</b> або <b>destroyForcibly()</b>.</p>
+<p>Для завершення процеса застосовуються методи <b>destroy()</b> або <b>destroyForcibly()</b>.</p>
 <pre class="line-numbers"><code class="language-java">
 process.destroy();
 // или
 process.destroyForcibly();
 </code></pre>
-<p>Разница между ними зависит от платформы. В UNIX-подобных системах (наприклад, в Linux) метод destroy()
- завершує процесс за допомогою сигнала <b>SIGTERM</b>, а <b>destroyForcibly()</b> - за допомогою сигнала <b>SIGKILL</b>. (Метод <b>supportsNormalTermination()</b> повертає <code>true</code>, 
-якщо метод <b>destroy()</b> может завершить процесс нормально.)</p>
-<p>Уничтожение процесса подает операционной системе сигнал о необхідности его завершения. Операционная система повинна очистить и освободить ресурсы цього процесса.
- Обычно файловые дескрипторы и дескрипторы закрываются. При их закрытии все соединения с другими процессами разрываются.</p>
+<p>Разница між ними зависит от платформы. В UNIX-підобных системах (наприклад, в Linux) метод destroy()
+ завершує процес за допомогою сигнала <b>SIGTERM</b>, а <b>destroyForcibly()</b> - за допомогою сигнала <b>SIGKILL</b>. (Метод <b>supportsNormalTermination()</b> повертає <code>true</code>, 
+якщо метод <b>destroy()</b> может завершить процес нормально.)</p>
+<p>Уничтожение процеса підает операционной системе сигнал о необхідности его завершення. Операционная система повинна очистить и освободить ресурсы цього процеса.
+ Обычно файлівые дескрипторы и дескрипторы закрываются. При их закрытии все з'єднання с другими процесами разрываются.</p>
 
-<h4>Ожидание завершения процесса и waitFor</h4>
-<p>Щоб дождаться завершения процесса, можна вызвать метод <code>waitFor()</code>:</p>
+<h4>Очікування завершення процеса и waitFor</h4>
+<p>Щоб дождаться завершення процеса, можна вызвать метод <code>waitFor()</code>:</p>
 <pre class="line-numbers"><code class="language-java">int result = process.waitFor();</code></pre>
-<p>Цет метод повертає числовой код завершения процесса (по соглашению, 0 в случае успешного завершения або ненулевой код ошибки).</p>
-<p>Однак цей метод неограничен по времени. Щоб ограничить час ожидания, можна применить другую версию метода, которая приймає временной интервал:</p>
+<p>Цет метод повертає числовой код завершення процеса (по угоді, 0 в случае успешного завершення або ненулевой код ошибки).</p>
+<p>Однак цей метод неограничен по времени. Щоб ограничить час ожидания, можна пріменіть другую версию методу, которая приймає временной интервал:</p>
 <pre class="line-numbers"><code class="language-java">
 long delay = 10; // период ожидания
 if (process.waitFor(delay, TimeUnit.SECONDS)){
@@ -293,11 +293,11 @@ else{
     process.destroyForcibly();
 }
 </code></pre>
-<p>Здесь вызов <code>process.waitFor()</code> повертає <code>true</code>, якщо час ожидания процесса не истекло. В цем случае за допомогою метода <code>exitValue()</code> 
-получаем статусный код завершения.</p>
-<h4>Асинхронное уведомление о завершении процесса и onExit()</h4>
-<p>С помощью метода <b>onExit()</b> можна отримати асинхронное уведомление о завершении процесса. Цет метод повертає об'єкт <code>CompletableFuture&lt;Process&gt;</code>, 
-який можна використовувати для планирования любого действия по завершении процесса:</p>
+<p>Здесь вызов <code>process.waitFor()</code> повертає <code>true</code>, якщо час ожидания процеса не истекло. В цем случае за допомогою методу <code>exitValue()</code> 
+отримуємо статусный код завершення.</p>
+<h4>Асинхронное уведомление о завершении процеса и onExit()</h4>
+<p>За допомогою методу <b>onExit()</b> можна отримати асинхронное уведомление о завершении процеса. Цет метод повертає об'єкт <code>CompletableFuture&lt;Process&gt;</code>, 
+який можна використовувати для планирования любого действия по завершении процеса:</p>
 <pre class="line-numbers"><code class="language-java">
 class Program{
  
@@ -305,8 +305,8 @@ class Program{
           
         var builder = new ProcessBuilder("java", "--version");
         Process process = builder.redirectOutput(ProcessBuilder.Redirect.INHERIT).start();
-        process.onExit().thenAccept(p -&gt; System.out.println("Процесс завершился с кодом: " + p.exitValue()));
-        Thread.sleep(500); // задержка, что успел отработать
+        process.onExit().thenAccept(p -&gt; System.out.println("Процес завершился с кодом: " + p.exitValue()));
+        Thread.sleep(500); // задержка, что успел отпрацювати
     }
 }
 </code></pre>

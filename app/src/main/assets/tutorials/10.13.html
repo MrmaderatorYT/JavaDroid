@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html  lang="uk">
 <head>
-<title>Java | Отримання підпотоку та об'єднання потоків в Stream API</title>
+<title>Java | Отримання підпотіку та об'єднання потіків в Stream API</title>
 <meta charset="utf-8" />
-<meta name="description" content="Отримання підпотоку та об'єднання потоків в Stream API в языке программирования Java, методы takeWhile, dropWhile">
+<meta name="description" content="Отримання підпотіку та об'єднання потіків в Stream API в языке програмирования Java, методи takeWhile, dropWhile">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -11,12 +11,12 @@
 <body>
 <div id="container">
 <div class="item center menC">
-     <h2>Отримання підпотоку та об'єднання потоків</h2><div class="date">Останнє оновлення: 30.04.2018</div>
+     <h2>Отримання підпотіку та об'єднання потіків</h2><div class="date">Останнє оновлення: 30.04.2018</div>
 
-	<p>Ряд методів Stream API повертають подпотоки або об'єднані потоки на основе вже имеющихся потоков. Рассмотрим эти методы.</p>
+	<p>Ряд методів Stream API повертають підпотіки або об'єднані потіки на основе вже имеющихся потіков. Рассмотрим эти методи.</p>
 <h3>takeWhile</h3>
-<p>Метод <span class="b">takeWhile()</span> выбирает из потока элементы, поки они соответствуют условию. Если попадается элемент, який не соответствует условию, 
-то метод завершує свою работу. Выбранные элементы повертаються в виде потока.</p>
+<p>Метод <span class="b">takeWhile()</span> выбирает из потіка елементы, поки они відповідають условию. Если попадается елемент, який не відповідає условию, 
+то метод завершує свою работу. Выбранные елементы повертаються в виде потіка.</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.stream.Stream;
 
@@ -30,7 +30,7 @@ public class Program {
 	}
 }
 </code></pre>
-<p>В данном случае программа выбирает из потока числа, поки они меньше нуля. Консольный вывод программы:</p>
+<p>У даному випадку програма выбирает из потіка числа, поки они меньше нуля. Консольный вивід програми:</p>
 <div class="console">
 <pre class="consoletext">
 -3
@@ -38,15 +38,15 @@ public class Program {
 -1
 </pre>
 </div>
-<p>При цем несмотря на то, что в потоке больше отрицательных чисел, но метод завершує работу, як лише обнаружит первое число, которое не соответствует условию. 
-В цем и соварто отличие, наприклад, от метода <code>filter()</code>.</p>
-<p>Щоб в данном случае охватить все элементы, которые меньше нуля, поток йде предварительно отсортировать:</p>
+<p>При цем несмотря на то, что у потоці больше отрицательных чисел, но метод завершує работу, як лише обнаружит первое число, которое не відповідає условию. 
+В цем и соварто отличие, наприклад, от методу <code>filter()</code>.</p>
+<p>Щоб у даному випадку охватить всі елементи, которые меньше нуля, потік йде предварительно отсортировать:</p>
 <pre class="line-numbers"><code class="language-java">
 Stream&lt;Integer&gt; numbers = Stream.of(-3, -2, -1, 0, 1, 2, 3, -4, -5);
 numbers.sorted().takeWhile(n -&gt; n &lt; 0)
 		.forEach(n -&gt; System.out.println(n));
 </code></pre>
-<p>Консольный вывод программы:</p>
+<p>Консольный вивід програми:</p>
 <div class="console">
 <pre class="consoletext">
 -5
@@ -57,14 +57,14 @@ numbers.sorted().takeWhile(n -&gt; n &lt; 0)
 </pre>
 </div>
 <h3>dropWhile</h3>
-<p>Метод <span class="b">dropWhile()</span> выполняет обратную задачу - он пропускает элементы потока, которые соответствуют условию до тех пор, поки не встретит элемент, який НЕ соответствует 
+<p>Метод <span class="b">dropWhile()</span> виконує обратную завданьу - он пропускает елементы потіка, которые відповідають условию до тех пор, поки не встретит елемент, який НЕ відповідає 
 условию:</p>
 <pre class="line-numbers"><code class="language-java">
 Stream&lt;Integer&gt; numbers = Stream.of(-3, -2, -1, 0, 1, 2, 3, -4, -5);
 numbers.sorted().dropWhile(n -&gt; n &lt; 0)
 	.forEach(n -&gt; System.out.println(n));
 </code></pre>
-<p>Консольный вывод программы:</p>
+<p>Консольный вивід програми:</p>
 <div class="console">
 <pre class="consoletext">
 0
@@ -74,7 +74,7 @@ numbers.sorted().dropWhile(n -&gt; n &lt; 0)
 </pre>
 </div>
 <h3>concat</h3>
-<p>Статический метод <span class="b">concat()</span> об'єднує элементы двух потоков, возвращая об'єднанный поток:</p>
+<p>Статический метод <span class="b">concat()</span> об'єднує елементы двух потіков, возвращая об'єднанный потік:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.stream.Stream;
 
@@ -89,7 +89,7 @@ public class Program {
 	}
 }
 </code></pre>
-<p>Консольный вывод:</p>
+<p>Консольный вивід:</p>
 <div class="console">
 <pre class="consoletext">
 Tom
@@ -101,12 +101,12 @@ Sam
 </pre>
 </div>
 <h3>distinct</h3>
-<p>Метод <span class="b">distinct()</span> повертає лише уникальные элементы в виде потока:</p>
+<p>Метод <span class="b">distinct()</span> повертає лише уникальные елементы в виде потіка:</p>
 <pre class="line-numbers"><code class="language-java">
 Stream&lt;String&gt; people = Stream.of("Tom", "Bob", "Sam", "Tom", "Alice", "Kate", "Sam");
 people.distinct().forEach(p -&gt; System.out.println(p));
 </code></pre>
-<p>Консольный вывод:</p>
+<p>Консольный вивід:</p>
 <div class="console">
 <pre class="consoletext">
 Tom

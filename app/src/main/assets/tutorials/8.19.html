@@ -3,7 +3,7 @@
 <head>
 <title>Java | CompletableFuture, обробка помилок та завершення асинхронних завдань</title>
 <meta charset="utf-8" />
-<meta name="description" content="Обработка ошибок и завершения асинхронных задач в языке программирования Java, класс CompletableFuture и его методы whenComplete, exceptionally и exceptionallyCompose, исключение CompletionException">
+<meta name="description" content="Обробка ошибок и завершення асинхронных завдань в языке програмирования Java, клас CompletableFuture и его методи whenComplete, exceptionally и exceptionallyCompose, виняток CompletionException">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -13,9 +13,9 @@
 <div class="item center menC">
      <h1>CompletableFuture, обробка помилок та завершення асинхронних завдань</h1><div class="date">Останнє оновлення: 29.10.2025</div>
 
-	<h3>Обработка ошибок</h3>
-<p>В прошлой статье був рассмотрен такой пример для работы с асинхронностью в мові Java, як тип <b>CompletableFuture</b>, який дозволяє устанавливать коллбеки для обработки результатов асинхронной задачи. Однак что, якщо при вычислениях возникнет ошибка? Наприклад, у нас есть следующая задача по вычислению 
-факториала, где, якщо передаваемое число меньше 1, то генеруєся ошибка:</p>
+	<h3>Обробка ошибок</h3>
+<p>В прошлой статье був рассмотрен такой пример для работы с асинхронностью в мові Java, як тип <b>CompletableFuture</b>, який дозволяє устанавливать коллбеки для обработки результатів асинхронной завданьі. Однак что, якщо при вычислениях возникнет ошибка? Наприклад, у нас есть следующая завданьа по вычислению 
+факториала, где, якщо передаваемое число менше 1, то генеруєся ошибка:</p>
 <pre class="line-numbers"><code class="language-java">
 Supplier&lt;Integer&gt; factorialTask = () -&gt; {
 
@@ -27,15 +27,15 @@ Supplier&lt;Integer&gt; factorialTask = () -&gt; {
     return result; 
 };
 </code></pre>
-<p>Как мы можемо обработать эту ошибку? Для обработки ошибок в API класса <code>CompletedFuture</code> определен ряд методів. Рассмотрим ряд из них:</p>
+<p>Как мы можемо обпрацювати эту ошибку? Для обработки ошибок в API класа <code>CompletedFuture</code> визначений ряд методів. Рассмотрим ряд из них:</p>
 <pre class="line-numbers"><code class="language-java">
 CompletableFuture&lt;T&gt; exceptionally(Function&lt;Throwable, ? extends T&gt; fn)
 CompletableFuture&lt;T&gt; exceptionallyCompose(Function&lt;Throwable, ? extends CompletionStage&lt;T&gt;&gt; fn)
 </code></pre>
-<p>Эти методы дозволяють установить обратный вызов, який виконується при возникновении ошибки на предыдущем этапе:</p>
+<p>Эти методи дозволяють установить обратный вызов, який виконується при возникновении ошибки на предыдущем этапе:</p>
 <ul>
 <li><p><span class="b">exceptionally()</span>: вычисляет результат на основе ошибки, якщо она возникла на предыдущем этапе. То есть фактически обратный вызов производит переход <code>Throwable -&gt; T</code></p></li>
-<li><p><span class="b">exceptionallyCompose()</span>: вызывает функцию для исключения, якщо она возникла на предыдущем этапе, и выполняет возвращенный результат - об'єкт <code>CompletableFuture</code>. 
+<li><p><span class="b">exceptionallyCompose()</span>: вызывает функцію для винятки, якщо она возникла на предыдущем этапе, и виконує возвращенный результат - об'єкт <code>CompletableFuture</code>. 
 То есть фактически обратный вызов производит переход <code>Throwable -&gt; CompletableFuture&lt;T&gt;</code></p></li>
 </ul>
 <p>Рассмотрим на примере вычисления факториала:</p>
@@ -53,7 +53,7 @@ class Program{
  
         int number = -5;  // исходное число для вычисления факториала
        
-        // определяем задачу, которая вычисляет факториал
+        // определяем завданьу, которая вычисляет факториал
         Supplier&lt;Integer&gt; factorialTask = () -&gt; {
 
             if(number &lt; 1) throw new RuntimeException("Number must be greater than 0");
@@ -62,16 +62,16 @@ class Program{
             while(n &lt;= number)  result *= n++; 
             return result; 
         };
-        // задача для вывода финального результата
+        // завданьа для вивіда финального результата
         Consumer&lt;Integer&gt; printTask = result -&gt; System.out.printf("Final result: %d\n", result);
 
-        // задача для обработки ошибки
+        // завданьа для обработки ошибки
         Function&lt;Throwable, Integer&gt; printException = ex -&gt; { 
             System.out.println(ex.getMessage());    
             throw new RuntimeException(ex.getMessage());
         };
 
-        // определяем об'єкт Executor, який буде выполнять задачи
+        // определяем об'єкт Executor, який буде выполнять завданьі
         ExecutorService executor = Executors.newCachedThreadPool();
         CompletableFuture
                 .supplyAsync(factorialTask, executor)
@@ -85,8 +85,8 @@ class Program{
     }
 }
 </code></pre>
-<p>Рассмотрим ключевые моменты. Прежде всего основная задача, которая виконується с помощь <code>CompletedFuture</code> - це задача вычисления факториала factorialTask. Эта задача повертає целое число (значение <code>Integer</code>)</code></p>
-<p>Для виконання задачи и вызова коллбеков, обрабатывающих її результат, определяем следующий код:</p>
+<p>Рассмотрим ключевые моменты. Прежде всего основная завданьа, которая виконується с помощь <code>CompletedFuture</code> - це завданьа вычисления факториала factorialTask. Эта завданьа повертає целое число (значення <code>Integer</code>)</code></p>
+<p>Для виконання завданьі и вызова коллбеков, обрабатывающих її результат, определяем следующий код:</p>
 <pre class="line-numbers"><code class="language-java">
 CompletableFuture
     .supplyAsync(factorialTask, executor)
@@ -95,34 +95,34 @@ CompletableFuture
 </code></pre>
 <ul>
 <li><p><code>supplyAsync(factorialTask, executor)</code></p>
-<p>Устанавливаем выполняемую асинхронную задачу и об'єкт Executor, який выполняет эту задачу.</p>
-<p>Если передачаемое для вычисления факториала число некорректно, то генерируем исключение</p>
+<p>Устанавливаем выполняемую асинхронную завданьу и об'єкт Executor, який виконує эту завданьу.</p>
+<p>Если передачаемое для вычисления факториала число некорректно, то генерируем виняток</p>
 <pre class="line-numbers"><code class="language-java">if(number &lt; 1) throw new RuntimeException("Number must be greater than 0");</code></pre>
 </li>
 <li><p><code>exceptionally(printException)</code></p>
-<p>Для обработки исключения определяем задачу printException, которая просто выводит информацию об исключении на консоль:</p>
+<p>Для обработки винятки определяем завданьу printException, которая просто виводить информацию об исключении на консоль:</p>
 <pre class="line-numbers"><code class="language-java">
 Function&lt;Throwable, Integer&gt; printException = ex -&gt; { 
     System.out.println(ex.getMessage());    
     throw new RuntimeException(ex.getMessage());
 };
 </code></pre>
-<p>Здесь варто відзначити, что поскольку задача факториала повертає значение типу Integer, то и эта задача повинна возвращать значение типу Integer. Однак в данном случае мы ничего не возвращаем и просто повторно генерируем исключение 
-(причем непроверяемое исключение). Повторная генерация исключения позволит избежать виконання следующего колбека, для которого требуется результат вычисления факториала.</p></li>
+<p>Здесь варто відзначити, что поскольку завданьа факториала повертає значення типу Integer, то и эта завданьа повинна возвращать значення типу Integer. Однак у даному випадку мы ничего не повертаємо и просто повторно генерируем виняток 
+(причем непроверяемое виняток). Повторная генерація винятки дозволить избежать виконання следующего колбека, для которого требуется результат вычисления факториала.</p></li>
 <li><p><code>thenAccept(printTask)</code></p>
-<p>Задача printTask приймає результат - результат вычисления факториала и просто выводит его на консоль</p>
+<p>Задача printTask приймає результат - результат вычисления факториала и просто виводить его на консоль</p>
 </li>
 </ul>
-<p>В программе входное число є отрицательным:</p>
+<p>В програме входное число є отрицательным:</p>
 <pre class="line-numbers"><code class="language-java">int number = -5;</code></pre>
-<p>Соответственно при выполнении мы столкнемся с ошибкой и получим консольный вывод наподобие следующего:</p>
+<p>Соответственно при выполнении мы столкнемся с ошибкой и получим консольный вивід напідобие следующего:</p>
 <pre class="line-numbers"><code class="language-none">
 Main thread started...
 java.lang.RuntimeException: Number must be greater than 0
 Main thread works...
 Main thread finished...
 </code></pre>
-<p>И тут треба обратить внимание, что последний коллбек - printTask не виконується, а выполнение основного потока не переривається, хотя мы повторно генерируем исключение при его обработке.</p>
+<p>И тут треба обратить внимание, что післядний коллбек - printTask не виконується, а виконання основного потіка не переривається, хотя мы повторно генерируем виняток при его обработке.</p>
 <p>Если же входное число буво бы больше 0:</p>
 <pre class="line-numbers"><code class="language-java">int number = 5;</code></pre>
 <p>то мы увидим результат работы коллбека из вызова <code>thenAccept(printTask)</code>, а коллбек из вызова <code>exceptionally(printException)</code> не буде выполняться:</p>
@@ -133,7 +133,7 @@ Main thread works...
 Main thread finished...
 </code></pre>
 
-<p>Естественно це не единственно возможная схема обработки ошибок. Наприклад, в примере выше мы генерировали повторно исключение. Но мы могли бы и сгенерировать результат, якщо переданное значение генерировало ошибку:</p>
+<p>Естественно це не единственно возможная схема обработки ошибок. Наприклад, в примере выше мы генерировали повторно виняток. Но мы могли бы и сгенерировать результат, якщо переданное значення генерировало ошибку:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.concurrent.*;
 import java.util.function.Supplier;
@@ -146,22 +146,22 @@ class Program{
  
         int age = -5;
        
-        // определяем задачу, которая вычисляет факториал
+        // определяем завданьу, которая вычисляет факториал
         Supplier&lt;Integer&gt; validateAge = () -&gt; {
 
             if(age &gt; 110 || age &lt; 1) throw new RuntimeException("Age is invalid");
             return age; 
         };
-        // задача для вывода финального результата
+        // завданьа для вивіда финального результата
         Consumer&lt;Integer&gt; printAge = result -&gt; System.out.printf("Final age: %d\n", result);
 
-        // задача для обработки ошибки
+        // завданьа для обработки ошибки
         Function&lt;Throwable, Integer&gt; printException = ex -&gt; { 
             System.out.println(ex.getMessage());    
-            return 18;  // возвращаем некоторое значение по умолчанию
+            return 18;  // повертаємо некоторое значення по умолчанию
         };
 
-        // определяем об'єкт Executor, який буде выполнять задачи
+        // определяем об'єкт Executor, який буде выполнять завданьі
         ExecutorService executor = Executors.newCachedThreadPool();
         CompletableFuture
                 .supplyAsync(validateAge, executor)
@@ -173,7 +173,7 @@ class Program{
     }
 }
 </code></pre>
-<p>Здесь мы сначала проверяем возраст - значение змінної age в задаче validateAge: якщо оно не входит в неготорый диапазон, генерируем исключение:</p>
+<p>Здесь мы сначала проверяем возраст - значення змінної age в завданье validateAge: якщо оно не входит в неготорый диапазон, генерируем виняток:</p>
 <pre class="line-numbers"><code class="language-java">
 Supplier&lt;Integer&gt; validateAge = () -&gt; {
 
@@ -181,71 +181,71 @@ Supplier&lt;Integer&gt; validateAge = () -&gt; {
     return age; 
 };
 </code></pre>
-<p>Если генеруєся исключение, то вызывается задача printException:</p>
+<p>Если генеруєся виняток, то вызывается завданьа printException:</p>
 <pre class="line-numbers"><code class="language-java">
 Function&lt;Throwable, Integer&gt; printException = ex -&gt; { 
     System.out.println(ex.getMessage());    
-    return 18;  // возвращаем некоторое значение по умолчанию
+    return 18;  // повертаємо некоторое значення по умолчанию
 };
 </code></pre>
-<p>Здесь також выводим сообщение об ошибке, но при цем возвращаем некоторое значение по умолчанию.</p>
-<p>Таким чином при определении следующей цепочки:</p>
+<p>Здесь також вивідим сообщение об ошибке, но при цем повертаємо некоторое значення по умолчанию.</p>
+<p>Таким чином при визначенийии следующей цепочки:</p>
 <pre class="line-numbers"><code class="language-java">
 CompletableFuture
     .supplyAsync(validateAge, executor)
     .exceptionally(printException)
     .thenAccept(printAge);
 </code></pre>
-<p>Если в validateAge возникает исключение, оно передаєся в задачу printException, которая генерує конечный результат. И цей результа передаєся в задачу printAge. То есть в данном случае последний коллбек - printAge 
-виконується в любом случае, даже якщо возникает ошибка. Консольный вывод в данном случае</p>
+<p>Если в validateAge возникает виняток, оно передаєся в завданьу printException, которая генерує конечный результат. И цей результа передаєся в завданьу printAge. То есть у даному випадку післядний коллбек - printAge 
+виконується в любом случае, даже якщо возникает ошибка. Консольный вивід у даному випадку</p>
 <pre class="line-numbers"><code class="language-none">
 java.lang.RuntimeException: Age is invalid
 Final age: 18
 </code></pre>
 
 <h4>CompletionException</h4>
-<p>Исключение, которое генеруєся в задачах <code>CompletedFuture</code> представляє тип <b>CompletionException</b>, которое найдеся от <code>RuntimeException</code> и фактически є оборткой над исключением. 
-Таким чином, когда мы генерируем исключение</p>
+<p>Виняток, которое генеруєся в завданьах <code>CompletedFuture</code> представляє тип <b>CompletionException</b>, которое найдеся от <code>RuntimeException</code> и фактически є оборткой над винятокм. 
+Таким чином, когда мы генерируем виняток</p>
 <pre class="line-numbers"><code class="language-java">
 if(age &gt; 110 || age &lt; 1) throw new RuntimeException("Age is invalid");
 </code></pre>
-<p>В реальности в задачу для обработки исключения из вызова <code>exceptionally()</code> передаєся не сгенерированное исключения <code>RuntimeException</code>, а обертка над ним в виде об'єкта <b>CompletionException</b>. 
-Тому в сообщении об исключении мы видим изначальный тип исключения - "java.lang.RuntimeException: Age is invalid". Щоб обратиться к цему внутреннему исключению, мы можемо використовувати метод 
-<code>getCause()</code>, який определен в інтерфейсе Throwble:</p>
+<p>В реальности в завданьу для обработки винятки из вызова <code>exceptionally()</code> передаєся не сгенерированное винятки <code>RuntimeException</code>, а обертка над ним в виде об'єкта <b>CompletionException</b>. 
+Тому в сообщении об исключении мы видим изначальный тип винятки - "java.lang.RuntimeException: Age is invalid". Щоб обратиться к цему внутреннему исключению, мы можемо використовувати метод 
+<code>getCause()</code>, який визначений в інтерфейсе Throwble:</p>
 <pre class="line-numbers"><code class="language-java">
 Function&lt;Throwable, Integer&gt; printException = ex -&gt; { 
     System.out.println(ex.getCause().getMessage());    
-    return 18;  // возвращаем некоторое значение по умолчанию
+    return 18;  // повертаємо некоторое значення по умолчанию
 };
 </code></pre>
-<p>Соответственно теперь при выводе на консоль не буде указываться тип исключения:</p>
+<p>Соответственно теперь при вивіде на консоль не буде указываться тип винятки:</p>
 <pre class="line-numbers"><code class="language-none">
 Age is invalid
 Final age: 18
 </code></pre>
-<h3>Завершение CompletedFuture</h3>
-<p>Асинхронные задачи об'єкта <b>CompletableFuture</b> можуть завершиться двумя способами: с результатом або с неперехваченным исключением. Для обработки обоих случаев можна використовувати метод 
+<h3>Завершення CompletedFuture</h3>
+<p>Асинхронные завданьі об'єкта <b>CompletableFuture</b> можуть завершиться двумя способами: с результатом або с неперехваченным винятокм. Для обработки обоих случаев можна використовувати метод 
 <b>whenComplete()</b>:</p>
 <pre class="line-numbers"><code class="language-java">
 CompletableFuture&lt;T&gt; whenComplete(BiConsumer&lt;? super T, ? super Throwable&gt; action)
 </code></pre>
-<p>В качестве параметра цей метод приймає действие, которое соответствует методу <code>accept()</code> функционального інтерфейса <b>BiConsumer&lt;T,U&gt;</b>:</p>
+<p>В качестве параметра цей метод приймає действие, которое відповідає методу <code>accept()</code> функционального інтерфейса <b>BiConsumer&lt;T,U&gt;</b>:</p>
 <pre class="line-numbers"><code class="language-java">void accept(T t, U u)</code></pre>
 <p>То есть действие ничего не повертає и приймає два параметра, причем второй параметр повинен представлять об'єкт <code>Throwable</code>. В случае с <code>CompletableFuture</code> 
-первый параметр буде представлять результат асинхронной задачи, а второй параметр - исключение, якщо оно возвникло в процессе виконання асинхронной задачи.</p>
-<p>Если результат був успешно вычислен, а исключения не возникло, то второй параметр равен <code>null</code>. Если же наоборот - при выполнении задачи возникло исключение, то первый параметр равен 
+первый параметр буде представлять результат асинхронной завданьі, а второй параметр - виняток, якщо оно возвникло в процесе виконання асинхронной завданьі.</p>
+<p>Если результат був успешно вычислен, а винятки не возникло, то второй параметр равен <code>null</code>. Если же наоборот - при выполнении завданьі возникло виняток, то первый параметр равен 
 <code>null</code></p>
 <p>Общая схема работы коллбека, який передаєся в данный метод, выглядит наступним чином:</p>
 <pre class="line-numbers"><code class="language-java">
 f.whenComplete((result, error) -&gt; {
 
-      if (error == null){  // якщо исключения нет
+      if (error == null){  // якщо винятки нет
       
          обробляє результат result;
       }
-      else {    // якщо возникло исключение
+      else {    // якщо возникло виняток
 
-         обрабатываем ошибку error;
+         обробляємо ошибку error;
       }
 });
 </code></pre>
@@ -261,7 +261,7 @@ class Program{
           
         System.out.println("Main thread started...");
  
-        // определяем об'єкт Executor, який буде выполнять задачи
+        // определяем об'єкт Executor, який буде выполнять завданьі
         ExecutorService executor = Executors.newCachedThreadPool();
         work(executor, 5);
         work(executor, -5);
@@ -272,7 +272,7 @@ class Program{
     }
 
     static void work(Executor executor, int number){
-        // определяем задачу, которая вычисляет факториал
+        // определяем завданьу, которая вычисляет факториал
         Supplier&lt;Integer&gt; factorialTask = () -&gt; {
 
             if(number &lt; 1) throw new RuntimeException("Number must be greater than 0. Invalid number: " + number);
@@ -284,9 +284,9 @@ class Program{
 
         BiConsumer&lt;Integer, Throwable&gt; completedTask = (result, ex) -&gt; {
 
-            if (ex == null)  // якщо нет исключения
+            if (ex == null)  // якщо нет винятки
                 System.out.printf("factorial of %d is %d\n", number, result);
-            else     // якщо возникло исключение
+            else     // якщо возникло виняток
                 System.out.println(ex.getCause().getMessage());
         };
 
@@ -296,8 +296,8 @@ class Program{
     }
 }
 </code></pre>
-<p>Основные действия здесь выполняются в методе <code>work()</code>, який приймає число для вычисления факториала и об'єкт <code>Executor</code> для виконання задач.</p>
-<p>Сначала определяем собственно задачу для вычисления факториала:</p>
+<p>Основные действия здесь виконуються в методі <code>work()</code>, який приймає число для вычисления факториала и об'єкт <code>Executor</code> для виконання завдань.</p>
+<p>Сначала определяем собственно завданьу для вычисления факториала:</p>
 <pre class="line-numbers"><code class="language-java">
 Supplier&lt;Integer&gt; factorialTask = () -&gt; {
 
@@ -308,33 +308,33 @@ Supplier&lt;Integer&gt; factorialTask = () -&gt; {
     return result; 
 };
 </code></pre>
-<p>Если переданное число здесь меньше 1, то генерируем исключение.</p>
-<p>Для обработки завершения задачи (вне зависимости успешного або неудачного) определяем отдельную задачу типу <code>BiConsumer</code>:</p>
+<p>Если переданное число здесь менше 1, то генерируем виняток.</p>
+<p>Для обработки завершення завданьі (вне зависимости успешного або неудачного) определяем отдельную завданьу типу <code>BiConsumer</code>:</p>
 <pre class="line-numbers"><code class="language-java">
 BiConsumer&lt;Integer, Throwable&gt; completedTask = (result, ex) -&gt; {
 
-    if (ex == null)  // якщо нет исключения
+    if (ex == null)  // якщо нет винятки
         System.out.printf("factorial of %d is %d\n", number, result);
-    else     // якщо возникло исключение
+    else     // якщо возникло виняток
          System.out.println(ex.getCause().getMessage());
 };
 </code></pre>
-<p>Поскольку результат вычисления факториала представляє тип <code>Integer</code>, то параметры задачи представляють типы <code>Integer</code> и <code>Throwable</code>. В целях демонстрации задача просто 
-выводит результат або сообщение об ошибке на консоль.</p>
-<p>В конце делаем цепочку вызовов, в которые передаем выше определенные коллбеки:</p>
+<p>Поскольку результат вычисления факториала представляє тип <code>Integer</code>, то параметри завданьі представляютьь типи <code>Integer</code> и <code>Throwable</code>. В целях демонстрации завданьа просто 
+виводить результат або сообщение об ошибке на консоль.</p>
+<p>В конце делаем цепочку вызовов, в которые передаємо выше визначенийные коллбеки:</p>
 <pre class="line-numbers"><code class="language-java">
 CompletableFuture
     .supplyAsync(factorialTask, executor)
     .whenComplete(completedTask);
 </code></pre>
-<p>В методе <code>main()</code> вызываем метод <code>work()</code>, передавая в него для тестирования корркетные и некорректные значения:</p>
+<p>В методі <code>main()</code> вызываем метод <code>work()</code>, передавая в него для тестирования корркетные и некорректные значення:</p>
 <pre class="line-numbers"><code class="language-java">
 ExecutorService executor = Executors.newCachedThreadPool();
 
 work(executor, 5);
 work(executor, -5);
 </code></pre>
-<p>В итоге мы получим консольный вывод типу следующего (порядок вывода сообщение не детерминирован):</p>
+<p>В итоге мы получим консольный вивід типу следующего (порядок вивіда сообщение не детерминирован):</p>
 <pre class="line-numbers"><code class="language-none">
 Main thread started...
 factorial of 5 is 120

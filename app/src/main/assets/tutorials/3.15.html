@@ -3,7 +3,7 @@
 <head>
 <title>Java | Спадкування та узагальнення</title>
 <meta charset="utf-8" />
-<meta name="description" content="Оосбенности наследования классов в обобщениях в языке программирования Java, различные способы наследования и преобразование обобщенных классов">
+<meta name="description" content="Оосбенности наследования класов в обобщениях в языке програмирования Java, различные способы наследования и преобразование обобщенных класов">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -34,7 +34,7 @@ class DepositAccount&lt;T&gt; extends Account&lt;T&gt;{
     }
 }
 </code></pre>
-<p>У конструкторі DepositAccount йде звернення до конструктора базового класу, який передаються дані про тип.</p>
+<p>У конструкторі DepositAccount йде звернення до конструктора базового класу, який передаютьься дані про тип.</p>
 <p>Варіанти використання класів:</p>
 <pre class="line-numbers"><code class="language-java">
 DepositAccount dAccount1 = new DepositAccount(20);
@@ -92,8 +92,8 @@ class DepositAccount extends Account&lt;Integer&gt;{
     }
 }
 </code></pre>
-<p>Здесь при наследовании явным чином указывается тип, який буде використовуватися конструкциями базового класса, то есть тип <code>Integer</code>. 
-Затем в конструктор базового класса передаєся значение именно цього типу - в данном случае число 5.</p>
+<p>Здесь при наследовании явным чином вказуєся тип, який буде використовуватися конструкциями базового класа, то есть тип <code>Integer</code>. 
+Затем в конструктор базового класа передаєся значення именно цього типу - у даному випадку число 5.</p>
 <p>Варіант використання:</p>
 <pre class="line-numbers"><code class="language-java">
 DepositAccount dAccount1 = new DepositAccount();

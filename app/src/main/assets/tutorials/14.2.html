@@ -3,7 +3,7 @@
 <head>
 <title>Java | Дослідження типів</title>
 <meta charset="utf-8" />
-<meta name="description" content="Рефлексия и исследование типов в программе на языке программирования Java, класс Class и его методы, классы Field, Method, Constructor, поление полей, методів и конструкторов классов">
+<meta name="description" content="Рефлексия и исследование типів в програме на языке програмирования Java, клас Class и его методи, класы Field, Method, Constructor, поление полей, методів и конструкторов класов">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -13,26 +13,26 @@
 <div class="item center menC">
      <h1>Дослідження типів</h1><div class="date">Останнє оновлення: 29.09.2025</div>
 
-<p>Для исследования типов в программе кроме класса <code>Class</code> язык Java надає ще ряд классов, которые определены главным чином в пакеті <span class="b">java.lang.reflect</span>:</p>
+<p>Для исследования типів в програме кроме класа <code>Class</code> язык Java надає ще ряд класов, которые визначенийы главным чином в пакеті <span class="b">java.lang.reflect</span>:</p>
 <ul>
-<li><p><span class="b">Field</span>: описує поле класса</p></li>
+<li><p><span class="b">Field</span>: описує поле класа</p></li>
 <li><p><span class="b">Method</span>: описує метод типу</p></li>
-<li><p><span class="b">Constructor</span>: описує конструктор класса</p></li>
+<li><p><span class="b">Constructor</span>: описує конструктор класа</p></li>
 </ul>
-<p>Для получения цих компонентов класса застосовуються соответственно следующие методы класса <code>Class</code>:</p>
+<p>Для получения цих компонентов класа застосовуються соответственно следующие методи класа <code>Class</code>:</p>
 <ul>
-<li><p><code>Field[] getFields() / getDeclaredFields()</code>: повертає поля класса</p></li>
+<li><p><code>Field[] getFields() / getDeclaredFields()</code>: повертає поля класа</p></li>
 
-<li><p><code>Method[] getMethods() / getDeclaredMethods()</code>: повертає методы класса</p></li>
+<li><p><code>Method[] getMethods() / getDeclaredMethods()</code>: повертає методи класа</p></li>
 
-<li><p><code>Constructor[] getConstructors() / getDeclaredConstructors()</code>: повертає конструкторы класса</p></li>
+<li><p><code>Constructor[] getConstructors() / getDeclaredConstructors()</code>: повертає конструктори класа</p></li>
 
 </ul>
-<p>Методи <code>getFields()</code>, <code>getMethods()</code> и <code>getConstructors()</code> повертають массивы общедоступных полей, методів и конструкторов (определенных с модификатором <code>public</code>), 
-поддерживаемых классом, в том числе и поля и методы, унаследованные от суперклассов. Методи <code>getDeclaredFields()</code>, <code>getDeclaredMethods()</code> и 
-<code>getDeclaredConstructors()</code> повертають массивы из всех полей, методів и конструкторов, оголошенийных непосредственно в классе, в том числе и закрытые, приватные  компоненты. Но эти массивы НЕ включают компоненты суперклассов.</p>
-<p>Таким чином, в зависимости от уровня доступа компонентов а також от того, хочемо мы отримати також компоненты суперклассов або хочемо ограничиться компонентами, которые определены непосредственно в классе, зависит выбор конкретного метода для получения компонентов.</p>
-<p>Допустим, у нас есть следующая иерархия классов:</p>
+<p>Методи <code>getFields()</code>, <code>getMethods()</code> и <code>getConstructors()</code> повертають масивы общедоступных полей, методів и конструкторов (визначенийных с модификатором <code>public</code>), 
+піддерживаемых класом, в том числе и поля и методи, унаследованные от суперкласов. Методи <code>getDeclaredFields()</code>, <code>getDeclaredMethods()</code> и 
+<code>getDeclaredConstructors()</code> повертають масивы из всех полей, методів и конструкторов, оголошенийных непосредственно в класе, в том числе и закрытые, приватные  компоненты. Но эти масивы НЕ включают компоненты суперкласов.</p>
+<p>Таким чином, в зависимости от уровня доступа компонентов а також от того, хочемо мы отримати також компоненты суперкласов або хочемо ограничиться компонентами, которые визначенийы непосредственно в класе, зависит выбор конкретного методу для получения компонентов.</p>
+<p>Допустим, у нас есть следующая иерархия класов:</p>
 <pre class="line-numbers"><code class="language-java">
 
 class Person {
@@ -63,7 +63,7 @@ public class Program{
       
     public static void main(String[] args) {
         
-        // получаем класс для класса Person
+        // отримуємо клас для класа Person
         Class personClass = Person.class;
 
         Field[] fields = personClass.getFields();
@@ -86,8 +86,8 @@ public class Program{
     }
 }
 </code></pre>
-<p>В данном случае используем методы <code>getFields()</code>, <code>getMethods()</code> и <code>getConstructors()</code> для получения всех публичных компонентов класса, в том числе унаследованных от класса Person. 
-Консольный вывод программы:</p>
+<p>У даному випадку використовуємо методи <code>getFields()</code>, <code>getMethods()</code> и <code>getConstructors()</code> для получения всех публичных компонентов класа, в том числе унаследованных от класа Person. 
+Консольный вивід програми:</p>
 <pre class="line-numbers"><code class="language-none">
 Public Fields
 
@@ -108,10 +108,10 @@ public final void java.lang.Object.wait(long) throws java.lang.InterruptedExcept
 public final void java.lang.Object.wait(long,int) throws java.lang.InterruptedException
 public final void java.lang.Object.wait() throws java.lang.InterruptedException
 </code></pre>
-<p>Преимуществом классов <code>Field/Method/Constructor</code> є то, что в Java вже по умолчанию реализован полноценный вывод компонента, что очень удобно при выводе на консоль. И в данном случае мы видим, что методы вывели лише 
-публичные компоненты, в том числе и унаследованные от класса Object.</p>
+<p>Преимуществом класов <code>Field/Method/Constructor</code> є то, что в Java вже по умолчанию реалізований полноценный вивід компонента, что дуже удобно при вивіде на консоль. И у даному випадку мы видим, что методи вывели лише 
+публичные компоненты, в том числе и унаследованные от класа Object.</p>
 
-<p>Теперь применим другой набор методів для получения информации о классе - <code>getDeclaredFields()/getDeclaredMethods()/getDeclaredConstructors()</code>:</p>
+<p>Теперь застосуємо другой набор методів для получения информации о класе - <code>getDeclaredFields()/getDeclaredMethods()/getDeclaredConstructors()</code>:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.lang.reflect.*;
 
@@ -119,7 +119,7 @@ public class Program{
       
     public static void main(String[] args) {
         
-        // получаем класс для класса Person
+        // отримуємо клас для класа Person
         Class personClass = Person.class;
 
         Field[] fields = personClass.getDeclaredFields();
@@ -142,7 +142,7 @@ public class Program{
     }
 }
 </code></pre>
-<p>Консольный вывод:</p>
+<p>Консольный вивід:</p>
 <pre class="line-numbers"><code class="language-none">
 Fields
 private java.lang.String Person.name
@@ -157,7 +157,7 @@ public java.lang.String Person.getName()
 public int Person.getAge()
 </code></pre>
 
-<p>Подобным чином мы можемо исследовать и встроенные типы данных. Наприклад, исследуем тип String (ограничимся конструкторами):</p>
+<p>Підобным чином мы можемо исследовать и встроенные типи данных. Наприклад, исследуем тип String (ограничимся конструкторами):</p>
 <pre class="line-numbers"><code class="language-java">
 import java.lang.reflect.*;
 
@@ -175,7 +175,7 @@ public class Program{
     }
 }
 </code></pre>
-<p>Консольный вывод:</p>
+<p>Консольный вивід:</p>
 <pre class="line-numbers"><code class="language-none">
 public java.lang.String(java.lang.StringBuilder)
 public java.lang.String(byte[],int,int,java.nio.charset.Charset)
@@ -195,17 +195,17 @@ public java.lang.String(int[],int,int)
 </code></pre>
 
 <h3>Проверка типу</h3>
-<p>Ряд методів класса <code>Class</code> дозволяють проверить исследуемый тип:</p>
+<p>Ряд методів класа <code>Class</code> дозволяють проверить исследуемый тип:</p>
 <ul>
-<li><p><code>boolean isAnonymousClass()</code>: повертає <code>true</code>, якщо тип є анонимным классом</p></li>
-<li><p><code>boolean isArray()</code>: повертає <code>true</code>, якщо тип представляє массив</p></li>
+<li><p><code>boolean isAnonymousClass()</code>: повертає <code>true</code>, якщо тип є анонимным класом</p></li>
+<li><p><code>boolean isArray()</code>: повертає <code>true</code>, якщо тип представляє масив</p></li>
 <li><p><code>boolean isPrimitive()</code>: повертає <code>true</code>, якщо тип є примитивным типом</p></li>
 <li><p><code>boolean isInterface()</code>: повертає <code>true</code>, якщо об'єкт представляє інтерфейс</p></li>
 <li><p><code>boolean isEnum()</code>: повертає <code>true</code>, якщо об'єкт представляє перечисление</p></li>
-<li><p><code>boolean isRecord()</code>: повертає <code>true</code>, якщо об'єкт представляє класс record</p></li>
+<li><p><code>boolean isRecord()</code>: повертає <code>true</code>, якщо об'єкт представляє клас record</p></li>
 <li><p><code>boolean isInstance(Object obj)</code>: повертає <code>true</code>, якщо об'єкт-параметр є экземпляром цього типу</p></li>
-<li><p><code>boolean isSealed()</code>: повертає <code>true</code>, якщо класс определен с модификатором <code>sealed</code></p></li>
-<li><p><code>Class getSuperclass()</code>: повертає суперкласс для текущего типу</p></li>
+<li><p><code>boolean isSealed()</code>: повертає <code>true</code>, якщо клас визначений с модификатором <code>sealed</code></p></li>
+<li><p><code>Class getSuperclass()</code>: повертає суперклас для текущего типу</p></li>
 </ul>
 <p>Пример применения некоторых из цих методів:</p>
 <pre class="line-numbers"><code class="language-java">
@@ -215,34 +215,34 @@ public class Program{
       
     public static void main(String[] args) {
         
-        // получаем класс для типу Person
+        // отримуємо клас для типу Person
         Class cl = Person.class;
 
-        // получаем имя класса
+        // отримуємо ім'я класа
         System.out.println("Name: " + cl.getName());
-        // получаем суперкласс
+        // отримуємо суперклас
         System.out.println("superclass: " + cl.getSuperclass());
         // проверяем, є ли тип примитивным типом
         System.out.println("primitive: " + cl.isPrimitive());
-        // проверяем, є ли тип массивом
+        // проверяем, є ли тип масивом
         System.out.println("array: " + cl.isArray());
-        // проверяем, є ли тип классом record
+        // проверяем, є ли тип класом record
         System.out.println("record: " + cl.isRecord());
         // проверяем, є ли тип інтерфейсом
         System.out.println("interface: " + cl.isInterface());
 
-        // проверям, что tom - об'єкт класса
+        // проверям, что tom - об'єкт класа
         Person tom = new Person("Tom", 41);
         System.out.println("tom is a Person:: " + cl.isInstance(tom));
 
-        // проверям, что message - об'єкт класса
+        // проверям, что message - об'єкт класа
         String message = "hello";
         System.out.println("message is a Person:: " + cl.isInstance(message));
     }
 }
 record Person(String name, int age){}
 </code></pre>
-<p>Консольный вывод программы:</p>
+<p>Консольный вивід програми:</p>
 <pre class="line-numbers"><code class="language-none">
 Name: Person
 superclass: class java.lang.Record

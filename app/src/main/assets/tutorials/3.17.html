@@ -3,7 +3,7 @@
 <head>
 <title>Java | Обмеження узагальнень</title>
 <meta charset="utf-8" />
-<meta name="description" content="Обмеження узагальнень (generics type bounds) в языке программирования Java, ограничения типу класса и метода, інтерфейсы в качестве ограничений, примеры использования">
+<meta name="description" content="Обмеження узагальнень (generics type bounds) в языке програмирования Java, ограничения типу класа и методу, інтерфейсы в качестве ограничений, примеры использования">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -13,10 +13,10 @@
 <div class="item center menC">
      <h1>Обмеження узагальнень</h1><div class="date">Останнє оновлення: 09.10.2025</div>
 
-	<p>Когда мы указываем универсальный параметр у обобщений, то по умолчанию он может представлять любой тип. Однак иногда необхідно, чтобы параметр соответствовал лише некоторому ограниченному набору типов. В цем случае застосовуються <b>ограничения обобщений</b> (type bound) - они дозволяють указать базовый класс, которому повинен соответствовать параметр.</p>
-<p>Наприклад, ми маємо наступний клас Message, який представляє деяке повідомлення, та його похідні класи, які представляютьь email-повідомлення та sms-повідомлення:</p>
+	<p>Когда мы указываем универсальный параметр у обобщений, то по умолчанию он может представлять любой тип. Однак иногда необхідно, чтобы параметр соответствовал лише некоторому ограниченному набору типів. В цем случае застосовуються <b>ограничения обобщений</b> (type bound) - они дозволяють указать базовый клас, которому повинен соответствовать параметр.</p>
+<p>Наприклад, ми маємо наступний клас Message, який представляє деяке повідомлення, та його похідні класи, які представляютььь email-повідомлення та sms-повідомлення:</p>
 <pre class="line-numbers"><code class="language-java">
-// Класс сообщения
+// Клас сообщения
 class Message {
     private String text;
 
@@ -24,7 +24,7 @@ class Message {
 
     Message(String text) { this.text = text; }
 }
-// класс сообщения по email
+// клас сообщения по email
 class EmailMessage extends Message {
 
     private String address;  // адрес электронной почты
@@ -36,7 +36,7 @@ class EmailMessage extends Message {
         this.address = address;
     }
 }
-// класс сообщения по sms
+// клас сообщения по sms
 class SmsMessage extends Message {
 
     private String number;  // номер телефона
@@ -62,18 +62,18 @@ class Messenger {
     }
 }
 </code></pre>
-<p>Класс Messenger через конструктор приймає сообщение и через метод <code>send()</code> условно надсилає. С помощью метода <code>getMessage()</code> мы можемо отримати отправленное сообщение. 
-И чтобы класс Messenger був предельно универсален, в качестве типу сообщений используем базовый тип Message.</p>
+<p>Клас Messenger через конструктор приймає сообщение и через метод <code>send()</code> условно надсилає. За допомогою методу <code>getMessage()</code> мы можемо отримати отправленное сообщение. 
+И чтобы клас Messenger був предельно универсален, в качестве типу сообщений використовуємо базовый тип Message.</p>
 <p>Використовуємо певні класи:</p>
 <pre class="line-numbers"><code class="language-java">
 class Program {
 
     public static void main(String[] args) {
-        //  Создаем сообщения
+        //  Створюємо сообщения
         Message message1 = new EmailMessage("Привет, ты спишь?", "someaddress@hmail.com");
         Message message2 = new SmsMessage("Не, ты скажи, ты спишь?", "+71234567890");
 
-        // Отправляем сообщения
+        // Надсилаємо повідомлення
         Messenger simpleMessenger = new Messenger(message1);
         simpleMessenger.send();
 
@@ -82,7 +82,7 @@ class Program {
     }
 }
 </code></pre>
-<p>B все ніби чудово працює, і жодних проблем немає, оскільки клас Messenger приймає об&#x27;єкт Message і відповідно також і об&#x27;єкти похідних класів. Але подивимося, з якими проблемами ми можемоо зіткнутися.</p>
+<p>B все ніби чудово працює, і жодних проблем немає, оскільки клас Messenger приймає об&#x27;єкт Message і відповідно також і об&#x27;єкти похідних класів. Але підивимося, з якими проблемами ми можемоо зіткнутися.</p>
 <h4>Перетворення типів</h4>
 <p>Однак при спробі отримати з об&#x27;єкта Messenger надіслане повідомлення ми можемоо зіткнутися з необхідністю перетворення типів:</p>
 <pre class="line-numbers"><code class="language-java">
@@ -95,14 +95,14 @@ class Program {
         Messenger simpleMessenger = new Messenger(message);
         simpleMessenger.send(); // Надсилаєся сообщение: Привет, ты спишь?
 
-        // получаем отправленное сообщение
+        // отримуємо отправленное сообщение
         EmailMessage email = (EmailMessage) simpleMessenger.getMessage();
         System.out.println("Address: " + email.getAddress());  // Address: someaddress@hmail.com
     }
 }
 </code></pre>
-<p>Здесь мы извлекаем за допомогою вызова <code>simpleMessenger.getMessage()</code> отправленное сообщение и преобразуем в <code>EmailMessage</code>, чтобы иметь обращаться к методам, определенным непосредственно в 
-классе EmailMessage.</p>
+<p>Здесь мы извлекаем за допомогою вызова <code>simpleMessenger.getMessage()</code> отправленное сообщение и преобразуем в <code>EmailMessage</code>, чтобы иметь обращаться к методум, визначенийным непосредственно в 
+класе EmailMessage.</p>
 <h4>Типобезпека</h4>
 <p>Друга проблема, яка тут можлива – це проблема типобезпеки, якщо ми точно не знаємо, який тип приховує об&#x27;єкт Message та захочемо перетворити цей об&#x27;єкт до несумісного типу:</p>
 <pre class="line-numbers"><code class="language-java">
@@ -113,14 +113,14 @@ class Program {
         Message message = new EmailMessage("Привет, ты спишь?", "someaddress@hmail.com");
         Messenger simpleMessenger = new Messenger(message);
 
-        // получаем сообщение
+        // отримуємо сообщение
         SmsMessage sms = (SmsMessage) simpleMessenger.getMessage();  // Сюрпрайз - java.lang.ClassCastException!
         System.out.println("Phone number: " + sms.getNumber());
     }
 }
 </code></pre>
 <p>Здесь при попытке преобразовать к типу <code>SmsMessage</code> мы столкнемся с ошибкой, поскольку преобразуемый об'єкт представляє тип EmailMessage. И проблема усугубляется тем, 
-что эту ошибку мы можемо отримати лише в процессе виконання. А компиляция пройдет успешно.</p>
+что эту ошибку мы можемо отримати лише в процесе виконання. А компиляция пройдет успешно.</p>
 
 <h4>Використання узагальнень</h4>
 <p>На перший погляд, щоб уникнути перетворень та проблем із типобезпекою, ми могли б застосувати узагальнення:</p>
@@ -137,21 +137,21 @@ class Messenger&lt;T&gt; {
     }
 }
 </code></pre>
-<p>Теперь в класс Messenger мы можемо передать сообщения любого типу, и об'єкт Messenger буде строго використовувати цей тип. Преобразования не потребуются, а ошибки можна буде отловить на этапе компиляции. 
-Но теперь мы сталкиваемся с другой проблемой - универсальный параметр <code>T</code> подразумевает любой тип. Но не любой тип 
-имїїт метод <code>getText()</code>. Соответственно метод <code>getText()</code> для об'єкта типу <code>T</code> не определен и мы не можемо цей метод використовувати. Болїї того для об'єкта <code>T</code> по умолчанию 
-достуны лише методы типу <code>Object</code>.</p>
+<p>Теперь в клас Messenger мы можемо передать сообщения любого типу, и об'єкт Messenger буде строго використовувати цей тип. Преобразования не потребуются, а ошибки можна буде отловить на этапе компиляции. 
+Но теперь мы сталкиваемся с другой проблемой - универсальный параметр <code>T</code> підразумевает любой тип. Но не любой тип 
+имїїт метод <code>getText()</code>. Соответственно метод <code>getText()</code> для об'єкта типу <code>T</code> не визначений и мы не можемо цей метод використовувати. Болїї того для об'єкта <code>T</code> по умолчанию 
+достуны лише методи типу <code>Object</code>.</p>
 
 <h4>Визначення обмежень узагальнень</h4>
-<p>Таким чином, возникает проблема: треба избежать преобразований типов и соответственно використовувати обобщения, а с другой стороны, необхідно обращаться внутри метода к 
-функционалу класса Message. И <b>ограничения обобщений</b> дозволяють решить эту проблему.</p>
+<p>Таким чином, возникает проблема: треба избежать преобразований типів и соответственно використовувати обобщения, а с другой стороны, необхідно обращаться всередині методу к 
+функционалу класа Message. И <b>ограничения обобщений</b> дозволяють решить эту проблему.</p>
 
-<p>Для установки ограничения после универсального параметра ставится слово <b>extends</b>, после которого указывается тип ограничения:</p>
+<p>Для установки ограничения після универсального параметра ставится слово <b>extends</b>, після которого вказуєся тип ограничения:</p>
 <pre class="line-numbers"><code class="language-java">&lt;T extends тип_ограничения&gt;</code></pre>
 
 <h3>Обмеження узагальнень у типух</h3>
 <p>Обмеження узагальнень можна застосовувати лише на рівні типів:</p>
-<pre class="line-numbers"><code class="language-java">class имя_класса&lt;T extends тип_ограничения&gt;</code></pre>
+<pre class="line-numbers"><code class="language-java">class ім'я_класа&lt;T extends тип_ограничения&gt;</code></pre>
 <p>Як приклад змінимо клас месенджера:</p>
 <pre class="line-numbers"><code class="language-java">
 class Messenger&lt;T extends Message&gt; {
@@ -166,8 +166,8 @@ class Messenger&lt;T extends Message&gt; {
     }
 }
 </code></pre>
-<p>Выражение <code>&lt;T extends Message&gt;</code> в определении класса говорит, что через универсальный параметр <code>T</code> будуть передаваться об'єкты класса Message и 
-производных классов. Благодаря цему компилятор буде знать, что T буде иметь функционал класса Message, и соответственно мы сможемо  без проблем обратиться к методам класса Message внутри класса Messenger.</p>
+<p>Выражение <code>&lt;T extends Message&gt;</code> в визначенийии класа говорит, что через универсальный параметр <code>T</code> будуть передаваться об'єкты класа Message и 
+производных класов. Благодаря цему компилятор буде знать, что T буде иметь функционал класа Message, и соответственно мы сможемо  без проблем обратиться к методум класа Message всередині класа Messenger.</p>
 
 <p>Застосуємо клас для надсилання повідомлень:</p>
 <pre class="line-numbers"><code class="language-java">
@@ -206,8 +206,8 @@ class Messenger&lt;T extends Message, P extends Person&gt; {
 
     void sendMessage(P sender, P receiver, T message)
     {
-        System.out.println("Отправитель: " + sender.getName());
-        System.out.println("Получатель: " + receiver.getName());
+        System.out.println("Відправник: " + sender.getName());
+        System.out.println("Отримувач: " + receiver.getName());
         System.out.println("Сообщение: " + message.getText());
     }
 }
@@ -248,8 +248,8 @@ public class Program{
 </code></pre>
 <p>Консольний висновок:</p>
 <pre class="line-numbers"><code class="language-none">
-Отправитель: Tom
-Получатель: Bob
+Відправник: Tom
+Отримувач: Bob
 Сообщение: Hello, Bob!
 </code></pre>
 <h3>Множинні обмеження</h3>
@@ -298,9 +298,9 @@ class PrintedMessage
     }
 }
 </code></pre>
-<p>В данном случае класс Messenger использует параметр типу <code>T</code>, який оновременно повинен представлять кдасс Message и інтерфейс Printable:</p>
+<p>У даному випадку клас Messenger використовує параметр типу <code>T</code>, який оновременно повинен представлять кдасс Message и інтерфейс Printable:</p>
 <pre class="line-numbers"><code class="language-java">class Messenger&lt;T extends Message & Printable&gt; {</code></pre>
-<p>Як тест визначаємо подібний клас - PrintedMessage і потім передаємо його об&#x27;єкт у метод sendMessage:</p>
+<p>Як тест визначаємо підібний клас - PrintedMessage і потім передаємо його об&#x27;єкт у метод sendMessage:</p>
 <pre class="line-numbers"><code class="language-java">
 var icq = new Messenger&lt;PrintedMessage&gt;();
 var hello = new PrintedMessage("Hello ");
@@ -308,7 +308,7 @@ icq.sendMessage(hello);     // Текст сообщения: Hello
 </code></pre>
 
 <h3>Обмеження методів</h3>
-<p>Аналогічно класам обмеження типізованих параметрів можна застосовувати і методам. Наприклад:</p>
+<p>Аналогічно класам обмеження типізованих параметрів можна застосовувати і методум. Наприклад:</p>
 <pre class="line-numbers"><code class="language-java">
 public class Program{
       

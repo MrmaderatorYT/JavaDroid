@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html  lang="uk">
 <head>
-<title>Java | Обмін між потоками. Клас Exchanger</title>
+<title>Java | Обмін між потіками. Клас Exchanger</title>
 <meta charset="utf-8" />
-<meta name="description" content="Обмен между потоками в языке программирования Java, класс Exchanger">
+<meta name="description" content="Обмен між потіками в языке програмирования Java, клас Exchanger">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -11,16 +11,16 @@
 <body>
 <div id="container">
 <div class="item center menC">
-     <h2>Обмін між потоками. Клас Exchanger</h2><div class="date">Останнє оновлення: 28.04.2018</div>
+     <h2>Обмін між потіками. Клас Exchanger</h2><div class="date">Останнє оновлення: 28.04.2018</div>
 
-	<p>Класс <span class="b">Exchanger</span> призначений для обмена данными между потоками. Он є типизированным и типизируется типом данных, которыми потоки повинні обмениваться.</p>
-<p>Обмен данными производится за допомогою единственного метода цього класса <span class="b">exchange()</span>:</p>
+	<p>Клас <span class="b">Exchanger</span> призначений для обмена данными між потіками. Он є типизированным и типизируется типом данных, которыми потіки повинні обмениваться.</p>
+<p>Обмен данными производится за допомогою единственного методу цього класа <span class="b">exchange()</span>:</p>
 <pre class="line-numbers"><code class="language-java">
 V exchange(V x) throws InterruptedException
 V exchange(V x, long timeout, TimeUnit unit) throws InterruptedException, TimeoutException
 </code></pre>
-<p>Параметр x представляє буфер данных для обмена. Вторая форма метода також определяет параметр timeout - час ожидания и unit - тип временных единиц, применяемых для параметра timeout.</p>
-<p>Данный класс очень просто використовувати:</p>
+<p>Параметр x представляє буфер данных для обмена. Вторая форма методу також визначає параметр timeout - час ожидания и unit - тип временных единиц, застосовуємоых для параметра timeout.</p>
+<p>Данный клас дуже просто використовувати:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.concurrent.Exchanger;
  
@@ -77,12 +77,12 @@ class GetThread implements Runnable{
     }
 } 
 </code></pre>
-<p>В классе PutThread надсилає в буфер сообщение "Hello Java!":</p>
+<p>В класе PutThread надсилає в буфер сообщение "Hello Java!":</p>
 <pre class="line-numbers"><code class="language-java">message=exchanger.exchange(message);</code></pre>
-<p>Причем в ответ метод exchange повертає дані, которые отправил в буфер другой поток. То есть происходит обмен данными. Хотя нам необязательно 
+<p>Причем в ответ метод exchange повертає дані, которые отправил в буфер другой потік. То есть происходит обмен данными. Хотя нам необязательно 
 получать дані, мы можемо просто их отправить:</p>
 <pre class="line-numbers"><code class="language-java">exchanger.exchange(message);</code></pre>
-<p>Логика класса GetThread аналогична - також надсилаєся сообщение.</p>
+<p>Логика класа GetThread аналогична - також надсилаєся сообщение.</p>
 <p>В итоге консоль выведет следующий результат:</p>
 <div class="console">
 <pre class="consoletext">

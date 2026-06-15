@@ -3,7 +3,7 @@
 <head>
 <title>Java | Підстановочні знаки wildcards в узагальненнях</title>
 <meta charset="utf-8" />
-<meta name="description" content="Підстановочні знаки wildcards в узагальненнях generics в языке программирования Java, метасимвол ? и выражения "? extends Type" и "? super Type", ограничения Supertype Bounds">
+<meta name="description" content="Підстановочні знаки wildcards в узагальненнях generics в языке програмирования Java, метасимвол ? и выражения "? extends Type" и "? super Type", ограничения Supertype Bounds">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -13,17 +13,17 @@
 <div class="item center menC">
      <h1>Підстановочні знаки wildcards в узагальненнях</h1><div class="date">Останнє оновлення: 10.10.2025</div>
 
-<p>В мові Java обобщения играют важную роль в обеспечении безопасности типов и создании гибкого кода. 
-Однак, при работе с наследованием и обобщениями можуть возникать сложности. Именно здесь на помощь приходят <b>wildcards</b> (подстановочные знаки або метасимволы), предоставляя мощный инструмент 
+<p>В мові Java обобщения играют важную роль в обеспечении безопасности типів и створенні гибкого коду. 
+Однак, при работе с наследованием и обобщениями можуть возникать сложности. Именно здесь на помощь приходят <b>wildcards</b> (підстановочные знаки або метасимволи), предоставляя мощный инструмент 
 для работы с неизвестными типуми.</p>
 
-<p>В контексте обобщений wildcard або подстановочный знак представляє представляє неизвестный тип и обозначается за допомогою вопросительного знака <b>?</b>. 
-Он дозволяє создавать болїї гибкий функционал, який может работать с различными типуми данных.</p>
+<p>В контексте обобщений wildcard або підстановочный знак представляє представляє неизвестный тип и обозначается за допомогою вопросительного знака <b>?</b>. 
+Он дозволяє создавать болїї гибкий функционал, який может працювати с различными типуми данных.</p>
 <p>Існує три види підстановочних знаків різних цілей:</p>
 <ul>
 <li><p><span class="b">Необмежений Wildcard</span> (<code>?</code>)</p></li>
-<li><p><span class="b">Wildcard, обмежений &quot;згори&quot;</span> (ограниченный базовым классом) (<code>? extends Type</code>)</p></li>
-<li><p><span class="b">Wildcard, обмежений &quot;знизу&quot;</span> (ограниченный производным классом) (<code>? super Type</code>)</p></li>
+<li><p><span class="b">Wildcard, обмежений &quot;згори&quot;</span> (ограниченный базовым класом) (<code>? extends Type</code>)</p></li>
+<li><p><span class="b">Wildcard, обмежений &quot;знизу&quot;</span> (ограниченный производным класом) (<code>? super Type</code>)</p></li>
 </ul>
 <p>Розглянемо ці типи підстановочних знаків та сценарії їх використання з прикладу наступного класу Person:</p>
 <pre class="line-numbers"><code class="language-java">
@@ -46,7 +46,7 @@ class Person&lt;T&gt;{
 </code></pre>
 <p>Тип Person є обобщенный и типизирован параметром <code>T</code>, який надає тип для поля id.</p>
 
-<p>Але передусім подивимося ситуацію, де підстановочні знаки можуть допомогти:</p>
+<p>Але передусім підивимося ситуацію, де підстановочні знаки можуть допомогти:</p>
 <pre class="line-numbers"><code class="language-java">
 public class Program{
        
@@ -69,8 +69,8 @@ public class Program{
     }
 }
 </code></pre>
-<p>При попытке компиляции цей программы мы столкнемся с ошибками. Почему? Здесь метод <code>printPersonInfo()</code> в качестве параметра приймає об'єкт типу <code>Person&lt;Object&gt;</code>. Типизация типом <code>Object</code> казалось бы охватит все возможные ситуации 
-для поля id, в том числе когда це поле представляє типы <code>Integer</code> и <code>String</code> (як наследника класса <code>Object</code>). Однак в реальности мы сможемо передать в цей метод об'єкты Person, 
+<p>При попытке компиляции цей програми мы столкнемся с ошибками. Почему? Здесь метод <code>printPersonInfo()</code> в качестве параметра приймає об'єкт типу <code>Person&lt;Object&gt;</code>. Типизация типом <code>Object</code> казалось бы охватит все возможные ситуации 
+для поля id, в том числе когда це поле представляє типи <code>Integer</code> и <code>String</code> (як наследника класа <code>Object</code>). Однак в реальности мы сможемо передать в цей метод об'єкты Person, 
 которые типизирированы типуми, отличными от <code>Object</code>:</p>
 <pre class="line-numbers"><code class="language-java">
 Person&lt;Integer&gt; tom = new Person&lt;&gt;(1, "Tom");
@@ -98,7 +98,7 @@ public class Program{
         printPersonInfo(bob);   // Name: Bob;  Id: A-456
     }
     static void printPersonInfo(Person&lt;?&gt; person) {
-        // Мы можемо безопасно вызывать методы, не связанные с дженериком
+        // Мы можемо безопасно вызывать методи, не связанные с дженериком
         System.out.print("Name: " + person.getName());
         
         // Мы можемо отримати id, но компилятор буде рассматривать его як Object
@@ -107,10 +107,10 @@ public class Program{
     }
 }
 </code></pre>
-<p>В данном случае определен метод <code>printPersonInfo</code>, який просто выводит информацию о человеке. Обратите внимание на тип его параметра:</p>
+<p>У даному випадку визначений метод <code>printPersonInfo</code>, який просто виводить информацию о человеке. Зверніть увагу на тип его параметра:</p>
 <pre class="line-numbers"><code class="language-java">Person&lt;?&gt; person</code></pre>
-<p>То есть параметр <code>person</code> представляє класс Person, но яким типом типизирован цей класс, неважно. Поскольку здесь нам не важен тип его поля <code>id</code> - мы просто выводим его на консоль. В цем случае 
-використовується строковое представление поля id. Тому в цей метод мы можемо передать об'єкты класса Person, типизированные различными типуми, наприклад, Integer або String:</p>
+<p>То есть параметр <code>person</code> представляє клас Person, но яким типом типизирован цей клас, неважливо. Поскольку здесь нам не важен тип его поля <code>id</code> - мы просто вивідим его на консоль. В цем случае 
+використовується рядківовое представление поля id. Тому в цей метод мы можемо передать об'єкты класа Person, типизированные различными типуми, наприклад, Integer або String:</p>
 <pre class="line-numbers"><code class="language-java">
 Person&lt;Integer&gt; tom = new Person&lt;&gt;(123, "Tom");
 Person&lt;String&gt; bob = new Person&lt;&gt;("A-456", "Bob");
@@ -118,7 +118,7 @@ Person&lt;String&gt; bob = new Person&lt;&gt;("A-456", "Bob");
 printPersonInfo(tom);   // Name: Tom;  Id: 123
 printPersonInfo(bob);   // Name: Bob;  Id: A-456
 </code></pre>
-<p>Но поскольку компилятор здесь не знает, якой именно тип очікує об'єкт <code>Person&lt;?&gt;</code>, мы не можемо выполнять ряд операций с полем id, наприклад, установить его за допомогою метода <code>setId()</code>:</p>
+<p>Но поскольку компилятор здесь не знает, якой именно тип очікує об'єкт <code>Person&lt;?&gt;</code>, мы не можемо выполнять ряд операцій с полем id, наприклад, установить его за допомогою методу <code>setId()</code>:</p>
 <pre class="line-numbers"><code class="language-java">
 public class Program{
        
@@ -143,8 +143,8 @@ public class Program{
 <p>&quot;Зверху&quot;? Тому що в ієрархії типів базові типи розташовуються вгорі. 
 Object) відсікаються.</p>
 <p>Проте ми можемоо написати так:</p>
-<p>Наприклад, определим метод, який работает лише с теми об'єктами Person, у которых поле <code>id</code> представляє число, наприклад, <code>Integer</code>, <code>Double</code>. 
-Отличительная особенность встроенных числовых типов в Java в том, что они наследуются от базового класса <b>Number</b>. Тому мы можемо використовувати тип <code>Number</code> в качестве ограничения сверху:</p>
+<p>Наприклад, визначимо метод, який работает лише с теми об'єктами Person, у которых поле <code>id</code> представляє число, наприклад, <code>Integer</code>, <code>Double</code>. 
+Отличительная особенность встроенных числовых типів в Java в том, что они наследуются от базового класа <b>Number</b>. Тому мы можемо використовувати тип <code>Number</code> в качестве ограничения сверху:</p>
 <pre class="line-numbers"><code class="language-java">
 public class Program{
        
@@ -166,7 +166,7 @@ public class Program{
 </code></pre>
 <p>Здесь метод <code>processNumericId()</code> приймає об'єкт Person, який типизирован типом NUmber або его наследниками:</p>
 <pre class="line-numbers"><code class="language-java">void processNumericId(Person&lt;? extends Number&gt; person) </code></pre>
-<p>Благодаря цему компилятор внутри метода буде рассматривать поле id (которое имїїт тип T) як поле типу <code>Number</code>. Тому мы сможемо внутри метода работать с id як с об'єктом типу Number, наприклад, 
+<p>Благодаря цему компилятор всередині методу буде рассматривать поле id (которое имїїт тип T) як поле типу <code>Number</code>. Тому мы сможемо всередині методу працювати с id як с об'єктом типу Number, наприклад, 
 вызвать его метод <code>doubleValue()</code> для получения id в виде double.</p>
 <p>Також ми не можемоо встановити id, навіть якщо використовувати об&#x27;єкт Number:</p>
 <pre class="line-numbers"><code class="language-java">
@@ -179,9 +179,9 @@ public static void main(String[] args) {
     processNumericId(alice);    // ! Ошибка
 }
 </code></pre>
-<p>В первом случае (<code>processNumericId(sam)</code>) об'єкт Person типизирован типом <code>String</code>, а <code>String</code> не входит в иерархию типу <code>Number</code>. Тому получаем ошибку.</p>
-<p>Під втором случае (<code>processNumericId(alice)</code>) об'єкт Person типизирован типом <code>Object</code>. Однак в иерархии типов тип <code>Object</code> располагается выше типу <code>Number</code> 
-(є его базовым классом). Тому також получаем ошибку.</p>
+<p>В первом случае (<code>processNumericId(sam)</code>) об'єкт Person типизирован типом <code>String</code>, а <code>String</code> не входит в иерархию типу <code>Number</code>. Тому отримуємо ошибку.</p>
+<p>Під втором случае (<code>processNumericId(alice)</code>) об'єкт Person типизирован типом <code>Object</code>. Однак в иерархии типів тип <code>Object</code> располагается выше типу <code>Number</code> 
+(є его базовым класом). Тому також отримуємо ошибку.</p>
 
 <pre class="line-numbers"><code class="language-java">
 static void setNumericId(Person&lt;? extends Number&gt; person, Number id) {
@@ -189,15 +189,15 @@ static void setNumericId(Person&lt;? extends Number&gt; person, Number id) {
     person.setId(id);  // ! Ошибка
 }
 </code></pre>
-<p>Компилятор не знает, что именно очікує об'єкт — <code>Integer</code> або <code>Double</code>, поцему не позволит установить якое-або конкретное значение.</p>
+<p>Компилятор не знает, что именно очікує об'єкт — <code>Integer</code> або <code>Double</code>, поцему не дозволить установить якое-або конкретное значення.</p>
 
 <h3>Wildcard з обмеженням похідним типом (?super Type)</h3>
 
-<p>Wildcard, ограниченный "снизу" або ограниченный производным типом, означает "любой тип, який представляє данный тип або его базовый тип. Под базовым типом понимается любой тип, 
-який расположен выше по иерархии (наприклад, для типу <code>Integer</code> - це <code>Number</code> (прямой базовый тип) и <code>Object</code> (непрямой базовый тип)). Задается в виде следующего выражения:</p>
+<p>Wildcard, ограниченный "снизу" або ограниченный производным типом, означает "любой тип, який представляє данный тип або его базовый тип. Під базовым типом понимается любой тип, 
+який расположен выше по иерархии (наприклад, для типу <code>Integer</code> - це <code>Number</code> (прямой базовый тип) и <code>Object</code> (непрямой базовый тип)). Задаєся в виде следующего выражения:</p>
 <pre class="line-numbers"><code class="language-java">? super Type</code></pre>
 <p>Тобто тип повинен представляти сам Type або його базовий тип (супертип). Тому всі типи-спадкоємці від самого Type у разі відсікаються.</p>
-<p>Допустим, нам нвжен метод для обновления <code>id</code>, який представлять тип <code>Integer</code>, або его базовый класс (<code>Number</code>, <code>Object</code>). В цем случае мы можемо установить ограничение снизу в виде типу <code>Integer</code>:</p>
+<p>Допустим, нам нвжен метод для обновления <code>id</code>, який представлять тип <code>Integer</code>, або его базовый клас (<code>Number</code>, <code>Object</code>). В цем случае мы можемо установить ограничение снизу в виде типу <code>Integer</code>:</p>
 <pre class="line-numbers"><code class="language-java">
 public class Program{
        
@@ -223,7 +223,7 @@ public class Program{
     }
 }
 </code></pre>
-<p>Здесь определен метод <code>setIntegerId()</code>, який отримує об'єкт Person и новое значение id для установки. Такой метод сможет работать с типуми <code>Person&lt;Integer&gt;</code>, <code>Person&lt;Number&gt;</code> и <code>Person&lt;Object&gt;</code>.</p>
+<p>Здесь визначений метод <code>setIntegerId()</code>, який отримує об'єкт Person и новое значення id для установки. Такой метод сможет працювати с типуми <code>Person&lt;Integer&gt;</code>, <code>Person&lt;Number&gt;</code> и <code>Person&lt;Object&gt;</code>.</p>
 <p>Однак при чтении (наприклад, при вызове <code>getId()</code>) мы можемо быть уверены лише в том, что получим <code>Object</code>, оскільки неизвестно, якой именно супертип використовується (<code>Integer</code>, <code>Number</code> або <code>Object</code>):</p>
 <pre class="line-numbers"><code class="language-java">
 public class Program{
@@ -253,8 +253,8 @@ public class Program{
 <h3>Принцип PECS Producer extends</h3>
 <p>Принцип <b>PECS</b> (Producer Extends, Consumer Super) представляє простое правило помогает запомнить, когда якой wildcard використовувати:</p>
 <ul>
-<li><p><span class="b">постачає</span>: об'єкт <span class="b">Consumer super</span> дані (операции чтения, як в <code>getId()</code>). В цем случае случае використовується <code>? extends Type</code></p></li>
-<li><p><span class="b">споживає</span>: об'єкт <span class="b">Назад</span> дані (операции записи, як в <code>setId()</code>). В цем случае случае використовується <code>? super Type</code></p></li>
+<li><p><span class="b">постачає</span>: об'єкт <span class="b">Consumer super</span> дані (операції читання, як в <code>getId()</code>). В цем случае случае використовується <code>? extends Type</code></p></li>
+<li><p><span class="b">споживає</span>: об'єкт <span class="b">Назад</span> дані (операції записи, як в <code>setId()</code>). В цем случае случае використовується <code>? super Type</code></p></li>
 </ul>
 
   </div>

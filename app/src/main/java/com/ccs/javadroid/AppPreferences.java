@@ -8,7 +8,7 @@ import android.graphics.Typeface;
  * Централізований доступ до користувацьких налаштувань JavaDroid.
  * Зберігає шрифти, тему, поведінку редактора та параметри компілятора.
  */
-public final class AppPreferences {
+    public final class AppPreferences {
 
     public static final String PREFS_NAME = "com.ccs.javadroid.prefs";
 
@@ -47,11 +47,8 @@ public final class AppPreferences {
     public static final int FONT_SERIF     = 2;
     public static final int FONT_DEFAULT   = 3;
 
-    // Java target constants (передаємо як ECJ -1.8 / -11 / -17 / -21)
+    // Java target constants (передаємо як ECJ -1.8 / -11)
     public static final String JAVA_8  = "1.8";
-    public static final String JAVA_11 = "11";
-    public static final String JAVA_17 = "17";
-    public static final String JAVA_21 = "21";
 
     private final SharedPreferences prefs;
 

@@ -223,19 +223,23 @@
             android:layout_weight="3"
             android:orientation="horizontal">
 
-            <LinearLayout
+            <FrameLayout
                 android:id="@+id/wrapperEditor1"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:orientation="vertical"
                 android:padding="1dp">
 
                 <io.github.rosemoe.sora.widget.CodeEditor
                     android:id="@+id/editor"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
-            </LinearLayout>
+
+                <com.ccs.javadroid.debug.BreakpointOverlay
+                    android:id="@+id/breakpointOverlay1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </FrameLayout>
 
             <View
                 android:id="@+id/editorDivider"
@@ -244,12 +248,11 @@
                 android:background="@color/idea_separator"
                 android:visibility="gone" />
 
-            <LinearLayout
+            <FrameLayout
                 android:id="@+id/wrapperEditor2"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:orientation="vertical"
                 android:padding="1dp"
                 android:visibility="gone">
 
@@ -257,14 +260,136 @@
                     android:id="@+id/editor2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
-            </LinearLayout>
+
+                <com.ccs.javadroid.debug.BreakpointOverlay
+                    android:id="@+id/breakpointOverlay2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </FrameLayout>
         </LinearLayout>
 
-        <!-- Editor / Console divider -->
+        <!-- Editor / Console divider (draggable) -->
         <View
+            android:id="@+id/consoleDivider"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="8dp"
             android:background="@color/idea_separator" />
+
+        <!-- ── DEBUG TOOLBAR (hidden by default) ── -->
+        <LinearLayout
+            android:id="@+id/debugToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="28dp"
+            android:orientation="horizontal"
+            android:background="@color/idea_toolbar"
+            android:gravity="center_vertical"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/debugLocation"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:paddingStart="8dp"
+                android:text=""
+                android:textColor="@color/idea_accent"
+                android:textSize="10sp"
+                android:fontFamily="monospace" />
+
+            <TextView
+                android:id="@+id/btnDebugStepOver"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:paddingStart="6dp"
+                android:paddingEnd="6dp"
+                android:gravity="center"
+                android:text="Step Over"
+                android:textColor="@color/idea_text_dim"
+                android:textSize="10sp"
+                android:background="?attr/selectableItemBackground" />
+
+            <TextView
+                android:id="@+id/btnDebugStepInto"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:paddingStart="6dp"
+                android:paddingEnd="6dp"
+                android:gravity="center"
+                android:text="Step Into"
+                android:textColor="@color/idea_text_dim"
+                android:textSize="10sp"
+                android:background="?attr/selectableItemBackground" />
+
+            <TextView
+                android:id="@+id/btnDebugStepOut"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:paddingStart="6dp"
+                android:paddingEnd="6dp"
+                android:gravity="center"
+                android:text="Step Out"
+                android:textColor="@color/idea_text_dim"
+                android:textSize="10sp"
+                android:background="?attr/selectableItemBackground" />
+
+            <TextView
+                android:id="@+id/btnDebugResume"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:paddingStart="6dp"
+                android:paddingEnd="6dp"
+                android:gravity="center"
+                android:text="Resume"
+                android:drawableStart="@drawable/ic_debug_resume"
+                android:drawablePadding="4dp"
+                android:textColor="@color/idea_run_green"
+                android:textSize="10sp"
+                android:background="?attr/selectableItemBackground" />
+
+            <TextView
+                android:id="@+id/btnDebugStop"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:paddingStart="6dp"
+                android:paddingEnd="6dp"
+                android:gravity="center"
+                android:text="Stop"
+                android:drawableStart="@drawable/ic_debug_stop"
+                android:drawablePadding="4dp"
+                android:textColor="@color/idea_error_text"
+                android:textSize="10sp"
+                android:background="?attr/selectableItemBackground" />
+
+            <TextView
+                android:id="@+id/btnDebugEvaluate"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:paddingStart="6dp"
+                android:paddingEnd="6dp"
+                android:gravity="center"
+                android:text="Eval"
+                android:textColor="@color/idea_text_dim"
+                android:textSize="10sp"
+                android:background="?attr/selectableItemBackground" />
+
+            <TextView
+                android:id="@+id/btnToggleBreakpoint"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:paddingStart="6dp"
+                android:paddingEnd="6dp"
+                android:gravity="center"
+                android:text="BP"
+                android:drawableStart="@drawable/ic_debug_breakpoint"
+                android:drawablePadding="4dp"
+                android:textColor="@color/idea_error_text"
+                android:textSize="10sp"
+                android:background="?attr/selectableItemBackground" />
+
+        </LinearLayout>
 
         <!-- ── BOTTOM PANEL TABS (scrollable so Bytecode stays reachable on narrow screens) ── -->
         <LinearLayout
@@ -329,6 +454,36 @@
                         android:background="@color/idea_toolbar"
                         android:clickable="true"
                         android:focusable="true" />
+
+                    <TextView
+                        android:id="@+id/tabDebug"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:gravity="center_vertical"
+                        android:text="@string/tab_debug"
+                        android:textColor="@color/idea_text_dim"
+                        android:textSize="11sp"
+                        android:background="@color/idea_toolbar"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/tabDebugConsole"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:gravity="center_vertical"
+                        android:text="@string/tab_debug_console"
+                        android:textColor="@color/idea_text_dim"
+                        android:textSize="11sp"
+                        android:background="@color/idea_toolbar"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:visibility="gone" />
                 </LinearLayout>
             </HorizontalScrollView>
 
@@ -346,6 +501,7 @@
 
         <!-- ── RUN / PROBLEMS CONTENT ── -->
         <FrameLayout
+            android:id="@+id/bottomPanelContent"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1">
@@ -378,33 +534,289 @@
                 android:visibility="gone"
                 android:scrollbars="vertical" />
 
+            <!-- ── Bytecode viewer: split (method tree + instructions) ── -->
+            <LinearLayout
+                android:id="@+id/bytecodeRoot"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:background="@color/idea_console_bg"
+                android:visibility="gone">
+
+                <!-- toolbar: search + toggles -->
+                <LinearLayout
+                    android:id="@+id/bytecodeToolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="32dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@color/idea_toolbar"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="6dp">
+
+                    <EditText
+                        android:id="@+id/bytecodeSearch"
+                        android:layout_width="0dp"
+                        android:layout_height="26dp"
+                        android:layout_weight="1"
+                        android:hint="@string/bytecode_search_hint"
+                        android:textColorHint="@color/idea_text_dim"
+                        android:textColor="@color/idea_console_text"
+                        android:textSize="11sp"
+                        android:singleLine="true"
+                        android:imeOptions="actionSearch"
+                        android:inputType="text"
+                        android:background="@android:color/transparent"
+                        android:paddingStart="4dp"
+                        android:paddingEnd="4dp" />
+
+                    <TextView
+                        android:id="@+id/bytecodeToggleHex"
+                        android:layout_width="wrap_content"
+                        android:layout_height="26dp"
+                        android:gravity="center"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text="HEX"
+                        android:textColor="@color/idea_text_dim"
+                        android:textSize="11sp"
+                        android:fontFamily="monospace"
+                        android:background="?attr/selectableItemBackground" />
+
+                    <TextView
+                        android:id="@+id/bytecodeToggleLines"
+                        android:layout_width="wrap_content"
+                        android:layout_height="26dp"
+                        android:gravity="center"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text="Ln"
+                        android:textColor="@color/idea_console_text"
+                        android:textSize="11sp"
+                        android:fontFamily="monospace"
+                        android:background="?attr/selectableItemBackground" />
+
+                    <TextView
+                        android:id="@+id/bytecodeToggleComments"
+                        android:layout_width="wrap_content"
+                        android:layout_height="26dp"
+                        android:gravity="center"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text="Cmt"
+                        android:textColor="@color/idea_console_text"
+                        android:textSize="11sp"
+                        android:fontFamily="monospace"
+                        android:background="?attr/selectableItemBackground" />
+                </LinearLayout>
+
+                <!-- status line (class name / method count) -->
+                <TextView
+                    android:id="@+id/bytecodeStatus"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    android:textSize="10sp"
+                    android:fontFamily="monospace"
+                    android:textColor="@color/idea_text_dim"
+                    android:background="@color/idea_console_bg" />
+
+                <!-- split: method tree (left) | instructions (right) -->
+                <LinearLayout
+                    android:id="@+id/bytecodeSplitPanel"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/bytecodeMethodTree"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:scrollbars="vertical" />
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/idea_separator" />
+
+                    <FrameLayout
+                        android:id="@+id/bytecodeInsnSlot"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2">
+
+                        <HorizontalScrollView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scrollbars="horizontal"
+                            android:fillViewport="false">
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/bytecodeInstructions"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:nestedScrollingEnabled="false" />
+                        </HorizontalScrollView>
+
+                        <ScrollView
+                            android:id="@+id/bytecodeHexScroll"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:visibility="gone">
+
+                            <HorizontalScrollView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+
+                                <TextView
+                                    android:id="@+id/bytecodeHexOutput"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:padding="6dp"
+                                    android:fontFamily="monospace"
+                                    android:textSize="10sp"
+                                    android:textColor="@color/idea_console_text"
+                                    android:textIsSelectable="true" />
+                            </HorizontalScrollView>
+                        </ScrollView>
+                    </FrameLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Debug Console (output during debugging) -->
             <ScrollView
-                android:id="@+id/bytecodeOuterScroll"
+                android:id="@+id/debugConsoleScroll"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/idea_console_bg"
                 android:visibility="gone"
-                android:fillViewport="true"
-                android:scrollbars="vertical">
+                android:fillViewport="true">
 
-                <HorizontalScrollView
+                <TextView
+                    android:id="@+id/debugConsoleOutput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:scrollbars="horizontal"
-                    android:fillViewport="true">
-
-                    <TextView
-                        android:id="@+id/bytecodeOutput"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="8dp"
-                        android:textColor="@color/idea_console_text"
-                        android:fontFamily="monospace"
-                        android:textSize="11sp"
-                        android:lineSpacingMultiplier="1.15"
-                        android:textIsSelectable="true" />
-                </HorizontalScrollView>
+                    android:padding="8dp"
+                    android:textColor="@color/idea_console_text"
+                    android:fontFamily="monospace"
+                    android:textSize="12sp"
+                    android:lineSpacingMultiplier="1.2"
+                    android:textIsSelectable="true" />
             </ScrollView>
+
+            <!-- Debug Split View -->
+            <LinearLayout
+                android:id="@+id/debuggerSplitPanel"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:background="@color/idea_console_bg"
+                android:visibility="gone">
+
+                <!-- Left: Call Stack -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/callStackRecycler"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/idea_console_bg"
+                    android:nestedScrollingEnabled="false"
+                    android:overScrollMode="never" />
+
+                <!-- Збережено для зворотної сумісності (прихований) -->
+                <TextView
+                    android:id="@+id/callStackOutput"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:visibility="gone" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/idea_separator" />
+
+                <!-- Right: Variables & Watches -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:orientation="vertical">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/variablesRecycler"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:background="@color/idea_console_bg"
+                        android:nestedScrollingEnabled="false"
+                        android:overScrollMode="never" />
+
+                    <!-- Збережено для зворотної сумісності старого коду (прихований) -->
+                    <TextView
+                        android:id="@+id/variablesOutput"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:visibility="gone" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/idea_separator" />
+
+                    <LinearLayout
+                        android:id="@+id/watchesContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:background="@color/idea_console_bg">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="32dp"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:paddingStart="4dp"
+                            android:paddingEnd="4dp">
+
+                            <TextView
+                                android:id="@+id/btnAddWatch"
+                                android:layout_width="wrap_content"
+                                android:layout_height="24dp"
+                                android:paddingStart="8dp"
+                                android:paddingEnd="8dp"
+                                android:gravity="center"
+                                android:text="+ Add Watch"
+                                android:textColor="#499C54"
+                                android:textSize="11sp"
+                                android:background="?attr/selectableItemBackground" />
+                        </LinearLayout>
+
+                        <ScrollView
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:fillViewport="true">
+
+                            <TextView
+                                android:id="@+id/watchesOutput"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:padding="8dp"
+                                android:textColor="@color/idea_console_text"
+                                android:fontFamily="monospace"
+                                android:textSize="11sp"
+                                android:lineSpacingMultiplier="1.2"
+                                android:textIsSelectable="true" />
+                        </ScrollView>
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
 
         </FrameLayout>
 

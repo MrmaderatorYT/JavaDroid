@@ -3,7 +3,7 @@
 <head>
 <title>Java | Перша програма у IntelliJ IDEA</title>
 <meta charset="utf-8" />
-<meta name="description" content="Начало работы со средой разработки IntelliJ IDEA. Створення первой программы на Java">
+<meta name="description" content="Начало работы со средой разработки IntelliJ IDEA. Створення первой програми на Java">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -13,13 +13,13 @@
 <div class="item center menC">
      <h2>Перша програма у IntelliJ IDEA</h2><div class="date">Останнє оновлення: 20.03.2024</div>
 
-	<p>В прошлой теме мы рассмотрели, як создавать первую программу с понаступним її запуском в командной строке. Для упрощения разработки мы також можемо 
-використовувати такие инструменты як IDE або интегрированные среды разработки, которые упрощают и ускоряют написание кода и створення приложений. На данный момент наиболїї популярной средой разработки для Java є 
+	<p>В прошлой теме мы рассмотрели, як создавать первую програму с понаступним її запуском в командной рядківе. Для спрощення розробки ми також можемо 
+використовувати такие инструменты як IDE або интегрированные среды разработки, которые упрощают и ускоряют написание коду и створення приложений. На данный момент наиболїї популярной средой разработки для Java є 
 <b>IntelliJ IDEA</b> от компании JetBrains. Рассмотрим, як використовувати данную среду.</p>
 <p>Прежде всего загрузим установочный дистрибутив с официального сайта <a href="https://www.jetbrains.com/idea/download" rel="nofollow">https://www.jetbrains.com/idea/download</a>. 
-По цему адресу можна найти пакеты для Windows, MacOS, Linux. Крім того, сама среда доступна в двух версиях - Ultimate (платная с триальным бесплатным периодом) 
-и Community (бесплатная). В данном случае выберем бесплатную версию <span class="b">Community</span>.</p>
-<img src="pics/1.30.png" alt="Установка IntelliJ IDEA" style="width:600px;" />
+По цему адресу можна найти пакети для Windows, MacOS, Linux. Крім того, сама среда доступна в двух версиях - Ultimate (платная с триальным бесплатным периодом) 
+и Community (бесплатная). У даному випадку оберемо бесплатную версию <span class="b">Community</span>.</p>
+<img src="pics/1.30.png" alt="Встановлення IntelliJ IDEA" style="width:600px;" />
 <p>Зверніть увагу, що на сайті спочатку йде платна Ultimate-версія і лише потім безкоштовна Community-версія. Це середовище доступне як для платформи Intel x64, так і для 
 платформи ARM64. Для Windows та MacOS доступні інсталяційні пакети, для Linux доступні лише архіви. Однак ряд ОС на Linux, наприклад, на Ubuntu, для встановлення 
 можна використовувати пакетний менеджер snap та встановити середовище за допомогою команди:</p>
@@ -28,25 +28,25 @@
 <p>Варто відзначити, Community-версія не має багатьох 
 можливостей, які доступні в Ultimate-версії (зокрема, в Community недоступні опції для 
 веб-застосунків на Java). Але Community-версія теж досить функціональна і теж дозволяє робити досить багато, у тому числі програми JavaFX і Android.</p>
-<p>После установки запустим IntelliJ IDEA и создадим первый проект. Для цього на стартовом экране выберем <span class="b">New Project</span>:</p>
-<img src="pics/intellijidea2.png" alt="Створення проекта в IntelliJ IDEA" style="width:650px;" />
-<p>Далїї откроется окно создания проекта. В левой части в качестве типу проекта выберем <span class="b">New Project</span>.</p>
-<img src="pics/intellijidea8.png" alt="Створення проекта Java в IntelliJ IDEA"  style="width:650px;" />
-<p>В поле <span class="b">Name</span> укажем имя проекта. В моем случае проект буде называться HelloJava.</p>
-<p>В поле <span class="b">Location</span> можна указать путь к проекту, якщо не устраивает путь по умолчанию.</p>
-<p>Поскольку мы будем работать с языком Java, в поле <span class="b">Language</span> выберем пункт <span class="b">Java</span></p>
+<p>Після установки запустимо IntelliJ IDEA и створимо первый проєкт. Для цього на стартовом экране оберемо <span class="b">New Project</span>:</p>
+<img src="pics/intellijidea2.png" alt="Створення проєкта в IntelliJ IDEA" style="width:650px;" />
+<p>Далїї откроется окно створенняя проєкта. В левой части в качестве типу проєкта оберемо <span class="b">New Project</span>.</p>
+<img src="pics/intellijidea8.png" alt="Створення проєкта Java в IntelliJ IDEA"  style="width:650px;" />
+<p>В поле <span class="b">Name</span> укажем ім'я проєкта. В моем случае проєкт буде называться HelloJava.</p>
+<p>В поле <span class="b">Location</span> можна указать путь к проєкту, якщо не устраивает путь по умолчанию.</p>
+<p>Поскольку мы будем працювати с языком Java, в поле <span class="b">Language</span> оберемо пункт <span class="b">Java</span></p>
 <p>Крім того, в поле <span class="b">JDK</span> можна указать путь к Java SDK, який буде використовуватися 
-в проекте. Как правило, це поле по умолчанию вже містить путь к JDK, який установлен на локальном компьютере. Если це поле пусто, то его треба установить.</p>
-<p>Після цього натисніть кнопку Create. Після цього середа створить та відкриє проект.</p>
-<img src="pics/intellijidea9.png" alt="Первый проект на Java в IntelliJ IDEA"  style="width:650px;" />
-<p>В левой части мы можемо увидеть структуру проекта. Все файлы с исходным кодом помещаются в папку <span class="b">src</span>. 
-По умолчанию эта папка пуста, нияких файлов кода у нас в проекте поки нет. Тому добавим файл с исходным кодом. Для цього нажмем на папку <span class="b">src</span> правой кнопкой мыши 
-и в контекстном меню выберем пункт <span class="b">New -&gt; Java Class</span>:</p>
-<img src="pics/intellijidea10.png" alt="Добавления файла с кодом в проект на Java в IntelliJ IDEA"   style="width:700px;" />
-<p>После цього нам откроется небольшое окошко, в которое треба ввести имя класса. Пусть класс буде называться <span class="b">Program</span>:</p>
-<img src="pics/intellijidea11.png" alt="Добавления класса в проект на Java в IntelliJ IDEA" style="width:550px;" />
+в проєкте. Как правило, це поле по умолчанию вже містить путь к JDK, який установлен на локальном компьютере. Если це поле пусто, то его треба установить.</p>
+<p>Після цього натисніть кнопку Create. Після цього середа створить та відкриє проєкт.</p>
+<img src="pics/intellijidea9.png" alt="Первый проєкт на Java в IntelliJ IDEA"  style="width:650px;" />
+<p>В левой части мы можемо увидеть структуру проєкта. Все файли с исходным кодом помещаются в папку <span class="b">src</span>. 
+По умолчанию эта папка пуста, нияких файлів коду у нас в проєкте поки нет. Тому додамо файл с исходным кодом. Для цього нажмем на папку <span class="b">src</span> правой кнопкой мыши 
+и в контекстном меню оберемо пункт <span class="b">New -&gt; Java Class</span>:</p>
+<img src="pics/intellijidea10.png" alt="Добавления файлу с кодом в проєкт на Java в IntelliJ IDEA"   style="width:700px;" />
+<p>Після цього нам откроется невелике окошко, в которое треба ввести ім'я класа. Пусть клас буде называться <span class="b">Program</span>:</p>
+<img src="pics/intellijidea11.png" alt="Добавления класа в проєкт на Java в IntelliJ IDEA" style="width:550px;" />
 <p>Після натискання клавіші Enter до папки src буде додано новий файл із класом java (у разі вище клас Program). А в центральній частині відкриється його вміст – власне вихідний код:</p>
-<img src="pics/intellijidea12.png" alt="Створення класса на Java в IntelliJ IDEA" style="width:700px;" />
+<img src="pics/intellijidea12.png" alt="Створення класа на Java в IntelliJ IDEA" style="width:700px;" />
 <p>Змінимо код класу в такий спосіб:</p>
 <pre class="line-numbers"><code class="language-java">
 public class Program {
@@ -57,10 +57,10 @@ public class Program {
     }
 }
 </code></pre>
-<p>С помощью зеленой стрелки на панели инструментов або через меню <span class="b">Run -&gt; Run...</span> запустим проект.</p>
-<img src="pics/intellijidea13.png" alt="запуск проекта на Java на выполнение в IntelliJ IDEA" style="width:700px;" />
+<p>За допомогою зеленой стрелки на панели инструментов або через меню <span class="b">Run -&gt; Run...</span> запустимо проєкт.</p>
+<img src="pics/intellijidea13.png" alt="запуск проєкта на Java на виконання в IntelliJ IDEA" style="width:700px;" />
 <p>І внизу IntelliJ IDEA з&#x27;явиться вікно виведення, де ми можемоо побачити результат роботи нашої програми.</p>
-<img src="pics/intellijidea14.png" alt="Выполнение программы на Java в IntelliJ IDEA" style="width:700px;" />
+<img src="pics/intellijidea14.png" alt="Виконання програми на Java в IntelliJ IDEA" style="width:700px;" />
 
   </div>
 

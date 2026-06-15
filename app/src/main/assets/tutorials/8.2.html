@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html  lang="uk">
 <head>
-<title>Java | Створення та виконання потоків</title>
+<title>Java | Створення та виконання потіків</title>
 <meta charset="utf-8" />
-<meta name="description" content="Створення та виконання потоків в языке программирования Java, наследование от класса Thread, інтерфейс Runnable, ожидание окончания потока за допомогою метода join, выход из потока">
+<meta name="description" content="Створення та виконання потіків в языке програмирования Java, наследование от класа Thread, інтерфейс Runnable, очікування окончания потіка за допомогою методу join, выход из потіка">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -11,44 +11,44 @@
 <body>
 <div id="container">
 <div class="item center menC">
-     <h1>Створення та виконання потоків</h1><div class="date">Останнє оновлення: 16.10.2025</div>
+     <h1>Створення та виконання потіків</h1><div class="date">Останнє оновлення: 16.10.2025</div>
 
-	<p>Для создания нового потока (потока платформы) в Java мы можемо використовувати следующие варианты:</p>
+	<p>Для створенняя нового потіка (потіка платформы) в Java мы можемо використовувати следующие варианты:</p>
 <ul>
 <li><p>Реализуация інтерфейса <span class="b">Runnable</span></p></li>
-<li><p>Створення класса, який найдеся от <span class="b">Thread</span></p></li>
+<li><p>Створення класа, який найдеся от <span class="b">Thread</span></p></li>
 </ul>
 <p>Рассмотрим оба варианта.</p>
-<h3>Реализация інтерфейса Runnable</h3>
-<p>Интерфейс <span class="b">Runnable</span> представляє операцию, которая не повертає ниякого результата. Цет інтерфейс имїїт один метод <span class="b">run</span>:</p>
+<h3>Реалізація інтерфейса Runnable</h3>
+<p>Інтерфейс <span class="b">Runnable</span> представляє операцію, которая не повертає ниякого результата. Цет інтерфейс имїїт один метод <span class="b">run</span>:</p>
 <pre class="line-numbers"><code class="language-java">
 interface Runnable{
 	
 	void run();
 }
 </code></pre>
-<p>В методе <code>run()</code> собственно определяется весь тот код, який виконується при запуске потока.</p>
+<p>В методі <code>run()</code> собственно визначаєся весь тот код, який виконується при запуску потіка.</p>
 
-<p>Общий процесс создания и запуска потока выглядит наступним чином:</p>
+<p>Общий процес створенняя и запуску потіка выглядит наступним чином:</p>
 <ol>
-<li><p>Определяем реализацию інтерфейса <b>Runable</b>. Например:</p>
+<li><p>Визначаємо реалізацію інтерфейсу <b>Runable</b>. Наприклад:</p>
 <pre class="line-numbers"><code class="language-java">
 Runnable task = ()-&gt;{
 
-    // здесь действия потока
+    // здесь действия потіка
 };
 </code></pre>
-<p>Поскольку <b>Runnable</b> представляє функциональный інтерфейс, який определяет один метод, то об'єкт цього інтерфейса мы можемо представить в виде лямбда-выражения.</p>
+<p>Поскольку <b>Runnable</b> представляє функциональный інтерфейс, який визначає один метод, то об'єкт цього інтерфейса мы можемо представить в виде лямбда-выражения.</p>
 </li>
 
-<li><p>Создаем об'єкт <b>Thread</b> за допомогою <b>Runable</b>:</p>
+<li><p>Створюємо об'єкт <b>Thread</b> за допомогою <b>Runable</b>:</p>
 <pre class="line-numbers"><code class="language-java">
 var t = new Thread(task);
 </code></pre>
-<p>Класс <code>Thread</code> имїїт декілька конструкторов. В данном случае используем тот, який приймає об'єкт <code>Runable</code></p>
+<p>Клас <code>Thread</code> имїїт декілька конструкторов. У даному випадку використовуємо тот, який приймає об'єкт <code>Runable</code></p>
 </li>
 
-<li><p>Запускаем поток <code>Thread</code> за допомогою метода <b>start()</b>:</p>
+<li><p>Запускуємо потік <code>Thread</code> за допомогою методу <b>start()</b>:</p>
 <pre class="line-numbers"><code class="language-java">
 t.start();
 </code></pre>
@@ -63,41 +63,41 @@ public class Program {
           
         System.out.println("Main thread started...");
 
-        Runnable task = ()-&gt;{       // определяем действия потока
+        Runnable task = ()-&gt;{       // определяем действия потіка
             System.out.println("Runnable started...");
 
             System.out.println("Runnable finished...");
         };
 
-        var t = new Thread(task);  // определяем поток
+        var t = new Thread(task);  // определяем потік
 
-        t.start();  // запускаем поток
+        t.start();  // запускуємо потік
 
         System.out.println("Main thread finished...");
     }
 }
 </code></pre>
-<p>Здесь в создаваемом потоке просто выводим два сообщения на консоль. Консольный вывод в цем случае может быть наступним:</p>
+<p>Здесь в создаваемом потіке просто вивідим два сообщения на консоль. Консольный вивід в цем случае может быть наступним:</p>
 <pre class="line-numbers"><code class="language-none">
 Main thread started...
 Main thread finished...
 Runnable started...
 Runnable finished...
 </code></pre>
-<p>По консольному выводу видно, что, несмотря на то, что поток запускаєся до окончания метода <code>main()</code>, но его работа виконується после последней инструкции в методе <code>main()</code>.</p>
+<p>По консольному вивіду видно, что, несмотря на то, что потік запускуєся до окончания методу <code>main()</code>, но его работа виконується після післядней инструкции в методі <code>main()</code>.</p>
 
-<p>При создании потока - об'єкта <code>Thread</code> за допомогою оператора <code>new</code> и вызова конструктора:</p>
+<p>При створенні потіка - об'єкта <code>Thread</code> за допомогою оператора <code>new</code> и вызова конструктора:</p>
 <pre class="line-numbers"><code class="language-java">var t = new Thread(task);</code></pre>
-<p>поток автоматически не запускаєся. Он лишь переходит в состояние <span class="b">NEW</span>, а программа ще не начала выполнять его код.</p>
-<p>После вызова метода <code>start()</code> поток переходит в состояние <b>RUNNABLE</b> - готовый к запуску. Однак в реальности такой поток ще не виконується: оне может быть запущен, а может и не 
-запущен. Планировщик потоков решает, предоставить ли потоку час для виконання. После того, як поток запущен, он может периодически приостанавливаться, чтобы дать другим потокам возможнасть выполниться. 
-Однак точные детали планирования потоков зависят от операционной системы и от природы потока.</p>
+<p>потік автоматически не запускуєся. Он лишь переходит в состояние <span class="b">NEW</span>, а програма ще не начала выполнять его код.</p>
+<p>Після вызова методу <code>start()</code> потік переходит в состояние <b>RUNNABLE</b> - готовый к запуску. Однак в реальности такой потік ще не виконується: оне может быть запущен, а может и не 
+запущен. Планировщик потіков решает, предоставить ли потіку час для виконання. Після того, як потік запущен, он может периодически приостанавливаться, чтобы дать другим потікам возможнасть выполниться. 
+Однак точные детали планирования потіков зависят от операционной системы и от природы потіка.</p>
 
-<p>Вместо лямбда-выражения мы можемо избрать болїї долгий путь - определить отдельный класс, який реализует інтерфейс <code>Runable</code>. Например:</p>
+<p>Вместо лямбда-выражения мы можемо избрать болїї долгий путь - визначити отдельный клас, який реалізує інтерфейс <code>Runable</code>. Наприклад:</p>
 <pre class="line-numbers"><code class="language-java">
 class MyTask implements Runnable {
     
-    public void run(){  // определяем действия потока
+    public void run(){  // определяем действия потіка
          
         System.out.println("Runnable started...");
         System.out.println("Runnable finished...");
@@ -112,22 +112,22 @@ public class Program {
 
         Runnable task = new MyTask();
 
-        var t = new Thread(task);  // определяем поток
+        var t = new Thread(task);  // определяем потік
 
-        t.start();  // запускаем поток
+        t.start();  // запускуємо потік
 
         System.out.println("Main thread finished...");
     }
 }
 </code></pre>
 
-<h3>Успадкування от класса Thread</h3>
-<p>Другой способ создания потока представляє наследование от класса <b>Thread</b>. Например:</p>
+<h3>Успадкування от класа Thread</h3>
+<p>Другой способ створенняя потіка представляє наследование от класа <b>Thread</b>. Наприклад:</p>
 <pre class="line-numbers"><code class="language-java">
 class MyThread extends Thread {
      
     MyThread(){
-        super();  // вызываем конструктор базового класса
+        super();  // вызываем конструктор базового класа
     }
      
     public void run(){
@@ -143,31 +143,31 @@ public class Program {
           
         System.out.println("Main thread started...");
 
-        var t = new MyThread();  // определяем поток
+        var t = new MyThread();  // определяем потік
 
-        t.start();  // запускаем поток
+        t.start();  // запускуємо потік
 
         System.out.println("Main thread finished...");
     }
 }
 </code></pre>
-<p>Класс потока називається MyThread. В конструкторе класса вызываем один из конструкторов базового класса <code>Thread</code>. 
-И також в MyThread переопределяется метод <span class="b">run()</span>, код которого собственно и буде представлять весь тот код, який 
-виконується в потоке.</p>
-<p>В методе main для запуска потока JThread у него вызывается метод <span class="b">start()</span>, после чего начинается выполнение того кода, який определен в методе run:</p>
+<p>Клас потіка називається MyThread. В конструкторе класа вызываем один из конструкторов базового класа <code>Thread</code>. 
+И також в MyThread перевизначаєся метод <span class="b">run()</span>, код которого собственно и буде представлять весь тот код, який 
+виконується у потоці.</p>
+<p>В методі main для запуску потіка JThread у него вызывается метод <span class="b">start()</span>, після чего начинается виконання того коду, який визначений в методі run:</p>
 <pre class="line-numbers"><code class="language-java">
-var t = new MyThread();  // определяем поток
-t.start();  // запускаем поток
+var t = new MyThread();  // определяем потік
+t.start();  // запускуємо потік
 </code></pre>
-<p>Консольный вывод:</p>
+<p>Консольный вивід:</p>
 <pre class="line-numbers"><code class="language-none">
 Main thread started...
 Main thread finished...
 MyThread started... 
 MyThread finished... 
 </code></pre>
-<h3>Запуск массива потоков</h3>
-<p>Аналогично созданию одного потока мы можемо запускать відразу декілька потоков:</p>
+<h3>Запуск масива потіков</h3>
+<p>Аналогично створенняю одного потіка мы можемо запускуть відразу декілька потіков:</p>
 <pre class="line-numbers"><code class="language-java">
 class MyTask implements Runnable {
     
@@ -175,7 +175,7 @@ class MyTask implements Runnable {
 
     MyTask(String name) { this.name = name;}
 
-    public void run(){  // определяем действия потока
+    public void run(){  // определяем действия потіка
          
         System.out.println(name + " started...");
         System.out.println(name + " finished...");
@@ -198,8 +198,8 @@ public class Program {
     }
 }
 </code></pre>
-<p>В данном случае для разграничения потоков в класс MyTask через конструктор передаєся имя потока. А в цикле при запуске потока формируем имя на основе номера потока.</p>
-<p>Консольный вывод в данном случае недетерминирован. Наприклад, он может быть наступним:</p>
+<p>У даному випадку для разграничения потіков в клас MyTask через конструктор передаєся ім'я потіка. А в цикле при запуску потіка формируем ім'я на основе номера потіка.</p>
+<p>Консольный вивід у даному випадку недетерминирован. Наприклад, он может быть наступним:</p>
 <pre class="line-numbers"><code class="language-none">
 Main thread started...
 Main thread finished...
@@ -214,19 +214,19 @@ MyTask_4 finished...
 MyTask_5 started...
 MyTask_5 finished...
 </code></pre>
-<p>Но по данному выводу мы видимо, что потоки вне зависимости от запуска работают фактически одновременно, як бы параллельно</p>
+<p>Но по данному вивіду мы видимо, что потіки вне зависимости от запуску работают фактически одновременно, як бы параллельно</p>
 
-<h3>Конструкторы Thread</h3>
-<p>Для данного класса <b>Thread</b> определенно декілька конструкторов, которые можна використовувати. Но я отмечу один из них:</p>
+<h3>Конструктори Thread</h3>
+<p>Для данного класа <b>Thread</b> визначенийно декілька конструкторов, которые можна використовувати. Но я отмечу один из них:</p>
 <pre class="line-numbers"><code class="language-java">
 Thread(ThreadGroup group, Runnable task, String name)
 </code></pre>
-<p>Параметры конструктора:</p>
+<p>Параметри конструктора:</p>
 <ul>
-<li><p><code>group</code>: группа потока. Если значение равно <code>null</code>, то в качестве группы устанавливается группа текущего потока.</p></li>
-<li><p><code>task</code>: об'єкт <code>Runnable</code>, який собственно и определяет выполняемые в потоке действия. 
-Если значение равно <code>null</code>, то вызывается метод <code>run()</code> цього потока.</p></li>
-<li><p><code>name</code>: имя создаваемого потока</p></li>
+<li><p><code>group</code>: группа потіка. Если значення равно <code>null</code>, то в качестве группы встановлюєся группа текущего потіка.</p></li>
+<li><p><code>task</code>: об'єкт <code>Runnable</code>, який собственно и визначає выполняемые у потоці действия. 
+Если значення равно <code>null</code>, то вызывается метод <code>run()</code> цього потіка.</p></li>
+<li><p><code>name</code>: ім'я создаваемого потіка</p></li>
 </ul>
 <p>Я взял именно цей вариант конструктора, потому что большинство других неявно вызывают его. Наприклад, следующий вариант конструктора</p>
 <pre class="line-numbers"><code class="language-java">Thread(Runnable task, String name)</code></pre>
@@ -236,14 +236,14 @@ Thread(ThreadGroup group, Runnable task, String name)
 <pre class="line-numbers"><code class="language-java">Thread(Runnable task)</code></pre>
 <p>Фактически аналогичен вызову</p>
 <pre class="line-numbers"><code class="language-java">Thread (null, task, gname)</code></pre>
-<p>Здесь <code>gname</code> - автоматически генерируемое имя в виде "Thread-"+n, где n - целое число.</p>
-<p>Наприклад, модифицтруем предыдущую программу:</p>
+<p>Здесь <code>gname</code> - автоматически генерируемое ім'я в виде "Thread-"+n, где n - целое число.</p>
+<p>Наприклад, модифицтруем предыдущую програму:</p>
 <pre class="line-numbers"><code class="language-java">
 class MyTask implements Runnable {
 
-    public void run(){  // определяем действия потока
+    public void run(){  // определяем действия потіка
          
-        // получаем имя текущего потока
+        // отримуємо ім'я текущего потіка
         String name = Thread.currentThread().getName();
         System.out.println(name + " started...");
         System.out.println(name + " finished...");
@@ -266,7 +266,7 @@ public class Program {
     }
 }
 </code></pre>
-<p>Здесь в классе MyTask в методе <code>run()</code> за допомогою вызова <code>Thread.currentThread().getName()</code> получаем имя потока, которое автоматически ему присвоюється. Далїї на консоли мы увидим автосгенерированные имена потоков:</p>
+<p>Здесь в класе MyTask в методі <code>run()</code> за допомогою вызова <code>Thread.currentThread().getName()</code> отримуємо ім'я потіка, которое автоматически ему присвоюється. Далїї на консоли мы увидим автосгенерированные имена потіков:</p>
 <pre class="line-numbers"><code class="language-none">
 Main thread started...
 Main thread finished...
@@ -281,7 +281,7 @@ Thread-3 finished...
 Thread-4 finished...
 Thread-1 finished...
 </code></pre>
-<p>Такие имена можуть быть неудобны, або мы захочемо подобрать болїї описательные имена для различения потоков. В цем случае мы можемо передавать имена через второй параметр конструктора <code>Thread</code>:</p>
+<p>Такие имена можуть быть неудобны, або мы захочемо підобрать болїї описательные имена для различения потіков. В цем случае мы можемо передавать имена через второй параметр конструктора <code>Thread</code>:</p>
 <pre class="line-numbers"><code class="language-java">
 for(int i=1; i &lt; 6; i++){
 
@@ -289,7 +289,7 @@ for(int i=1; i &lt; 6; i++){
     new Thread(task, "MyTask_" + i).start();
 }
 </code></pre>
-<p>При консольном выводе мы увидим назначенные вручную потокам имена:</p>
+<p>При консольном вивіде мы увидим назначенные вручную потікам имена:</p>
 <pre class="line-numbers"><code class="language-none">
 Main thread started...
 Main thread finished...

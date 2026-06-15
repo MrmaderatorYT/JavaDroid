@@ -3,7 +3,7 @@
 <head>
 <title>Java | Компонування пам'яті MemoryLayout та робота з MemorySegment</title>
 <meta charset="utf-8" />
-<meta name="description" content="Компоновка памяти MemoryLayout в Foreign Functions та Memory API в языке программирования Java, ADDRESS, JAVA_DOUBLE, JAVA_INT, работа с сегментами памяти MemorySegment, получение и изменение данных в памяти">
+<meta name="description" content="Компоновка памяти MemoryLayout в Foreign Functions та Memory API в языке програмирования Java, ADDRESS, JAVA_DOUBLE, JAVA_INT, работа с сегментами памяти MemorySegment, отримання и зміна данных в памяти">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -13,30 +13,30 @@
 <div class="item center menC">
      <h1>Компонування пам'яті MemoryLayout та робота з MemorySegment</h1><div class="date">Останнє оновлення: 21.12.2025</div>
 
-<p>Ряд методів создания сегментов памяти в классе Arena принимают в качестве параметра об'єкт типу <span class="b">MemoryLayout</span>. Цет інтерфейс описує компоновку памяти - размер сегмента памяти, выравнивание, порядок байтов.
-Интерфейс <span class="b">ValueLayout</span> (який найдеся от <code>MemoryLayout</code>) надає ряд констант, 
-которые представляють встроенную компоновку памяти для определенного типу данных:</p>
+<p>Ряд методів створенняя сегментов памяти в класе Arena приймають в качестве параметра об'єкт типу <span class="b">MemoryLayout</span>. Цет інтерфейс описує компоновку памяти - размер сегмента памяти, выравнивание, порядок байтов.
+Інтерфейс <span class="b">ValueLayout</span> (який найдеся от <code>MemoryLayout</code>) надає ряд констант, 
+которые представляютьь встроенную компоновку памяти для визначенийного типу данных:</p>
 <ul>
-<li><p><code>ADDRESS</code>: константа компоновки адреса, размер которой совпадает с размером машинного адреса (<code>size_t</code> в языке С), выравнивание по байтам установлено равным <code>sizeof(size_t)</code></p></li>
-<li><p><code>ADDRESS_UNALIGNED</code>: константа компоновки адреса без выравнивания, размер которой совпадает с размером машинного адреса (<code>size_t</code>)</p></li>
-<li><p><code>JAVA_BOOLEAN</code>: константа компоновки значения, размер которой совпадает с размером типу <code>boolean</code> в Java, выравнивание по байтам установлено равным 1</p></li>
-<li><p><code>JAVA_BYTE</code>: константа компоновки значения, размер которой совпадает с размером типу <code>byte</code> в Java, выравнивание по байтам установлено на 1</p></li>
-<li><p><code>JAVA_CHAR</code>: константа компоновки значения, размер которой совпадает с размером типу <code>char</code> в Java, выравнивание по байтам установлено на 2</p></li>
-<li><p><code>JAVA_CHAR_UNALIGNED</code>: константа компоновки адреса без выравнивания, размер которой совпадает с размером типу <code>char</code> в Java</p></li>
-<li><p><code>JAVA_DOUBLE</code>: константа компоновки значений, размер которой совпадает с размером типу <code>double</code> в Java, выравнивание по байтам установлено на 8</p></li>
-<li><p><code>JAVA_DOUBLE_UNALIGNED</code>: константа компоновки адреса без выравнивания, размер которой совпадает с размером типу <code>double</code> в Java</p></li>
-<li><p><code>JAVA_FLOAT</code>: константа компоновки значений, размер которой совпадает с размером типу <code>float</code> в Java, выравнивание по байтам установлено на 4</p></li>
-<li><p><code>JAVA_FLOAT_UNALIGNED</code>: константа компоновки адреса без выравнивания, размер которой совпадает с размером типу <code>float</code> в Java</p></li>
-<li><p><code>JAVA_INT</code>: константа расположения значений, размер которой совпадает с размером типу <code>int</code> в Java, выравнивание байтов установлено на 4</p></li>
-<li><p><code>JAVA_INT_UNALIGNED</code>: константа компоновки адреса без выравнивания, размер которой совпадает с размером типу <code>int</code> в Java</p></li>
-<li><p><code>JAVA_LONG</code>: константа компоновки значений, размер которой совпадает с размером типу <code>long</code> в Java, выравнивание по байтам установлено на 8</p></li>
-<li><p><code>JAVA_LONG_UNALIGNED</code>: константа компоновки адреса без выравнивания, размер которой совпадает с размером типу <code>long</code> в Java</p></li>
-<li><p><code>JAVA_SHORT</code>: константа компоновки значений, размер которой совпадает с размером типу <code>short</code> в Java, выравнивание по байтам установлено на 2</p></li>
-<li><p><code>JAVA_SHORT_UNALIGNED</code>: константа компоновки адреса без выравнивания, размер которой совпадает с размером типу <code>short</code> в Java</p></li>
+<li><p><code>ADDRESS</code>: константа компоновки адреса, размер которой збігається с размером машинного адреса (<code>size_t</code> в языке С), выравнивание по байтам установлено равным <code>sizeof(size_t)</code></p></li>
+<li><p><code>ADDRESS_UNALIGNED</code>: константа компоновки адреса без выравнивания, размер которой збігається с размером машинного адреса (<code>size_t</code>)</p></li>
+<li><p><code>JAVA_BOOLEAN</code>: константа компоновки значення, размер которой збігається с размером типу <code>boolean</code> в Java, выравнивание по байтам установлено равным 1</p></li>
+<li><p><code>JAVA_BYTE</code>: константа компоновки значення, размер которой збігається с размером типу <code>byte</code> в Java, выравнивание по байтам установлено на 1</p></li>
+<li><p><code>JAVA_CHAR</code>: константа компоновки значення, размер которой збігається с размером типу <code>char</code> в Java, выравнивание по байтам установлено на 2</p></li>
+<li><p><code>JAVA_CHAR_UNALIGNED</code>: константа компоновки адреса без выравнивания, размер которой збігається с размером типу <code>char</code> в Java</p></li>
+<li><p><code>JAVA_DOUBLE</code>: константа компоновки значений, размер которой збігається с размером типу <code>double</code> в Java, выравнивание по байтам установлено на 8</p></li>
+<li><p><code>JAVA_DOUBLE_UNALIGNED</code>: константа компоновки адреса без выравнивания, размер которой збігається с размером типу <code>double</code> в Java</p></li>
+<li><p><code>JAVA_FLOAT</code>: константа компоновки значений, размер которой збігається с размером типу <code>float</code> в Java, выравнивание по байтам установлено на 4</p></li>
+<li><p><code>JAVA_FLOAT_UNALIGNED</code>: константа компоновки адреса без выравнивания, размер которой збігається с размером типу <code>float</code> в Java</p></li>
+<li><p><code>JAVA_INT</code>: константа расположения значений, размер которой збігається с размером типу <code>int</code> в Java, выравнивание байтов установлено на 4</p></li>
+<li><p><code>JAVA_INT_UNALIGNED</code>: константа компоновки адреса без выравнивания, размер которой збігається с размером типу <code>int</code> в Java</p></li>
+<li><p><code>JAVA_LONG</code>: константа компоновки значений, размер которой збігається с размером типу <code>long</code> в Java, выравнивание по байтам установлено на 8</p></li>
+<li><p><code>JAVA_LONG_UNALIGNED</code>: константа компоновки адреса без выравнивания, размер которой збігається с размером типу <code>long</code> в Java</p></li>
+<li><p><code>JAVA_SHORT</code>: константа компоновки значений, размер которой збігається с размером типу <code>short</code> в Java, выравнивание по байтам установлено на 2</p></li>
+<li><p><code>JAVA_SHORT_UNALIGNED</code>: константа компоновки адреса без выравнивания, размер которой збігається с размером типу <code>short</code> в Java</p></li>
 </ul>
 
-<p>Для выделения массива необхідно указать структуру элементов и количество элементов. Для цього можна використовувати константы компоновки памяти, определенные в классе <span class="b">ValueLayout</span>. 
-Наприклад, выделим массив значений типу <code>double</code>:</p>
+<p>Для выделения масива необхідно указать структуру елементов и кількість елементів. Для цього можна використовувати константи компоновки памяти, визначенийные в класе <span class="b">ValueLayout</span>. 
+Наприклад, выделим масив значений типу <code>double</code>:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.lang.foreign.*;
 
@@ -54,7 +54,7 @@ public class Program {
     }
 }
 </code></pre>
-<p>Если у нас вже есть значения в массиве, можна використовувати метод <code>allocateFrom()</code>:</p>
+<p>Если у нас вже есть значення в масиве, можна використовувати метод <code>allocateFrom()</code>:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.lang.foreign.*;
 
@@ -65,7 +65,7 @@ public class Program {
         try (Arena arena = Arena.ofConfined()) {
 
             double[] nums = {1.0, 2.0, 3.0, 4.0};
-            // выделяем память для массива nums
+            // выделяем память для масива nums
             MemorySegment double_seg = arena.allocateFrom(ValueLayout.JAVA_DOUBLE, nums);
 
             System.out.println(double_seg);   // MemorySegment{ kind: native, address: 0x75f5cc1851a0, byteSize: 32 }
@@ -75,22 +75,22 @@ public class Program {
 </code></pre>
 
 <h3>Работа с сегментами памяти</h3>
-<p>Интерфейс <span class="b">MemorySegment</span> надає множество методів для различных операций с данными в памяти. Рассмотрим некоторые из них:</p>
+<p>Інтерфейс <span class="b">MemorySegment</span> надає множина методів для различных операцій с данными в памяти. Рассмотрим некоторые из них:</p>
 <ul>
-<li><p><code>String getString(long offset)</code></p><p>преобразует строку UTF-8 в строку Java.</p></li>
+<li><p><code>String getString(long offset)</code></p><p>преобразует рядок UTF-8 в рядок Java.</p></li>
 
-<li><p><code><i>type</i> getAtIndex(ValueLayout.of<i>type</i> layout, long index)</code></p><p>считывает значение примитивного типу по заданному индексу массива.</p></li>
+<li><p><code><i>type</i> getAtIndex(ValueLayout.of<i>type</i> layout, long index)</code></p><p>считывает значення примитивного типу по заданному индексу масива.</p></li>
 
-<li><p>void setAtIndex(ValueLayout.of<i>type</i> layout, long index, <i>type</i> value)</p><p>записує значение примитивного типу по заданному индексу массива.</p></li>
+<li><p>void setAtIndex(ValueLayout.of<i>type</i> layout, long index, <i>type</i> value)</p><p>записує значення примитивного типу по заданному индексу масива.</p></li>
 
-<li><p><i>type</i> get(ValueLayout.of<i>type</i> layout, long offset)</p><p>считывает значение примитивного типу по заданному смщению.</p></li>
+<li><p><i>type</i> get(ValueLayout.of<i>type</i> layout, long offset)</p><p>считывает значення примитивного типу по заданному смщению.</p></li>
 
-<li><p><code>void set(ValueLayout.of<i>type</i> layout, long offset, <i>type</i> value)</code></p><p>записує значение примитивного типу по заданному смщению.</p></li>
+<li><p><code>void set(ValueLayout.of<i>type</i> layout, long offset, <i>type</i> value)</code></p><p>записує значення примитивного типу по заданному смщению.</p></li>
 
-<li><p><code><i>type</i>[] toArray(ValueLayout.of<i>type</i> elementLayout)</code></p><p>копирует содержимое сегмента памяти в массив примитивного типу type.</p></li>
+<li><p><code><i>type</i>[] toArray(ValueLayout.of<i>type</i> elementLayout)</code></p><p>копирует вміст сегмента памяти в масив примитивного типу type.</p></li>
 </ul>
 
-<p>Наприклад, возьмем метод <code>getString()</code>. Предположим, что функция C заполнила сегмент памяти данными. Щоб преобразовать строку UTF-8 в строку Java, в метод <code>getString()</code> передаєся 
+<p>Наприклад, возьмем метод <code>getString()</code>. Предположим, что функція C заполнила сегмент памяти данными. Щоб преобразовать рядок UTF-8 в рядок Java, в метод <code>getString()</code> передаєся 
 смщение 0:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.lang.foreign.*;
@@ -103,12 +103,12 @@ public class Program {
 
             String str = "Hello ";
 
-            // преобразуем строку Java в строку UTF-8
+            // преобразуем рядок Java в рядок UTF-8
             MemorySegment str_seg = arena.allocateFrom(str);
 
             System.out.println(str_seg);   // MemorySegment{ kind: native, address: 0x7aa79c1802d0, byteSize: 18 }
 
-            // обратное преобразование в строку Java
+            // обратное преобразование в рядок Java
             String java_str = str_seg.getString(0);
 
             System.out.println(java_str);   // Hello 
@@ -116,7 +116,7 @@ public class Program {
     }
 }
 </code></pre>
-<p>Для чтения або записи по индексу массива указывается структура памяти и индекс:</p>
+<p>Для читання або записи по индексу масива вказуєся структура памяти и индекс:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.lang.foreign.*;
 
@@ -127,13 +127,13 @@ public class Program {
         try (Arena arena = Arena.ofConfined()) {
 
             double[] nums = {1.0, 2.0, 3.0, 4.0};
-            // выделяем память для массива nums
+            // выделяем память для масива nums
             MemorySegment double_seg = arena.allocateFrom(ValueLayout.JAVA_DOUBLE, nums);
 
-            // устанавливаем для элемента с индексом 2 значение 5.0
+            // устанавливаем для елемента с индексом 2 значення 5.0
             int index = 2;
             double_seg.setAtIndex(ValueLayout.JAVA_DOUBLE, index, 5.0);
-            // получаем один элемент double по индексу 2
+            // отримуємо один елемент double по индексу 2
             double second_double = double_seg.getAtIndex(ValueLayout.JAVA_DOUBLE, index);
 
             System.out.println(second_double);  // 5.0
@@ -141,13 +141,13 @@ public class Program {
     }
 }
 </code></pre>
-<p>Обратите внимание, что сегмент не сохраняет ниякой информации о структуре данных внутри. Вам необхідно указывать структуру данных (в данном случае <code>ValueLayout.JAVA_DOUBLE</code>) 
-при каждом доступе к элементам або при их обновлении.</p>
-<p>Також можна отримати массив Java со всеми значениями:</p>
+<p>Зверніть увагу, что сегмент не сохраняет ниякой информации о структуре данных всередині. Вам необхідно указывать структуру данных (у даному випадку <code>ValueLayout.JAVA_DOUBLE</code>) 
+при каждом доступе к елементам або при их обновлении.</p>
+<p>Також можна отримати масив Java со всеми значеннями:</p>
 <pre class="line-numbers"><code class="language-java">
 double[] double_nums = double_seg.toArray(ValueLayout.JAVA_DOUBLE);
 </code></pre>
-<p>Методи <code>get()</code>/<code>set()</code> аналогичны методам <code>getAtIndex</code>/<code>setAtIndex</code>, но принимают смщение в байтах:</p>
+<p>Методи <code>get()</code>/<code>set()</code> аналогичны методум <code>getAtIndex</code>/<code>setAtIndex</code>, но приймають смщение в байтах:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.lang.foreign.*;
 
@@ -158,12 +158,12 @@ public class Program {
         try (Arena arena = Arena.ofConfined()) {
 
             double[] nums = {1.0, 2.0, 3.0, 4.0};
-            // выделяем память для массива nums
+            // выделяем память для масива nums
             MemorySegment double_seg = arena.allocateFrom(ValueLayout.JAVA_DOUBLE, nums);
 
-            // устанавливаем значение 11 по смщению 8 байт
+            // устанавливаем значення 11 по смщению 8 байт
             double_seg.set(ValueLayout.JAVA_DOUBLE, 8, 11);
-            // получаем один элемент double по смщению 16 байт
+            // отримуємо один елемент double по смщению 16 байт
             double second_double = double_seg.get(ValueLayout.JAVA_DOUBLE, 16);
 
             System.out.println(second_double);  // 3.0

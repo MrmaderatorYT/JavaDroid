@@ -3,7 +3,7 @@
 <head>
 <title>Java | Тип Optional</title>
 <meta charset="utf-8" />
-<meta name="description" content="Использование типу Optional в операциях сведения данных из потоков в Stream API в Java">
+<meta name="description" content="Використання типу Optional в операціях сведения данных из потіков в Stream API в Java">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -13,8 +13,8 @@
 <div class="item center menC">
      <h2>Тип Optional</h2><div class="date">Останнє оновлення: 29.04.2018</div>
 
-	<p>Ряд операций сведения, такие як min, max, reduce, повертають об'єкт Optional&lt;T&gt;. Цет об'єкт фактически обертывает результат операции. 
-После виконання операции за допомогою метода <span class="b">get()</span> об'єкта Optional мы можемо отримати його значення:</p>
+	<p>Ряд операцій сведения, такие як min, max, reduce, повертають об'єкт Optional&lt;T&gt;. Цет об'єкт фактически обертывает результат операції. 
+Після виконання операції за допомогою методу <span class="b">get()</span> об'єкта Optional мы можемо отримати його значення:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.Optional;
 import java.util.ArrayList;
@@ -30,17 +30,17 @@ public class Program {
     } 
 }
 </code></pre>
-<p>Но что, якщо поток не містить вообще нияких данных:</p>
+<p>Но что, якщо потік не містить вообще нияких данных:</p>
 <pre class="line-numbers"><code class="language-java">
-// список numbers пустой
+// список numbers порожній
 ArrayList&lt;Integer&gt; numbers = new ArrayList&lt;Integer&gt;();
 Optional&lt;Integer&gt; min = numbers.stream().min(Integer::compare);
 System.out.println(min.get());	// java.util.NoSuchElementException
 </code></pre>
-<p>В цем случае программа выдаст исключение <span class="b">java.util.NoSuchElementException</span>. Что мы можемо сделать, чтобы избежать выброса исключения? 
-Для цього класс Optional надає ряд методів.</p>
-<p>Самой простой способ избежать подобной ситуации - це предварительная проверка наличия значения в Optional за допомогою метода <span class="b">isPresent()</span>. Он 
-возврашает true, якщо значение присутствует в Optional, и false, якщо значение отсутствует:</p>
+<p>В цем случае програма выдаст виняток <span class="b">java.util.NoSuchElementException</span>. Что мы можемо сделать, чтобы избежать выброса винятки? 
+Для цього клас Optional надає ряд методів.</p>
+<p>Самой простой способ избежать підобной ситуации - це предварительная проверка наличия значення в Optional за допомогою методу <span class="b">isPresent()</span>. Он 
+возврашает true, якщо значення присутствует в Optional, и false, якщо значення отсутствует:</p>
 <pre class="line-numbers"><code class="language-java">
 ArrayList&lt;Integer&gt; numbers = new ArrayList&lt;Integer&gt;();
 Optional&lt;Integer&gt; min = numbers.stream().min(Integer::compare);
@@ -50,20 +50,20 @@ if(min.isPresent()){
 }
 </code></pre>
 <h3>orElse</h3>
-<p>Метод <span class="b">orElse()</span> дозволяє определить альтернативное значение, которое буде возвращаться, якщо Optional не получит из потока якого-нибудь значения:</p>
+<p>Метод <span class="b">orElse()</span> дозволяє визначити альтернативное значення, которое буде возвращаться, якщо Optional не получит из потіка якого-нибудь значення:</p>
 <pre class="line-numbers"><code class="language-java">
-// пустой список
+// порожній список
 ArrayList&lt;Integer&gt; numbers = new ArrayList&lt;Integer&gt;();
 Optional&lt;Integer&gt; min = numbers.stream().min(Integer::compare);
 System.out.println(min.orElse(-1));	// -1
 		
-// непустой список
+// непорожній список
 numbers.addAll(Arrays.asList(new Integer[]{4,5,6,7,8,9}));
 min = numbers.stream().min(Integer::compare);
 System.out.println(min.orElse(-1));	// 4
 </code></pre>
 <h3>orElseGet</h3>
-<p>Метод <span class="b">orElseGet()</span> дозволяє задать функцию, которая буде возвращать значение по умолчанию:</p>
+<p>Метод <span class="b">orElseGet()</span> дозволяє задать функцію, которая буде возвращать значення по умолчанию:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.Optional;
 import java.util.ArrayList;
@@ -81,26 +81,26 @@ public class Program {
     } 
 }
 </code></pre>
-<p>В данном случае возвращаемое значение генеруєся за допомогою метода nextInt класса Random, який повертає случайное число.</p>
+<p>У даному випадку повертаємоое значення генеруєся за допомогою методу nextInt класа Random, який повертає случайное число.</p>
 <h3>orElseThrow</h3>
-<p>Ще один метод - <span class="b">orElseThrow</span> дозволяє сгенерировать исключение, якщо Optional не містить значения:</p>
+<p>Ще один метод - <span class="b">orElseThrow</span> дозволяє сгенерировать виняток, якщо Optional не містить значення:</p>
 <pre class="line-numbers"><code class="language-java">
 ArrayList&lt;Integer&gt; numbers = new ArrayList&lt;Integer&gt;();
 Optional&lt;Integer&gt; min = numbers.stream().min(Integer::compare);
-// генеррация исключения IllegalStateException
+// генерація винятку IllegalStateException
 System.out.println(min.orElseThrow(IllegalStateException::new));
 </code></pre>
-<h3>Обработка полученного значения</h3>
-<p>Метод <span class="b">ifPresent()</span> определяет действия со значением в Optional, якщо значение имїїтся:</p>
+<h3>Обробка отриманого значення</h3>
+<p>Метод <span class="b">ifPresent()</span> визначає действия со значенням в Optional, якщо значення имїїтся:</p>
 <pre class="line-numbers"><code class="language-java">
 ArrayList&lt;Integer&gt; numbers = new ArrayList&lt;Integer&gt;();
 numbers.addAll(Arrays.asList(new Integer[]{4,5,6,7,8,9}));
 Optional&lt;Integer&gt; min = numbers.stream().min(Integer::compare);
 min.ifPresent(v-&gt;System.out.println(v));	// 4
 </code></pre>
-<p>В метод ifPresent передаєся функция, которая приймає один параметр - значение из Optional. В данном случае полученное минимальное число виводиться на консоль. 
-Но якщо бы массив numbers був бы пустым, и соответственно Optional не сдержало бы ниякого значения, то ниякой ошибки бы не буво.</p>
-<p>Метод <span class="b">ifPresentOrElse()</span> дозволяє определить альтернативную логику на случай, якщо значение в Optional отсутствует:</p>
+<p>В метод ifPresent передаєся функція, которая приймає один параметр - значення из Optional. У даному випадку полученное минимальное число виводиться на консоль. 
+Но якщо бы масив numbers був бы пустым, и соответственно Optional не сдержало бы ниякого значення, то ниякой ошибки бы не буво.</p>
+<p>Метод <span class="b">ifPresentOrElse()</span> дозволяє визначити альтернативную логику на случай, якщо значення в Optional отсутствует:</p>
 <pre class="line-numbers"><code class="language-java">
 ArrayList&lt;Integer&gt; numbers = new ArrayList&lt;Integer&gt;();
 Optional&lt;Integer&gt; min = numbers.stream().min(Integer::compare);
@@ -109,8 +109,8 @@ min.ifPresentOrElse(
 	() -&gt; System.out.println("Value not found")
 );
 </code></pre>
-<p>В метод ifPresentOrElse передаєся две функції. Первая обробляє значение в Optional, якщо оно присутствует. Вторая функция представляє действия, которые выполняются, 
-якщо значение в Optional отсутствует.</p>
+<p>В метод ifPresentOrElse передаєся две функції. Первая обробляє значення в Optional, якщо оно присутствует. Вторая функція представляє действия, которые виконуються, 
+якщо значення в Optional отсутствует.</p>
 
   </div>
 

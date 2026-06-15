@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html  lang="uk">
 <head>
-<title>Java | Классы ByteArrayInputStream и ByteArrayOutputStream</title>
+<title>Java | Класы ByteArrayInputStream и ByteArrayOutputStream</title>
 <meta charset="utf-8" />
-<meta name="description" content="Чтение и запись массива байтов в языке программирования Java за допомогою классов ByteArrayInputStream и ByteArrayOutputStream">
+<meta name="description" content="Читання и запис масива байтов в языке програмирования Java за допомогою класов ByteArrayInputStream и ByteArrayOutputStream">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -11,18 +11,18 @@
 <body>
 <div id="container">
 <div class="item center menC">
-     <h2>Классы ByteArrayInputStream и ByteArrayOutputStream</h2><div class="date">Останнє оновлення: 26.04.2018</div>
+     <h2>Класы ByteArrayInputStream и ByteArrayOutputStream</h2><div class="date">Останнє оновлення: 26.04.2018</div>
 
-	<p>Для работы с массивами байтов - их чтения и записи використовуються классы ByteArrayInputStream и ByteArrayOutputStream.</p>
-<h3>Чтение массива байтов и класс ByteArrayInputStream</h3>
-<p>Класс ByteArrayInputStream представляє входной поток, использующий в качестве источника данных массив байтов. Он имїїт следующие конструкторы:</p>
+	<p>Для работы с масивами байтов - их читання и записи використовуються класы ByteArrayInputStream и ByteArrayOutputStream.</p>
+<h3>Читання масива байтов и клас ByteArrayInputStream</h3>
+<p>Клас ByteArrayInputStream представляє входной потік, использующий в качестве источника данных масив байтов. Он имїїт следующие конструктори:</p>
 <pre class="line-numbers"><code class="language-java">
 ByteArrayInputStream(byte[] buf) 
 ByteArrayInputStream(byte[] buf, int offset, int length) 
 </code></pre>
-<p>В качестве параметров конструкторы используют массив байтов <code>buf</code>, из которого производится считывание, смщение относительно начала массива 
-<code>offset</code> и количество считываемых символов <code>length</code>.</p>
-<p>Считаем массив байтов и выведем его на экран:</p>
+<p>В качестве параметрів конструктори використовують масив байтов <code>buf</code>, из которого производится считывание, смщение относительно начала масива 
+<code>offset</code> и кількість считываемых символів <code>length</code>.</p>
+<p>Считаємо масив байтов и выведем его на экран:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.io.*;
 
@@ -40,7 +40,7 @@ public class Program {
         
         String text = "Hello world!";
         byte[] array2 = text.getBytes();
-		// считываем 5 символов
+		// считываем 5 символів
         ByteArrayInputStream byteStream2 = new ByteArrayInputStream(array2, 0, 5);
         int c;
         while((c=byteStream2.read())!=-1){
@@ -50,16 +50,16 @@ public class Program {
     } 
 }
 </code></pre>
-<p>В отличие от других классов потоков для закрытия об'єкта <code>ByteArrayInputStream</code> не требуется вызывать метод <code>close</code>.</p>
-<h3>Запись массива байт и класс ByteArrayOutputStream</h3>
-<p>Класс ByteArrayOutputStream представляє поток вывода, использующий массив байтов в качестве места вывода.</p>
-<P>Щоб создать об'єкт данного класса, мы можемо використовувати один из его конструкторов:</P>
+<p>В отличие от других класов потіков для закрытия об'єкта <code>ByteArrayInputStream</code> не требуется вызывать метод <code>close</code>.</p>
+<h3>Запис масива байт и клас ByteArrayOutputStream</h3>
+<p>Клас ByteArrayOutputStream представляє потік вивіда, использующий масив байтов в качестве места вивіда.</p>
+<P>Щоб створити об'єкт данного класа, мы можемо використовувати один из его конструкторов:</P>
 <pre class="line-numbers"><code class="language-java">
 ByteArrayOutputStream() 
 ByteArrayOutputStream(int size)
 </code></pre>
-<p>Первая версия створює массив для хранения байтов длиной в 32 байта, а вторая версия створює массив длиной <code>size</code>.</p>
-<p>Рассмотрим применение класса:</p>
+<p>Первая версия створює масив для хранения байтов длиной в 32 байта, а вторая версия створює масив длиной <code>size</code>.</p>
+<p>Рассмотрим застосування класа:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.io.*;
 
@@ -77,10 +77,10 @@ public class Program {
         
             System.out.println(ex.getMessage());
         }
-        // превращаем массив байтов в строку
+        // превращаем масив байтов в рядок
         System.out.println(baos.toString());
         
-        // получаем массив байтов и выводим по символьно
+        // отримуємо масив байтов и вивідим по символьно
         byte[] array = baos.toByteArray();
         for(byte b: array){
         
@@ -90,13 +90,13 @@ public class Program {
     } 
 }
 </code></pre>
-<p>Как и в других потоках вывода в классе <code>ByteArrayOutputStream</code> определен метод <code>write</code>, який записує в поток некоторые дані. 
-В данном случае мы записываем в поток массив байтов. Цет массив байтов записуєся в об'єкте ByteArrayOutputStream в защищенное поле <code>buf</code>, 
-которое представляє також массив байтов (<code>protected byte[] buf</code>).</p>
-<p>Так як метод <code>write</code> может сгенерировать исключение, то вызов цього метода помещается в блок try..catch.</p>
-<p>Используя методы <code>toString()</code> и <code>toByteArray()</code>, можна отримати массив байтов buf в виде текста або непосредственно в виде массива байт.</p>
-<p>С помощью метода <code>writeTo</code> мы можемо вывести массив байт в другой поток. Данный метод в качестве параметра приймає об'єкт <code>OutputStream</code>, 
-в який производится запись массива байт:</p>
+<p>Как и в других потіках вивіда в класе <code>ByteArrayOutputStream</code> визначений метод <code>write</code>, який записує в потік некоторые дані. 
+У даному випадку мы записуємо в потік масив байтов. Цет масив байтов записуєся в об'єкте ByteArrayOutputStream в защищенное поле <code>buf</code>, 
+которое представляє також масив байтов (<code>protected byte[] buf</code>).</p>
+<p>Так як метод <code>write</code> может сгенерировать виняток, то вызов цього методу помещается в блок try..catch.</p>
+<p>Використовуючи методи <code>toString()</code> и <code>toByteArray()</code>, можна отримати масив байтов buf в виде текста або непосредственно в виде масива байт.</p>
+<p>За допомогою методу <code>writeTo</code> мы можемо вывести масив байт в другой потік. Данный метод в качестве параметра приймає об'єкт <code>OutputStream</code>, 
+в який производится запис масива байт:</p>
 <pre class="line-numbers"><code class="language-java">
 ByteArrayOutputStream baos = new ByteArrayOutputStream();
 String text = "Hello Wolrd!";
@@ -117,8 +117,8 @@ catch(IOException e){
     System.out.println(e.getMessage());
 }
 </code></pre>
-<p>После виконання цей программы в папке с программой появится файл hello.txt, який буде містятьь строку "Hello Wolrd!".</p>
-<p>И в заключении також треба сказать, что як и для об'єктов ByteArrayInputStream, для ByteArrayOutputStream не треба явным чином закрывать поток за допомогою метода 
+<p>Після виконання цей програми в папке с програмой появится файл hello.txt, який буде містятьь рядок "Hello Wolrd!".</p>
+<p>И в заключении також треба сказать, что як и для об'єктов ByteArrayInputStream, для ByteArrayOutputStream не треба явным чином закрывать потік за допомогою методу 
 <code>close</code>.</p>
 
   </div>

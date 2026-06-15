@@ -3,7 +3,7 @@
 <head>
 <title>Java | Обробка анотацій під час виконання</title>
 <meta charset="utf-8" />
-<meta name="description" content="Обробка анотацій під час виконання за допомогою рефлексии в языке программирования Java, методы getAnnotation, getDeclaredAnnotation, getAnnotationsByType, isAnnotationPresent, створення механизма валидации за допомогою аннотаций">
+<meta name="description" content="Обробка анотацій під час виконання за допомогою рефлексии в языке програмирования Java, методи getAnnotation, getDeclaredAnnotation, getAnnotationsByType, isAnnotationPresent, створення механизма валидации за допомогою анотацій">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -13,7 +13,7 @@
 <div class="item center menC">
      <h1>Обробка анотацій під час виконання</h1><div class="date">Останнє оновлення: 01.11.2025</div>
 
-<p>Аннотация сама по себе в мові Java ничего робить. Щоб використовувати аннотацию якимось чином, нам потрібно її обробляти. Під час виконання мы можемо отримати дані аннотаций за допомогою рефлексии. Для цього в пакеті <code>java.lang.reflect</code> определен інтерфейс <b>AnnotatedElement</b>. Для работы с аннотациями цей інтерфейс оголошує ряд методів:</p>
+<p>Анотація сама по себе в мові Java ничего робить. Щоб використовувати анотацію якимось чином, нам потрібно її обробляти. Під час виконання мы можемо отримати дані анотацій за допомогою рефлексии. Для цього в пакеті <code>java.lang.reflect</code> визначений інтерфейс <b>AnnotatedElement</b>. Для работы с анотаціями цей інтерфейс оголошує ряд методів:</p>
 <pre class="line-numbers"><code class="language-java">
 T getAnnotation(Class&lt;T&gt;)
 T getDeclaredAnnotation(Class&lt;T&gt;)
@@ -23,18 +23,18 @@ Annotation[] getAnnotations()
 Annotation[] getDeclaredAnnotations()
 boolean isAnnotationPresent(Class&lt;? extends Annotation&gt; annotationClass)
 </code></pre>
-<p>Рассматривая эти методы, варто відзначити о различиях в аннотациях:</p>
-<li><p><span class="b">аннотация к элементу типу</span> - це аннотация оголошення (declaration annotation). 
-Для из получения призначенийы методы <code>getDeclaredAnnotation() / getDeclaredAnnotations() / getDeclaredAnnotationByType()</code></p></li> , 
-<li><p><span class="b">аннотация к типу</span> (type annotation) - це аннотация типу. Для их получения призначенийы методы с суффиксом <code>ByType</code>.</p>
-<p>Методи <code>getAnnotations()</code> и <code>getDeclaredAnnotations()</code> повертають вообще все применяемые к типу або его элементу аннотации в виде массива об'єктов <span class="b">Annotation</span>. Цет тип 
-представляє інтерфейс, из методів которого можна відзначити метод <code>annotationType()</code> - он повертає класс конкретной аннотации:</p>
+<p>Рассматривая эти методи, варто відзначити о различиях в анотаціях:</p>
+<li><p><span class="b">анотація к елементу типу</span> - це анотація оголошення (declaration annotation). 
+Для из получения призначенийы методи <code>getDeclaredAnnotation() / getDeclaredAnnotations() / getDeclaredAnnotationByType()</code></p></li> , 
+<li><p><span class="b">анотація к типу</span> (type annotation) - це анотація типу. Для их получения призначенийы методи с суффиксом <code>ByType</code>.</p>
+<p>Методи <code>getAnnotations()</code> и <code>getDeclaredAnnotations()</code> повертають вообще все застосовуємоые к типу або его елементу анотації в виде масива об'єктов <span class="b">Annotation</span>. Цет тип 
+представляє інтерфейс, из методів которого можна відзначити метод <code>annotationType()</code> - он повертає клас конкретной анотації:</p>
 <pre class="line-numbers"><code class="language-java">
 Class&lt;? extends Annotation&gt; annotationType()
 </code></pre>
 
-<p>Поскольку классы <code>Class</code>, <code>Field</code>, <code>Parameter</code>, <code>Method</code>, <code>Constructor</code> и <code>Package</code> реализуют цей інтерфейс, то, получив за допомогою рефлексии 
-определенный компонент программы, мы можемо отримати его аннотации.</p>
+<p>Поскольку класы <code>Class</code>, <code>Field</code>, <code>Parameter</code>, <code>Method</code>, <code>Constructor</code> и <code>Package</code> реалізують цей інтерфейс, то, получив за допомогою рефлексии 
+визначенийный компонент програми, мы можемо отримати его анотації.</p>
 
 <p>Рассмотрим небольшой пример:</p>
 <pre class="line-numbers"><code class="language-java">
@@ -43,14 +43,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Retention(RetentionPolicy.RUNTIME)     // Аннотация доступна во час виконання
-@Target(ElementType.TYPE)             // Аннотация застосовується к типум
+@Retention(RetentionPolicy.RUNTIME)     // Анотація доступна во час виконання
+@Target(ElementType.TYPE)             // Анотація застосовується к типум
 @interface MyAnnotation {
 
     String value();
 }
 
-// применяем аннотацию
+// застосовуємо анотацію
 @MyAnnotation(value="Thing")
 class Thing{
     String name;
@@ -62,7 +62,7 @@ class Program{
           
         var obj = new Thing();
         var cl = obj.getClass();
-        // получаем аннотацию MyAnnotation
+        // отримуємо анотацію MyAnnotation
         MyAnnotation annot = cl.getAnnotation(MyAnnotation.class);
         System.out.println(annot);  // @MyAnnotation("Thing")
 
@@ -73,24 +73,24 @@ class Program{
     }
 }
 </code></pre>
-<p>Здесь сначала определяем переменную класса, к которому застосовується аннотация:</p>
+<p>Здесь сначала определяем змінну класа, к которому застосовується анотація:</p>
 <pre class="line-numbers"><code class="language-java">var obj = new Thing();</code></pre>
-<p>Получаем класс змінної:</p>
+<p>Отримуємо клас змінної:</p>
 <pre class="line-numbers"><code class="language-java">var cl = obj.getClass();</code></pre>
-<p>И далїї получаем нашу аннотацию MyAnnotation:</p>
+<p>И далїї отримуємо нашу анотацію MyAnnotation:</p>
 <pre class="line-numbers"><code class="language-java">MyAnnotation annot = cl.getAnnotation(MyAnnotation.class);</code></pre>
-<p>Обратите внимание, что в метод передаєся об'єкт класса аннотации (в данном случае <code>MyAnnotation.class</code>). В качестве результата метод повертає об'єкт некоторого прокси-класса, 
-який реализует інтерфейс <code>MyAnnotation</code>.</p>
-<p>Затем можна вызвать методы інтерфейса. Однак может быть, что у класса отсутствует данная аннотация, и в цем случае метод <code>getAnnotation()</code> повертає <code>null</code>. 
-Соответственно перед вызовом методів аннотации необхідно проверить її об'єкт на <code>null</code>:</p>
+<p>Зверніть увагу, что в метод передаєся об'єкт класа анотації (у даному випадку <code>MyAnnotation.class</code>). В качестве результата метод повертає об'єкт некоторого прокси-класа, 
+який реалізує інтерфейс <code>MyAnnotation</code>.</p>
+<p>Затем можна вызвать методи інтерфейса. Однак может быть, что у класа отсутствует данная анотація, и в цем случае метод <code>getAnnotation()</code> повертає <code>null</code>. 
+Соответственно перед вызовом методів анотації необхідно проверить її об'єкт на <code>null</code>:</p>
 <pre class="line-numbers"><code class="language-java">
 if (annot != null){
 
     System.out.println(annot.value());  // Thing
 }</code></pre>
 
-<p>Метод <code>getAnnotation()</code> повертає один об'єкт аннотации. Если же к типу або его элементу застосовується декілька аннотаций, и все их треба отримати, 
-то можна використовувати метод <code>getAnnotations()</code>, який повертає массив об'єктов <code>Annotation</code>:</p>
+<p>Метод <code>getAnnotation()</code> повертає один об'єкт анотації. Если же к типу або его елементу застосовується декілька анотацій, и все их треба отримати, 
+то можна використовувати метод <code>getAnnotations()</code>, який повертає масив об'єктов <code>Annotation</code>:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -125,19 +125,19 @@ class Program{
         var obj = new Thing();
         var cl = obj.getClass();
 
-        // получаем все аннотации
+        // отримуємо все анотації
         Annotation[] annotations = cl.getAnnotations();
         for(var annot: annotations){
 
              System.out.println(annot);
-            // получаем конкретный тип аннотации
+            // отримуємо конкретный тип анотації
             System.out.println(annot.annotationType());
 
         }
     }
 }
 </code></pre>
-<p>В данном случае к классу Thing застосовується две аннотации, и мы получим следующий консольный вывод:</p>
+<p>У даному випадку к класу Thing застосовується две анотації, и мы получим следующий консольный вивід:</p>
 <pre class="sh;">
 @Name("Thing")
 interface Name
@@ -146,7 +146,7 @@ interface Description
 </pre>
 
 <h4>Практический пример</h4>
-<p>Рассмотрим болїї практический пример применения аннотаций. Для цього возьмем следующую программу:</p>
+<p>Рассмотрим болїї практический пример применения анотацій. Для цього возьмем следующую програму:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -181,20 +181,20 @@ class Person{
 class RangeValidator{
 
     public static boolean validate(Object obj) throws Exception{
-        // Получаем класс об'єкта 
+        // Отримуємо клас об'єкта 
         var cl = obj.getClass();
 
-        // Проверяем аннотации на уровне полей
+        // Проверяем анотації на уровне полей
         for (Field field : cl.getDeclaredFields()) {
-            // якщо к полю застосовується аннотация Range
+            // якщо к полю застосовується анотація Range
             if (field.isAnnotationPresent(Range.class) && field.getType()==int.class) {
-                // получаем аннотацию
+                // отримуємо анотацію
                 Range range = field.getAnnotation(Range.class);
-                // делаем поле доступным для получения его значения
+                // делаем поле доступным для получения его значення
                 field.setAccessible(true);
-                // получаем значение поля
+                // отримуємо значення поля
                 int age = (int)field.get(obj);
-                // проверяем значение поля
+                // проверяем значення поля
                 if(age &gt; range.max() || age &lt; range.min()) return false;
             }
         }
@@ -220,10 +220,10 @@ class Program{
     }
 }
 </code></pre>
-<p>Данная программа створює механизм, який дозволяє декларативно задавать правила для полей, а затем динамически проверять, соответствуют ли реальные об'єкты цим правилам. 
+<p>Данная програма створює механизм, який дозволяє декларативно задавать правила для полей, а затем динамически проверять, відповідають ли реальные об'єкты цим правилам. 
 Рассмотрим пошагово, что здесь происходит:</p>
 <ul>
-<li><p>Створення аннотации <code>@Range</code><p>
+<li><p>Створення анотації <code>@Range</code><p>
 <pre class="line-numbers"><code class="language-java">
 @Retention(RetentionPolicy.RUNTIME) 
 @Target(ElementType.FIELD) 
@@ -233,9 +233,9 @@ class Program{
     int max();
 }
 </code></pre>
-<p>Аннотация имїїт два параметра, <code>min</code> и <code>max</code>, которые будуть хранить допустимый диапазон значений.</p></li>
+<p>Анотація имїїт два параметра, <code>min</code> и <code>max</code>, которые будуть хранить допустимый диапазон значений.</p></li>
 
-<li><p>Класс <code>Person</code> имїїт поле <code>age</code>, которое аннотировано созданной нами аннотацией:</p>
+<li><p>Клас <code>Person</code> имїїт поле <code>age</code>, которое аннотировано созданной нами аннотацией:</p>
 <pre class="line-numbers"><code class="language-java">
 class Person{
 
@@ -248,24 +248,24 @@ class Person{
 </code></pre>
 <p>Це "правило" означает, что допустимый возраст для <code>Person</code> повинен быть в диапазоне от 1 до 110.</p></li>
 
-<li><p>Класс <code>RangeValidator</code> отвечает за проверку произвольного об'єкта. Для цього в нем определен метод <code>validate()</code>, який приймає любой об'єкт <code>obj</code> 
+<li><p>Клас <code>RangeValidator</code> отвечает за проверку произвольного об'єкта. Для цього в нем визначений метод <code>validate()</code>, який приймає любой об'єкт <code>obj</code> 
 и повертає <code>true</code> (якщо об'єкт валиден) або <code>false</code> (якщо нет).</p>
 <pre class="line-numbers"><code class="language-java">
 public static boolean validate(Object obj) throws Exception{
-        // Получаем класс об'єкта 
+        // Отримуємо клас об'єкта 
         var cl = obj.getClass();
 
-        // Проверяем аннотации на уровне полей
+        // Проверяем анотації на уровне полей
         for (Field field : cl.getDeclaredFields()) {
-            // якщо к полю застосовується аннотация Range
+            // якщо к полю застосовується анотація Range
             if (field.isAnnotationPresent(Range.class) && field.getType()==int.class) {
-                // получаем аннотацию
+                // отримуємо анотацію
                 Range range = field.getAnnotation(Range.class);
-                // делаем поле доступным для получения его значения
+                // делаем поле доступным для получения его значення
                 field.setAccessible(true);
-                // получаем значение поля
+                // отримуємо значення поля
                 int age = (int)field.get(obj);
-                // проверяем значение поля
+                // проверяем значення поля
                 if(age &gt; range.max() || age &lt; range.min()) return false;
             }
         }
@@ -273,23 +273,23 @@ public static boolean validate(Object obj) throws Exception{
         return true;
     }
 </code></pre>
-<p>С помощью рефлексии метод отримує "описание" класса переданного об'єкта (наприклад, класса <code>Person</code>). Далїї перебираем все поля класса</p>
+<p>За допомогою рефлексии метод отримує "описание" класа переданного об'єкта (наприклад, класа <code>Person</code>). Далїї перебираем все поля класа</p>
 <p><code>for (Field field : cl.getDeclaredFields())</code></p>
-<p>Затем проверяем, есть ли у текущего поля аннотация <code>@Range</code></p>
+<p>Затем проверяем, чи є у текущего поля анотація <code>@Range</code></p>
 <p><code>if (field.isAnnotationPresent(Range.class) ...)</code></p>
-<p>Если аннотация найдена, то получаем саму аннотацию и її параметры ( <code>min=1</code> и <code>max=110</code>).</p>
+<p>Если анотація найдена, то отримуємо саму анотацію и її параметри ( <code>min=1</code> и <code>max=110</code>).</p>
 <p><code>Range range = field.getAnnotation(Range.class);</code></p>
 <p>Разрешаем доступ к полю, даже якщо бы оно буво <code>private</code>:</p>
 <p><code>field.setAccessible(true);</code></p>
-<p>С помощью рефлексии получаем реальное значение поля <code>age</code> из конкретного об'єкта</p>
+<p>За допомогою рефлексии отримуємо реальное значення поля <code>age</code> из конкретного об'єкта</p>
 <p><code>int age = (int)field.get(obj);</code></p> 
-<p>И в конце сравниваем значение поля с границами из аннотации (1 и 110). Если значение выходит за рамки, метод немедленно повертає <code>false</code> (об'єкт невалиден).</p>
+<p>И в конце сравниваем значення поля с границами из анотації (1 и 110). Если значення выходит за рамки, метод немедленно повертає <code>false</code> (об'єкт невалиден).</p>
 <p><code>if(age &gt; range.max() || age &lt; range.min()) return false;</code></p> 
 <p>В противном случае повертаєся <code>true</code> - об'єкт считаєся валидным.</p></li>
 
-<li><p>В классе <code>Program</code> для упрощени проверки определяет вспомогательный метод <code>validatePerson</code> и вызываем его, передавая в него пару типовых об'єктов.</p></li>
+<li><p>В класе <code>Program</code> для упрощени проверки визначає вспомогательный метод <code>validatePerson</code> и вызываем его, передавая в него пару типівых об'єктов.</p></li>
 </ul>
-<p>Консольный вывод программ:</p>
+<p>Консольный вивід програм:</p>
 <pre class="line-numbers"><code class="language-none">
 Person Tom is valid
 Person Bob is invalid!!!

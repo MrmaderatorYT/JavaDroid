@@ -3,7 +3,7 @@
 <head>
 <title>Java | Foreign Functions та Memory API</title>
 <meta charset="utf-8" />
-<meta name="description" content="Использование Foreign Functions та Memory API для взаимодействия с нативным кодом на языке Си в программе на языке программирования Java, опция запуска enable-native-access, типы Linker, Arena, MemorySegment, MethodHandle">
+<meta name="description" content="Використання Foreign Functions та Memory API для взаимодействия с нативным кодом на языке Си в програме на языке програмирования Java, опция запуску enable-native-access, типи Linker, Arena, MemorySegment, MethodHandle">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -13,11 +13,11 @@
 <div class="item center menC">
      <h1>Foreign Functions та Memory API</h1><div class="date">Останнє оновлення: 21.12.2025</div>
 
-<p>Хотя подход подключения функционала на Си в программу на Java за допомогою <span class="b">JNI</span> продолжает работать и в самых последних версиях Java, тем не менїї подключение нативного кода 
-за допомогою JNI довольно трудоемко, требует написания дополнительного кода на Си, компиляцию соответствующей библиотеки и т.д. Щоб упростить всю эту работу в последних версиях Java був добавлен новый 
-API для доступа к "внешним" функциям и памяти - <span class="b">Foreign Functions and Memory API</span> (<span class="b">FFM</span>), ранїї развивавшийся по именем <span class="b">Project Panama</span>. Начиная с версии Java 14 цей API був экспериментальным, а 
+<p>Хотя підход підключения функционала на Си в програму на Java за допомогою <span class="b">JNI</span> продолжает працювати и в самых післядних версиях Java, тем не менїї підключение нативного коду 
+за допомогою JNI досить трудоемко, требует написания дополнительного коду на Си, компиляцию соответствующей бібліотеки и т.д. Щоб упростить всю эту работу в післядних версиях Java був добавлен новый 
+API для доступа к "внешним" функціям и памяти - <span class="b">Foreign Functions and Memory API</span> (<span class="b">FFM</span>), ранїї развивавшийся по именем <span class="b">Project Panama</span>. Начиная с версии Java 14 цей API був экспериментальным, а 
 в Java 22 данный API достиг состояния релиза и стал полноценной функциональностью платформы. Предполагается, что со временем он вытеснит JNI.</p>
-<p>Для примера опять же используем стандартную библиотечную функцию <span class="b">printf</span> из стандартной библиотеки языка Си. И для цього определим файл <span class="b">Program.java</span> со наступним кодом:</p>
+<p>Для примера опять же використовуємо стандартную библиотечную функцію <span class="b">printf</span> из стандартной бібліотеки языка Си. И для цього визначимо файл <span class="b">Program.java</span> со наступним кодом:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.lang.invoke.*;
 import java.lang.foreign.*;
@@ -28,78 +28,78 @@ public class Program {
 
         Linker linker = Linker.nativeLinker();
         MethodHandle printf = linker.downcallHandle(
-            linker.defaultLookup().findOrThrow("printf"),  // получаем функцию printf
+            linker.defaultLookup().findOrThrow("printf"),  // отримуємо функцію printf
             FunctionDescriptor.of(ValueLayout.JAVA_INT, ValueLayout.ADDRESS));
 
         try (Arena arena = Arena.ofConfined()) {
             MemorySegment str = arena.allocateFrom("Hello \n");
-            int result = (int) printf.invoke(str);  // получаем результат из нативной функції
-            System.out.printf("Напечатано символов %d\n", result);
+            int result = (int) printf.invoke(str);  // отримуємо результат из нативной функції
+            System.out.printf("Напечатано символів %d\n", result);
         }
     }
 }
 </code></pre>
-<p>Разберем, что происходит в коде. Прежде всего создаем <span class="b">линкер</span> (компоновщик) для работы с нативными функциями:</p>
+<p>Разберем, что происходит в коді. Прежде всего створюємо <span class="b">линкер</span> (компоновщик) для работы с нативными функціями:</p>
 <pre class="line-numbers"><code class="language-java">
 Linker linker = Linker.nativeLinker();
 </code></pre>
-<p>Линкер по сути представляє связующїї звено между Java и нативной архитектурой текущей операционной системы.</p>
+<p>Линкер по сути представляє связующїї звено між Java и нативной архитектурой текущей операционной системы.</p>
 
 <p>Далїї определяем дескриптор для вызываемыой функції в виде об'єкта <code>MethodHandle</code></p>
 <pre class="line-numbers"><code class="language-java">
 MethodHandle printf = linker.downcallHandle(...)
 </code></pre>
-<p><code>MethodHandle printf</code> представляє своего рода указатель на нативную функцию, який Java может вызвать як обычный метод.</p></li>
+<p><code>MethodHandle printf</code> представляє своего рода указатель на нативную функцію, який Java может вызвать як обычный метод.</p></li>
 
-<p>Для создания цього об'єкта застосовується метод <code>linker.downcallHandle()</code>, який приймає два параметра:</p>
+<p>Для створенняя цього об'єкта застосовується метод <code>linker.downcallHandle()</code>, який приймає два параметра:</p>
 <ul>
-<li><p>Дескриптор внешней функції. Щоб найти эту функцию, вызывается последовательность методів:</p>
+<li><p>Дескриптор внешней функції. Щоб найти эту функцію, вызывается післядовательность методів:</p>
 <pre class="line-numbers"><code class="language-java">linker.defaultLookup().findOrThrow("printf")</code></pre>
-<p>Здесь выражение <code>linker.defaultLookup()</code> выполняет поиск символов (функций) в стандартных библиотеках C, которые загрвжены по умолчанию. А выражение 
-<code>findOrThrow("printf")</code> указывает имя искомой функції (то есть в нашем случае <code>printf</code>)</p>
+<p>Здесь выражение <code>linker.defaultLookup()</code> виконує поиск символів (функцій) в стандартных бібліотеках C, которые загрвжены по умолчанию. А выражение 
+<code>findOrThrow("printf")</code> вказує ім'я искомой функції (то есть в нашем случае <code>printf</code>)</p>
 </li>
-<li><p>Параметры линкера. Застосовуються для описания сигнатуры функції</p>
+<li><p>Параметри линкера. Застосовуються для описания сигнатури функції</p>
 <pre class="line-numbers"><code class="language-java">
 FunctionDescriptor.of(ValueLayout.JAVA_INT, ValueLayout.ADDRESS)
 </code></pre>
-<p>В данном случае указываем, что <code>printf()</code> повертає <code>int</code> (<code>ValueLayout.JAVA_INT</code>) и приймає указатель - <code>ValueLayout.ADDRESS</code> (<code>char*</code>).</p>
+<p>У даному випадку указываем, что <code>printf()</code> повертає <code>int</code> (<code>ValueLayout.JAVA_INT</code>) и приймає указатель - <code>ValueLayout.ADDRESS</code> (<code>char*</code>).</p>
 </li>
 </ul>
 
-<p>Следующий важный момент - выделение памяти для строки, которая буде передаваться в вызываемую функцию в качестве параметра:</p>
+<p>Следующий важный момент - выделение памяти для рядки, которая буде передаваться в вызываемую функцію в качестве параметра:</p>
 <pre class="line-numbers"><code class="language-java">
 try (Arena arena = Arena.ofConfined()) {
        MemorySegment str = arena.allocateFrom("Hello \n");
 </code></pre></p>
-<p>Поскольку нативные функції не умеют работать с об'єктами Java (такими як <code>String</code>), дані потрібно разместить в "неуправляемой" памяти (вне кучи Java), для чего застосовуються следующие действия:</p>
+<p>Поскольку нативные функції не умеют працювати с об'єктами Java (такими як <code>String</code>), дані потрібно разместить в "неуправляемой" памяти (вне кучи Java), для чего застосовуються следующие действия:</p>
 <ol>
 <li><p><code>Arena.ofConfined()</code>: створює область памяти (арену), которая автоматически звільняєся при закрытии блока <code>try</code>. Це предотвращает утечки памяти.</p></li>
-<li><p><code>arena.allocateFrom("...")</code>: выделяет память для переданной строки Java и копирует эту строку в выделенную нативную память, добавляя в конец нулевой байт (<code>\0</code>), чтобы формат 
-соответствовал стандарту C-строк. Повертає об'єкт <code>MemorySegment</code> - по сути, безопасный указатель для работы с сегментом памяти.</p></li>
+<li><p><code>arena.allocateFrom("...")</code>: выделяет память для переданной рядки Java и копирует эту рядок в выделенную нативную память, добавляя в конец нулевой байт (<code>\0</code>), чтобы формат 
+соответствовал стандарту C-рядків. Повертає об'єкт <code>MemorySegment</code> - по сути, безопасный указатель для работы с сегментом памяти.</p></li>
 </ol>
-<p>И далїї собственно идет вызов гативной функції <code>printf()</code> и получение результата:</p>
+<p>И далїї собственно идет вызов гативной функції <code>printf()</code> и отримання результата:</p>
 <pre class="line-numbers"><code class="language-java">
 int result = (int) printf.invoke(str);
 </code></pre>
-<p>В итоге мы имїїм следующий общий алгоритм работы программы:</p>
+<p>В итоге мы имїїм следующий общий алгоритм работы програми:</p>
 <ol>
-<li><p><span class="b">Поиск</span>. Находит функцию <code>printf</code> в системных библиотеках.</p></li>
-<li><p><span class="b">Выделение памяти</span>. Резервирует блок памяти вне Java для строки.</p></li>
-<li><p><span class="b">Выполнение</span>. Вызывает нативную функцию, передавая ей адрес цього блока.</p></li>
-<li><p><span class="b">Освобождение</span>. После виконання блока <code>try</code> память, выделенная под строку, мгновенно звільняєся.</p></li>
+<li><p><span class="b">Поиск</span>. Находит функцію <code>printf</code> в системных бібліотеках.</p></li>
+<li><p><span class="b">Выделение памяти</span>. Резервирует блок памяти вне Java для рядки.</p></li>
+<li><p><span class="b">Виконання</span>. Вызывает нативную функцію, передавая ей адрес цього блока.</p></li>
+<li><p><span class="b">Звільнення</span>. Після виконання блока <code>try</code> пам'ять, виділена під рядок, миттєво звільняєся.</p></li>
 </ol>
 
-<p>Варто відзначити, что як и в случае с <span class="b">JNI</span>, для запуска программы необхідно передать утилите java дополнительную опцию, которая разрешает использование нативного кода в программе на Java. Если модули не використовуються, то программа запускаєся наступним чином:</p>
+<p>Варто відзначити, что як и в случае с <span class="b">JNI</span>, для запуску програми необхідно передать утилите java дополнительную опцию, которая разрешает використання нативного коду в програме на Java. Если модулі не використовуються, то програма запускуєся наступним чином:</p>
 <pre class="line-numbers"><code class="language-none">java --enable-native-access=ALL-UNNAMED ...</code></pre>
-<p>В модульной же программе необхідно перечислить все модули, для которых разрешен нативний доступ:</p>
+<p>В модульной же програме необхідно перечислить все модулі, для которых разрешен нативний доступ:</p>
 <pre class="line-numbers"><code class="language-none">java --enable-native-access=module1, module2 ...</code></pre>
 
-<p>Протестируем программу, запустив її на выполнение:</p>
+<p>Протестируем програму, запустив її на виконання:</p>
 <pre class="line-numbers"><code class="language-none">
 eugene@Eugene:/workspace/java/test$ javac Program.java
 eugene@Eugene:/workspace/java/test$ java --enable-native-access=ALL-UNNAMED Program
 Hello 
-Напечатано символов 18
+Напечатано символів 18
 eugene@Eugene:/workspace/java/test$ 
 </code></pre>
 

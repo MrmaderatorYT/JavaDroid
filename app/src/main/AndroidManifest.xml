@@ -53,6 +53,11 @@
             android:exported="false"
             android:screenOrientation="landscape" />
 
+        <activity
+            android:name=".learn.LessonActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.ccs.javadroid.fileprovider"

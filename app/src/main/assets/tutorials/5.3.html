@@ -3,7 +3,7 @@
 <head>
 <title>Java | Пов'язаний список LinkedList</title>
 <meta charset="utf-8" />
-<meta name="description" content="Класс LinkedList в языке программирования Java, створення связанного списка, інтерфейсы Queue и Dequeue и их методы">
+<meta name="description" content="Клас LinkedList в языке програмирования Java, створення связанного списку, інтерфейсы Queue и Dequeue и их методи">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -13,24 +13,24 @@
 <div class="item center menC">
      <h1>Пов'язаний список LinkedList</h1><div class="date">Останнє оновлення: 11.10.2025</div>
 
-	<p>Обобщенный класс LinkedList&lt;E&gt; представляє структуру данных в виде связанного списка. Он найдеся от класса <code>AbstractSequentialList</code> и реализует інтерфейсы 
+	<p>Обобщенный клас LinkedList&lt;E&gt; представляє структуру данных в виде связанного списку. Он найдеся от класа <code>AbstractSequentialList</code> и реалізує інтерфейсы 
 <code>List, Dequeue</code> и <code>Queue</code>. 
 То есть он соединяет функциональность работы со списком и фукциональность очереди.</p>
-<p>Класс LinkedList имїїт следующие конструкторы:</p>
+<p>Клас LinkedList имїїт следующие конструктори:</p>
 <ul>
 <li><p><code>LinkedList()</code>: створює порожній список</p></li>
-<li><p><code>LinkedList(Collection&lt;? extends E&gt; col)</code>: створює список, в який додає все элементы коллекции col</p></li>
+<li><p><code>LinkedList(Collection&lt;? extends E&gt; col)</code>: створює список, в який додає всі елементи колекції col</p></li>
 </ul>
-<p>LinkedList містить все те методы, которые определены в інтерфейсах List, Queue, Deque. Некоторые из них:</p>
+<p>LinkedList містить все те методи, которые визначенийы в інтерфейсах List, Queue, Deque. Некоторые из них:</p>
 <ul>
-<li><p><span class="b">addFirst() / offerFirst()</span>: додає элемент в начало списка</p></li>
-<li><p><span class="b">addLast() / offerLast()</span>: додає элемент в конец списка</p></li>
-<li><p><span class="b">removeFirst() / pollFirst()</span>: видаляє первый элемент из начала списка</p></li>
-<li><p><span class="b">removeLast() / pollLast()</span>: видаляє последний элемент из конца списка</p></li>
-<li><p><span class="b">getFirst() / peekFirst()</span>: отримує первый элемент</p></li>
-<li><p><span class="b">getLast() / peekLast()</span>: отримує последний элемент</p></li>
+<li><p><span class="b">addFirst() / offerFirst()</span>: додає елемент в начало списку</p></li>
+<li><p><span class="b">addLast() / offerLast()</span>: додає елемент в конец списку</p></li>
+<li><p><span class="b">removeFirst() / pollFirst()</span>: видаляє первый елемент из начала списку</p></li>
+<li><p><span class="b">removeLast() / pollLast()</span>: видаляє післядний елемент из конца списку</p></li>
+<li><p><span class="b">getFirst() / peekFirst()</span>: отримує первый елемент</p></li>
+<li><p><span class="b">getLast() / peekLast()</span>: отримує післядний елемент</p></li>
 </ul>
-<p>Рассмотрим применение некоторых методів связанного списка. Добавление в список:</p>
+<p>Рассмотрим застосування некоторых методів связанного списку. Додавання в список:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.LinkedList;
  
@@ -40,25 +40,25 @@ public class Program{
           
         var people = new LinkedList&lt;String&gt;();
           
-        // добавим в список ряд элементов
+        // додамо в список ряд елементов
         people.add("Tom");              // Tom
         people.add("Bob");              // Tom - Bob
 
-        // добавляем на последнїї место
+        // додаємо на післяднїї место
         people.addLast("Sam");          // Tom - Bob - Sam
-        // добавляем на первое место
+        // додаємо на первое место
         people.addFirst("Alice");       // Alice - Tom - Bob - Sam
-        // добавляем элемент по индексу 1
+        // додаємо елемент по индексу 1
         people.add(1, "Kate");                 // Alice - Kate - Tom - Bob - Sam
 
         System.out.println(people);         // [Alice, Kate, Tom, Bob, Sam]
 
-        // получаем размер списка
+        // отримуємо размер списку
         System.out.printf("List has %d elements \n", people.size());
     }
 }
 </code></pre>
-<p>Получение, изменение, перебор и проверка на наличие в списке:</p>
+<p>Отримання, зміна, перебор и проверка на наличие в списке:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.LinkedList;
 import java.util.Collections;
@@ -70,16 +70,16 @@ public class Program{
         var people = new LinkedList&lt;String&gt;();
         Collections.addAll(people, "Alice", "Kate", "Tom", "Bob", "Sam");
 
-        // получаем третий элемент
+        // отримуємо третий елемент
         String second = people.get(2);
         System.out.println(second); // Tom
 
-        // получаем первый элемент
+        // отримуємо первый елемент
         System.out.println(people.getFirst()); // Alice
-        // получаем последний элемент
+        // отримуємо післядний елемент
         System.out.println(people.getLast()); // Sam
 
-        // Изменяем третий элемент
+        // Змінюємо третий елемент
         people.set(2, "Tomas");
 
         System.out.println(people); // [Alice, Kate, Tomas, Bob, Sam]
@@ -91,7 +91,7 @@ public class Program{
         }
         System.out.println();
 
-        // проверка на наличие элемента в списке
+        // проверка на наличие елемента в списке
         if(people.contains("Tom")){
           
             System.out.println("List contains `Tom`");
@@ -102,7 +102,7 @@ public class Program{
     }
 }
 </code></pre>
-<p>Видалення из списка:</p>
+<p>Видалення из списку:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.LinkedList;
 import java.util.Collections;
@@ -115,16 +115,16 @@ public class Program{
         Collections.addAll(people, "Alice", "Kate", "Tom", "Bob", "Sam");
 
         System.out.println(people); // [Alice, Kate, Tomas, Bob, Sam]
-        // удаляем конкретный элемент
+        // видаляємо конкретный елемент
         people.remove("Bob");    // [Alice, Kate, Tom, Sam]
-        people.remove("Boby");    // якщо элемента нет, ничего не происходит
-         // удаление первого элемента
+        people.remove("Boby");    // якщо елемента нет, ничего не происходит
+         // видалення первого елемента
         people.removeFirst();    // [Kate, Tom, Sam]
-         // удаление последнего элемента
+         // видалення післяднего елемента
         people.removeLast();    // [Kate, Tom]
         System.out.println(people); // [Kate, Tom]
 
-        // удаление всех элементов
+        // видалення всех елементов
         people.clear();
         System.out.println(people); // []
     }

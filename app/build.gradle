@@ -61,8 +61,9 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        coreLibraryDesugaringEnabled true
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     packaging {
@@ -81,6 +82,7 @@ android {
 }
 
 dependencies {
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.11.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
@@ -88,7 +90,9 @@ dependencies {
     implementation 'io.github.Rosemoe.sora-editor:editor:0.23.6'
     implementation 'io.github.Rosemoe.sora-editor:language-java:0.23.6'
 
-    implementation 'org.eclipse.jdt:ecj:3.35.0'
+    implementation files("$buildDir/intermediates/patched-ecj/ecj-patched.jar") {
+        builtBy 'patchEcjJar'
+    }
     implementation 'com.android.tools:r8:8.2.33'
 
     implementation 'androidx.documentfile:documentfile:1.0.1'
@@ -114,3 +118,159 @@ configurations.all {
     // JGit core works without it for our HTTPS-only use case.
     exclude group: 'org.bouncycastle'
 }
+
+android.applicationVariants.all { variant ->
+    variant.registerJavaGeneratingTask(patchEcjSource, file("$buildDir/generated/source/patched-ecj"))
+}
+
+task patchEcjJar(type: Jar) {
+    def ecjConfiguration = configurations.detachedConfiguration(dependencies.create('org.eclipse.jdt:ecj:3.35.0'))
+    dependsOn ecjConfiguration
+    
+    from zipTree(ecjConfiguration.singleFile)
+    exclude 'org/eclipse/jdt/internal/compiler/util/Util*.class'
+    
+    destinationDirectory = file("$buildDir/intermediates/patched-ecj")
+    archiveFileName = 'ecj-patched.jar'
+}
+
+task patchEcjSource {
+    def ecjSourcesConfiguration = configurations.detachedConfiguration(
+        dependencies.create('org.eclipse.jdt:ecj:3.35.0:sources')
+    )
+    inputs.files(ecjSourcesConfiguration)
+    def outputDir = file("$buildDir/generated/source/patched-ecj")
+    outputs.dir(outputDir)
+    
+    doLast {
+        def sourcesJar = ecjSourcesConfiguration.singleFile
+        outputDir.mkdirs()
+        
+        zipTree(sourcesJar).visit { FileVisitDetails details ->
+            if (details.relativePath.pathString == 'org/eclipse/jdt/internal/compiler/util/Util.java') {
+                def content = details.file.text
+                
+                // Normalize line endings to Unix style for reliable replacement
+                content = content.replace("\r\n", "\n")
+                
+                // Replace getInputStreamAsByteArray
+                def oldGetByteArray = "public static byte[] getInputStreamAsByteArray(InputStream input) throws IOException {\n\t\treturn input.readAllBytes(); // will have even slighly better performance as of JDK17+ see JDK-8264777\n\t}"
+                def newGetByteArray = """public static byte[] getInputStreamAsByteArray(InputStream input) throws IOException {
+		java.io.ByteArrayOutputStream buffer = new java.io.ByteArrayOutputStream();
+		int nRead;
+		byte[] data = new byte[4096];
+		while ((nRead = input.read(data, 0, data.length)) != -1) {
+			buffer.write(data, 0, nRead);
+		}
+		return buffer.toByteArray();
+	}"""
+                content = content.replace(oldGetByteArray, newGetByteArray)
+                
+                // Replace readNBytes
+                def oldReadNBytes = "public static byte[] readNBytes(InputStream input, int byteLength) throws IOException {\n\t\treturn input.readNBytes(byteLength);\n\t}"
+                def newReadNBytes = """public static byte[] readNBytes(InputStream input, int byteLength) throws IOException {
+		byte[] result = new byte[byteLength];
+		int bytesRead = 0;
+		while (bytesRead < byteLength) {
+			int read = input.read(result, bytesRead, byteLength - bytesRead);
+			if (read == -1) {
+				break;
+			}
+			bytesRead += read;
+		}
+		if (bytesRead < byteLength) {
+			return java.util.Arrays.copyOf(result, bytesRead);
+		}
+		return result;
+	}"""
+                content = content.replace(oldReadNBytes, newReadNBytes)
+                
+                def outputFile = file("$outputDir/org/eclipse/jdt/internal/compiler/util/Util.java")
+                outputFile.parentFile.mkdirs()
+                outputFile.text = content
+                println "Generated patched Util.java at: " + outputFile.absolutePath
+            }
+        }
+    }
+}
+
+task compileStubs(type: JavaCompile) {
+    source = fileTree(dir: 'src/main/stub')
+    destinationDirectory = file("$buildDir/stubs")
+    classpath = files()
+    options.compilerArgs = [
+        "--patch-module", "java.base=" + file("src/main/stub").absolutePath,
+        "-source", "8",
+        "-target", "8"
+    ]
+}
+
+task patchAndroidJar {
+    dependsOn compileStubs
+    
+    def originalJar = file("src/main/assets/android.jar")
+    def tempJar = file("$buildDir/patched-android.jar")
+    def stubClassesDir = file("$buildDir/stubs")
+    
+    inputs.file(originalJar)
+    inputs.dir(stubClassesDir)
+    outputs.file(originalJar)
+    
+    doLast {
+        if (!originalJar.exists()) {
+            throw new GradleException("Original android.jar not found!")
+        }
+        
+        tempJar.parentFile.mkdirs()
+        
+        java.util.zip.ZipOutputStream zos = new java.util.zip.ZipOutputStream(new FileOutputStream(tempJar))
+        
+        // 1. Copy everything from original jar, EXCEPT existing java/lang/invoke/StringConcatFactory/Exception if any
+        java.util.zip.ZipFile zipFile = new java.util.zip.ZipFile(originalJar)
+        def entries = zipFile.entries()
+        byte[] buffer = new byte[4096]
+        while (entries.hasMoreElements()) {
+            def entry = entries.nextElement()
+            if (new File(stubClassesDir, entry.name).exists()) {
+                continue;
+            }
+            if (entry.name.startsWith("java/lang/invoke/StringConcatFactory") ||
+                entry.name.startsWith("java/lang/invoke/StringConcatException")) {
+                continue;
+            }
+            zos.putNextEntry(new java.util.zip.ZipEntry(entry.name))
+            def is = zipFile.getInputStream(entry)
+            int read
+            while ((read = is.read(buffer)) != -1) {
+                zos.write(buffer, 0, read)
+            }
+            zos.closeEntry()
+        }
+        zipFile.close()
+        
+        // 2. Add compiled stub class files
+        fileTree(stubClassesDir).visit { FileVisitDetails details ->
+            if (details.file.isFile()) {
+                def path = details.relativePath.pathString
+                zos.putNextEntry(new java.util.zip.ZipEntry(path))
+                details.file.withInputStream { is ->
+                    int read
+                    while ((read = is.read(buffer)) != -1) {
+                        zos.write(buffer, 0, read)
+                    }
+                }
+                zos.closeEntry()
+                println "Added stub to android.jar: " + path
+            }
+        }
+        
+        zos.close()
+        
+        // 3. Replace original jar
+        originalJar.delete()
+        tempJar.renameTo(originalJar)
+        println "android.jar successfully patched with StringConcatFactory stubs!"
+    }
+}
+
+preBuild.dependsOn patchAndroidJar

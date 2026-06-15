@@ -3,7 +3,7 @@
 <head>
 <title>Java | Множинна реалізація та успадкування інтерфейсів</title>
 <meta charset="utf-8" />
-<meta name="description" content="Множественная реализация інтерфейсов в языке программирования Java як решение проблемы множественного наследования, конфликты методів разных інтерфейсов, наследование інтерфейсов">
+<meta name="description" content="Множественная реалізація інтерфейсов в языке програмирования Java як решение проблемы множественного наследования, конфликты методів разных інтерфейсов, наследование інтерфейсов">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -22,13 +22,13 @@ public class Program{
     public static void main(String[] args) {
         
         TextFile file = new TextFile("content.txt", "Hello World");
-        System.out.println("Печать файла " + file.getName());
+        System.out.println("Друк файлу " + file.getName());
         file.print();
     }
 }
 
 interface File{
-    String getName();  // повертає имя файла
+    String getName();  // повертає ім'я файлу
 }
 interface Printable{
     void print();  // печать содержимого
@@ -68,15 +68,15 @@ public class Program{
     }
 }
 </code></pre>
-<p>В данном случае метод <code>printFileName</code> приймає об'єкт інтерфейса File, соответвенно мы можемо передать в метод об'єкт любого класса, який реализует цей інтерфейс. Аналогично метод 
-<code>printObj()</code> приймає об'єкт інтерфейса Printable, вместо которого можна передать об'єкт класса TextFile, реализующего данный інтерфейс.</p>
+<p>У даному випадку метод <code>printFileName</code> приймає об'єкт інтерфейса File, соответвенно мы можемо передать в метод об'єкт любого класа, який реалізує цей інтерфейс. Аналогично метод 
+<code>printObj()</code> приймає об'єкт інтерфейса Printable, вместо которого можна передать об'єкт класа TextFile, реализующего данный інтерфейс.</p>
 <h4>Конфлікти методів за промовчанням</h4>
 <p>Що буде, якщо той самий метод визначений як метод за замовчуванням в одному інтерфейсі, і як метод суперкласу чи іншого інтерфейсу? І тут:</p>
 <ol>
 <li><p>Суперкласи мають перевагу. Якщо суперклас надає конкретний метод, методи за промовчанням з тими самими іменами та типуми параметрів просто ігноруються.</p></li>
 <li><p>Конфлікт інтерфейсів. Якщо інтерфейс надає метод за промовчанням, а інший інтерфейс містить метод із тими самими іменами і типуми параметрів (стандартними чи ні), необхідно вирішити конфлікт, перевизначивши цей метод.</p></li>
 </ol>
-<p>З першим пунктом у принципі все має бути зрозумілим. Тому подивимося на другий варіант.</p>
+<p>З першим пунктом у принципі все має бути зрозумілим. Тому підивимося на другий варіант.</p>
 <pre class="line-numbers"><code class="language-java">
 public class Program{
       
@@ -89,13 +89,13 @@ public class Program{
 // печать на принтере
 interface Printable{
     default void print(){
-        System.out.println("Печатаем на принтере");
+        System.out.println("Друкуємо на принтері");
     }
 }
 // работа с консолью
 interface Console{
     default void print(){
-        System.out.println("Выводим дані на консоль");
+        System.out.println("Вивідим дані на консоль");
     }
 }
 class EBook implements Printable, Console{ }
@@ -110,14 +110,14 @@ class EBook implements Printable, Console{ }
   class EBook inherits unrelated defaults for print() from types Printable and Console
 1 error
 </code></pre>
-<p>Подивимося, які варіанти для вирішення цієї двоїстості</p>
+<p>Підивимося, які варіанти для вирішення цієї двоїстості</p>
 <h4>Явне визначення методу у класі</h4>
 <p>І тут ми можемоо надати реалізацію методу print у класі EBook:</p>
 <pre class="line-numbers"><code class="language-java">
 class EBook implements Printable, Console{ 
     
     public void print(){
-        System.out.println("Печатаем книгу");
+        System.out.println("Друкуємо книгу");
     }
 }
 </code></pre>
@@ -126,7 +126,7 @@ class EBook implements Printable, Console{
 Console book = new EBook();
 // або так 
 // Printable book = new EBook();
-book.print(); // Печатаем книгу
+book.print(); // Друкуємо книгу
 </code></pre>
 <h4>Вибір реалізації певного інтерфейсу</h4>
 <p>Як альтернатива ми можемоо вибрати реалізацію з певного інтерфейсу:</p>
@@ -142,13 +142,13 @@ public class Program{
 // печать на принтере
 interface Printable{
     default void print(){
-        System.out.println("Печатаем на принтере");
+        System.out.println("Друкуємо на принтері");
     }
 }
 // работа с консолью
 interface Console{
     default void print(){
-        System.out.println("Выводим дані на консоль");
+        System.out.println("Вивідим дані на консоль");
     }
 }
 class EBook implements Printable, Console{ 
@@ -158,11 +158,11 @@ class EBook implements Printable, Console{
     }
 }
 </code></pre>
-<p>С помощью выражения <code>Printable.super.print()</code> в методе print класса EBook мы выбираем реализацию из інтерфейса Printable. ПРичем це буде работать вне зависимости, якой інтерфейс представляє переменная, даже якщо це 
-переменная інтерфейса Console:</p>
+<p>За допомогою выражения <code>Printable.super.print()</code> в методі print класа EBook мы выбираем реализацию из інтерфейса Printable. ПРичем це буде працювати вне зависимости, якой інтерфейс представляє змінна, даже якщо це 
+змінна інтерфейса Console:</p>
 <pre class="line-numbers"><code class="language-java">
 Console book = new EBook();
-book.print();   // Печатаем на принтере
+book.print();   // Друкуємо на принтері
 </code></pre>
 
 <h2>Наслідування інтерфейсів</h2>
@@ -172,7 +172,7 @@ interface Printable{
     void print();  // печать содержимого
 }
 interface File extends Printable{
-    String getName();  // повертає имя файла
+    String getName();  // повертає ім'я файлу
 }
 </code></pre>
 <p>Інтерфейс File успадковує інтерфейс Printable. А це означає, що клас, який реалізує інтерфейс File, повинен буде реалізувати як методи інтерфейсу File, так і методи базового 
@@ -192,7 +192,7 @@ interface Printable{
     void print();  // печать содержимого
 }
 interface File extends Printable{
-    String getName();  // повертає имя файла
+    String getName();  // повертає ім'я файлу
 }
 class TextFile implements File{
 

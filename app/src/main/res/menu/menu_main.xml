@@ -27,6 +27,12 @@
         app:showAsAction="always" />
 
     <item
+        android:id="@+id/action_debug"
+        android:title="@string/menu_debug"
+        android:icon="@drawable/ic_debug"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/action_find"
         android:title="@string/menu_find_replace"
         android:icon="@drawable/ic_search"
@@ -101,6 +107,18 @@
     <item
         android:id="@+id/action_format"
         android:title="@string/menu_format_code"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_auto_import"
+        android:title="@string/menu_auto_import"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_view_formatted"
+        android:title="@string/menu_view_formatted"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_md_preview"
+        android:title="@string/menu_md_preview"
         app:showAsAction="never" />
 
     <item

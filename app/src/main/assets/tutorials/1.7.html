@@ -3,7 +3,7 @@
 <head>
 <title>Java | JShell</title>
 <meta charset="utf-8" />
-<meta name="description" content="Выполнение программ на языке программирования Java в среде JShell и облочка REPL, автодополнение">
+<meta name="description" content="Виконання програм на языке програмирования Java в среде JShell и облочка REPL, автодополнение">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -13,9 +13,9 @@
 <div class="item center menC">
      <h1>JShell</h1><div class="date">Останнє оновлення: 16.09.2025</div>
 
-<p>Консольная утилита <b>JShell</b> надає функциональность "read-evaluate-print loop" або REPL (цикл "чтение-вычисление-вывод"). В цей программе вы вводите выражение мови Java, и 
-JShell оценивает и выполняет це выражение, выводит результат виконання и ждет следующего ввода. JShell надає отличный способ экспериментировать — гораздо быстрїї, чем писать 
-полноценную программу.</p>
+<p>Консольная утилита <b>JShell</b> надає функциональность "read-evaluate-print loop" або REPL (цикл "читання-вычисление-вивід"). В цей програме вы вводите выражение мови Java, и 
+JShell оценивает и виконує це выражение, виводить результат виконання и ждет следующего ввода. JShell надає отличный способ экспериментировать — гораздо быстрїї, чем писать 
+полноценную програму.</p>
 <p>Для початку роботи з JShell введемо команди &quot;jshell&quot; у консолі/командному рядку:</p>
 <pre class="line-numbers"><code class="language-none">
 eugene@Eugene:~$ jshell
@@ -33,14 +33,14 @@ jshell&gt;
 </code></pre>
 <p>JShell повертає результат - у цьому випадку число 8 - суму чисел 2 і 6</p>
 <pre class="line-numbers"><code class="language-none">$1 ==&gt; 8</code></pre>
-<p>Значение <span class="b">$1</span> в выводе означает, что результат (число 8) доступен для дальнейших вычислений через плейсхолдер <code>$1</code>. Наприклад, далїї введем выражение <code>5 * $1</code>:</p>
+<p>Значення <span class="b">$1</span> в вивіде означает, что результат (число 8) доступен для дальнейших вычислений через плейсхолдер <code>$1</code>. Наприклад, далїї введем выражение <code>5 * $1</code>:</p>
 <pre class="line-numbers"><code class="language-none">
 jshell&gt; 5 * $1
 $2 ==&gt; 40
 
 jshell&gt; 
 </code></pre>
-<p>Фактически выражение <code>5 * $1</code> означает выполнение выражения <code>5 * 8</code>, поцему в итоге мы получим число 40б и це число сможемо використовувати через плейсхолдер <code>$2</code></p>
+<p>Фактически выражение <code>5 * $1</code> означает виконання выражения <code>5 * 8</code>, поцему в итоге мы получим число 40б и це число сможемо використовувати через плейсхолдер <code>$2</code></p>
 <p>Якщо якесь значення використовується безліч разів, то їй можна дати ім&#x27;я, що більш запам&#x27;ятовується. Наприклад:</p>
 <pre class="line-numbers"><code class="language-none">
 jshell&gt; var sum = 2 + 5
@@ -48,7 +48,7 @@ sum ==&gt; 7
 
 jshell&gt; 
 </code></pre>
-<p>Здесь за допомогою ключевого слова <code>var</code> определяем переменную "sum", которая буде хранить сумму чисел 2 и 5. И далїї мы можемо використовувати эту переменную:</p>
+<p>Здесь за допомогою ключевого слова <code>var</code> определяем змінну "sum", которая буде хранить сумму чисел 2 и 5. И далїї мы можемо використовувати эту змінну:</p>
 <pre class="line-numbers"><code class="language-none">
 jshell&gt; 4 * sum
 $4 ==&gt; 28
@@ -82,7 +82,7 @@ notifyAll()    print(         printf(        println(       toString()
 wait(          write(         writeBytes(    
 jshell&gt; System.out.
 </code></pre>
-<p>Мы видим, якие методы есть у об'єкта <code>System.out</code>. Допустим, нам потрібно вывести строку на консоль. Для цього нам нвжен один из методів - printf, print або println. Тому 
+<p>Мы видим, якие методи есть у об'єкта <code>System.out</code>. Допустим, нам потрібно вывести рядок на консоль. Для цього нам нвжен один из методів - printf, print або println. Тому 
 введем "<code>System.out.p</code> - с буквой "p" на конце и також нажмем на Tab</p>
 <pre class="line-numbers"><code class="language-none">
 jshell&gt; System.out.p

@@ -3,7 +3,7 @@
 <head>
 <title>Java | Основні операції з рядками</title>
 <meta charset="utf-8" />
-<meta name="description" content="Основні операції з рядками в языке программирования Java, разделение и соеднинение строк, замена в строке, метоы=ды split, replace, join">
+<meta name="description" content="Основні операції з рядками в языке програмирования Java, розділение и соеднинение рядків, замена в рядківе, метоы=ды split, replace, join">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -13,8 +13,8 @@
 <div class="item center menC">
      <h1>Основні операції з рядками</h1><div class="date">Останнє оновлення: 16.09.2025</div>
 
-	<h3>Соединение строк</h3>
-<p>Для соединения строк можна використовувати операцию сложения ("+"):</p>
+	<h3>З'єднання рядків</h3>
+<p>Для з'єднання рядків можна використовувати операцію сложения ("+"):</p>
 <pre class="line-numbers"><code class="language-java">
 String str1 = "Java";
 String str2 = "Hello";
@@ -22,30 +22,30 @@ String str3 = str1 + " " + str2;
         
 System.out.println(str3); // Hello Java
 </code></pre>
-<p>При цем якщо в операции сложения строк використовується нестроковый об'єкт, наприклад, число, то цей об'єкт преобразуется к строке:</p>
+<p>При цем якщо в операції сложения рядків використовується нерядківовый об'єкт, наприклад, число, то цей об'єкт преобразуется к рядківе:</p>
 <pre class="line-numbers"><code class="language-java">String str3 = "Год " + 2015;</code></pre>
-<p>Фактически же при сложении строк с нестроковыми об'єктами буде вызываться метод <span class="b">valueOf()</span> класса String. Данный метод 
-имїїт множество перегрузок и преобразует практически все типы данных к строке. Для преобразования об'єктов различных классов метод <code>valueOf</code> 
-вызывает метод <span class="b">toString()</span> цих классов.</p>
-<p>Другой способ об'єднания строк представляє метод <span class="b">concat()</span>:</p>
+<p>Фактически же при сложении рядків с нерядківовыми об'єктами буде вызываться метод <span class="b">valueOf()</span> класа String. Данный метод 
+имїїт множина перегрузок и преобразует практически все типи данных к рядківе. Для преобразования об'єктов различных класов метод <code>valueOf</code> 
+вызывает метод <span class="b">toString()</span> цих класов.</p>
+<p>Другой способ об'єднания рядків представляє метод <span class="b">concat()</span>:</p>
 <pre class="line-numbers"><code class="language-java">
 String str1 = "Java";
 String str2 = "Hello";
 str2 = str2.concat(str1); // HelloJava
 </code></pre>
-<p>Метод <code>concat()</code> приймає строку, с которой треба об'єднати вызывающую строку, и повертає соединенную строку.</p>
-<p>Ще один метод об'єднания - метод <span class="b">join()</span> дозволяє об'єднати строки с учетом разделителя. Наприклад, выше две строки 
-сливались в одно слово "HelloJava", но в идеале мы бы хотели, чтобы две подстроки буви разделены пробелом. И для цього используем метод <code>join()</code>:</p>
+<p>Метод <code>concat()</code> приймає рядок, с которой треба об'єднати вызывающую рядок, и повертає соединенную рядок.</p>
+<p>Ще один метод об'єднания - метод <span class="b">join()</span> дозволяє об'єднати рядки с учетом розділителя. Наприклад, выше две рядки 
+сливались в одно слово "HelloJava", но в идеале мы бы хотели, чтобы две підрядки буви розділены пробелом. И для цього використовуємо метод <code>join()</code>:</p>
 <pre class="line-numbers"><code class="language-java">
 String str1 = "Java";
 String str2 = "Hello";
 String str3 = String.join(" ", str2, str1); // Hello Java
 </code></pre>
-<p>Метод <code>join</code> є статическим. Первым параметром идет разделитель, которым будуть разделяться подстроки в общей строке, а все последующие параметры 
-передают через запятую произвольный набор об'єднуваних подстрок - в данном случае две строки, хотя их может быть и больше</p>
+<p>Метод <code>join</code> є статическим. Первым параметром идет розділитель, которым будуть розділяться підрядки в общей рядківе, а все післядующие параметри 
+передають через запятую произвольный набор об'єднуваних підрядків - у даному випадку две рядки, хотя их может быть и больше</p>
 
 <h3>Проверка на пустоту</h3>
-<p>Метод <span class="b">isEmpty()</span> дозволяє проверить, є ли строка пустой. Пустая строка не имїїт нияких символов, однак она определена и не равна <code>null</code>:</p>
+<p>Метод <span class="b">isEmpty()</span> дозволяє проверить, є ли рядок порожній. Пустая рядок не имїїт нияких символів, однак она визначенийа и не равна <code>null</code>:</p>
 <pre class="line-numbers"><code class="language-java">
 String str1 = "Hello";
 System.out.println(str1.isEmpty());  // false
@@ -54,8 +54,8 @@ System.out.println(str2.isEmpty());  // false
 String str3 = "";
 System.out.println(str3.isEmpty());  // true
 </code></pre>
-<p>Из кода выше мы можемо увидеть, что даже якщо строка містить пробельные символы, табуляцию, переводы строки, то она все равно считаєся НЕ пустой. 
-Метод <span class="b">isBlank()<span> також дозволяє проверить, є ли строка пустой, но теперь пустой считаєся строка, которая містить також одни пробелы, табуляцию, переводы строки:</p>
+<p>Из коду выше мы можемо увидеть, что даже якщо рядок містить пробельные символи, табуляцию, переводы рядки, то она все равно считаєся НЕ порожній. 
+Метод <span class="b">isBlank()<span> також дозволяє проверить, є ли рядок порожній, но теперь порожній считаєся рядок, которая містить також одни пробелы, табуляцию, переводы рядки:</p>
 <pre class="line-numbers"><code class="language-java">
 String str1 = "Hello";
 System.out.println(str1.isBlank());  // false
@@ -65,22 +65,22 @@ String str3 = "";
 System.out.println(str3.isBlank());  // true
 </code></pre>
 
-<h3>Извлечение символов и подстрок</h3>
-<p>Для извлечения символов по индексу в классе String определен метод <span class="b">char charAt(int index)</span>. Он приймає индекс, по которому треба отримати символов, 
+<h3>Извлечение символів и підрядків</h3>
+<p>Для извлечения символів по индексу в класе String визначений метод <span class="b">char charAt(int index)</span>. Он приймає индекс, по которому треба отримати символів, 
 и повертає извлеченный символ:</p>
 <pre class="line-numbers"><code class="language-java">
 String str = "Java";
 char c = str.charAt(2);
 System.out.println(c); // v
 </code></pre>
-<p>Как и в массивах индексация начинается с нуля.</p>
-<p>Если треба извлечь відразу группу символов або подстроку, то можна використовувати метод <span class="b">getChars(int srcBegin, int srcEnd, char[] dst, int dstBegin)</span>. 
-Он приймає следующие параметры:</p>
+<p>Как и в масивах индексация начинается с нуля.</p>
+<p>Если треба извлечь відразу группу символів або підрядок, то можна використовувати метод <span class="b">getChars(int srcBegin, int srcEnd, char[] dst, int dstBegin)</span>. 
+Он приймає следующие параметри:</p>
 <ul>
-<li><p><code>srcBegin</code>: индекс в строке, с которого начинается извлечение символов<p></li>
-<li><p><code>srcEnd</code>: индекс в строке, до которого идет извлечение символов<p></li>
-<li><p><code>dst</code>: массив символов, в який будуть извлекаться символы<p></li>
-<li><p><code>dstBegin</code>: индекс в массиве dst, с которого треба добавлять извлеченные из строки символы<p></li>
+<li><p><code>srcBegin</code>: индекс в рядківе, с которого начинается извлечение символів<p></li>
+<li><p><code>srcEnd</code>: индекс в рядківе, до которого идет извлечение символів<p></li>
+<li><p><code>dst</code>: масив символів, в який будуть извлекаться символи<p></li>
+<li><p><code>dstBegin</code>: индекс в масиве dst, с которого треба добавлять извлеченные из рядки символи<p></li>
 </ul>
 <pre class="line-numbers"><code class="language-java">
 String str = "Hello world!";
@@ -90,9 +90,9 @@ char[] dst=new char[end - start];
 str.getChars(start, end, dst, 0);
 System.out.println(dst); // world
 </code></pre>
-<h3>Сравнение строк</h3>
-<p>Для сравнения строк використовуються методы <span class="b">equals()</span> (с учетом регистра) и <span class="b">equalsIgnoreCase()</span> (без учета регистра). 
-Оба метода в качестве параметра принимают строку, с которой треба сравнить:</p>
+<h3>Сравнение рядків</h3>
+<p>Для сравнения рядків використовуються методи <span class="b">equals()</span> (с учетом регистра) и <span class="b">equalsIgnoreCase()</span> (без учета регистра). 
+Оба методу в качестве параметра приймають рядок, с которой треба сравнить:</p>
 <pre class="line-numbers"><code class="language-java">
 String str1 = "Hello";
 String str2 = "hello";
@@ -100,35 +100,35 @@ String str2 = "hello";
 System.out.println(str1.equals(str2)); // false
 System.out.println(str1.equalsIgnoreCase(str2)); // true
 </code></pre>
-<p>В отличие от сравнения числовых и других данных примитивных типов для строк не застосовується знак равенства ==. Вместо него треба використовувати метод 
+<p>В отличие от сравнения числовых и других данных примитивных типів для рядків не застосовується знак равенства ==. Вместо него треба використовувати метод 
 <code>equals()</code>.</p>
-<p>Ще один специальный метод <span class="b">regionMatches()</span> сравнивает отдельные подстроки в рамках двух строк. Он имїїт следующие формы:</p>
+<p>Ще один специальный метод <span class="b">regionMatches()</span> сравнивает отдельные підрядки в рамках двух рядків. Он имїїт следующие формы:</p>
 <pre class="line-numbers"><code class="language-java">
 boolean regionMatches(int toffset, String other, int oofset, int len)
 boolean regionMatches(boolean ignoreCase, int toffset, String other, int oofset, int len)
 </code></pre>
-<p>Метод приймає следующие параметры:</p>
+<p>Метод приймає следующие параметри:</p>
 <ul>
-<li><p><code>ignoreCase</code>: треба ли игнорировать регистр символов при сравнении. Если значение <code>true</code>, регистр игнорируется</p></li>
-<li><p><code>toffset</code>: начальный индекс в вызывающей строке, с которого начнется сравнение</p></li>
-<li><p><code>other</code>: строка, с которой сравнивается вызывающая</p></li>
-<li><p><code>oofset</code>: начальный индекс в сравниваемой строке, с которого начнется сравнение</p></li>
-<li><p><code>len</code>: количество сравниваемых символов в обеих строках</p></li>
+<li><p><code>ignoreCase</code>: треба ли игнорировать регистр символів при сравнении. Если значення <code>true</code>, регистр игнорируется</p></li>
+<li><p><code>toffset</code>: начальный индекс в вызывающей рядківе, с которого начнется сравнение</p></li>
+<li><p><code>other</code>: рядок, с которой сравнивается вызывающая</p></li>
+<li><p><code>oofset</code>: начальный индекс в сравниваемой рядківе, с которого начнется сравнение</p></li>
+<li><p><code>len</code>: кількість сравниваемых символів в обеих рядокх</p></li>
 </ul>
-<p>Используем метод:</p>
+<p>Використовуємо метод:</p>
 <pre class="line-numbers"><code class="language-java">
 String str1 = "Hello world";
 String str2 = "I work";
 boolean result = str1.regionMatches(6, str2, 2, 3);
 System.out.println(result); // true
 </code></pre>
-<p>В данном случае метод сравнивает 3 символа с 6-го индекса первой строки ("wor") и 3 символа со 2-го индекса второй строки ("wor"). Так як 
-эти подстроки одинаковы, то повертаєся <code>true</code>.</p>
+<p>У даному випадку метод сравнивает 3 символа с 6-го индекса первой рядки ("wor") и 3 символа со 2-го индекса второй рядки ("wor"). Так як 
+эти підрядки одинаковы, то повертаєся <code>true</code>.</p>
 <p>И ще одна пара методів <span class="b">int compareTo(String str)</span> и <span class="b">int compareToIgnoreCase(String str)</span> також 
-дозволяють сравнить две строки, но при цем они також дозволяють узнать больше ли одна строка, чем другая або нет. Если возвращаемое значение 
-больше 0, то первая строка больше второй, якщо меньше нуля, то, наоборот, вторая больше первой. Если строки равны, то повертаєся 0.</p>
-<p>Для определения больше або меньше одна строка, чем другая, використовується лексикографический порядок. То есть, наприклад, строка "A" меньше, чем строка 
-"B", оскільки символ 'A' в алфавите варто перед символом 'B'. Если первые символы строк равны, то в расчет берутся следующие символы. Например:</p>
+дозволяють сравнить две рядки, но при цем они також дозволяють узнать больше ли одна рядок, чем другая або нет. Если повертаємоое значення 
+больше 0, то первая рядок больше второй, якщо меньше нуля, то, наоборот, вторая больше первой. Если рядки равны, то повертаєся 0.</p>
+<p>Для визначенийия больше або меньше одна рядок, чем другая, використовується лексикографический порядок. То есть, наприклад, рядок "A" меньше, чем рядок 
+"B", оскільки символ 'A' в алфавите варто перед символом 'B'. Если первые символи рядків равны, то в расчет берутся следующие символи. Наприклад:</p>
 <pre class="line-numbers"><code class="language-java">
 String str1 = "hello";
 String str2 = "world";
@@ -138,24 +138,24 @@ System.out.println(str1.compareTo(str2)); // -15 - str1 меньше чем strt
 System.out.println(str1.compareTo(str3)); // 1 - str1 больше чем str3
 </code></pre>
 
-<h3>Поиск в строке</h3>
-<p>Метод <span class="b">indexOf()</span> находит индекс первого вхождения подстроки в строку, а метод <span class="b">lastIndexOf()</span> - индекс последнего вхождения. 
-Если подстрока не буде найдена, то оба метода повертають -1:</p>
+<h3>Поиск в рядківе</h3>
+<p>Метод <span class="b">indexOf()</span> находит индекс первого вхождения підрядки в рядок, а метод <span class="b">lastIndexOf()</span> - индекс післяднего вхождения. 
+Если підрядок не буде найдена, то оба методу повертають -1:</p>
 <pre class="line-numbers"><code class="language-java">
 String str = "Hello world";
 int index1 = str.indexOf('l'); // 2
 int index2 = str.indexOf("wo"); //6
 int index3 = str.lastIndexOf('l'); //9
 </code></pre>
-<p>Метод <span class="b">startsWith()</span> дозволяють определить начинается ли строка с определенной подстроки, а метод 
-<span class="b">endsWith()</span> дозволяє определить заканчивается строка на определенную подстроку:</p>
+<p>Метод <span class="b">startsWith()</span> дозволяють визначити начинается ли рядок с визначенийной підрядки, а метод 
+<span class="b">endsWith()</span> дозволяє визначити заканчивается рядок на визначенийную підрядок:</p>
 <pre class="line-numbers"><code class="language-java">
 String str = "myfile.exe";
 boolean start = str.startsWith("my"); //true
 boolean end = str.endsWith("exe"); //true
 </code></pre>
-<h3>Замена в строке</h3>
-<p>Метод <span class="b">replace()</span> дозволяє заменить в строке одну последовательность символов на другую:</p>
+<h3>Замена в рядківе</h3>
+<p>Метод <span class="b">replace()</span> дозволяє заменить в рядківе одну післядовательность символів на другую:</p>
 <pre class="line-numbers"><code class="language-java">
 String str = "Hello world";
 String replStr1 = str.replace('l', 'd'); // Heddo wordd
@@ -166,37 +166,37 @@ String replStr2 = str.replace("Hello", "Bye"); // Bye world
 <pre class="line-numbers"><code class="language-java">
 String str = "   Hello   ";
 System.out.println(str.length());  // 22
-str = str.strip(); 	// удаляем пробелы
+str = str.strip(); 	// видаляємо пробелы
 System.out.println(str.length());  // 17
 </code></pre>
-<p>Варто відзначити, что ранїї - в болїї ранних версиях Java для цей цели служил метод <code>trim()</code>, однак он не очень корректно работает с некоторыми символами Unicode, поцему вместо него рекомендуется <code>strip()</code></p>
+<p>Варто відзначити, что ранїї - в болїї ранних версиях Java для цей цели служил метод <code>trim()</code>, однак он не дуже корректно работает с некоторыми символами Unicode, поцему вместо него рекомендуется <code>strip()</code></p>
 
 <p>Дополнительно метод <span class="b">stripLeading()</span> дозволяє удалить лише начальные, а метод <span class="b">stripTrailing()</span> - лише конечные пробелы:</p>
 <pre class="line-numbers"><code class="language-java">
 String str = "   Hello   ";
 System.out.println(str.length());  // 22
-str = str.stripLeading();   // удаляем начальные пробелы
+str = str.stripLeading();   // видаляємо начальные пробелы
 System.out.println(str.length());  // 19
-str = str.stripTrailing();   // удаляем конечные пробелы
+str = str.stripTrailing();   // видаляємо конечные пробелы
 System.out.println(str.length());  // 17
 </code></pre>
 
-<h3>Получение подстроки</h3>
-<p>Метод <span class="b">substring()</span> повертає подстроку, начиная с определенного индекса до конца або до определенного индекса:</p>
+<h3>Отримання підрядки</h3>
+<p>Метод <span class="b">substring()</span> повертає підрядок, начиная с визначенийного индекса до конца або до визначенийного индекса:</p>
 <pre class="line-numbers"><code class="language-java">
 String str = "Hello world";
 String substr1 = str.substring(6); // world
 String substr2 = str.substring(3,5); //lo
 </code></pre>
-<h3>Изменение регистра</h3>
-<p>Метод <span class="b">toLowerCase()</span> переводит все символы строки в нижний регистр, а метод <span class="b">toUpperCase()</span> -  в верхний:</p>
+<h3>Зміна регистра</h3>
+<p>Метод <span class="b">toLowerCase()</span> переводит все символи рядки в нижний регистр, а метод <span class="b">toUpperCase()</span> -  в верхний:</p>
 <pre class="line-numbers"><code class="language-java">
 String str = "Hello World"; 
 System.out.println(str.toLowerCase()); // hello world
 System.out.println(str.toUpperCase()); // HELLO WORLD
 </code></pre>
 <h3>Split</h3>
-<p>Метод <span class="b">split()</span> дозволяє разбить строку на подстроки по определенному разделителю. Разделитель - якой-нибудь символ або набор символов 
+<p>Метод <span class="b">split()</span> дозволяє разбить рядок на підрядки по визначенийному розділителю. Разделитель - якой-нибудь символ або набор символів 
 передаєся в качестве параметра в метод. Наприклад, разобьем текст на отдельные слова:</p>
 <pre class="line-numbers"><code class="language-java">
 String text = "FIFA will never regret it";
@@ -205,7 +205,7 @@ for(String word : words){
 	System.out.println(word);
 }
 </code></pre>
-<p>В данном случае строка буде разделяться по пробелу. Консольный вывод:</p>
+<p>У даному випадку рядок буде розділяться по пробелу. Консольный вивід:</p>
 <pre class="line-numbers"><code class="language-none">
 FIFA
 will

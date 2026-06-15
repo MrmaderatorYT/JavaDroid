@@ -48,19 +48,58 @@ public class SettingsActivity extends AppCompatActivity {
     private View bgSwatch, fgSwatch, accentSwatch, toolbarSwatch,
             consoleBgSwatch, keywordSwatch, stringSwatch, commentSwatch;
 
+    private String initialThemeId;
+    private int initialCustomBg, initialCustomToolbar, initialCustomFg, initialCustomAccent,
+            initialCustomConsoleBg, initialCustomKeyword, initialCustomString, initialCustomComment;
+    private int initialFontSize, initialFontFamily, initialTabSize;
+    private float initialLineSpacing;
+    private boolean initialLineNumbers, initialWordWrap;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         prefs = new AppPreferences(this);
         theme = AppTheme.byId(prefs.getThemeId(), prefs);
         setTheme(theme.dark ? R.style.Theme_JavaDroid : R.style.Theme_JavaDroid_Light);
 
+        initialThemeId = prefs.getThemeId();
+        initialCustomBg = prefs.getCustomBg();
+        initialCustomToolbar = prefs.getCustomToolbar();
+        initialCustomFg = prefs.getCustomFg();
+        initialCustomAccent = prefs.getCustomAccent();
+        initialCustomConsoleBg = prefs.getCustomConsoleBg();
+        initialCustomKeyword = prefs.getCustomKeyword();
+        initialCustomString = prefs.getCustomString();
+        initialCustomComment = prefs.getCustomComment();
+        initialFontSize = prefs.getFontSize();
+        initialFontFamily = prefs.getFontFamily();
+        initialTabSize = prefs.getTabSize();
+        initialLineSpacing = prefs.getLineSpacing();
+        initialLineNumbers = prefs.isLineNumbers();
+        initialWordWrap = prefs.isWordWrap();
+
         super.onCreate(savedInstanceState);
+        getWindow().setWindowAnimations(0);
         setContentView(buildRoot());
     }
 
     @Override
     public void onBackPressed() {
-        setResult(Activity.RESULT_OK, getIntent().putExtra(EXTRA_CHANGED, true));
+        boolean changed = !initialThemeId.equals(prefs.getThemeId())
+                || initialCustomBg != prefs.getCustomBg()
+                || initialCustomToolbar != prefs.getCustomToolbar()
+                || initialCustomFg != prefs.getCustomFg()
+                || initialCustomAccent != prefs.getCustomAccent()
+                || initialCustomConsoleBg != prefs.getCustomConsoleBg()
+                || initialCustomKeyword != prefs.getCustomKeyword()
+                || initialCustomString != prefs.getCustomString()
+                || initialCustomComment != prefs.getCustomComment()
+                || initialFontSize != prefs.getFontSize()
+                || initialFontFamily != prefs.getFontFamily()
+                || initialTabSize != prefs.getTabSize()
+                || initialLineSpacing != prefs.getLineSpacing()
+                || initialLineNumbers != prefs.isLineNumbers()
+                || initialWordWrap != prefs.isWordWrap();
+        setResult(Activity.RESULT_OK, getIntent().putExtra(EXTRA_CHANGED, changed));
         super.onBackPressed();
     }
 
@@ -78,7 +117,7 @@ public class SettingsActivity extends AppCompatActivity {
         toolbar.setTitle(getString(R.string.menu_settings));
         toolbar.setTitleTextColor(theme.text);
         toolbar.setNavigationIcon(R.drawable.ic_back);
-        toolbar.setNavigationOnClickListener(v -> finish());
+        toolbar.setNavigationOnClickListener(v -> onBackPressed());
         toolbar.setLayoutParams(new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, dp(48)));
         root.addView(toolbar);
@@ -166,7 +205,7 @@ public class SettingsActivity extends AppCompatActivity {
         card.setOnClickListener(v -> {
             prefs.setThemeId(preset.id);
             theme = AppTheme.byId(preset.id, prefs);
-            recreate();
+            smoothRecreate();
         });
         return card;
     }
@@ -208,7 +247,7 @@ public class SettingsActivity extends AppCompatActivity {
         card.setOnClickListener(v -> {
             prefs.setThemeId(AppTheme.ID_CUSTOM);
             theme = AppTheme.byId(AppTheme.ID_CUSTOM, prefs);
-            recreate();
+            smoothRecreate();
         });
         return card;
     }
@@ -256,7 +295,17 @@ public class SettingsActivity extends AppCompatActivity {
         if (AppTheme.ID_CUSTOM.equals(prefs.getThemeId())) {
             theme = AppTheme.byId(AppTheme.ID_CUSTOM, prefs);
         }
+        smoothRecreate();
+    }
+
+    /**
+     * Перезапускає Activity без миготіння (flash/blink).
+     * Вимикає анімацію переходу і одразу відновлює з новою темою.
+     */
+    private void smoothRecreate() {
+        overridePendingTransition(0, 0);
         recreate();
+        overridePendingTransition(0, 0);
     }
 
     private View colorPickerRow(String label, int currentColor, ColorChosen onChosen) {
@@ -530,13 +579,9 @@ public class SettingsActivity extends AppCompatActivity {
         LinearLayout section = newSection(getString(R.string.settings_section_compiler));
 
         section.addView(label(getString(R.string.settings_java_target)));
-        final String[] codes = { AppPreferences.JAVA_8, AppPreferences.JAVA_11,
-                AppPreferences.JAVA_17, AppPreferences.JAVA_21 };
+        final String[] codes = { AppPreferences.JAVA_8 };
         String[] labels = {
-                "Java 8",
-                "Java 11",
-                "Java 17",
-                "Java 21"
+                "Java 8"
         };
         Spinner sp = newSpinner(labels);
         int sel = 0;
@@ -662,7 +707,7 @@ public class SettingsActivity extends AppCompatActivity {
         prefs.raw().edit().clear().apply();
         if (root != null) prefs.setProjectRoot(root);
         Toast.makeText(this, R.string.settings_reset_done, Toast.LENGTH_SHORT).show();
-        recreate();
+        smoothRecreate();
     }
 
     private void deleteRecursive(File fileOrDirectory) {

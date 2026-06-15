@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html  lang="uk">
 <head>
-<title>Java | Завершення та переривання потоку</title>
+<title>Java | Завершення та переривання потіку</title>
 <meta charset="utf-8" />
-<meta name="description" content="Завершение и прерывание потоков в языке программирования Java, отслеживание состояния булевой змінної, методы interrupt и isInterrupted, исключение InterruptedException">
+<meta name="description" content="Завершення и прерывание потіков в языке програмирования Java, отслеживание состояния булевой змінної, методи interrupt и isInterrupted, виняток InterruptedException">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -11,14 +11,14 @@
 <body>
 <div id="container">
 <div class="item center menC">
-     <h1>Завершення та переривання потоку</h1><div class="date">Останнє оновлення: 16.10.2025</div>
+     <h1>Завершення та переривання потіку</h1><div class="date">Останнє оновлення: 16.10.2025</div>
 
-	<p>Примеры потоков в прошлых статьях представляли поток як последовательный набор операций. То есть поток по сути представлял последовательность инструкций, которые последовательно выполнялись одна за другой. 
-А после виконання последней операции завершался и поток. Однак нередко имїїт место и другая организация потока в виде бесконечного цикла. Наприклад, поток сервера в бесконечном 
-цикле прослушивает определенный порт на предмет получения данных. И в цем случае мы також можемо предусмотреть механизм завершения потока. </p>
-<h3>Завершение потока</h3>
-<p>Распространенный способ завершения потока представляє опрос логической змінної. И якщо она равна, наприклад, false, то поток завершує бесконечный цикл и заканчивает свое выполнение.</p>
-<p>Определим следующий класс потока:</p>
+	<p>Примеры потіков в прошлых статьях представляли потік як післядовательный набор операцій. То есть потік по сути представлял післядовательность инструкций, которые післядовательно выполнялись одна за другой. 
+А після виконання післядней операції завершался и потік. Однак нередко имїїт место и другая организация потіка в виде бесконечного цикла. Наприклад, потік сервера в бесконечном 
+цикле прослушивает визначенийный порт на предмет получения данных. И в цем случае мы також можемо предусмотреть механизм завершення потіка. </p>
+<h3>Завершення потіка</h3>
+<p>Распространенный способ завершення потіка представляє опрос логической змінної. И якщо она равна, наприклад, false, то потік завершує бесконечный цикл и заканчивает свое виконання.</p>
+<p>Визначимо следующий клас потіка:</p>
 <pre class="line-numbers"><code class="language-java">
 class MyTask implements Runnable {
       
@@ -52,9 +52,9 @@ class MyTask implements Runnable {
     }
 }
 </code></pre>
-<p>Переменная <code>isActive</code> указывает на активность потока: поки эта переменная равна <code>true</code>, поток буде продолжать работать. Но за допомогою метода <code>disable()</code> 
-мы можемо сбросить состояние цей змінної в <code>false</code> и таким чином завершить поток.</p>
-<p>Теперь используем цей класс:</p>
+<p>Змінна <code>isActive</code> вказує на активность потіка: поки эта змінна равна <code>true</code>, потік буде продолжать працювати. Но за допомогою методу <code>disable()</code> 
+мы можемо сбросить состояние цей змінної в <code>false</code> и таким чином завершить потік.</p>
+<p>Теперь використовуємо цей клас:</p>
 <pre class="line-numbers"><code class="language-java">
 class Program{
 
@@ -62,14 +62,14 @@ class Program{
          
         System.out.println("Main thread started...");
 
-        // создаем и запускаем поток
+        // створюємо и запускуємо потік
         var myTask = new MyTask();
         new Thread(myTask,"MyTask").start();
             
         try{
             Thread.sleep(1100);
                 
-            myTask.disable();  // завершаем поток
+            myTask.disable();  // завершаем потік
             
             Thread.sleep(1000);
         }
@@ -108,16 +108,16 @@ class MyTask implements Runnable {
     }
 }
 </code></pre>
-<p>Итак, вначале запускаєся дочерний поток:</p>
+<p>Итак, вначале запускуєся дочерний потік:</p>
 <pre class="line-numbers"><code class="language-java">
 var myTask = new MyTask();
 new Thread(myTask,"MyTask").start();
 </code></pre>
-<p>Затем на 1100 миллисекунд останавливаем главный поток "Main thread" и 
-потом вызываем метод <code>disable()</code>, який переключает в потоке флаг <code>isActive</code>, и дочерний поток завершуєся.</p>
-<pre class="line-numbers"><code class="language-java">myTask.disable();  // завершаем поток</code></pre>
+<p>Затем на 1100 миллисекунд останавливаем главный потік "Main thread" и 
+потом вызываем метод <code>disable()</code>, який переключает у потоці флаг <code>isActive</code>, и дочерний потік завершуєся.</p>
+<pre class="line-numbers"><code class="language-java">myTask.disable();  // завершаем потік</code></pre>
 
-<p>Консольный вывод программы:</p>
+<p>Консольный вивід програми:</p>
 <pre class="line-numbers"><code class="language-none">
 Main thread started...
 MyTask started... 
@@ -128,23 +128,23 @@ MyTask finished...
 Main thread finished...
 </code></pre>
 
-<h3>Прерывание потока и метод interrupt</h3>
-<p>В мові Java нельзя принудительно завершить поток. Однак за допомогою метода <b>interrupt()</b> можна направить запроса на прерывание потока. 
-При вызове метода <code>interrupt()</code> для потока устанавливается статус <b>INTERRUPTED</b>.</p>
-<p>При выполнении работы за допомогою метода <b>isInterrupted()</b> поток может периодически проверять, був ли он прерван, и, якщо прерван, завершать выполняемую работу:</p>
+<h3>Прерывание потіка и метод interrupt</h3>
+<p>В мові Java нельзя принудительно завершить потік. Однак за допомогою методу <b>interrupt()</b> можна направить запроса на прерывание потіка. 
+При вызове методу <code>interrupt()</code> для потіка встановлюєся статус <b>INTERRUPTED</b>.</p>
+<p>При выполнении работы за допомогою методу <b>isInterrupted()</b> потік может периодически проверять, був ли он прерван, и, якщо прерван, завершать выполняемую работу:</p>
 <pre class="line-numbers"><code class="language-java">
-// поки поток не прерван
+// поки потік не прерван
 while (!Thread.currentThread().isInterrupted()){
 
     // делаем деяку работу
 }
 </code></pre>
-<p>Однак, якщо поток заблокирован, он не может проверить статус за допомогою вызова <code>isInterrupted()</code>. Такая ситуация, наприклад, возникает, когда метод <code>interrupt()</code> вызывается для потока, який блокуєся вызовом <code>sleep()</code> (а також ряд других, наприклад, методом <code>wait()</code>). 
-В цем случае блокирующий вызов (наприклад, <code>sleep()</code>) завершуєся исключением <code>InterruptedException</code>. 
-Существуют блокирующие вызовы ввода-вывода, которые не можуть быть прерваны. Тогда при завершении операции ввода-вывода також генеруєся исключение <code>InterruptedException</code>. И в цем случае мы можемо 
-в коде потока обробляти исключение:</p>
+<p>Однак, якщо потік заблокирован, он не может проверить статус за допомогою вызова <code>isInterrupted()</code>. Такая ситуация, наприклад, возникает, когда метод <code>interrupt()</code> вызывается для потіка, який блокуєся вызовом <code>sleep()</code> (а також ряд других, наприклад, методом <code>wait()</code>). 
+В цем случае блокирующий вызов (наприклад, <code>sleep()</code>) завершуєся винятокм <code>InterruptedException</code>. 
+Існують блокирующие вызовы ввода-вивіда, которые не можуть быть прерваны. Тогда при завершении операції ввода-вивіда також генеруєся виняток <code>InterruptedException</code>. И в цем случае мы можемо 
+в коді потіка обробляти виняток:</p>
 <pre class="line-numbers"><code class="language-java">
-Runnable r = () -&gt; {   // действия потока
+Runnable r = () -&gt; {   // действия потіка
     try  {
 
         // якщо действия в цикле, в качестве условия проверяем isInterrupted()
@@ -155,19 +155,19 @@ Runnable r = () -&gt; {   // действия потока
     }
     catch (InterruptedException ex){
 
-        // обрабатываем исключение прерывания потока
+        // обробляємо виняток прерывания потіка
     }
 
     // якие-то завершающие действия при необхідности
 };
 </code></pre>
-<p>Хотя, якщо поток прерван, он не обязан завершаться - он может продолжать работать. Но гораздо чаще поток просто интерпретирует прерывание як запрос на завершение. Наприклад, проэмулируем данную ситуацию:</p>
+<p>Хотя, якщо потік прерван, он не обязан завершаться - он может продолжать працювати. Но гораздо чаще потік просто интерпретирует прерывание як запрос на завершення. Наприклад, проэмулируем данную ситуацию:</p>
 <pre class="line-numbers"><code class="language-java">
 class MyTask implements Runnable {
 
     public void run(){
          
-        String name = Thread.currentThread().getName();  // получаем имя текущего потока
+        String name = Thread.currentThread().getName();  // отримуємо ім'я текущего потіка
 
         try{
             
@@ -177,7 +177,7 @@ class MyTask implements Runnable {
 
                 System.out.println(name + " works");
 
-                Thread.sleep(1000); // приостанавливаем поток на 1000 миллисекунд
+                Thread.sleep(1000); // приостанавливаем потік на 1000 миллисекунд
             }
         }
         catch(InterruptedException ex){
@@ -194,27 +194,27 @@ public class Program {
           
         System.out.println("Main thread started...");
 
-        // определяем поток
+        // определяем потік
         var t = new Thread(new MyTask(), "MyTask");
-        // запускаем поток
+        // запускуємо потік
         t.start();
         
         try{
-            // делаем небольшую задержку, чтобы дочерний поток MyTask успел немного отработать
+            // делаем небольшую задержку, чтобы дочерний потік MyTask успел немного отпрацювати
             Thread.sleep(2000);
         }
         catch(InterruptedException ex){
             System.out.println(ex.getMessage());
         }
 
-        // прерываем поток
+        // прерываем потік
         t.interrupt();
         
         System.out.println("Main thread finished...");
     }
 }
 </code></pre>
-<p>В методе <code>run()</code> класса MyTask в цикле <code>while</code> проверяем результат метода <code>isInterupted()</code>:</p>
+<p>В методі <code>run()</code> класа MyTask в цикле <code>while</code> проверяем результат методу <code>isInterupted()</code>:</p>
 <pre class="line-numbers"><code class="language-java">
 try{
             
@@ -223,7 +223,7 @@ try{
     while(!Thread.currentThread().isInterrupted()){
 
         System.out.println(name + " works");
-        Thread.sleep(1000); // приостанавливаем поток на 1000 миллисекунд
+        Thread.sleep(1000); // приостанавливаем потік на 1000 миллисекунд
     }
 }
 catch(InterruptedException ex){
@@ -231,9 +231,9 @@ catch(InterruptedException ex){
     System.out.println(ex.getMessage());
 }
 </code></pre>
-<p>В цикле делаем задержку на 1 секунду за допомогою <code>Thread.sleep()</code>. Однак якщо во час цей задержки во вне буде вызван метод <code>interrupt()</code> для цього потока, то мы столкнемся с 
-исключением <code>InterruptedException</code>. И за допомогою конструкции <code>try..catch</code> перехватываем и обрабатываем це исключение.</p>
-<p>В методе main запускаем поток MyTask, приостанавливаем главный поток, чтобы MyTask успел немного отработать, и далїї вызыаем у MyTask метод <code>interrupt()</code>:</p>
+<p>В цикле делаем задержку на 1 секунду за допомогою <code>Thread.sleep()</code>. Однак якщо во час цей задержки во вне буде вызван метод <code>interrupt()</code> для цього потіка, то мы столкнемся с 
+винятокм <code>InterruptedException</code>. И за допомогою конструкции <code>try..catch</code> перехватываем и обробляємо це виняток.</p>
+<p>В методі main запускуємо потік MyTask, приостанавливаем главный потік, чтобы MyTask успел немного отпрацювати, и далїї вызыаем у MyTask метод <code>interrupt()</code>:</p>
 <pre class="line-numbers"><code class="language-java">
 var t = new Thread(new MyTask(), "MyTask");
 t.start();
@@ -245,10 +245,10 @@ catch(InterruptedException ex){
     System.out.println(ex.getMessage());
 }
 
-// прерываем поток
+// прерываем потік
 t.interrupt();
 </code></pre>
-<p>В итоге при вызове метода <code>interrupt()</code> во час приостановки MyTask обработает исключение <code>InterruptedException</code> и завершит работу:</p>
+<p>В итоге при вызове методу <code>interrupt()</code> во час приостановки MyTask обработает виняток <code>InterruptedException</code> и завершит работу:</p>
 <pre class="line-numbers"><code class="language-none">
 Main thread started...
 MyTask started...

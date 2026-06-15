@@ -3,7 +3,7 @@
 <head>
 <title>Java | Клас ArrayList та інтерфейс List</title>
 <meta charset="utf-8" />
-<meta name="description" content="Интерфейс List и створення списков в языке программирования Java, класс ArrayList и его методы, добавление в список, изменение и удаление элементов списка">
+<meta name="description" content="Інтерфейс List и створення списків в языке програмирования Java, клас ArrayList и его методи, додавання в список, зміна и видалення елементов списку">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -27,7 +27,7 @@
 <li><p><span class="b">int indexOf(Object obj)</span>: повертає індекс першого входження об'єкта obj у список. Якщо об'єкт не знайдено, то повертається -1</p></li>
 <li><p><span class="b">int lastIndexOf(Object obj)</span>: повертає індекс останнього входження об'єкта obj у список. Якщо об'єкт не знайдено, то повертається -1</p></li>
 <li><p><span class="b">ListIterator&lt;E&gt; listIterator ()</span>: повертає об'єкт ListIterator для обходу елементів списку</p></li>
-<li><p><span class="b">static &lt;E&gt; List&lt;E&gt; of(элементы)</span>: створює з набору елементів об'єкт List</p></li>
+<li><p><span class="b">static &lt;E&gt; List&lt;E&gt; of(елементы)</span>: створює з набору елементів об'єкт List</p></li>
 <li><p><span class="b">E remove(int index)</span>: видаляє об'єкт зі списку за індексом index, повертаючи при цьому видалений об'єкт</p></li>
 <li><p><span class="b">E removeFirst()</span>: видаляє перший елемент зі списку</p></li>
 <li><p><span class="b">E removeLast()</span>: видаляє останній елемент зі списку</p></li>
@@ -36,8 +36,8 @@
 <li><p><span class="b">List&lt;E&gt; subList(int start, int end)</span>: отримує набір елементів, які знаходяться у списку між індексами start та end</p></li>
 <li><p><span class="b">static &lt;E&gt; List&lt;E&gt;of(E... elements)</span>: повертає незмінний список (тип <code>java.util.ImmutableCollections$ListN</code>), який містить елементи elements.</p></li>
 </ul>
-<p>За замовчуванням в Java є вбудована реалізація цього інтерфейсу - класс <span class="b">ArrayList</span>. Класс ArrayList представляє 
-обобщенную коллекцию, яка успадковує свою функціональність від класу AbstractList і застосовує інтерфейс List. 
+<p>За замовчуванням в Java є вбудована реалізація цього інтерфейсу - клас <span class="b">ArrayList</span>. Клас ArrayList представляє 
+обобщенную колекцію, яка успадковує свою функціональність від класу AbstractList і застосовує інтерфейс List. 
 Простіше кажучи, ArrayList представляє простий список, аналогічний масиву, за винятком того, що кількість елементів у ньому не фіксована.</p>
 <p>ArrayList має наступні конструктори:</p>
 <ul>
@@ -45,13 +45,13 @@
 <li><p><code>ArrayList(Collection &lt;? extends E&gt; col)</code>: створює список, до якого додаються всі елементи колекції col.</p></li>
 <li><p><code>ArrayList (int capacity)</code>: створює список, який має початкову ємність capacity</p></li>
 </ul>
-<p>Ємність в ArrayList представляє розмір масиву, який буде використовуватися для зберігання об'єктів. При добавлении элементов фактически происходит 
-перераспределение памяти - створення нового масиву та копіювання в нього елементів зі старого масиву. Изначальное задание емкости ArrayList дозволяє снизить подобные перераспределения 
+<p>Ємність в ArrayList представляє розмір масиву, який буде використовуватися для зберігання об'єктів. При добавлении елементов фактически происходит 
+перераспределение памяти - створення нового масиву та копіювання в нього елементів зі старого масиву. Изначальное задание емкости ArrayList дозволяє снизить підобные перераспределения 
 памяти, тим самим підвищуючи продуктивність.</p>
 
 <p>Розглянемо основні операції <code>ArrayList</code>. Створення списку:</p>
 <pre class="line-numbers"><code class="language-java">
-import java.util.ArrayList;  // импортируем класс
+import java.util.ArrayList;  // импортируем клас
 
 public class Program{
       
@@ -67,13 +67,13 @@ ArrayList&lt;String&gt; people = new ArrayList&lt;&gt;();
 // або так
 var people = new ArrayList&lt;String&gt;();
 </code></pre>
-<h3>Размер списка</h3>
+<h3>Размер списку</h3>
 <p>Для отримання розміру списку застосовується метод <b>size()</b>, який повертає значення типу <code>int</code>:</p>
 <pre class="line-numbers"><code class="language-java">
 var people = new ArrayList&lt;String&gt;();
 System.out.println(people.size()); // 0
 </code></pre>
-<h3>Добавление</h3>
+<h3>Додавання</h3>
 <p>Для додавання застосовується метод <code>add()</code>, якому передається додаваний елемент:</p>
 <pre class="line-numbers"><code class="language-java">
 var people = new ArrayList&lt;String&gt;();
@@ -91,27 +91,27 @@ var people = new ArrayList&lt;String&gt;();
 people.add("Tom");
 people.add("Bob");
 people.add("Sam");
-people.add(1, "Alice"); // добавляем элемент по индексу 1
+people.add(1, "Alice"); // додаємо елемент по индексу 1
 
 System.out.println(people.size()); // 4
 </code></pre>
-<p>В выражении <code>people.add(1, "Alice")</code> мы добавляем строку "Alice" в список по индексу 1.</p>
-<p>Варто відзначити, что при создании <code>ArrayList</code> выделяется начальная область памяти, яка за замовчуванням вміщує 10 елементів списку. Наприклад, в коде выше при создании списка для него 
+<p>В выражении <code>people.add(1, "Alice")</code> мы додаємо рядок "Alice" в список по индексу 1.</p>
+<p>Варто відзначити, что при створенні <code>ArrayList</code> выделяется начальная область памяти, яка за замовчуванням вміщує 10 елементів списку. Наприклад, в коді выше при створенні списку для него 
 выделяется область памяти, достатня для вміщення 10 рядків String. Якщо ми будемо додавати більшу кількість рядків, то будутьь відбуватися повторні виділення пам'яті для вміщення нових об'єктів. 
 Оскільки виділення пам'яті на низькому рівні - досить затратний процес, то, якщо ми заздалегідь знаємо скільки у нас буде об'єктів у списку або знаємо принаймні максимальну кількість об'єктів, 
-то рекомендуется це количество передавать в конструктор при создании об'єкта <code>ArrayList</code>. Наприклад, створимо список, у якого початкова ємність дорівнює 16 об'єктам:</p>
+то рекомендуется це кількість передавать в конструктор при створенні об'єкта <code>ArrayList</code>. Наприклад, створимо список, у якого початкова ємність дорівнює 16 об'єктам:</p>
 <pre class="line-numbers"><code class="language-java">
 var people = new ArrayList&lt;String&gt;(16);
 System.out.println(people.size()); // 0
 </code></pre>
 <p>Причому важливо, що ємність списку та його розмір - це не одне й те саме. Так, у даному випадку при створенні списку виділяється область для зберігання 16 об'єктів, але поки вона порожня і містить 0 об'єктів. Тем не менїї, когда мы 
-будем добавлять 11-й элемент, не відбуватиметься додаткового виділення пам'яті, тому що необхідна пам'ять вже виділена. Що в результаті збільшить продуктивність.</p>
-<p>Або це можна сделать за допомогою метода <code>ensureCapacity</code>:</p>
+будем добавлять 11-й елемент, не відбуватиметься додаткового виділення пам'яті, тому що необхідна пам'ять вже виділена. Що в результаті збільшить продуктивність.</p>
+<p>Або це можна сделать за допомогою методу <code>ensureCapacity</code>:</p>
 <pre class="line-numbers"><code class="language-java">people.ensureCapacity(25);</code></pre>
 
 <h3>Додавання елементів з колекції</h3>
 <p>Додавати до списку по одному елементу може бути не двже зручно, особливо коли треба додати безліч елементів. Але Java надає ряд способів для додавання набору елементів. Прежде всего 
-інтерфейс <code>List</code> определяет статический метод <code>of()</code>, якому можна передати довільну кількість об'єктів:</p>
+інтерфейс <code>List</code> визначає статический метод <code>of()</code>, якому можна передати довільну кількість об'єктів:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.List;
 
@@ -119,7 +119,7 @@ public class Program{
        
     public static void main(String[] args) {
            
-        // создаем список из 3 строк
+        // створюємо список из 3 рядків
         List&lt;String&gt; people = List.&lt;String&gt;of("Tom", "Bob", "Sam");
 
         System.out.println(people.size()); // 3
@@ -127,7 +127,7 @@ public class Program{
 }
 </code></pre>
 <p>У даному випадку змінна people представляє інтерфейс <code>List&lt;String&gt;</code>. У реальності ця змінна представляє тип 
-<code>java.util.ImmutableCollections$ListN</code> - внутрішній клас Java, який представляє незмінний список фіксованої довжини. Подібний список може бути корисним у деяких ситуаціях, но в данном случае 
+<code>java.util.ImmutableCollections$ListN</code> - внутрішній клас Java, який представляє незмінний список фіксованої довжини. Підібний список може бути корисним у деяких ситуаціях, но у даному випадку 
 мы говорим об <code>ArrayList</code> - змінному списку довільного розміру. І для його створення ми можемоо використовувати конструктор:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.List;
@@ -144,7 +144,7 @@ public class Program{
 </code></pre>
 <p>Из других доступных способов можна відзначити статический метод <code>Collections.addAll()</code>:</p>
 <pre class="line-numbers"><code class="language-java">static &lt;T&gt; boolean addAll(Collection&lt;? super T&gt; c, T... elements)</code></pre>
-<p>Перший параметр - колекція, до якої треба додати дані, а второй - добавляемые об'єкты. Застосування:</p>
+<p>Перший параметр - колекція, до якої треба додати дані, а второй - додаємоые об'єкты. Застосування:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.Collections;
 import java.util.ArrayList;
@@ -162,7 +162,7 @@ public class Program{
 <p>У даному випадку нам не треба створювати для додаваних об'єктів окрему колекцію.</p>
 
 <h3>Отримання елементів списку</h3>
-<p>Для получения элементов списка застосовується метод <b>get()</b>, якому передається індекс елемента:</p>
+<p>Для получения елементов списку застосовується метод <b>get()</b>, якому передається індекс елемента:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.ArrayList;
 
@@ -176,7 +176,7 @@ public class Program{
         people.add("Tom");
         people.add("Bob");
         people.add("Sam");
-        people.add(1, "Alice"); // добавляем элемент по индексу 1
+        people.add(1, "Alice"); // додаємо елемент по индексу 1
 
         System.out.println(people.get(0));      // Tom
         System.out.println(people.get(1));      // Alice
@@ -187,7 +187,7 @@ public class Program{
 </code></pre>
 
 <h3>Перебір списку</h3>
-<p>Для перебора списка можна використовувати традиционный цикл <code>for</code>:</p>
+<p>Для перебора списку можна використовувати традиционный цикл <code>for</code>:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.ArrayList;
 
@@ -201,7 +201,7 @@ public class Program{
         people.add("Tom");
         people.add("Bob");
         people.add("Sam");
-        people.add(1, "Alice"); // добавляем элемент по индексу 1
+        people.add(1, "Alice"); // додаємо елемент по индексу 1
 
         for(int i =0; i &lt; people.size(); i++){
 
@@ -224,7 +224,7 @@ public class Program{
         people.add("Tom");
         people.add("Bob");
         people.add("Sam");
-        people.add(1, "Alice"); // добавляем элемент по индексу 1
+        people.add(1, "Alice"); // додаємо елемент по индексу 1
 
         for(String person : people){
 
@@ -234,7 +234,7 @@ public class Program{
 }
 </code></pre>
 <h3>Зміна елемента</h3>
-<p>Для изменения элемента застосовується метод <span class="b">set(int index, E obj)</span>, де перший параметр представляє індекс елемента для зміни, а другий - розміщуваний за цим індексом об'єкт:</p>
+<p>Для изменения елемента застосовується метод <span class="b">set(int index, E obj)</span>, де перший параметр представляє індекс елемента для зміни, а другий - розміщуваний за цим індексом об'єкт:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.ArrayList;
 
@@ -248,14 +248,14 @@ public class Program{
         people.add("Tom");
         people.add("Bob");
         people.add("Sam");
-        people.set(1, "Alex"); // изменяем элемент по индексу 1
+        people.set(1, "Alex"); // змінюємо елемент по индексу 1
 
         System.out.println(people.get(1));      // Alex
     }
 }
 </code></pre>
 <h3>Індекс елемента</h3>
-<p>Нерідко буває, що нам треба дізнатися індекс певного елемента, то застосовуються методы <span class="b">indexOf(Object obj)</span> (для першого індекса у списку) и 
+<p>Нерідко буває, що нам треба дізнатися індекс певного елемента, то застосовуються методи <span class="b">indexOf(Object obj)</span> (для першого індекса у списку) и 
 <span class="b">lastIndexOf(Object obj)</span> для останнього індекса:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.ArrayList;
@@ -277,7 +277,7 @@ public class Program{
 }
 </code></pre>
 <h3>Видалення</h3>
-<p>Для удаления элементов застосовується метод <span class="b">remove(Object obj)</span>, якому передається видаляємий об'єкт:</p>
+<p>Для удаления елементов застосовується метод <span class="b">remove(Object obj)</span>, якому передається видаляємий об'єкт:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.ArrayList;
 
@@ -291,7 +291,7 @@ public class Program{
         people.add("Bob");
         people.add("Sam");
 
-        people.remove("Bob"); // удаляем элемент "Bob"
+        people.remove("Bob"); // видаляємо елемент "Bob"
 
         for(String person : people){
 
@@ -302,14 +302,14 @@ public class Program{
     }
 }
 </code></pre>
-<p>Консольный вывод:</p>
+<p>Консольный вивід:</p>
 <pre class="line-numbers"><code class="language-none">
 Tom
 Sam
 </code></pre>
 
 <p>Но метод <span class="b">remove()</span> имїїт и другую версию, якій передається індекс видаляємого елемента - <code>remove(int index)</code>. 
-І тут може виникнути питання, що буде, якщо у нас список чисел, і нам треба видалити яке-сь число. Например:</p>
+І тут може виникнути питання, що буде, якщо у нас список чисел, і нам треба видалити яке-сь число. Наприклад:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.ArrayList;
 
@@ -323,7 +323,7 @@ public class Program{
         numbers.add(12);
         numbers.add(13);
 
-        numbers.remove(12); // пытаемся удалить элемент 12 
+        numbers.remove(12); // пытаемся удалить елемент 12 
 
         for(Integer n : numbers){
 
@@ -334,11 +334,11 @@ public class Program{
 }
 </code></pre>
 <p>Дана програма завершиться з помилкою, поскольку при передаче числа в метод <code>remove()</code> це число буде восприниматься як индекс, а не як елемент. И при вызове 
-<code>numbers.remove(12)</code> программа буде пытаться удалить элемент по индексу 12, якого в принципі не існує. І в цьому випадку треба буде спочатку знайти індекс видаляємого значення, а потім видалити його:</p>
+<code>numbers.remove(12)</code> програма буде пытаться удалить елемент по индексу 12, якого в принципі не існує. І в цьому випадку треба буде спочатку знайти індекс видаляємого значення, а потім видалити його:</p>
 <pre class="line-numbers"><code class="language-java">
-numbers.remove(numbers.indexOf(12)); // удаляем элемент 12 
+numbers.remove(numbers.indexOf(12)); // видаляємо елемент 12 
 </code></pre>
-<p>Ще один метод - <b>removeIf()</b> дозволяє удалить все элементы, які відповідають деякому предикату - умові. Например:</p>
+<p>Ще один метод - <b>removeIf()</b> дозволяє удалить всі елементи, які відповідають деякому предикату - умові. Наприклад:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.Collections;
 import java.util.ArrayList;
@@ -355,7 +355,7 @@ public class Program{
     }
 }
 </code></pre>
-<p>В метод <code>removeIf()</code> передаєся условие в виде функції, яка отримує кожен елемент списку и повертає <code>true</code>, якщо цей элемент соответствует некоторому условию. В данном случае удаляем все четные 
+<p>В метод <code>removeIf()</code> передаєся условие в виде функції, яка отримує кожен елемент списку и повертає <code>true</code>, якщо цей елемент відповідає некоторому условию. У даному випадку видаляємо все четные 
 числа, тобто якщо при діленні числа на 2 остача дорівнює 0:</p>
 <pre class="line-numbers"><code class="language-java">numbers.removeIf( num -&gt; num % 2 == 0);</code></pre>
 

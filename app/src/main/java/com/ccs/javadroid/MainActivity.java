@@ -4,7 +4,13 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
+
+import com.ccs.javadroid.debug.DebuggerController;
+import com.ccs.javadroid.debug.DebugVariable;
+import com.ccs.javadroid.debug.WatchExpression;
+import com.ccs.javadroid.debug.ExpressionEvaluator;
 import android.graphics.PorterDuff;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,10 +28,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.ccs.javadroid.debug.BreakpointOverlay;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AlertDialog;
@@ -44,6 +53,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -61,8 +71,10 @@ public class MainActivity extends AppCompatActivity {
     private CodeEditor    activeEditor;
     private LinearLayout  editorsContainer;
     private View          editorDivider;
-    private LinearLayout  wrapperEditor1;
-    private LinearLayout  wrapperEditor2;
+    private FrameLayout   wrapperEditor1;
+    private FrameLayout   wrapperEditor2;
+    private BreakpointOverlay breakpointOverlay1;
+    private BreakpointOverlay breakpointOverlay2;
     private FileTab       leftTab;
     private FileTab       rightTab;
     private boolean       isSplitActive = false;
@@ -81,12 +93,29 @@ public class MainActivity extends AppCompatActivity {
     private TextView      tabRun;
     private TextView      tabProblems;
     private TextView      tabBytecode;
-    private ScrollView    bytecodeOuterScroll;
-    private TextView      bytecodeOutput;
+    private View          bytecodeRoot;
+    private View          bytecodeToolbar;
+    private TextView      bytecodeStatus;
+    private RecyclerView  bytecodeMethodTree;
+    private RecyclerView  bytecodeInstructions;
+    private MethodTreeAdapter bytecodeTreeAdapter;
+    private InstructionAdapter bytecodeInsnAdapter;
+    private EditText      bytecodeSearch;
+    private View          bytecodeToggleHex;
+    private View          bytecodeToggleLines;
+    private View          bytecodeToggleComments;
+    private View          bytecodeInsnSlot;
+    private View          bytecodeHexScroll;
+    private TextView      bytecodeHexOutput;
+    private boolean       bytecodeHexMode;
+    private BytecodeModel bytecodeModel;
+    private int           bytecodeSelectedMethod = -1;
     private View          btnClearConsole;
     private View          tabsBar;
     private View          tabBorder;
     private View          bottomTabsBar;
+    private View          consoleDivider;
+    private FrameLayout   bottomPanelContent;
     private Toolbar       toolbar;
     private View          statusBar;
     private View          keyAccessoryBar;
@@ -95,8 +124,33 @@ public class MainActivity extends AppCompatActivity {
     private static final int PANEL_RUN       = 0;
     private static final int PANEL_PROBLEMS  = 1;
     private static final int PANEL_BYTECODE  = 2;
+    private static final int PANEL_DEBUG         = 3;
+    private static final int PANEL_DEBUG_CONSOLE = 4;
     private int bottomPanelMode = PANEL_RUN;
     private volatile boolean bytecodeRefreshRunning;
+
+    // ── Debug UI ─────────────────────────────────────────
+    private View          debugToolbar;
+    private TextView      debugLocation;
+    private TextView      tabDebug;
+    private TextView      tabDebugConsole;
+    private ScrollView    debugConsoleScroll;
+    private TextView      debugConsoleOutput;
+    private View          debuggerSplitPanel;
+    private ScrollView    variablesScroll;
+    private TextView      variablesOutput;
+    private RecyclerView  variablesRecycler;
+    private com.ccs.javadroid.debug.VariablesTreeAdapter variablesAdapter;
+    private ScrollView    callStackScroll;
+    private TextView      callStackOutput;
+    private RecyclerView  callStackRecycler;
+    private com.ccs.javadroid.debug.CallStackAdapter callStackAdapter;
+    private LinearLayout  watchesContainer;
+    private TextView      watchesOutput;
+    private boolean       isDebugging = false;
+    private final java.util.List<WatchExpression> watchExpressions = new java.util.ArrayList<>();
+    private DebuggerController.DebugListener debugListener;
+    private com.ccs.javadroid.debug.DebugEditorDecorator activeEditorDecorator;
 
     // ── Adapters & Managers ────────────────────────────────
     private TabsAdapter      tabsAdapter;
@@ -120,6 +174,9 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQ_SAVE_AS     = 4003;
     private static final int REQ_EXPORT_PROJ = 4004;
     private static final int REQ_LIB_MANAGER = 4005;
+
+    private static final int MD_COLOR_TEXT = 0xFFDFE1E5;
+    private static final int MD_COLOR_TEXT_LIGHT = 0xFF3C3F41;
 
     private static final String DEFAULT_CODE =
             "public class Main {\n" +
@@ -154,7 +211,9 @@ public class MainActivity extends AppCompatActivity {
         setupEditor();
         setupFindBar();
         setupBottomTabs();
+        setupConsoleDivider();
         setupProblemsList();
+        setupBytecodeViewer();
         
         setupProject(savedInstanceState != null);
 
@@ -185,6 +244,8 @@ public class MainActivity extends AppCompatActivity {
         if (liveProblemsScheduler != null) {
             liveProblemsScheduler.start();
         }
+        theme = AppTheme.byId(appPrefs.getThemeId(), appPrefs);
+        applyTheme();
         invalidateOptionsMenu();
     }
 
@@ -192,6 +253,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         if (liveProblemsScheduler != null) {
             liveProblemsScheduler.stop();
+        }
+        if (isDebugging) {
+            stopDebug();
         }
         super.onPause();
         saveCurrentToActiveTab();
@@ -229,7 +293,10 @@ public class MainActivity extends AppCompatActivity {
         editorDivider    = findViewById(R.id.editorDivider);
         wrapperEditor1   = findViewById(R.id.wrapperEditor1);
         wrapperEditor2   = findViewById(R.id.wrapperEditor2);
+        breakpointOverlay1 = findViewById(R.id.breakpointOverlay1);
+        breakpointOverlay2 = findViewById(R.id.breakpointOverlay2);
         activeEditor     = editor;
+        activeEditorDecorator = new com.ccs.javadroid.debug.DebugEditorDecorator(editor, breakpointOverlay1);
         tabsRecycler     = findViewById(R.id.tabsRecycler);
         fileTreeRecycler = findViewById(R.id.fileTreeRecycler);
         findBar          = findViewById(R.id.findBar);
@@ -244,17 +311,49 @@ public class MainActivity extends AppCompatActivity {
         tabRun           = findViewById(R.id.tabRun);
         tabProblems      = findViewById(R.id.tabProblems);
         tabBytecode      = findViewById(R.id.tabBytecode);
-        bytecodeOuterScroll = findViewById(R.id.bytecodeOuterScroll);
-        bytecodeOutput   = findViewById(R.id.bytecodeOutput);
+        bytecodeRoot         = findViewById(R.id.bytecodeRoot);
+        bytecodeToolbar      = findViewById(R.id.bytecodeToolbar);
+        bytecodeStatus       = findViewById(R.id.bytecodeStatus);
+        bytecodeMethodTree   = findViewById(R.id.bytecodeMethodTree);
+        bytecodeInstructions = findViewById(R.id.bytecodeInstructions);
+        bytecodeSearch       = findViewById(R.id.bytecodeSearch);
+        bytecodeToggleHex      = findViewById(R.id.bytecodeToggleHex);
+        bytecodeToggleLines    = findViewById(R.id.bytecodeToggleLines);
+        bytecodeToggleComments = findViewById(R.id.bytecodeToggleComments);
+        bytecodeInsnSlot   = findViewById(R.id.bytecodeInsnSlot);
+        bytecodeHexScroll  = findViewById(R.id.bytecodeHexScroll);
+        bytecodeHexOutput  = findViewById(R.id.bytecodeHexOutput);
         btnClearConsole  = findViewById(R.id.btnClearConsole);
         tabsBar          = findViewById(R.id.tabsBar);
         tabBorder        = findViewById(R.id.tabBorder);
         bottomTabsBar    = findViewById(R.id.bottomTabsBar);
+        consoleDivider   = findViewById(R.id.consoleDivider);
+        bottomPanelContent = findViewById(R.id.bottomPanelContent);
         statusBar        = findViewById(R.id.statusBar);
         statusEncoding   = findViewById(R.id.statusEncoding);
         toolbar          = findViewById(R.id.toolbar);
         keyAccessoryBar  = findViewById(R.id.keyAccessoryBar);
         accessoryBarLayout = findViewById(R.id.accessoryBarLayout);
+
+        // Debug views
+        debugToolbar     = findViewById(R.id.debugToolbar);
+        debugLocation    = findViewById(R.id.debugLocation);
+        tabDebug         = findViewById(R.id.tabDebug);
+        tabDebugConsole  = findViewById(R.id.tabDebugConsole);
+        debugConsoleScroll = findViewById(R.id.debugConsoleScroll);
+        debugConsoleOutput = findViewById(R.id.debugConsoleOutput);
+        
+        debuggerSplitPanel = findViewById(R.id.debuggerSplitPanel);
+        watchesOutput    = findViewById(R.id.watchesOutput);
+        variablesOutput  = findViewById(R.id.variablesOutput);
+        variablesRecycler = findViewById(R.id.variablesRecycler);
+        callStackOutput  = findViewById(R.id.callStackOutput);
+        callStackRecycler = findViewById(R.id.callStackRecycler);
+        watchesContainer = findViewById(R.id.watchesContainer);
+
+        setupDebugToolbar();
+        setupDebugController();
+        setupDebugAdapters();
     }
 
     /** Перефарбовує статичні UI-елементи відповідно до поточної теми. */
@@ -276,13 +375,60 @@ public class MainActivity extends AppCompatActivity {
         if (tabBorder != null)    tabBorder.setBackgroundColor(theme.accent);
         if (editorDivider != null) editorDivider.setBackgroundColor(theme.separator);
         updateActiveEditorBorders();
+        // Update editor color scheme
+        if (editor != null) EditorSettingsApplier.apply(editor, appPrefs, theme);
+        if (editor2 != null) EditorSettingsApplier.apply(editor2, appPrefs, theme);
+        refreshBreakpointMarkers();
         if (bottomTabsBar != null) bottomTabsBar.setBackgroundColor(theme.toolbar);
         if (statusBar != null)    statusBar.setBackgroundColor(theme.statusBar);
         if (consoleScroll != null) consoleScroll.setBackgroundColor(theme.consoleBg);
         if (consoleOutput != null) consoleOutput.setTextColor(theme.consoleText);
         if (problemsRecycler != null) problemsRecycler.setBackgroundColor(theme.consoleBg);
-        if (bytecodeOuterScroll != null) bytecodeOuterScroll.setBackgroundColor(theme.consoleBg);
-        if (bytecodeOutput != null) bytecodeOutput.setTextColor(theme.consoleText);
+        if (bytecodeRoot != null) bytecodeRoot.setBackgroundColor(theme.consoleBg);
+        if (bytecodeToolbar != null) bytecodeToolbar.setBackgroundColor(theme.toolbar);
+        if (bytecodeStatus != null) bytecodeStatus.setBackgroundColor(theme.consoleBg);
+        if (bytecodeStatus != null) bytecodeStatus.setTextColor(theme.textDim);
+        if (bytecodeMethodTree != null) bytecodeMethodTree.setBackgroundColor(theme.consoleBg);
+        if (bytecodeInstructions != null) bytecodeInstructions.setBackgroundColor(theme.consoleBg);
+        if (bytecodeSearch != null) bytecodeSearch.setTextColor(theme.consoleText);
+        if (bytecodeSearch != null) bytecodeSearch.setHintTextColor(theme.textDim);
+        if (bytecodeHexOutput != null) bytecodeHexOutput.setTextColor(theme.consoleText);
+        if (bytecodeTreeAdapter != null) bytecodeTreeAdapter.setTheme(theme);
+        if (bytecodeInsnAdapter != null) bytecodeInsnAdapter.setTheme(theme);
+
+        // Debug panels theming
+        if (debugToolbar != null) debugToolbar.setBackgroundColor(theme.toolbar);
+        if (debugLocation != null) debugLocation.setTextColor(theme.accent);
+        if (debugConsoleScroll != null) debugConsoleScroll.setBackgroundColor(theme.consoleBg);
+        if (debugConsoleOutput != null) debugConsoleOutput.setTextColor(theme.consoleText);
+        if (variablesScroll != null) variablesScroll.setBackgroundColor(theme.consoleBg);
+        if (variablesOutput != null) variablesOutput.setTextColor(theme.consoleText);
+        if (variablesRecycler != null) variablesRecycler.setBackgroundColor(theme.consoleBg);
+        if (callStackScroll != null) callStackScroll.setBackgroundColor(theme.consoleBg);
+        if (callStackOutput != null) callStackOutput.setTextColor(theme.consoleText);
+        if (callStackRecycler != null) callStackRecycler.setBackgroundColor(theme.consoleBg);
+        if (watchesContainer != null) watchesContainer.setBackgroundColor(theme.consoleBg);
+        if (watchesOutput != null) watchesOutput.setTextColor(theme.consoleText);
+        if (variablesAdapter != null) variablesAdapter.setTheme(theme);
+        if (callStackAdapter != null) callStackAdapter.setTheme(theme);
+
+        // Debug toolbar buttons theming
+        if (debugToolbar != null) {
+            TextView btnStepOver = debugToolbar.findViewById(R.id.btnDebugStepOver);
+            TextView btnStepInto = debugToolbar.findViewById(R.id.btnDebugStepInto);
+            TextView btnStepOut = debugToolbar.findViewById(R.id.btnDebugStepOut);
+            TextView btnResume = debugToolbar.findViewById(R.id.btnDebugResume);
+            TextView btnStop = debugToolbar.findViewById(R.id.btnDebugStop);
+            TextView btnEval = debugToolbar.findViewById(R.id.btnDebugEvaluate);
+            TextView btnBP = debugToolbar.findViewById(R.id.btnToggleBreakpoint);
+            if (btnStepOver != null) btnStepOver.setTextColor(theme.textDim);
+            if (btnStepInto != null) btnStepInto.setTextColor(theme.textDim);
+            if (btnStepOut != null) btnStepOut.setTextColor(theme.textDim);
+            if (btnResume != null) btnResume.setTextColor(theme.successText);
+            if (btnStop != null) btnStop.setTextColor(theme.errorText);
+            if (btnEval != null) btnEval.setTextColor(theme.textDim);
+            if (btnBP != null) btnBP.setTextColor(theme.errorText);
+        }
         
         // Drawer elements theming
         TextView tvDrawerProjectLabel = findViewById(R.id.tvDrawerProjectLabel);
@@ -475,9 +621,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setActiveEditor(CodeEditor ed) {
+        android.util.Log.d("BpOverlay", "setActiveEditor: ed=" + (ed != null) + " activeEditor=" + (activeEditor == ed) + " same=" + (activeEditor == ed));
         if (activeEditor == ed) return;
         activeEditor = ed;
         updateActiveEditorBorders();
+        BreakpointOverlay ov = (ed == editor) ? breakpointOverlay1 : breakpointOverlay2;
+        activeEditorDecorator = new com.ccs.javadroid.debug.DebugEditorDecorator(ed, ov);
+        refreshBreakpointMarkers();
 
         FileTab currentTab = (ed == editor) ? leftTab : rightTab;
         if (currentTab != null) {
@@ -500,7 +650,10 @@ public class MainActivity extends AppCompatActivity {
             if (activeEditor != ed) return;
             int ln  = event.getLeft().line + 1;
             int col = event.getLeft().column + 1;
-            runOnUiThread(() -> statusLineCol.setText(getString(R.string.status_line, ln, col)));
+            String text = getString(R.string.status_line, ln, col);
+            if (!text.equals(statusLineCol.getText())) {
+                runOnUiThread(() -> statusLineCol.setText(text));
+            }
         });
 
         // Content change → mark tab as modified + auto-save (if enabled)
@@ -509,13 +662,15 @@ public class MainActivity extends AppCompatActivity {
             FileTab tab = (ed == editor) ? leftTab : rightTab;
             if (tab == null) return;
             int idx = tabsAdapter.getTabs().indexOf(tab);
-            if (idx >= 0) runOnUiThread(() -> {
-                tabsAdapter.markModified(idx, true);
-                if (appPrefs.isAutoSave()) {
-                    saveEditorToTab(ed, tab);
-                    tabsAdapter.markModified(idx, false);
-                }
-            });
+            if (idx >= 0 && !tab.isModified) {
+                runOnUiThread(() -> {
+                    tabsAdapter.markModified(idx, true);
+                    if (appPrefs.isAutoSave()) {
+                        saveEditorToTab(ed, tab);
+                        tabsAdapter.markModified(idx, false);
+                    }
+                });
+            }
         });
 
         // Focus changes
@@ -525,13 +680,76 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Touch listener to capture focus switches instantly
+        // Touch listener: gutter tap toggles breakpoint, rest captures focus
         ed.setOnTouchListener((v, event) -> {
+            android.util.Log.d("BpOverlay", "touch: action=" + event.getAction() + " activeEditor=" + (activeEditor == ed) + " ed=" + (ed == editor ? "editor1" : "editor2"));
             if (activeEditor != ed) {
-                ed.requestFocus();
-                setActiveEditor(ed);
+                if (event.getAction() == android.view.MotionEvent.ACTION_DOWN) {
+                    ed.requestFocus();
+                    setActiveEditor(ed);
+                }
+            }
+            // Detect taps in the line number gutter area
+            if (event.getAction() == android.view.MotionEvent.ACTION_UP && appPrefs.isLineNumbers()) {
+                float gutterWidth = ed.measureTextRegionOffset();
+                if (gutterWidth <= 0) gutterWidth = 60 * getResources().getDisplayMetrics().density;
+                if (event.getX() < gutterWidth) {
+                    long pos = ed.getPointPositionOnScreen(event.getX(), event.getY());
+                    int line = io.github.rosemoe.sora.util.IntPair.getFirst(pos);
+                    if (line >= 0) {
+                        int line1 = line + 1;
+                        DebuggerController ctrl = DebuggerController.getInstance();
+                        boolean isLongPress = (event.getEventTime() - event.getDownTime()) > 450;
+                        if (isLongPress) {
+                            showBreakpointEditorDialog(line1);
+                        } else {
+                            ctrl.toggleBreakpoint(line1);
+                            boolean has = ctrl.hasBreakpoint(line1);
+                            Toast.makeText(ed.getContext(),
+                                    has ? "● Breakpoint at line " + line1 : "○ Removed breakpoint at line " + line1,
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                        if (activeEditor == ed) refreshBreakpointMarkers();
+                        return true;
+                    }
+                }
             }
             return false;
+        });
+
+        // Long press context menu for debugging
+        ed.setOnLongClickListener(v -> {
+            if (!isDebugging) return false;
+            DebuggerController ctrl = DebuggerController.getInstance();
+            if (!ctrl.isPaused()) return false;
+
+            // Get selected text
+            CharSequence selected = ed.getText().subSequence(
+                    ed.getCursor().getLeftColumn(),
+                    ed.getCursor().getRightColumn());
+            if (selected == null || selected.length() == 0) return false;
+
+            String selText = selected.toString().trim();
+            if (selText.isEmpty()) return false;
+
+            // Show context menu
+            String[] items = {"Evaluate '" + selText + "'", "Add Watch '" + selText + "'"};
+            new AlertDialog.Builder(ed.getContext())
+                    .setItems(items, (dialog, which) -> {
+                        if (which == 0) {
+                            evaluateExpression(selText);
+                        } else if (which == 1) {
+                            watchExpressions.add(new WatchExpression(selText));
+                            Toast.makeText(ed.getContext(), "Added watch: " + selText, Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .show();
+            return true;
+        });
+
+        ed.subscribeEvent(io.github.rosemoe.sora.event.ScrollEvent.class, (event, sub) -> {
+            BreakpointOverlay ov = (ed == editor) ? breakpointOverlay1 : breakpointOverlay2;
+            if (ov != null) ov.postInvalidate();
         });
     }
 
@@ -575,23 +793,78 @@ public class MainActivity extends AppCompatActivity {
         tabRun.setOnClickListener(v -> switchBottomPanel(PANEL_RUN));
         tabProblems.setOnClickListener(v -> switchBottomPanel(PANEL_PROBLEMS));
         tabBytecode.setOnClickListener(v -> switchBottomPanel(PANEL_BYTECODE));
+        if (tabDebug != null) tabDebug.setOnClickListener(v -> switchBottomPanel(PANEL_DEBUG));
+        if (tabDebugConsole != null) tabDebugConsole.setOnClickListener(v -> switchBottomPanel(PANEL_DEBUG_CONSOLE));
         switchBottomPanel(PANEL_RUN);
+    }
+
+    private void setupConsoleDivider() {
+        if (consoleDivider == null || editorsContainer == null || bottomPanelContent == null) return;
+        consoleDivider.setOnTouchListener(new View.OnTouchListener() {
+            private float startY;
+            private float startEditorWeight;
+            private float startPanelWeight;
+
+            @Override
+            public boolean onTouch(View v, android.view.MotionEvent event) {
+                switch (event.getActionMasked()) {
+                    case android.view.MotionEvent.ACTION_DOWN:
+                        startY = event.getRawY();
+                        startEditorWeight = ((LinearLayout.LayoutParams) editorsContainer.getLayoutParams()).weight;
+                        startPanelWeight  = ((LinearLayout.LayoutParams) bottomPanelContent.getLayoutParams()).weight;
+                        v.getParent().requestDisallowInterceptTouchEvent(true);
+                        return true;
+                    case android.view.MotionEvent.ACTION_MOVE: {
+                        float dy = event.getRawY() - startY;
+                        float totalWeight = startEditorWeight + startPanelWeight;
+                        float totalHeight = editorsContainer.getHeight() + bottomPanelContent.getHeight();
+                        if (totalHeight <= 0) return true;
+                        float weightDelta = (dy / totalHeight) * totalWeight;
+                        float newEditorW = Math.max(0.1f, Math.min(totalWeight - 0.1f, startEditorWeight + weightDelta));
+                        float newPanelW  = totalWeight - newEditorW;
+                        LinearLayout.LayoutParams editorLp = (LinearLayout.LayoutParams) editorsContainer.getLayoutParams();
+                        LinearLayout.LayoutParams panelLp  = (LinearLayout.LayoutParams) bottomPanelContent.getLayoutParams();
+                        editorLp.weight = newEditorW;
+                        panelLp.weight  = newPanelW;
+                        editorsContainer.setLayoutParams(editorLp);
+                        bottomPanelContent.setLayoutParams(panelLp);
+                        return true;
+                    }
+                    case android.view.MotionEvent.ACTION_UP:
+                    case android.view.MotionEvent.ACTION_CANCEL:
+                        v.getParent().requestDisallowInterceptTouchEvent(false);
+                        return true;
+                }
+                return false;
+            }
+        });
     }
 
     private void switchBottomPanel(int mode) {
         bottomPanelMode = mode;
         consoleScroll.setVisibility(mode == PANEL_RUN ? View.VISIBLE : View.GONE);
         problemsRecycler.setVisibility(mode == PANEL_PROBLEMS ? View.VISIBLE : View.GONE);
-        bytecodeOuterScroll.setVisibility(mode == PANEL_BYTECODE ? View.VISIBLE : View.GONE);
+        bytecodeRoot.setVisibility(mode == PANEL_BYTECODE ? View.VISIBLE : View.GONE);
+
+        if (debuggerSplitPanel != null)
+            debuggerSplitPanel.setVisibility(mode == PANEL_DEBUG ? View.VISIBLE : View.GONE);
+        if (debugConsoleScroll != null)
+            debugConsoleScroll.setVisibility(mode == PANEL_DEBUG_CONSOLE ? View.VISIBLE : View.GONE);
 
         int activeBg   = blend(theme.toolbar, theme.bg, 0.4f);
         int inactiveBg = theme.toolbar;
         tabRun.setBackgroundColor(mode == PANEL_RUN ? activeBg : inactiveBg);
         tabProblems.setBackgroundColor(mode == PANEL_PROBLEMS ? activeBg : inactiveBg);
         tabBytecode.setBackgroundColor(mode == PANEL_BYTECODE ? activeBg : inactiveBg);
+        if (tabDebug != null) tabDebug.setBackgroundColor(mode == PANEL_DEBUG ? activeBg : inactiveBg);
+        if (tabDebugConsole != null) tabDebugConsole.setBackgroundColor(mode == PANEL_DEBUG_CONSOLE ? activeBg : inactiveBg);
+
         tabRun.setTextColor(mode == PANEL_RUN ? theme.successText : theme.textDim);
         tabProblems.setTextColor(mode == PANEL_PROBLEMS ? theme.text : theme.textDim);
         tabBytecode.setTextColor(mode == PANEL_BYTECODE ? theme.accent : theme.textDim);
+        if (tabDebug != null) tabDebug.setTextColor(mode == PANEL_DEBUG ? theme.accent : theme.textDim);
+        if (tabDebugConsole != null) tabDebugConsole.setTextColor(mode == PANEL_DEBUG_CONSOLE ? theme.accent : theme.textDim);
+
         if (btnClearConsole != null) {
             btnClearConsole.setVisibility(mode == PANEL_RUN ? View.VISIBLE : View.GONE);
             ((TextView) btnClearConsole).setTextColor(theme.textDim);
@@ -610,10 +883,527 @@ public class MainActivity extends AppCompatActivity {
         return 0xFF000000 | (r << 16) | (g << 8) | bl;
     }
 
+    // ══════════════════════════════════════════════════════════
+    //  Debug
+    // ══════════════════════════════════════════════════════════
+
+    private void setupDebugToolbar() {
+        if (debugToolbar == null) return;
+        TextView btnStepOver = debugToolbar.findViewById(R.id.btnDebugStepOver);
+        TextView btnStepInto = debugToolbar.findViewById(R.id.btnDebugStepInto);
+        TextView btnStepOut = debugToolbar.findViewById(R.id.btnDebugStepOut);
+        TextView btnResume = debugToolbar.findViewById(R.id.btnDebugResume);
+        TextView btnStop = debugToolbar.findViewById(R.id.btnDebugStop);
+        TextView btnEval = debugToolbar.findViewById(R.id.btnDebugEvaluate);
+
+        if (btnStepOver != null) btnStepOver.setOnClickListener(v -> DebuggerController.getInstance().stepOver());
+        if (btnStepInto != null) btnStepInto.setOnClickListener(v -> DebuggerController.getInstance().stepInto());
+        if (btnStepOut != null) btnStepOut.setOnClickListener(v -> DebuggerController.getInstance().stepOut());
+        if (btnResume != null) btnResume.setOnClickListener(v -> DebuggerController.getInstance().resume());
+        if (btnStop != null) btnStop.setOnClickListener(v -> stopDebug());
+        if (btnEval != null) btnEval.setOnClickListener(v -> {
+            // If text is selected in editor, evaluate it directly
+            if (activeEditor != null) {
+                CharSequence selected = activeEditor.getText().subSequence(
+                        activeEditor.getCursor().getLeftColumn(),
+                        activeEditor.getCursor().getRightColumn());
+                if (selected != null && selected.length() > 0) {
+                    evaluateExpression(selected.toString());
+                    return;
+                }
+            }
+            showEvaluateDialog();
+        });
+
+        TextView btnToggleBP = debugToolbar.findViewById(R.id.btnToggleBreakpoint);
+        if (btnToggleBP != null) btnToggleBP.setOnClickListener(v -> toggleBreakpointAtCursor());
+
+        View btnAddWatch = findViewById(R.id.btnAddWatch);
+        if (btnAddWatch != null) btnAddWatch.setOnClickListener(v -> showAddWatchDialog());
+    }
+
+    private void setupDebugController() {
+        debugListener = new DebuggerController.DebugListener() {
+            @Override
+            public void onBreakpointHit(DebuggerController.DebugEvent event) {
+                runOnUiThread(() -> {
+                    isDebugging = true;
+                    updateDebugToolbar(true);
+                    String loc = event.className.replace('/', '.')
+                            + "." + event.methodName + ":" + event.line;
+                    if (debugLocation != null) debugLocation.setText(loc);
+
+                    // Highlight current line in editor
+                    highlightDebugLine(event.line);
+
+                    updateVariablesPanel(event);
+                    updateCallStackPanel(event);
+                    updateWatchesPanel(event);
+
+                    // Show Threads & Variables panel by default
+                    switchBottomPanel(PANEL_DEBUG);
+                });
+            }
+
+            @Override
+            public void onDebugOutput(String text) {
+                runOnUiThread(() -> appendDebugConsole(text, 0xFFAAAAAA));
+            }
+
+            @Override
+            public void onDebugError(String text) {
+                runOnUiThread(() -> appendDebugConsole("Error: " + text, 0xFFCF4444));
+            }
+
+            @Override
+            public void onDebugStarted() {
+                runOnUiThread(() -> {
+                    isDebugging = true;
+                    updateDebugToolbar(true);
+                    if (debugConsoleOutput != null) debugConsoleOutput.setText("");
+                    showDebugTabs(true);
+                    switchBottomPanel(PANEL_DEBUG_CONSOLE);
+                });
+            }
+
+            @Override
+            public void onDebugEnded() {
+                runOnUiThread(() -> {
+                    isDebugging = false;
+                    updateDebugToolbar(false);
+                    showDebugTabs(false);
+                    appendDebugConsole("Debug session ended.", 0xFF888888);
+                    clearDebugHighlight();
+                });
+            }
+        };
+        DebuggerController.getInstance().addListener(debugListener);
+    }
+
+    /** Ініціалізує RecyclerView-адаптери Variables та Call Stack. */
+    private void setupDebugAdapters() {
+        variablesAdapter = new com.ccs.javadroid.debug.VariablesTreeAdapter();
+        variablesAdapter.setTheme(theme);
+        if (variablesRecycler != null) {
+            variablesRecycler.setLayoutManager(new LinearLayoutManager(this));
+            variablesRecycler.setAdapter(variablesAdapter);
+        }
+        callStackAdapter = new com.ccs.javadroid.debug.CallStackAdapter();
+        callStackAdapter.setTheme(theme);
+        if (callStackRecycler != null) {
+            callStackRecycler.setLayoutManager(new LinearLayoutManager(this));
+            callStackRecycler.setAdapter(callStackAdapter);
+            callStackAdapter.setListener(frame -> {
+                // стрибок до вихідного файлу, якщо він відкритий у проєкті
+                String simple = frame.getClassName();
+                int dot = simple.lastIndexOf('.');
+                if (dot >= 0) simple = simple.substring(dot + 1);
+                File f = findFileInProject(simple + ".java");
+                if (f != null) {
+                    openFile(f);
+                    if (activeEditor != null && frame.getLineNumber() > 0) {
+                        activeEditor.setSelection(frame.getLineNumber() - 1, 0);
+                    }
+                } else {
+                    Toast.makeText(this, frame.getClassName() + " not in project",
+                            Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
+    /** Шукає файл за іменем у проєктній директорії (рекурсивно). */
+    private File findFileInProject(String name) {
+        if (projectManager == null || projectManager.getProjectDir() == null) return null;
+        File root = projectManager.getProjectDir();
+        java.util.Deque<File> stack = new java.util.ArrayDeque<>();
+        stack.push(root);
+        while (!stack.isEmpty()) {
+            File d = stack.pop();
+            File[] kids = d.listFiles();
+            if (kids == null) continue;
+            for (File k : kids) {
+                if (k.isDirectory()) stack.push(k);
+                else if (k.getName().equals(name)) return k;
+            }
+        }
+        return null;
+    }
+
+    private void updateDebugToolbar(boolean active) {
+        if (debugToolbar != null) {
+            debugToolbar.setVisibility(active ? View.VISIBLE : View.GONE);
+        }
+    }
+
+    private void showDebugTabs(boolean show) {
+        if (tabDebug != null) tabDebug.setVisibility(show ? View.VISIBLE : View.GONE);
+        if (tabDebugConsole != null) tabDebugConsole.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+
+    private void appendDebugConsole(String text, int color) {
+        if (debugConsoleOutput == null) return;
+        SpannableString sp = new SpannableString(text + "\n");
+        sp.setSpan(new ForegroundColorSpan(color), 0, sp.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        debugConsoleOutput.append(sp);
+        if (debugConsoleScroll != null) {
+            debugConsoleScroll.post(() -> debugConsoleScroll.fullScroll(View.FOCUS_DOWN));
+        }
+    }
+
+    private void updateVariablesPanel(DebuggerController.DebugEvent event) {
+        if (variablesAdapter == null) return;
+        if (event.variables == null || event.variables.isEmpty()) {
+            variablesAdapter.setVariables(null);
+            return;
+        }
+        variablesAdapter.setVariables(event.variables);
+    }
+
+    private void updateCallStackPanel(DebuggerController.DebugEvent event) {
+        if (callStackAdapter == null) return;
+        callStackAdapter.setFrames(event.callStack);
+    }
+
+    private void updateWatchesPanel(DebuggerController.DebugEvent event) {
+        if (watchesOutput == null) return;
+        if (watchExpressions.isEmpty()) {
+            watchesOutput.setText("No watch expressions.\nTap '+ Add Watch' to add one.");
+            return;
+        }
+        ExpressionEvaluator eval = new ExpressionEvaluator(event.variables);
+        StringBuilder sb = new StringBuilder();
+        for (WatchExpression w : watchExpressions) {
+            w.evaluate(event);
+            String status = w.isError() ? "✗ " : "  ";
+            sb.append(status).append(w.getExpression())
+              .append(" = ").append(w.getLastResult()).append("\n");
+        }
+        watchesOutput.setText(sb.toString());
+    }
+
+    private void highlightDebugLine(int line) {
+        if (activeEditor != null && line > 0) {
+            activeEditor.setSelection(line - 1, 0);
+        }
+        if (activeEditorDecorator != null) {
+            activeEditorDecorator.highlightLine(line);
+        }
+    }
+
+    private void clearDebugHighlight() {
+        if (activeEditorDecorator != null) {
+            activeEditorDecorator.clearHighlight();
+        }
+    }
+
+    /** Оновлює червоні крапки брейкпоінтів у gutter активного редактора. */
+    private void refreshBreakpointMarkers() {
+        android.util.Log.d("BpOverlay", "refreshBreakpointMarkers: decorator=" + (activeEditorDecorator != null));
+        if (activeEditorDecorator == null) return;
+        DebuggerController ctrl = DebuggerController.getInstance();
+        java.util.Set<Integer> lines = ctrl.getBreakpoints().keySet();
+        java.util.Set<Integer> cond = ctrl.getConditionalBreakpointLines();
+        android.util.Log.d("BpOverlay", "refreshBreakpointMarkers: lines=" + lines);
+        activeEditorDecorator.refreshBreakpoints(lines, cond);
+    }
+
+    private void toggleBreakpointAtCursor() {
+        if (activeEditor == null) return;
+        int line = activeEditor.getCursor().getLeftLine() + 1; // 1-indexed
+        DebuggerController ctrl = DebuggerController.getInstance();
+        ctrl.toggleBreakpoint(line);
+        boolean has = ctrl.hasBreakpoint(line);
+        Toast.makeText(this, has ? "● Breakpoint at line " + line : "○ Removed breakpoint at line " + line,
+                Toast.LENGTH_SHORT).show();
+        refreshBreakpointMarkers();
+    }
+
+    /** Діалог редагування умови умовного брейплоінта (стиль IntelliJ). */
+    private void showBreakpointEditorDialog(int line) {
+        DebuggerController ctrl = DebuggerController.getInstance();
+        String current = ctrl.getBreakpointCondition(line);
+
+        final EditText input = new EditText(this);
+        input.setHint("condition, напр. i == 5");
+        input.setSingleLine(false);
+        input.setMinLines(2);
+        input.setTextSize(13);
+        if (current != null) input.setText(current);
+        input.setPadding(48, 24, 48, 24);
+
+        new AlertDialog.Builder(this)
+                .setTitle("Breakpoint at line " + line)
+                .setView(input)
+                .setPositiveButton("Set", (d, w) -> {
+                    String cond = input.getText().toString().trim();
+                    ctrl.setBreakpoint(line, cond.isEmpty() ? null : cond);
+                    Toast.makeText(this,
+                            cond.isEmpty() ? "● Unconditional BP at line " + line
+                                    : "● Conditional BP at line " + line + ": " + cond,
+                            Toast.LENGTH_SHORT).show();
+                    refreshBreakpointMarkers();
+                })
+                .setNegativeButton("Cancel", null)
+                .setNeutralButton(ctrl.hasBreakpoint(line) ? "Remove" : "Close", (d, w) -> {
+                    if (ctrl.hasBreakpoint(line)) {
+                        ctrl.toggleBreakpoint(line);
+                        Toast.makeText(this, "○ Removed breakpoint at line " + line,
+                                Toast.LENGTH_SHORT).show();
+                        refreshBreakpointMarkers();
+                    }
+                })
+                .show();
+        input.requestFocus();
+    }
+
+    private void showEvaluateDialog() {
+        DebuggerController ctrl = DebuggerController.getInstance();
+        if (!ctrl.isPaused()) return;
+
+        EditText input = new EditText(this);
+        input.setHint(R.string.debug_evaluate_hint);
+        input.setSingleLine(true);
+
+        // Pre-fill with selected text from editor
+        if (activeEditor != null) {
+            CharSequence selected = activeEditor.getText().subSequence(
+                    activeEditor.getCursor().getLeftColumn(),
+                    activeEditor.getCursor().getRightColumn());
+            if (selected != null && selected.length() > 0) {
+                input.setText(selected.toString());
+                input.selectAll();
+            }
+        }
+
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.dialog_debug_evaluate_title)
+                .setView(input)
+                .setPositiveButton(R.string.dialog_apply, (d, w) -> {
+                    String expr = input.getText().toString().trim();
+                    if (expr.isEmpty()) return;
+
+                    // Get current locals from bridge
+                    String[] names = com.ccs.javadroid.debug.DebugBridge.getCurrentLocalNames();
+                    String[] types = com.ccs.javadroid.debug.DebugBridge.getCurrentLocalTypes();
+                    Object[] locals = com.ccs.javadroid.debug.DebugBridge.getCurrentLocals();
+
+                    java.util.List<DebugVariable> vars = new java.util.ArrayList<>();
+                    if (names != null && locals != null) {
+                        for (int i = 0; i < names.length; i++) {
+                            vars.add(new DebugVariable(
+                                    names[i],
+                                    types != null && i < types.length ? types[i] : "unknown",
+                                    i < locals.length ? locals[i] : null
+                            ));
+                        }
+                    }
+
+                    ExpressionEvaluator evaluator = new ExpressionEvaluator(vars);
+                    ExpressionEvaluator.EvalResult result = evaluator.evaluate(expr);
+
+                    String output = expr + " = " + result.value;
+                    appendDebugConsole(output, result.isError ? 0xFFCF4444 : 0xFF499C54);
+                    switchBottomPanel(PANEL_DEBUG);
+                })
+                .setNegativeButton(R.string.dialog_cancel, null)
+                .show();
+    }
+
+    private void evaluateExpression(String expr) {
+        DebuggerController ctrl = DebuggerController.getInstance();
+        if (!ctrl.isPaused()) return;
+
+        String[] names = com.ccs.javadroid.debug.DebugBridge.getCurrentLocalNames();
+        String[] types = com.ccs.javadroid.debug.DebugBridge.getCurrentLocalTypes();
+        Object[] locals = com.ccs.javadroid.debug.DebugBridge.getCurrentLocals();
+
+        java.util.List<DebugVariable> vars = new java.util.ArrayList<>();
+        if (names != null && locals != null) {
+            for (int i = 0; i < names.length; i++) {
+                vars.add(new DebugVariable(
+                        names[i],
+                        types != null && i < types.length ? types[i] : "unknown",
+                        i < locals.length ? locals[i] : null
+                ));
+            }
+        }
+
+        ExpressionEvaluator evaluator = new ExpressionEvaluator(vars);
+        ExpressionEvaluator.EvalResult result = evaluator.evaluate(expr);
+
+        String output = expr + " = " + result.value;
+        appendDebugConsole(output, result.isError ? 0xFFCF4444 : 0xFF499C54);
+        switchBottomPanel(PANEL_DEBUG);
+    }
+
+    private void showAddWatchDialog() {
+        EditText input = new EditText(this);
+        input.setHint(R.string.debug_watch_hint);
+        input.setSingleLine(true);
+
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.dialog_debug_watch_title)
+                .setView(input)
+                .setPositiveButton(R.string.dialog_create, (d, w) -> {
+                    String expr = input.getText().toString().trim();
+                    if (!expr.isEmpty()) {
+                        watchExpressions.add(new WatchExpression(expr));
+                        Toast.makeText(this, "Added: " + expr, Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton(R.string.dialog_cancel, null)
+                .show();
+    }
+
+    private void startDebug() {
+        if (isRunning || isDebugging) return;
+        FileTab activeTab = tabsAdapter.getActiveTab();
+        if (activeTab == null) {
+            Toast.makeText(this, R.string.toast_no_file_open, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        saveCurrentToActiveTab();
+        if (!activeTab.file.getName().endsWith(".java")) {
+            Toast.makeText(this, "Debug only supports .java files", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        isRunning = true;
+        consoleOutput.setText("");
+        if (debugConsoleOutput != null) debugConsoleOutput.setText("");
+        switchBottomPanel(PANEL_DEBUG_CONSOLE);
+        showDebugTabs(true);
+        appendDebugConsole("▶ Starting debug session...", 0xFF499C54);
+        appendDebugConsole("File: " + activeTab.file.getName(), 0xFF888888);
+        appendDebugConsole("Breakpoints: " + DebuggerController.getInstance().getBreakpoints().size(), 0xFF888888);
+
+        String source = activeEditor.getText().toString();
+
+        ProjectCompiler.debugSingleSource(this, source, activeTab.file,
+                new ProjectCompiler.Callback() {
+                    @Override
+                    public void onProgress(String msg) {
+                        appendDebugConsole("   " + msg, 0xFF888888);
+                    }
+
+                    @Override
+                    public void onResult(String output) {
+                        if (output != null && output.startsWith("DEBUG_SESSION:")) {
+                            // Parse: DEBUG_SESSION:className:classDir:dexDir:jniLibsDir
+                            String[] parts = output.split(":");
+                            if (parts.length >= 4) {
+                                String className = parts[1];
+                                File classDir = new File(parts[2]);
+                                File dexDir = new File(parts[3]);
+                                File jniLibsDir = parts.length >= 5 && !parts[4].isEmpty()
+                                        ? new File(parts[4]) : null;
+
+                                appendDebugConsole("Class: " + className, 0xFF888888);
+                                appendDebugConsole("ClassDir: " + classDir.getAbsolutePath(), 0xFF888888);
+                                appendDebugConsole("DexDir: " + dexDir.getAbsolutePath(), 0xFF888888);
+                                if (jniLibsDir != null) {
+                                    appendDebugConsole("JniLibs: " + jniLibsDir.getAbsolutePath(), 0xFF888888);
+                                }
+
+                                DebuggerController ctrl = DebuggerController.getInstance();
+                                ctrl.startDebug(source, className, classDir, dexDir,
+                                        null, null, MainActivity.this,
+                                        MainActivity.this.getClassLoader(), jniLibsDir);
+
+                                // Actually run the instrumented DEX on a background thread.
+                                // Without this, breakpoints are never hit because the user's
+                                // code never executes.
+                                new Thread(() -> {
+                                    ProjectCompiler.debugRunDex(
+                                            MainActivity.this, className, dexDir, classDir, jniLibsDir,
+                                            new ProjectCompiler.Callback() {
+                                                @Override
+                                                public void onProgress(String msg) {
+                                                    runOnUiThread(() ->
+                                                            appendDebugConsole("   " + msg, 0xFF888888));
+                                                }
+
+                                                @Override
+                                                public void onResult(String output) {
+                                                    runOnUiThread(() -> {
+                                                        ctrl.stopDebug();
+                                                        isRunning = false;
+                                                        appendDebugConsole("", 0xFF888888);
+                                                        appendDebugConsole("──────────── Output ────────────", 0xFF499C54);
+                                                        boolean err = output != null
+                                                                && (output.startsWith("Compilation Error")
+                                                                || output.startsWith("Execution Exception")
+                                                                || output.startsWith("System Error")
+                                                                || output.startsWith("Error:"));
+                                                        appendDebugConsole(
+                                                                output != null ? output.trim() : "",
+                                                                err ? 0xFFCF4444 : 0xFFAAAAAA);
+                                                    });
+                                                }
+
+                                                @Override
+                                                public void onProblems(List<ProblemItem> problems) {}
+                                            });
+                                }, "DebugRunner").start();
+                            }
+                        } else {
+                            isRunning = false;
+                            appendDebugConsole("", 0xFF888888);
+                            appendDebugConsole("──────────── Output ────────────", 0xFF499C54);
+                            boolean err = output != null && (output.startsWith("Compilation Error")
+                                    || output.startsWith("Execution Exception")
+                                    || output.startsWith("System Error")
+                                    || output.startsWith("Error:"));
+                            appendDebugConsole(output != null ? output.trim() : "",
+                                    err ? 0xFFCF4444 : 0xFFAAAAAA);
+                        }
+                    }
+
+                    @Override
+                    public void onProblems(List<ProblemItem> problems) {
+                        problemsAdapter.setItems(problems);
+                        if (problems != null && !problems.isEmpty()) {
+                            switchBottomPanel(PANEL_PROBLEMS);
+                        }
+                    }
+                });
+    }
+
+    private void stopDebug() {
+        DebuggerController.getInstance().stopDebug();
+        isDebugging = false;
+        isRunning = false;
+        updateDebugToolbar(false);
+        showDebugTabs(false);
+    }
+
     private void refreshBytecodePanel() {
         FileTab tab = tabsAdapter.getActiveTab();
-        if (tab == null || tab.file == null || !tab.file.getName().endsWith(".java")) {
-            bytecodeOutput.setText(getString(R.string.bytecode_only_java));
+        if (tab == null || tab.file == null) {
+            setBytecodeStatus(getString(R.string.bytecode_empty));
+            return;
+        }
+        String name = tab.file.getName();
+        // .class файл — дизасемблюємо напряму (без компіляції)
+        if (name.endsWith(".class")) {
+            if (tab.classBytes != null) {
+                try {
+                    BytecodeModel model = BytecodeModel.parse(tab.classBytes);
+                    showBytecodeModel(model);
+                    return;
+                } catch (Throwable t) {
+                    setBytecodeStatus(getString(R.string.bytecode_failed,
+                            t.getMessage() != null ? t.getMessage() : String.valueOf(t)));
+                    return;
+                }
+            }
+            setBytecodeStatus(getString(R.string.bytecode_empty));
+            return;
+        }
+        if (!name.endsWith(".java")) {
+            setBytecodeStatus(getString(R.string.bytecode_only_java));
             return;
         }
         if (bytecodeRefreshRunning) {
@@ -621,7 +1411,7 @@ public class MainActivity extends AppCompatActivity {
         }
         bytecodeRefreshRunning = true;
         saveCurrentToActiveTab();
-        bytecodeOutput.setText(getString(R.string.bytecode_compiling));
+        setBytecodeStatus(getString(R.string.bytecode_compiling));
         final String source = activeEditor.getText() != null ? activeEditor.getText().toString() : "";
         final File javaFile = tab.file;
         new Thread(() -> {
@@ -632,25 +1422,162 @@ public class MainActivity extends AppCompatActivity {
                     final String err = r.errorMessage;
                     runOnUiThread(() -> {
                         bytecodeRefreshRunning = false;
-                        bytecodeOutput.setText(getString(R.string.bytecode_failed, err));
+                        setBytecodeStatus(getString(R.string.bytecode_failed, err));
                     });
                     return;
                 }
                 byte[] bytes = Files.readAllBytes(r.classFile.toPath());
-                String raw = BytecodeDisassembler.disassemble(bytes);
-                Spannable sp = BytecodeHighlighter.highlight(raw);
+                final BytecodeModel model = BytecodeModel.parse(bytes);
                 runOnUiThread(() -> {
                     bytecodeRefreshRunning = false;
-                    bytecodeOutput.setText(sp);
+                    showBytecodeModel(model);
                 });
             } catch (Throwable t) {
                 String msg = t.getMessage() != null ? t.getMessage() : String.valueOf(t);
                 runOnUiThread(() -> {
                     bytecodeRefreshRunning = false;
-                    bytecodeOutput.setText(getString(R.string.bytecode_failed, msg));
+                    setBytecodeStatus(getString(R.string.bytecode_failed, msg));
                 });
             }
         }, "bytecode-view").start();
+    }
+
+    /** Заповнює обидва адаптери моделлю та оновлює статус. */
+    private void showBytecodeModel(BytecodeModel model) {
+        bytecodeModel = model;
+        if (model == null) {
+            bytecodeTreeAdapter.setModel(null, null);
+            bytecodeInsnAdapter.setInstructions(null);
+            setBytecodeStatus(getString(R.string.bytecode_empty));
+            return;
+        }
+        BytecodeModel.ClassInfo ci = model.classInfo;
+        setBytecodeStatus(getString(R.string.bytecode_class_loaded,
+                ci.name, model.fields.size(), model.methods.size()));
+        bytecodeTreeAdapter.setModel(model.fields, model.methods);
+        if (!model.methods.isEmpty()) {
+            selectBytecodeMethod(0);
+        } else {
+            bytecodeInsnAdapter.setInstructions(null);
+        }
+        // оновити hex, якщо активний
+        if (bytecodeHexMode) renderHexDump();
+    }
+
+    /** Встановлює інструкції обраного методу в праву панель. */
+    private void selectBytecodeMethod(int methodIndex) {
+        if (bytecodeModel == null || methodIndex < 0
+                || methodIndex >= bytecodeModel.methods.size()) {
+            return;
+        }
+        bytecodeSelectedMethod = methodIndex;
+        bytecodeTreeAdapter.setSelectedMethod(methodIndex);
+        BytecodeModel.MethodInfo m = bytecodeModel.methods.get(methodIndex);
+        bytecodeInsnAdapter.setInstructions(m.instructions);
+        if (!m.handlers.isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            for (BytecodeModel.ExceptionHandler h : m.handlers) {
+                if (sb.length() > 0) sb.append(", ");
+                sb.append(h.type).append(" L").append(h.startLabel)
+                        .append("..L").append(h.endLabel)
+                        .append("→L").append(h.handlerLabel);
+            }
+            setBytecodeStatus(m.shortText + "   catch: " + sb);
+        } else {
+            BytecodeModel.ClassInfo ci = bytecodeModel.classInfo;
+            setBytecodeStatus(ci.name + " :: " + m.shortText);
+        }
+    }
+
+    private void setBytecodeStatus(String text) {
+        if (bytecodeStatus != null) bytecodeStatus.setText(text);
+    }
+
+    /** Стрибає до рядка з оголошенням мітки (jump-target клік). */
+    private void jumpToBytecodeLabel(String label) {
+        int pos = bytecodeInsnAdapter.positionOfLabel(label);
+        if (pos >= 0 && bytecodeInstructions != null) {
+            LinearLayoutManager lm = (LinearLayoutManager) bytecodeInstructions.getLayoutManager();
+            if (lm != null) lm.scrollToPositionWithOffset(pos, 8);
+        }
+    }
+
+    /** Рендерить hex-дамп сирих байтів класу. */
+    private void renderHexDump() {
+        if (bytecodeModel == null || bytecodeModel.rawBytes == null) {
+            if (bytecodeHexOutput != null) bytecodeHexOutput.setText("");
+            return;
+        }
+        byte[] b = bytecodeModel.rawBytes;
+        StringBuilder sb = new StringBuilder(b.length / 16 * 4);
+        for (int i = 0; i < b.length; i += 16) {
+            sb.append(String.format(java.util.Locale.US, "%08X  ", i));
+            int end = Math.min(i + 16, b.length);
+            for (int j = i; j < i + 16; j++) {
+                if (j < end) sb.append(String.format(java.util.Locale.US, "%02X ", b[j] & 0xFF));
+                else sb.append("   ");
+                if (j == i + 7) sb.append(' ');
+            }
+            sb.append(" |");
+            for (int j = i; j < end; j++) {
+                int c = b[j] & 0xFF;
+                sb.append(c >= 0x20 && c < 0x7F ? (char) c : '.');
+            }
+            sb.append("|\n");
+        }
+        if (bytecodeHexOutput != null) bytecodeHexOutput.setText(sb);
+    }
+
+    /** Ініціалізує обидва RecyclerView адаптери, тогли тулбару та пошук. */
+    private void setupBytecodeViewer() {
+        bytecodeTreeAdapter = new MethodTreeAdapter();
+        bytecodeTreeAdapter.setTheme(theme);
+        bytecodeMethodTree.setLayoutManager(new LinearLayoutManager(this));
+        bytecodeMethodTree.setAdapter(bytecodeTreeAdapter);
+        bytecodeTreeAdapter.setListener(methodIndex -> selectBytecodeMethod(methodIndex));
+
+        bytecodeInsnAdapter = new InstructionAdapter();
+        bytecodeInsnAdapter.setTheme(theme);
+        bytecodeInsnAdapter.setJumpListener(label -> jumpToBytecodeLabel(label));
+        // важливо: nesting всередині HorizontalScrollView вимикає власний скрол RecyclerView
+        bytecodeInstructions.setLayoutManager(new LinearLayoutManager(this));
+        bytecodeInstructions.setAdapter(bytecodeInsnAdapter);
+
+        // пошук
+        bytecodeSearch.addTextChangedListener(new android.text.TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int a, int b, int c) {}
+            @Override public void onTextChanged(CharSequence s, int a, int b, int c) {}
+            @Override public void afterTextChanged(Editable s) {
+                bytecodeInsnAdapter.setQuery(s != null ? s.toString() : "");
+            }
+        });
+
+        // тогл: line numbers
+        bytecodeToggleLines.setOnClickListener(v -> {
+            boolean on = !bytecodeInsnAdapter.isShowLineNumbers();
+            bytecodeInsnAdapter.setShowLineNumbers(on);
+            ((TextView) v).setTextColor(on ? theme.consoleText : theme.textDim);
+        });
+        // тогл: comments
+        bytecodeToggleComments.setOnClickListener(v -> {
+            boolean on = !bytecodeInsnAdapter.isShowComments();
+            bytecodeInsnAdapter.setShowComments(on);
+            ((TextView) v).setTextColor(on ? theme.consoleText : theme.textDim);
+        });
+        // тогл: hex/code
+        bytecodeToggleHex.setOnClickListener(v -> {
+            bytecodeHexMode = !bytecodeHexMode;
+            if (bytecodeHexMode) {
+                bytecodeInstructions.setVisibility(View.GONE);
+                bytecodeHexScroll.setVisibility(View.VISIBLE);
+                renderHexDump();
+                ((TextView) v).setTextColor(theme.accent);
+            } else {
+                bytecodeInstructions.setVisibility(View.VISIBLE);
+                bytecodeHexScroll.setVisibility(View.GONE);
+                ((TextView) v).setTextColor(theme.textDim);
+            }
+        });
     }
 
     private void setupProblemsList() {
@@ -696,6 +1623,9 @@ public class MainActivity extends AppCompatActivity {
                 return;
             } else if (name.endsWith(".kt")) {
                 ed.setEditorLanguage(new KotlinLanguage());
+                return;
+            } else if (name.endsWith(".md") || name.endsWith(".markdown")) {
+                ed.setEditorLanguage(new MarkdownLanguage());
                 return;
             }
         }
@@ -913,6 +1843,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if      (id == R.id.action_run)           { runCurrentFile();       return true; }
+        else if (id == R.id.action_debug)         { startDebug();           return true; }
         else if (id == R.id.action_save)          { saveCurrentFile();      return true; }
         else if (id == R.id.action_find)          { toggleFindBar();        return true; }
         else if (id == R.id.action_bytecode)      { switchBottomPanel(PANEL_BYTECODE); return true; }
@@ -935,6 +1866,9 @@ public class MainActivity extends AppCompatActivity {
         else if (id == R.id.action_git)              { openGit(); return true; }
         else if (id == R.id.action_create_cpp_module) { showCreateCppModuleDialog(); return true; }
         else if (id == R.id.action_split_screen)      { toggleSplitScreen(); return true; }
+        else if (id == R.id.action_auto_import)       { showAutoImportDialog(); return true; }
+        else if (id == R.id.action_view_formatted)    { showFormattedView(); return true; }
+        else if (id == R.id.action_md_preview)        { showMarkdownPreview(); return true; }
         return super.onOptionsItemSelected(item);
     }
 
@@ -954,6 +1888,31 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         saveCurrentToActiveTab();
+
+        // .class — бінарний файл: завантажуємо байтки й відкриваємо байткод-панель.
+        if (file.getName().endsWith(".class")) {
+            try {
+                byte[] bytes = Files.readAllBytes(file.toPath());
+                FileTab tab = new FileTab(file);
+                tab.classBytes = bytes;
+                tabsAdapter.addTab(tab);
+                int idx = tabsAdapter.getTabs().size() - 1;
+                tabsAdapter.setActiveIndex(idx);
+                isProgrammaticChange = true;
+                activeEditor.setText("");
+                isProgrammaticChange = false;
+                activeEditor.setEditable(false);
+                tabsRecycler.scrollToPosition(idx);
+                updateStatusFileName(file);
+                fileTreeAdapter.setActiveFile(file);
+                if (activeEditor == editor) leftTab = tab; else rightTab = tab;
+                switchBottomPanel(PANEL_BYTECODE);
+            } catch (IOException e) {
+                Toast.makeText(this, getString(R.string.error_cannot_open, e.getMessage()), Toast.LENGTH_SHORT).show();
+            }
+            return;
+        }
+
         try {
             String content = projectManager.readFile(file);
             FileTab tab = new FileTab(file);
@@ -968,7 +1927,7 @@ public class MainActivity extends AppCompatActivity {
             tabsRecycler.scrollToPosition(idx);
             updateStatusFileName(file);
             fileTreeAdapter.setActiveFile(file);
-            
+
             if (activeEditor == editor) {
                 leftTab = tab;
             } else {
@@ -985,6 +1944,22 @@ public class MainActivity extends AppCompatActivity {
         saveCurrentToActiveTab();
         FileTab tab = tabsAdapter.getTabs().get(index);
         try {
+            // .class вкладка — показуємо байткод-панель замість редактора
+            if (tab.isClassFile()) {
+                tabsAdapter.setActiveIndex(index);
+                isProgrammaticChange = true;
+                activeEditor.setText("");
+                isProgrammaticChange = false;
+                activeEditor.setEditable(false);
+                tabsAdapter.markModified(index, false);
+                tabsRecycler.scrollToPosition(index);
+                updateStatusFileName(tab.file);
+                fileTreeAdapter.setActiveFile(tab.file);
+                if (activeEditor == editor) leftTab = tab; else rightTab = tab;
+                switchBottomPanel(PANEL_BYTECODE);
+                return;
+            }
+
             String content = projectManager.readFile(tab.file);
             tabsAdapter.setActiveIndex(index);
             isProgrammaticChange = true;
@@ -996,7 +1971,7 @@ public class MainActivity extends AppCompatActivity {
             tabsRecycler.scrollToPosition(index);
             updateStatusFileName(tab.file);
             fileTreeAdapter.setActiveFile(tab.file);
-            
+
             if (activeEditor == editor) {
                 leftTab = tab;
             } else {
@@ -1200,10 +2175,214 @@ public class MainActivity extends AppCompatActivity {
         saveEditorToTab(activeEditor, tab);
     }
 
+    // ══════════════════════════════════════════════════════════
+    //  Auto-Import
+    // ══════════════════════════════════════════════════════════
+
+    private void autoImportBeforeRun() {
+        FileTab tab = tabsAdapter.getActiveTab();
+        if (tab == null || tab.file == null) return;
+        if (!tab.file.getName().endsWith(".java")) return;
+
+        String source = activeEditor.getText().toString();
+        List<AutoImportHelper.ImportSuggestion> suggestions =
+                AutoImportHelper.findMissingImports(this, projectManager.getProjectDir(), source);
+        if (!suggestions.isEmpty()) {
+            String updated = AutoImportHelper.addImportsAuto(source, suggestions);
+            isProgrammaticChange = true;
+            activeEditor.setText(updated);
+            isProgrammaticChange = false;
+            StringBuilder msg = new StringBuilder("Auto-imported:\n");
+            for (AutoImportHelper.ImportSuggestion s : suggestions) {
+                msg.append("  import ").append(s.fullImport).append(";\n");
+            }
+            appendConsole(msg.toString(), theme.textDim);
+        }
+    }
+
+    // ══════════════════════════════════════════════════════════
+    //  Markdown Preview
+    // ══════════════════════════════════════════════════════════
+
+    private void showMarkdownPreview() {
+        FileTab tab = tabsAdapter.getActiveTab();
+        if (tab == null || tab.file == null) {
+            Toast.makeText(this, R.string.toast_no_file_open, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        String name = tab.file.getName().toLowerCase(java.util.Locale.ROOT);
+        if (!name.endsWith(".md") && !name.endsWith(".markdown")) {
+            Toast.makeText(this, "Only Markdown files (.md) can be previewed", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String content = activeEditor.getText().toString();
+        if (content.trim().isEmpty()) {
+            Toast.makeText(this, "File is empty", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        boolean dark = theme != null && theme.dark;
+        android.text.SpannableStringBuilder rendered = MarkdownRenderer.render(content, dark, 16);
+
+        TextView preview = new TextView(this);
+        preview.setText(rendered);
+        preview.setTextSize(16);
+        preview.setPadding(32, 24, 32, 24);
+        preview.setLineSpacing(0, 1.4f);
+        preview.setBackgroundColor(dark ? 0xFF1E1E20 : 0xFFFFFFFF);
+        preview.setTextColor(dark ? MD_COLOR_TEXT : MD_COLOR_TEXT_LIGHT);
+        preview.setTextIsSelectable(true);
+
+        ScrollView scroll = new ScrollView(this);
+        scroll.addView(preview);
+        scroll.setBackgroundColor(dark ? 0xFF1E1E20 : 0xFFFFFFFF);
+
+        new AlertDialog.Builder(this)
+                .setTitle("Markdown preview")
+                .setView(scroll)
+                .setPositiveButton("Close", null)
+                .show();
+    }
+
+    private void showAutoImportDialog() {
+        FileTab tab = tabsAdapter.getActiveTab();
+        if (tab == null || tab.file == null) {
+            Toast.makeText(this, R.string.toast_no_file_open, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (!tab.file.getName().endsWith(".java")) {
+            Toast.makeText(this, "Auto-import only for .java files", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String source = activeEditor.getText().toString();
+        AutoImportHelper.analyzeAndSuggest(this, projectManager.getProjectDir(),
+                activeEditor.getText(), suggestions -> {
+                    if (suggestions.isEmpty()) {
+                        Toast.makeText(this, "No missing imports found", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    String[] items = new String[suggestions.size()];
+                    boolean[] checked = new boolean[suggestions.size()];
+                    for (int i = 0; i < suggestions.size(); i++) {
+                        items[i] = "import " + suggestions.get(i).fullImport + ";";
+                        checked[i] = true;
+                    }
+                    new AlertDialog.Builder(this)
+                            .setTitle("Add imports")
+                            .setMultiChoiceItems(items, checked, (d, w, isChecked) -> checked[w] = isChecked)
+                            .setPositiveButton("Add", (d, w) -> {
+                                List<AutoImportHelper.ImportSuggestion> toAdd = new ArrayList<>();
+                                for (int i = 0; i < suggestions.size(); i++) {
+                                    if (checked[i]) toAdd.add(suggestions.get(i));
+                                }
+                                if (!toAdd.isEmpty()) {
+                                    String updated = AutoImportHelper.addImportsAuto(
+                                            activeEditor.getText().toString(), toAdd);
+                                    isProgrammaticChange = true;
+                                    activeEditor.setText(updated);
+                                    isProgrammaticChange = false;
+                                    int idx = tabsAdapter.getActiveIndex();
+                                    if (idx >= 0) tabsAdapter.markModified(idx, true);
+                                }
+                            })
+                            .setNegativeButton("Cancel", null)
+                            .show();
+                });
+    }
+
+    // ══════════════════════════════════════════════════════════
+    //  JSON / XML Viewer
+    // ══════════════════════════════════════════════════════════
+
+    private void showFormattedView() {
+        FileTab tab = tabsAdapter.getActiveTab();
+        if (tab == null || tab.file == null) {
+            Toast.makeText(this, R.string.toast_no_file_open, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        String name = tab.file.getName().toLowerCase(java.util.Locale.ROOT);
+        boolean isJson = JsonXmlFormatter.isJsonFile(name);
+        boolean isXml = JsonXmlFormatter.isXmlFile(name);
+
+        if (!isJson && !isXml) {
+            Toast.makeText(this, "Only JSON and XML files can be formatted", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String content = activeEditor.getText().toString();
+        if (content.trim().isEmpty()) {
+            Toast.makeText(this, "File is empty", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        android.text.SpannableStringBuilder formatted;
+        if (isJson) {
+            formatted = JsonXmlFormatter.formatJson(content);
+        } else {
+            formatted = JsonXmlFormatter.formatXml(content);
+        }
+
+        TextView formattedOutput = new TextView(this);
+        formattedOutput.setText(formatted);
+        formattedOutput.setTypeface(Typeface.MONOSPACE);
+        formattedOutput.setTextSize(13);
+        formattedOutput.setBackgroundColor(theme.consoleBg);
+        formattedOutput.setTextColor(theme.consoleText);
+        formattedOutput.setPadding(24, 16, 24, 16);
+        formattedOutput.setTextIsSelectable(true);
+        formattedOutput.setHorizontallyScrolling(true);
+
+        ScrollView scroll = new ScrollView(this);
+        scroll.addView(formattedOutput);
+        scroll.setBackgroundColor(theme.consoleBg);
+
+        new AlertDialog.Builder(this)
+                .setTitle(name + " — formatted")
+                .setView(scroll)
+                .setPositiveButton("Copy", (d, w) -> {
+                    android.content.ClipboardManager cm = (android.content.ClipboardManager)
+                            getSystemService(CLIPBOARD_SERVICE);
+                    cm.setPrimaryClip(android.content.ClipData.newPlainText("formatted", content));
+                    Toast.makeText(this, R.string.toast_copied_clipboard, Toast.LENGTH_SHORT).show();
+                })
+                .setNeutralButton("Apply to editor", (d, w) -> {
+                    String pretty;
+                    if (isJson) {
+                        try {
+                            org.json.JSONObject obj = new org.json.JSONObject(content);
+                            pretty = obj.toString(2);
+                        } catch (Exception e1) {
+                            try {
+                                org.json.JSONArray arr = new org.json.JSONArray(content);
+                                pretty = arr.toString(2);
+                            } catch (Exception e2) {
+                                pretty = content;
+                            }
+                        }
+                    } else {
+                        pretty = content;
+                    }
+                    isProgrammaticChange = true;
+                    activeEditor.setText(pretty);
+                    isProgrammaticChange = false;
+                    int idx = tabsAdapter.getActiveIndex();
+                    if (idx >= 0) tabsAdapter.markModified(idx, true);
+                })
+                .setNegativeButton("Close", null)
+                .show();
+    }
+
     private void formatCurrentFile() {
         FileTab tab = tabsAdapter.getActiveTab();
         if (tab == null || tab.file == null) {
             Toast.makeText(this, R.string.toast_no_file_open, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        String name = tab.file.getName().toLowerCase(java.util.Locale.ROOT);
+        if (JsonXmlFormatter.isJsonFile(name) || JsonXmlFormatter.isXmlFile(name)) {
+            showFormattedView();
             return;
         }
         if (!tab.file.getName().endsWith(".java")) {
@@ -1239,6 +2418,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         saveCurrentToActiveTab();
+
+        if (activeTab.file.getName().endsWith(".java")) {
+            autoImportBeforeRun();
+        }
 
         if (projectManager.isMavenProject()) {
             isRunning = true;
@@ -1886,7 +3069,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQ_SETTINGS) {
-            recreate();
+            if (resultCode == RESULT_OK && data != null && data.getBooleanExtra(SettingsActivity.EXTRA_CHANGED, false)) {
+                recreate();
+            }
             return;
         }
         if (requestCode == REQ_LIB_MANAGER) {

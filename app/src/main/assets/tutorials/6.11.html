@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html  lang="uk">
 <head>
-<title>Java | Клас File. Робота з файлами та каталогами</title>
+<title>Java | Клас File. Робота з файлуми та каталогуми</title>
 <meta charset="utf-8" />
-<meta name="description" content="Работа с файлами и каталогами в языке программирования Java, класс File и его методы, створення, удаление и переименование файлов и папок ">
+<meta name="description" content="Работа с файлуми и каталогуми в языке програмирования Java, клас File и его методи, створення, видалення и переименование файлів и папок ">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -11,49 +11,49 @@
 <body>
 <div id="container">
 <div class="item center menC">
-     <h2>Клас File. Робота з файлами та каталогами</h2><div class="date">Останнє оновлення: 26.04.2018</div>
+     <h2>Клас File. Робота з файлуми та каталогуми</h2><div class="date">Останнє оновлення: 26.04.2018</div>
 
-	<p>Класс File, определенный в пакеті java.io, не работает напрямую с потоками. Его задачей є управление информацией о файлах и каталогах. Хотя на уровне операционной системы 
-файлы и каталоги отличаются, но в Java они описуються одним классом File.</p>
-<p>В зависимости от того, что повинен представлять об'єкт File - файл або каталог, мы можемо використовувати один из конструкторов для создания об'єкта:</p>
+	<p>Клас File, визначенийный в пакеті java.io, не работает напрямую с потіками. Его завданьей є управление информацией о файлух и каталогух. Хотя на уровне операционной системы 
+файли и каталоги отличаются, но в Java они описуються одним класом File.</p>
+<p>В зависимости от того, что повинен представлять об'єкт File - файл або каталог, мы можемо використовувати один из конструкторов для створенняя об'єкта:</p>
 <pre class="line-numbers"><code class="language-java">
 File(String путь_к_каталогу)
-File(String путь_к_каталогу, String имя_файла)
-File(File каталог, String имя_файла)
+File(String путь_к_каталогу, String ім'я_файлу)
+File(File каталог, String ім'я_файлу)
 </code></pre>
-<p>Например:</p>
+<p>Наприклад:</p>
 <pre class="line-numbers"><code class="language-java">
-// создаем об'єкт File для каталога
+// створюємо об'єкт File для каталогу
 File dir1 = new File("C://SomeDir");
-// создаем об'єкты для файлов, которые находятся в каталоге
+// створюємо об'єкты для файлів, которые находятся в каталогу
 File file1 = new File("C://SomeDir", "Hello.txt");
 File file2 = new File(dir1, "Hello2.txt");
 </code></pre>
-<p>Класс File имїїт ряд методів, которые дозволяють управлять файлами и каталогами. Рассмотрим некоторые из них:</p>
+<p>Клас File имїїт ряд методів, которые дозволяють управлять файлуми и каталогуми. Рассмотрим некоторые из них:</p>
 <ul>
-<li><p><span class="b">boolean createNewFile()</span>: створює новый файл по пути, який передан в конструктор. В случае удачного создания повертає 
+<li><p><span class="b">boolean createNewFile()</span>: створює новый файл по пути, який передан в конструктор. В случае удачного створенняя повертає 
 true, иначе false</p></li>
 <li><p><span class="b">boolean delete()</span>: видаляє каталог або файл по пути, який передан в конструктор. При удачном удалении повертає 
 true.</p></li>
-<li><p><span class="b">boolean exists()</span>: проверяет, существует ли по указанному в конструкторе пути файл або каталог. И якщо файл або каталог существует, 
+<li><p><span class="b">boolean exists()</span>: проверяет, існує ли по указанному в конструкторе пути файл або каталог. И якщо файл або каталог існує, 
 то повертає true, иначе повертає false</p></li>
 <li><p><span class="b">String getAbsolutePath()</span>: повертає абсолютный путь для пути, переданного в конструктор об'єкта</p></li>
-<li><p><span class="b">String getName()</span>: повертає краткое имя файла або каталога</p></li>
-<li><p><span class="b">String getParent()</span>: повертає имя родительского каталога</p></li>
-<li><p><span class="b">boolean isDirectory()</span>: повертає значение true, якщо по указанному пути располагается каталог</p></li>
-<li><p><span class="b">boolean isFile()</span>: повертає значение true, якщо по указанному пути находится файл</p></li>
-<li><p><span class="b">boolean isHidden()</span>: повертає значение true, якщо каталог або файл є скрытыми</p></li>
-<li><p><span class="b">long length()</span>: повертає размер файла в байтах</p></li>
-<li><p><span class="b">long lastModified()</span>: повертає час последнего изменения файла або каталога. Значение представляє количество 
+<li><p><span class="b">String getName()</span>: повертає краткое ім'я файлу або каталогу</p></li>
+<li><p><span class="b">String getParent()</span>: повертає ім'я родительского каталогу</p></li>
+<li><p><span class="b">boolean isDirectory()</span>: повертає значення true, якщо по указанному пути располагается каталог</p></li>
+<li><p><span class="b">boolean isFile()</span>: повертає значення true, якщо по указанному пути находится файл</p></li>
+<li><p><span class="b">boolean isHidden()</span>: повертає значення true, якщо каталог або файл є скрытыми</p></li>
+<li><p><span class="b">long length()</span>: повертає размер файлу в байтах</p></li>
+<li><p><span class="b">long lastModified()</span>: повертає час післяднего изменения файлу або каталогу. Значення представляє кількість 
 миллисекунд, прошедших с начала эпохи Unix</p></li>
-<li><p><span class="b">String[] list()</span>: повертає массив файлов и подкаталогов, которые находятся в определенном каталоге</p></li>
-<li><p><span class="b">File[] listFiles()</span>: повертає массив файлов и подкаталогов, которые находятся в определенном каталоге</p></li>
-<li><p><span class="b">boolean mkdir()</span>: створює новый каталог и при удачном создании повертає значение true</p></li>
+<li><p><span class="b">String[] list()</span>: повертає масив файлів и підкаталогов, которые находятся в визначенийном каталогу</p></li>
+<li><p><span class="b">File[] listFiles()</span>: повертає масив файлів и підкаталогов, которые находятся в визначенийном каталогу</p></li>
+<li><p><span class="b">boolean mkdir()</span>: створює новый каталог и при удачном створенні повертає значення true</p></li>
 <li><p><span class="b">boolean renameTo(File dest)</span>: переименовывает файл або каталог</p></li>
 </ul>
-<h3>Работа с каталогами</h3>
+<h3>Работа с каталогуми</h3>
 <p>Если об'єкт File представляє каталог, то его метод <code>isDirectory()</code> повертає <code>true</code>. И поцему мы можемо отримати его 
-содержимое - вложенные подкаталоги и файлы за допомогою методів <code>list()</code> и <code>listFiles()</code>. Получим все подкаталоги и файлы в определенном каталоге:</p>
+вміст - вложенные підкаталоги и файли за допомогою методів <code>list()</code> и <code>listFiles()</code>. Получим все підкаталоги и файли в визначенийном каталогу:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.io.File;
 
@@ -61,12 +61,12 @@ public class Program {
 
     public static void main(String[] args) {
         
-        // определяем об'єкт для каталога
+        // определяем об'єкт для каталогу
         File dir = new File("C://SomeDir");
         // якщо об'єкт представляє каталог
         if(dir.isDirectory())
         {
-            // получаем все вложенные об'єкты в каталоге
+            // отримуємо все вложенные об'єкты в каталогу
             for(File item : dir.listFiles()){
              
                  if(item.isDirectory()){
@@ -82,7 +82,7 @@ public class Program {
     }
 }
 </code></pre>
-<p>Теперь выполним ще ряд операций с каталогами, як удаление, переименование и створення:</p>
+<p>Теперь виконаємо ще ряд операцій с каталогуми, як видалення, переименование и створення:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.io.File;
 
@@ -90,7 +90,7 @@ public class Program {
 
     public static void main(String[] args) {
         
-        // определяем об'єкт для каталога
+        // определяем об'єкт для каталогу
         File dir = new File("C://SomeDir//NewDir");
         boolean created = dir.mkdir();
         if(created)
@@ -105,8 +105,8 @@ public class Program {
     } 
 }
 </code></pre>
-<h3>Работа с файлами</h3>
-<p>Работа с файлами аналогична работе с каталога. Наприклад, получим дані по одному из файлов и создадим ще один файл:</p>
+<h3>Работа с файлуми</h3>
+<p>Работа с файлуми аналогична работе с каталогу. Наприклад, получим дані по одному из файлів и створимо ще один файл:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.io.File;
 import java.io.IOException;
@@ -115,7 +115,7 @@ public class Program {
 
     public static void main(String[] args) {
         
-        // определяем об'єкт для каталога
+        // определяем об'єкт для каталогу
         File myFile = new File("C://SomeDir//notes.txt");
         System.out.println("File name: " + myFile.getName());
         System.out.println("Parent folder: " + myFile.getParent());
@@ -135,7 +135,7 @@ public class Program {
         else
             System.out.println("File can not be written");
         
-        // создадим новый файл
+        // створимо новый файл
         File newFile = new File("C://SomeDir//MyFile");
         try
         {
@@ -150,7 +150,7 @@ public class Program {
     } 
 }
 </code></pre>
-<p>При создании нового файла метод <code>createNewFile()</code> в случае неудачи выбрасывает исключение <span class="b">IOException</span>, поцему нам треба 
+<p>При створенні нового файлу метод <code>createNewFile()</code> в случае неудачи выбрасывает виняток <span class="b">IOException</span>, поцему нам треба 
 его отлавливать, наприклад, в блоке try...catch, як робиться в примере выше.</p>
 
   </div>

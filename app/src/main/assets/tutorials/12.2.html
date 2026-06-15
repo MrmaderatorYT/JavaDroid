@@ -3,7 +3,7 @@
 <head>
 <title>Java | Великі числа BigInteger та BigDecimal</title>
 <meta charset="utf-8" />
-<meta name="description" content="Операции с очень большими числами в языке программирования Java, классы BigInteger и BigDecimal">
+<meta name="description" content="Операції с дуже большими числами в языке програмирования Java, класы BigInteger и BigDecimal">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -13,18 +13,18 @@
 <div class="item center menC">
      <h1>Великі числа BigInteger та BigDecimal</h1><div class="date">Останнє оновлення: 16.09.2025</div>
 
-	<p>Встроенные примитивные числовые типы не всегда можуть подходить для определенных программ. Наприклад, необхідно хранить и використовувати в 
-программе очень большие числа, которые выходят за пределы допустимых значений для типов long и double. Крім того, при вычислениями с числами с плавающей точкой мы можемо столкнуться с рядом не очень приятных особенностей.</p>
+	<p>Встроенные примитивные числовые типи не всегда можуть підходить для визначенийных програм. Наприклад, необхідно хранить и використовувати в 
+програме дуже большие числа, которые выходят за пределы допустимых значений для типів long и double. Крім того, при вычислениями с числами с плавающей точкой мы можемо столкнуться с рядом не дуже приятных особенностей.</p>
 <h3>Особенности при вычислениях с числами с плавающей точкой</h3>
 
-<p>Все вычисления с плавающей точкой следуют спецификации IEEE 754. В частности, существует три специальных значения с плавающей точкой для обозначения переполнений и ошибок:</p>
+<p>Все вычисления с плавающей точкой следуют спецификации IEEE 754. Зокрема, існує три специальных значення с плавающей точкой для обозначення переполнений и ошибок:</p>
 <ul>
 <li><p>Положительная бесконечность (Positive infinity)</p></li>
 <li><p>Отрицательная бесконечность (Negative infinity)</p></li>
 <li><p>NaN (не число)</p></li>
 </ul>
 
-<p>Для представления цих значений в Java есть специальные константы:</p>
+<p>Для представления цих значений в Java есть специальные константи:</p>
 <ul>
 <li><p><code>Double.POSITIVE_INFINITY</code> (для типу <code>double</code>) и <code>Float.POSITIVE_INFINITY</code> (для типу <code>float</code>)</p></li>
 <li><p><code>Double.NEGATIVE_INFINITY</code> и <code>Float.NEGATIVE_INFINITY</code> </p></li>
@@ -56,7 +56,7 @@ public class Program{
 	}
 }
 </code></pre>
-<p>Мы можемо використовувати эти константы для проверки результата вычислений. Например:</p>
+<p>Мы можемо використовувати эти константи для проверки результата вычислений. Наприклад:</p>
 <pre class="line-numbers"><code class="language-java">
 public class Program{
      
@@ -89,7 +89,7 @@ public class Program{
             System.out.printf("result is %f\n", result);
 	}
 }</code></pre>
-<p>В целом йде відзначити, что числа с плавающей точкой не подходят для финансовых вычислений, где ошибки округления недопустимы. Например:</p>
+<p>В целом йде відзначити, что числа с плавающей точкой не підходят для финансовых вычислений, где ошибки округления недопустимы. Наприклад:</p>
 <pre class="line-numbers"><code class="language-java">
 public class Program{
      
@@ -99,11 +99,11 @@ public class Program{
 	}
 }
 </code></pre>
-<p>Данная программа выведет число <code>0.8999999999999999</code>, а не <code>0.9</code>. Такие ошибки округления возникают из-за того, что числа с плавающей точкой представлены в двоичной системе счисления. 
-А точного двоичного представления дроби 1/10 не существует. Тому якщо требуются точные вычисления без ошибок округления, то лучше використовувати класс <code>BigDecimal</code>.</p>
+<p>Данная програма выведет число <code>0.8999999999999999</code>, а не <code>0.9</code>. Такие ошибки округления возникают из-за того, что числа с плавающей точкой представлены в двоичной системе счисления. 
+А точного двоичного представления дроби 1/10 не існує. Тому якщо требуются точные вычисления без ошибок округления, то лучше використовувати клас <code>BigDecimal</code>.</p>
 
 <h3>BigDecimal</h3>
-<p>Основные методы класса BigDecimal:</p>
+<p>Основные методи класа BigDecimal:</p>
 <ul>
 <li><p><code>BigDecimal add(BigDecimal other)</code>: повертає сумму двух чисел</p></li>
 <li><p><code>BigDecimal subtract(BigDecimal other)</code>: повертає разность двух чисел</p></li>
@@ -111,7 +111,7 @@ public class Program{
 <li><p><code>BigDecimal divide(BigDecimal other)</code>: повертає частное двух чисел</p></li>
 <li><p><code>BigDecimal divide(BigDecimal other, RoundingMode mode)</code>: результат деления двух чисел, округленное в соответствии с режимом mode</p></li>
 <li><p><code>int compareTo(BigDecimal other)</code>: сравнивает два числа. Повертає -1, якщо текущий об'єкт меньше числа other, 1 - якщо текущий об'єкт больше и 0 - якщо числа равны</p></li>
-<li><p><code>static BigDecimal valueOf(double x)</code>: повертає об'єкт BigDecimal, значение которого равно числу, переданному в качестве параметра</p></li>
+<li><p><code>static BigDecimal valueOf(double x)</code>: повертає об'єкт BigDecimal, значення которого равно числу, переданному в качестве параметра</p></li>
 <li><p><code>double doubleValue()</code>: преобразует об'єкт BigDecimal в double</p></li>
 <li><p><code>float floatValue()</code>: преобразует об'єкт BigDecimal в float</p></li>
 </ul>
@@ -134,8 +134,8 @@ public class Program {
 </code></pre>
 
 <h3>BigInteger</h3>
-<p>Для работы с очень большими целочисленными значениями числовыми данными можна використовувати тип <span class="b">BigInteger</span> из 
-пакета <span class="b">java.math</span>. Основные методы класса BigInteger:</p>
+<p>Для работы с дуже большими целочисленными значеннями числовыми данными можна використовувати тип <span class="b">BigInteger</span> из 
+пакету <span class="b">java.math</span>. Основные методи класа BigInteger:</p>
 <ul>
 <li><p><code>BigInteger add(BigInteger other)</code>: повертає сумму двух чисел</p></li>
 <li><p><code>BigInteger subtract(BigInteger other)</code>: повертає разность двух чисел</p></li>
@@ -144,13 +144,13 @@ public class Program {
 <li><p><code>BigInteger mod(BigInteger other)</code>: повертає остаток от целочисленного деления двух чисел</p></li>
 <li><p><code>BigInteger sqrt()</code>: повертає квадратный корень числа</p></li>
 <li><p><code>int compareTo(BigInteger other)</code>: сравнивает два числа. Повертає -1, якщо текущий об'єкт меньше числа other, 1 - якщо текущий об'єкт больше и 0 - якщо числа равны</p></li>
-<li><p><code>static BigInteger valueOf(long x)</code>: повертає об'єкт BigInteger, значение которого равно числу, переданному в качестве параметра</p></li>
+<li><p><code>static BigInteger valueOf(long x)</code>: повертає об'єкт BigInteger, значення которого равно числу, переданному в качестве параметра</p></li>
 <li><p><code>int intValue()</code>: конвертирует об'єкт BigInteger в об'єкт int</p></li>
 <li><p><code>byte byteValue()</code>: преобразует об'єкт BigInteger в byte</p></li>
 <li><p><code>short shortValue()</code>: преобразует об'єкт BigInteger в short</p></li>
 <li><p><code>long longValue()</code>: преобразует об'єкт BigInteger в long</p></li>
 </ul>
-<p>Пример использования класса BigInteger:</p>
+<p>Пример использования класа BigInteger:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.math.*;
 
@@ -169,8 +169,8 @@ public class Program {
 }
 </code></pre>
 
-<p>Варто відзначити, несмотря на то, что об'єкты BigInteger и BigDecimal представляють числа, мы не можемо застосовувати с ними стандартные арифметические операции. Все математические 
-действия с данными об'єктами идут через их методы.</p>
+<p>Варто відзначити, несмотря на то, что об'єкты BigInteger и BigDecimal представляютьь числа, мы не можемо застосовувати с ними стандартные арифметические операції. Все математические 
+действия с данными об'єктами идут через их методи.</p>
 
   </div>
 

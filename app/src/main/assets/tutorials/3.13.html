@@ -3,7 +3,7 @@
 <head>
 <title>Java | Посилальні типи та копіювання об&#x27;єктів</title>
 <meta charset="utf-8" />
-<meta name="description" content="Ссылочные типы в Java, их отличие от примитивных типов, клонирование об'єктов, полное и неполное копирование, інтерфейс Clonable">
+<meta name="description" content="Ссылочные типи в Java, их отличие от примитивных типів, клонирование об'єктов, полное и неполное копирование, інтерфейс Clonable">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -13,7 +13,7 @@
 <div class="item center menC">
      <h1>Посилальні типи та копіювання об&#x27;єктів</h1><div class="date">Останнє оновлення: 29.09.2025</div>
 
-	<p>При роботі з об&#x27;єктами класів треба враховувати, що всі вони представляютьь типи посилань, тобто вказують на якийсь об&#x27;єкт, 
+	<p>При роботі з об&#x27;єктами класів треба враховувати, що всі вони представляютььь типи посилань, тобто вказують на якийсь об&#x27;єкт, 
 розташований у пам&#x27;яті. Щоб зрозуміти можливі труднощі, з якими можемоо зіткнутися, розглянемо приклад:</p>
 <pre class="line-numbers"><code class="language-java">
 public class Program{
@@ -42,9 +42,9 @@ class Person{
 об&#x27;єкт Tom. Тому що після присвоєння вони вказують на ту саму область у пам&#x27;яті, де власне дані про об&#x27;єкт Person і його полях і зберігаються.</p>
 <img src="pics/3.2_1.png" alt="Клонирование об'єктов в Java" />
 <h3>Метод clone</h3>
-<p>Щоб избежать цей проблемы, необхідно создать отдельный об'єкт для змінної bob, наприклад, за допомогою метода <code>clone</code>:</p>
+<p>Щоб избежать цей проблемы, необхідно створити отдельный об'єкт для змінної bob, наприклад, за допомогою методу <code>clone</code>:</p>
 <pre class="line-numbers"><code class="language-java">
-class Person implements Cloneable{  // применяем інтерфейс  Cloneable
+class Person implements Cloneable{  // застосовуємо інтерфейс  Cloneable
 
     String name;
      
@@ -60,10 +60,10 @@ class Person implements Cloneable{  // применяем інтерфейс  Cl
     }
 }
 </code></pre>
-<p>Для реализации клонирования класс Person повинен применить інтерфейс <span class="b">Cloneable</span>, який определяет метод <code>clone</code>. 
-Реализация цього метода просто повертає вызов метода <code>clone</code> для родительского класса - то есть класса Object с преобразованием к типу Person.</p>
-<p>Крім того, на случай якщо класс не поддерживает клонирование, метод повинен выбрасывать исключение <span class="b">CloneNotSupportedException</span>, 
-что определяется за допомогою оператора <span class="b">throws</span>.</p>
+<p>Для реалізації клонирования клас Person повинен пріменіть інтерфейс <span class="b">Cloneable</span>, який визначає метод <code>clone</code>. 
+Реалізація цього методу просто повертає вызов методу <code>clone</code> для родительского класа - то есть класа Object с преобразованием к типу Person.</p>
+<p>Крім того, на случай якщо клас не піддерживает клонирование, метод повинен выбрасывать виняток <span class="b">CloneNotSupportedException</span>, 
+что визначаєся за допомогою оператора <span class="b">throws</span>.</p>
 <p>Потім за допомогою виклику цього ми можемоо здійснити копіювання:</p>
 <pre class="line-numbers"><code class="language-java">
 public class Program{
@@ -86,8 +86,8 @@ public class Program{
 </code></pre>
 
 <h3>Габоке копіювання</h3>
-<p>Однак выше описанный способ осуществляет <span class="b">неповне копіювання</span> (shallow copy) и подойдет, якщо клонируемый об'єкт не містить сложных об'єктов. Наприклад, 
-пусть класс Person имїїт поле, которое хранит ссылку на об'єкт Company - условно место работы человека:</p>
+<p>Однак выше описанный способ осуществляет <span class="b">неповне копіювання</span> (shallow copy) и підойдет, якщо клонируемый об'єкт не містить сложных об'єктов. Наприклад, 
+пусть клас Person имїїт поле, которое хранит ссылку на об'єкт Company - условно место работы человека:</p>
 <pre class="line-numbers"><code class="language-java">
 class Company{
     
@@ -116,7 +116,7 @@ class Person implements Cloneable{
     }
 }
 </code></pre>
-<p>Класс Person по прежнему реализует метод <code>clone()</code>, то есть с копированием вроде не повинно быть проблем:</p>
+<p>Клас Person по прежнему реалізує метод <code>clone()</code>, то есть с копированием вроде не повинно быть проблем:</p>
 <pre class="line-numbers"><code class="language-java">
 public class Program{
       
@@ -141,7 +141,7 @@ public class Program{
     }
 }
 </code></pre>
-<p>Але подивимося консольний висновок програми:</p>
+<p>Але підивимося консольний висновок програми:</p>
 <pre class="line-numbers"><code class="language-none">
 Person Tom works in Google
 Person Bob works in Google
@@ -163,7 +163,7 @@ class Company implements Cloneable{
     }
 }
 </code></pre>
-<p>И затем исправим метод <code>clone()</code> в классе Person наступним чином:</p>
+<p>И затем исправим метод <code>clone()</code> в класе Person наступним чином:</p>
 <pre class="line-numbers"><code class="language-java">
 class Person implements Cloneable{
 

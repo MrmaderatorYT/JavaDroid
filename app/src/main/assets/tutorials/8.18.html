@@ -3,7 +3,7 @@
 <head>
 <title>Java | CompletableFuture та проміси. Обробка результату асинхронних завдань</title>
 <meta charset="utf-8" />
-<meta name="description" content="Обработка результата асинхронных задач за допомогою обратных вызовов в языке программирования Java, класс CompletableFuture и реализация промисов (promise), построение цепочки вызовов и методы thenAccept, thenApply">
+<meta name="description" content="Обробка результата асинхронных завдань за допомогою обратных вызовов в языке програмирования Java, клас CompletableFuture и реалізація промисов (promise), построение цепочки вызовов и методи thenAccept, thenApply">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -13,81 +13,81 @@
 <div class="item center menC">
      <h1>CompletableFuture та проміси. Обробка результату асинхронних завдань</h1><div class="date">Останнє оновлення: 29.10.2025</div>
 
-<p>Об'єкт Future, який представляє асинхронную задачу, дозволяє отримати результат задачи за допомогою метода <code>get()</code>, який приведет 
-к блокировки текущего потока до тех пор, поки результат асинхронной задачи не станет доступен. Класс <b>CompletableFuture</b>, який реализует інтерфейс Future, 
-надає альтернативний механизм для получения результата. <b>CompletableFuture</b> использует функцию обратного вызова, которая вызвается с результатом асинхронной задачи, когда он станет доступен. 
-Можна сказать, что <b>CompletableFuture</b> - це <code>Future</code>, який может быть явно завершен (с установкой его значения и статуса)</p>
-<p>Крім того, <b>CompletableFuture</b> реализует інтерфейс <code>CompletionStage</code>, який представляє этап асинхронного вычисления и выполняет действие або вычисляет значение после 
-завершения другого этапа. Можна сказать, что <b>CompletableFuture</b> дозволяє реализовать нечто похожїї на промисы (promise) в некоторых языках программирования (як, наприклад, в JavaScript)</p>
+<p>Об'єкт Future, який представляє асинхронную завданьу, дозволяє отримати результат завданьі за допомогою методу <code>get()</code>, який приведет 
+к блокировки текущего потіка до тех пор, поки результат асинхронной завданьі не станет доступен. Клас <b>CompletableFuture</b>, який реалізує інтерфейс Future, 
+надає альтернативний механизм для получения результата. <b>CompletableFuture</b> використовує функцію обратного вызова, которая вызвается с результатом асинхронной завданьі, когда он станет доступен. 
+Можна сказать, что <b>CompletableFuture</b> - це <code>Future</code>, який может быть явно завершен (с установкой его значення и статуса)</p>
+<p>Крім того, <b>CompletableFuture</b> реалізує інтерфейс <code>CompletionStage</code>, який представляє этап асинхронного вычисления и виконує действие або вычисляет значення після 
+завершення другого этапа. Можна сказать, что <b>CompletableFuture</b> дозволяє реализовать нечто похожїї на промисы (promise) в некоторых языках програмирования (як, наприклад, в JavaScript)</p>
 
 <h3>Створення CompletableFuture</h3>
-<p>Для непосредственного создания об'єкта <b>CompletableFuture</b> можна використовувати конструктор без параметров:</p>
+<p>Для непосредственного створенняя об'єкта <b>CompletableFuture</b> можна використовувати конструктор без параметрів:</p>
 <pre class="line-numbers"><code class="language-java">CompletableFuture<Integer> future = new CompletableFuture<Integer>();</code></pre>
-<p>Класс <code>CompletableFuture&lt;T&gt;</code> є обобщенным и типизируется типом результата. Так, в коде выше предполагается, что результатом асинхронной задачи буде значение типу <code>Integer</code>.</p>
-<p>После создания об'єкта за допомогою конструктора его можна настроить на выполнение якой-або задачи. Однак класс <code>CompletableFuture</code> також представляє ряд методів, которые дозволяють создать об'єкт 
-данного класса с вже добавленной асинхронной задачей, яку йде выполнить. Наприклад, це статический метод <code>CompletableFuture&lt;U&gt;.supplyAsync()</code>:</p>
+<p>Клас <code>CompletableFuture&lt;T&gt;</code> є обобщенным и типизируется типом результата. Так, в коді выше предполагается, что результатом асинхронной завданьі буде значення типу <code>Integer</code>.</p>
+<p>Після створенняя об'єкта за допомогою конструктора его можна настроить на виконання якой-або завданьі. Однак клас <code>CompletableFuture</code> також представляє ряд методів, которые дозволяють створити об'єкт 
+данного класа с вже добавленной асинхронной завданьей, яку йде выполнить. Наприклад, це статический метод <code>CompletableFuture&lt;U&gt;.supplyAsync()</code>:</p>
 <pre class="line-numbers"><code class="language-java">
 static &lt;U&gt; CompletableFuture&lt;U&gt; supplyAsync(Supplier&lt;U&gt; supplier)
 static &lt;U&gt; CompletableFuture&lt;U&gt; supplyAsync(Supplier&lt;U&gt; supplier, Executor executor)
 </code></pre>
-<p>Цет метод имїїт две версии. Обе версии в качестве результата повертає новый об'єкт <code>CompletableFuture</code>. И обе цих версии в качестве первого параметра принимают 
-об'єкт <code>Supplier<T></code>, який и представляє выполняемое действие. Данный інтерфейс є функциональным и имїїт один метод <code>get()</code>, який повертає некоторое значение</p>
+<p>Цет метод имїїт две версии. Обе версии в качестве результата повертає новый об'єкт <code>CompletableFuture</code>. И обе цих версии в качестве первого параметра приймають 
+об'єкт <code>Supplier<T></code>, який и представляє выполняемое действие. Данный інтерфейс є функциональным и имїїт один метод <code>get()</code>, який повертає некоторое значення</p>
 <pre class="line-numbers"><code class="language-java">
 interface Supplier&lt;T&gt;{
     T get();
 }
 </code></pre>
-<p>Результат метода <code>get()</code> затем передаєся в обратный вызов - асинхронную задачу, которая и обробляє данный результат и которая устанавливается за допомогою дополнительных методів.</p>
+<p>Результат методу <code>get()</code> затем передаєся в обратный вызов - асинхронную завданьу, которая и обробляє данный результат и которая встановлюєся за допомогою дополнительных методів.</p>
 
-<p>Различие между цими обеими версиями соварто лишь в том, як именно виконується асинхронная задача. Під второй версии вторым параметром передаєся об'єкт <code>Executor</code>, який и выполняет задачу. 
-Для первой же версии асинхронная задача виконується за допомогою потока из пула <code>ForkJoinPool</code> (<code>ForkJoinPool</code> представляє специализированный пул потоков, разработанный для параллельного программирования). То есть при выполнении задач 
-вы можете положиться на ForkJoinPool, або для большего контроля предоставить свой об'єкт Executor, який выполнит задачу.</p>
+<p>Различие між цими обеими версиями соварто лишь в том, як именно виконується асинхронная завданьа. Під второй версии вторым параметром передаєся об'єкт <code>Executor</code>, який и виконує завданьу. 
+Для первой же версии асинхронная завданьа виконується за допомогою потіка из пула <code>ForkJoinPool</code> (<code>ForkJoinPool</code> представляє специализированный пул потіков, разработанный для параллельного програмирования). То есть при выполнении завдань 
+вы можете положиться на ForkJoinPool, або для большего контроля предоставить свой об'єкт Executor, який выполнит завданьу.</p>
 <p>Рассмотрим на простейшем примере вычисления факториала:</p>
 <pre class="line-numbers"><code class="language-java">
 int number = 5;  // исходное число для вычисления факториала
 
 CompletableFuture&lt;Integer&gt; future = CompletableFuture.supplyAsync(() -&gt; {
  
-    // якщо число меньше 1, генерируем исключение
+    // якщо число менше 1, генерируем виняток
     if(number &lt; 1) throw new RuntimeException("Number must be greater than 0");
 
     int n = 1;
     int result = 1;
     while(n &lt;= number) result *= n++; 
-    return result;  // возвращаем результат задачи
+    return result;  // повертаємо результат завданьі
 });
 </code></pre>
-<p>В данном случае в метод <code>CompletableFuture.supplyAsync()</code> неявно передаєся об'єкт Supplier в виде лямбда-выражения. Це лямбда-выражение берет внешнюю переменную number и вычисляет її факториал и повертає результат - це и буде результат метода 
-<code>get()</code>. Конечно, можна буво бы и явным чином определить об'єкт <code>Supplier</code>:</p>
+<p>У даному випадку в метод <code>CompletableFuture.supplyAsync()</code> неявно передаєся об'єкт Supplier в виде лямбда-выражения. Це лямбда-выражение берет внешнюю змінну number и вычисляет її факториал и повертає результат - це и буде результат методу 
+<code>get()</code>. Конечно, можна буво бы и явным чином визначити об'єкт <code>Supplier</code>:</p>
 <pre class="line-numbers"><code class="language-java">
 int number = 5;  // исходное число для вычисления факториала
 
 Supplier&lt;Integer&gt; task = () -&gt; {
  
-    // якщо число меньше 1, генерируем исключение
+    // якщо число менше 1, генерируем виняток
     if(number &lt; 1) throw new RuntimeException("Number must be greater than 0");
 
     int n = 1;
     int result = 1;
     while(n &lt;= number) result *= n++;
-    return result;  // возвращаем результат задачи
+    return result;  // повертаємо результат завданьі
 };
 CompletableFuture&lt;Integer&gt; future = CompletableFuture.supplyAsync(task);
 </code></pre>
-<p>Обратите внимание, что функция, которая представляє інтерфейс <code>Supplier</code>, <span class="b">не может</span> генерировать проверяемое исключение (checked excetion). Тому в примере выше для генерации исключения 
+<p>Зверніть увагу, что функція, которая представляє інтерфейс <code>Supplier</code>, <span class="b">не может</span> генерировать проверяемое виняток (checked excetion). Тому в примере выше для генерации винятки 
 при передаче некорректного числа використовується тип <code>RuntimeException</code>.</p>
-<h3>Добавление обратного вызова</h3>
-<p>После создания <code>CompletableFuture</code> и установки выполняемой задачи нам треба добавить обратный вызов, який буде вызываться при завершении <code>CompletableFuture</code>. Для цього в классе 
-определен большой набор методів. Приведу лишь некоторые:</p>
+<h3>Додавання обратного вызова</h3>
+<p>Після створенняя <code>CompletableFuture</code> и установки выполняемой завданьі нам треба добавить обратный вызов, який буде вызываться при завершении <code>CompletableFuture</code>. Для цього в класе 
+визначений большой набор методів. Приведу лишь некоторые:</p>
 <ul>
-<li><p><code>CompletableFuture&lt;Void&gt; thenAccept(Consumer&lt;? super T&gt; action)</code></p><p>Применяет функцию к результату и повертає <code>void</code>.</p></li>
-<li><p><code>&lt;U&gt; CompletableFuture&lt;U&gt; thenApply(Function&lt;? super T, ? extends U&gt; fn)</code></p><p>Применяет функцию к результату.</p></li>
+<li><p><code>CompletableFuture&lt;Void&gt; thenAccept(Consumer&lt;? super T&gt; action)</code></p><p>Застосовує функцію к результату и повертає <code>void</code>.</p></li>
+<li><p><code>&lt;U&gt; CompletableFuture&lt;U&gt; thenApply(Function&lt;? super T, ? extends U&gt; fn)</code></p><p>Застосовує функцію к результату.</p></li>
 <li><p><code>CompletableFuture&lt;Void&gt; thenRun(Runnable action)</code></p><p>Виконує Runnable с результатом типу <code>void</code>.</p></li>
-<li><p><code>&lt;U&gt; CompletableFuture&lt;U&gt; thenCompose(Function&lt;? super T, ? extends CompletionStage&lt;U&gt;&gt; fn)</code></p><p>Вызывает функцию для результата и выполняет возвращаемый об'єкт Future.</p></li>
+<li><p><code>&lt;U&gt; CompletableFuture&lt;U&gt; thenCompose(Function&lt;? super T, ? extends CompletionStage&lt;U&gt;&gt; fn)</code></p><p>Вызывает функцію для результата и виконує повертаємоый об'єкт Future.</p></li>
 </ul>
-<p>Наприклад, используем метод <code>thenAccept()</code>, який приймає об'єкт інтерфейса <b>Consumer</b>. Цет інтерфейс имїїт метод <code>accept()</code>, який приймає некоторое значение:</p>
+<p>Наприклад, використовуємо метод <code>thenAccept()</code>, який приймає об'єкт інтерфейса <b>Consumer</b>. Цет інтерфейс имїїт метод <code>accept()</code>, який приймає некоторое значення:</p>
 <pre class="line-numbers"><code class="language-java">void accept(T t)</code></pre>
-<p>Таким чином, обратный вызов повинен представлять функцию, которая приймає значение произвольного типу, а в качестве возвращаемого типу испольует <code>void</code></p>
+<p>Таким чином, обратный вызов повинен представлять функцію, которая приймає значення произвольного типу, а в качестве повертаємоого типу испольует <code>void</code></p>
 <p>Рассмотрим на примере факториала:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.concurrent.*;
@@ -101,7 +101,7 @@ class Program{
  
         int number = 5;  // исходное число для вычисления факториала
        
-        // определяем задачу, которая вычисляет факториал
+        // определяем завданьу, которая вычисляет факториал
         Supplier&lt;Integer&gt; task = () -&gt; {
 
             if(number &lt; 1) throw new RuntimeException("Number must be greater than 0");
@@ -111,16 +111,16 @@ class Program{
 
                 result *= n++;
             }
-            return result;  // возвращаем результат задачи
+            return result;  // повертаємо результат завданьі
         };
  
         CompletableFuture&lt;Integer&gt; future = CompletableFuture.supplyAsync(task);
 
-        // передаем в thenAccept обратный вызов
+        // передаємо в thenAccept обратный вызов
         future.thenAccept(result -&gt; System.out.printf("factorial of %d is %d\n", number, result));
 
-        // future.thenAccept - не блокує основной поток 
-        // и одновременно мы можемо выполнять в основном потоке деяку работу 
+        // future.thenAccept - не блокує основной потік 
+        // и одновременно мы можемо выполнять в основном потіке деяку работу 
         System.out.println("Main thread works...");
  
         Thread.sleep(2000);
@@ -131,22 +131,22 @@ class Program{
 </code></pre>
 <p>Рассмотрим на передачу обратного вызова:</p>
 <pre class="line-numbers"><code class="language-java">future.thenAccept(result -&gt; System.out.printf("factorial of %d is %d\n", number, result));</code></pre>
-<p>Здесь в метод передаєся лямбда-выражение, в котором параметр result представляє результ асинхронной задачи - результат вычисления факториала. Тело лямбда-выражения же представляє вывод результата вычисления.</p>
-<p>Если суммировать все по этапам, то программа буде выполняться наступним чином:</p>
+<p>Здесь в метод передаєся лямбда-выражение, в котором параметр result представляє результ асинхронной завданьі - результат вычисления факториала. Тело лямбда-выражения же представляє вивід результата вычисления.</p>
+<p>Если суммировать все по этапам, то програма буде выполняться наступним чином:</p>
 
-<li><p><code>System.out.println("Main thread started...")</code></p><p> Основной поток (main) запускаєся и выводит це сообщение.</p></li>
-<li><p><code>CompletableFuture<Integer> future = CompletableFuture.supplyAsync(task);</code></p><p>Передає ранїї определенную задачу <code>task</code> (вычисление факториала) в общий пул потоков (по умолчанию <code>ForkJoinPool.commonPool()</code>). Эта задача начинает выполняться параллельно в другом потоке.</p></li>
+<li><p><code>System.out.println("Main thread started...")</code></p><p> Основной потік (main) запускуєся и виводить це сообщение.</p></li>
+<li><p><code>CompletableFuture<Integer> future = CompletableFuture.supplyAsync(task);</code></p><p>Передає раніше визначену завдання <code>task</code> (обчислення факторіалу) в общий пул потіков (по умолчанию <code>ForkJoinPool.commonPool()</code>). Эта завданьа начинает выполняться параллельно в другом потіке.</p></li>
 <li><p><code>future.thenAcceptAsync(result -&gt; System.out.printf("factorial of %d is %d\n", number, result))</code></p><p>Регистрирует обратный вызов (колбэк). Цет колбэк не виконується немедленно. 
-Он ждет, поки задача <code>task</code> не завершится и не возвратит неокторый результат.</p></li>
-<li><p><code>System.out.println("Main thread works...")</code></p><p> Основной поток <span class="b">не ждет</span> завершения задачи <code>task</code>, а немедленно продолжает работу (в данном случае для 
-имитации работы выводим сообщение)</p></li>
-<li><p><span class="b">Выполнение задачи</span></p><p> В це час (<code>main</code> або друкує "Main thread works...", або вже спит) параллельный поток очень быстро вычисляет факториал 5 (це 120). Це занимает доли миллисекунды.</p></li>
-<li><p><span class="b">Выполнение колбэка</span></p><p> Сразу после завершения задачи <code>task</code> запускаєся  зарегистрированный за допомогою функції <code>thenAccept</code> обратный вызов 
-(обычно в том же потоке из пула) и выводит: <code>factorial of 5 is 120</code>.</p></li>
-<li><p><code>Thread.sleep(2000);</code></p><p> Основной поток "спит" 2000 мс. К цему моменту колбэк почти наверняка вже отработал и вывел результат.</p></li>
-<li><p><code>System.out.println("Main thread finished...")</code></p><p> Через 2 секунды основной поток просыпается и выводит сообщение, после чего программа завершуєся.</p></li>
+Он ждет, поки завданьа <code>task</code> не завершится и не возвратит неокторый результат.</p></li>
+<li><p><code>System.out.println("Main thread works...")</code></p><p> Основной потік <span class="b">не ждет</span> завершення завданьі <code>task</code>, а немедленно продолжает работу (у даному випадку для 
+имитации работы вивідим сообщение)</p></li>
+<li><p><span class="b">Виконання завданьі</span></p><p> В це час (<code>main</code> або друкує "Main thread works...", або вже спит) параллельный потік дуже быстро вычисляет факториал 5 (це 120). Це занимает доли миллисекунды.</p></li>
+<li><p><span class="b">Виконання колбэка</span></p><p> Сразу після завершення завданьі <code>task</code> запускуєся  зарегистрированный за допомогою функції <code>thenAccept</code> обратный вызов 
+(обычно в том же потіке из пула) и виводить: <code>factorial of 5 is 120</code>.</p></li>
+<li><p><code>Thread.sleep(2000);</code></p><p> Основной потік "спит" 2000 мс. К цему моменту колбэк почти наверняка вже отработал и вывел результат.</p></li>
+<li><p><code>System.out.println("Main thread finished...")</code></p><p> Через 2 секунды основной потік просыпается и виводить сообщение, після чего програма завершуєся.</p></li>
 
-<p>Наиболїї вероятный порядок вывода буде таким:</p>
+<p>Наиболїї вероятный порядок вивіда буде таким:</p>
 
 <pre class="line-numbers"><code class="language-none">
 Main thread started...
@@ -154,16 +154,16 @@ Main thread works...
 factorial of 5 is 120
 Main thread finished...
 </code></pre>
-<p>Таким чином, можна обробляти результат, як лише он станет доступен, не блокируя основой поток.</p>
-<p>Но в данном случае варто відзначити, что, поскольку потоки, используемые <code>CompletableFuture</code> по умолчанию (из пула <b>ForkJoinPool.commonPool()</b>), є 
-<span class="b">потоками-демонами</span> (daemon threads) - по сути фоновыми потоками, то JVM (Виртуальная машина Java) не ждет, поки они завершатся. 
-JVM работает до тех пор, поки жив хотя бы один поток, який не є "демоном" . В программе выше единственный поток, який не є демоном - це поток метода main. 
-Тому якщо убрать <code>Thread.sleep</code>, то поток main очень быстро выполнит методы <code>supplyAsync()</code> и <code>thenAccept()</code>, надрукує "Main thread works..." и 
+<p>Таким чином, можна обробляти результат, як лише он станет доступен, не блокируя основой потік.</p>
+<p>Но у даному випадку варто відзначити, что, поскольку потіки, використовуємоые <code>CompletableFuture</code> по умолчанию (из пула <b>ForkJoinPool.commonPool()</b>), є 
+<span class="b">потіками-демонами</span> (daemon threads) - по сути фоновыми потіками, то JVM (Виртуальная машина Java) не ждет, поки они завершатся. 
+JVM работает до тех пор, поки жив хотя бы один потік, який не є "демоном" . В програме выше единственный потік, який не є демоном - це потік методу main. 
+Тому якщо убрать <code>Thread.sleep</code>, то потік main дуже быстро выполнит методи <code>supplyAsync()</code> и <code>thenAccept()</code>, надрукує "Main thread works..." и 
 "Main thread finished..." и немедленно завершится.</p>
-<p>Как лише main завершуєся, JVM видит, что активных потоков-не-демонов не осталось, и принудительно завершує всю программу. И в цем случае асинхронная задача task и її колбэк в <code>thenAccept()</code> 
-просто не успевают выполниться до завершения основного потока. Тому именно <code>Thread.sleep(2000)</code> в коде выше "удерживает" основной поток живым, давая асинхронной задаче достаточно времени, 
+<p>Как лише main завершуєся, JVM видит, что активных потіков-не-демонов не осталось, и принудительно завершує всю програму. И в цем случае асинхронная завданьа task и її колбэк в <code>thenAccept()</code> 
+просто не успевают выполниться до завершення основного потіка. Тому именно <code>Thread.sleep(2000)</code> в коді выше "удерживает" основной потік живым, давая асинхронной завданье достатньо времени, 
 чтобы выполниться и напечатать результат.</p>
-<p>Вместо использования задержек мы могли бы явным чином определить об'єкт <b>Executor</b>, який буде выполнять задачи. Например:</p>
+<p>Вместо использования задержек мы могли бы явным чином визначити об'єкт <b>Executor</b>, який буде выполнять завданьі. Наприклад:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.concurrent.*;
 import java.util.function.Supplier;
@@ -176,7 +176,7 @@ class Program{
  
         int number = 5;  // исходное число для вычисления факториала
        
-        // определяем задачу, которая вычисляет факториал
+        // определяем завданьу, которая вычисляет факториал
         Supplier&lt;Integer&gt; task = () -&gt; {
 
             if(number &lt; 1) throw new RuntimeException("Number must be greater than 0");
@@ -188,16 +188,16 @@ class Program{
             try {Thread.sleep(2000);}
             catch(InterruptedException _){}
 
-            return result;  // возвращаем результат задачи
+            return result;  // повертаємо результат завданьі
         };
 
-        // определяем об'єкт Executor, який буде выполнять задачу
+        // определяем об'єкт Executor, який буде выполнять завданьу
         ExecutorService executor = Executors.newCachedThreadPool();
         CompletableFuture&lt;Integer&gt; future = CompletableFuture.supplyAsync(task, executor);
         future.thenAccept(result -&gt; System.out.printf("factorial of %d is %d\n", number, result));
 
-        // future.thenAccept - не блокує основной поток 
-        // и одновременно мы можемо выполнять в основном потоке деяку работу 
+        // future.thenAccept - не блокує основной потік 
+        // и одновременно мы можемо выполнять в основном потіке деяку работу 
         System.out.println("Main thread works...");
         System.out.println("Main thread finished...");
         // закрываем исполнителя
@@ -205,30 +205,30 @@ class Program{
     }
 }
 </code></pre>
-<p>В принципе здесь выполняются те же самые действия, лише теперь я убрал задержку для основного потока и добавил аналогичную задержку в задачу по вычислению факториала, чтобы эта задача завершалась после всех действий в основном потоке метода main.</p>
+<p>В принципе здесь виконуються те же самые действия, лише теперь я убрал задержку для основного потіка и добавил аналогичную задержку в завданьу по вычислению факториала, чтобы эта завданьа завершалась після всех действий в основном потіке методу main.</p>
 <p>И також добавлено створення об'єкта Executor, який передаєся в метод <code>supplyAsync()</code>:</p>
 <pre class="line-numbers"><code class="language-java">
 ExecutorService executor = Executors.newCachedThreadPool();
 CompletableFuture&lt;Integer&gt; future = CompletableFuture.supplyAsync(task, executor);
 </code></pre>
-<p>В данном случае создаваемый об'єкт Executor буде використовувати один из платформенных потоков из пула. Причем далїї цей Executor буде выполнять як задачу по вычислению факториала, так и коллбек, який выводит результат на консоль.</p>
-<p>В итоге мы скорїї всего получим следующий консольный вывод:</p>
+<p>У даному випадку создаваемый об'єкт Executor буде використовувати один из платформенных потіков из пула. Причем далїї цей Executor буде выполнять як завданьу по вычислению факториала, так и коллбек, який виводить результат на консоль.</p>
+<p>В итоге мы скорїї всего получим следующий консольный вивід:</p>
 <pre class="line-numbers"><code class="language-none">
 Main thread started...
 Main thread works...
 Main thread finished...
 factorial of 5 is 120
 </code></pre>
-<p>Поскольку в асинхронной задаче действует 2-секундная задержка, то скорїї всего асинхронная задача факториала буде выполнена после вывода на консоль строки "Main thread finished..." в методе main.</p>
+<p>Поскольку в асинхронной завданье действует 2-секундная задержка, то скорїї всего асинхронная завданьа факториала буде выполнена після вивіда на консоль рядки "Main thread finished..." в методі main.</p>
 
 <h3>Створення цепочки обратных вызовов</h3>
-<p>Аналогичным чином мы можемо застосовувати и другие методы <code>CompletedFuture</code> для добавления обратных вызовов для обработки результатов. Болїї того мы можемо обробляти результаты других обратных вызовов. 
+<p>Аналогичным чином мы можемо застосовувати и другие методи <code>CompletedFuture</code> для добавления обратных вызовов для обработки результатів. Болїї того мы можемо обробляти результати других обратных вызовов. 
 Наприклад, возьмем метод <b>thenApply()</b>:</p>
 <pre class="line-numbers"><code class="language-java">&lt;U&gt; CompletableFuture&lt;U&gt; thenApply(Function&lt;? super T, ? extends R&gt; fn)</code></pre>
-<p>Параметром метода є об'єкт інтерфейса <b>Function</b> - по сути це некоторая функция, которая приймає об'єкт типу <code>T</code> и повертає об'єкт типу <code>R</code>, 
-то есть преобразует результат типу <code>T</code> в об'єкт типу <code>R</code>. Або якщо быть точнїї функция обратного вызова повинна соответствовать методу <code>apply()</code> інтерфейса Function:</p>
+<p>Параметром методу є об'єкт інтерфейса <b>Function</b> - по сути це некоторая функція, которая приймає об'єкт типу <code>T</code> и повертає об'єкт типу <code>R</code>, 
+то есть преобразует результат типу <code>T</code> в об'єкт типу <code>R</code>. Або якщо быть точнїї функція обратного вызова повинна соответствовать методу <code>apply()</code> інтерфейса Function:</p>
 <pre class="line-numbers"><code class="language-java">R apply(T t)</code></pre>
-<p>Допустим, после вычисления факториала нам треба увеличить его в 2 раза:</p>
+<p>Допустим, після вычисления факториала нам треба увеличить его в 2 раза:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.concurrent.*;
 import java.util.function.Supplier;
@@ -243,7 +243,7 @@ class Program{
  
         int number = 5;  // исходное число для вычисления факториала
        
-        // определяем задачу, которая вычисляет факториал
+        // определяем завданьу, которая вычисляет факториал
         Supplier&lt;Integer&gt; factorialTask = () -&gt; {
 
             if(number &lt; 1) throw new RuntimeException("Number must be greater than 0");
@@ -252,12 +252,12 @@ class Program{
             while(n &lt;= number)  result *= n++; 
             return result; 
         };
-        // определяем задачу, которая увеличивает в два раза
+        // определяем завданьу, которая увеличивает в два раза
         Function&lt;Integer, Integer&gt; doubleTask = result -&gt;  result * 2;
-        // определяем задачу, которая выводит на консоль конечный результат
+        // определяем завданьу, которая виводить на консоль конечный результат
         Consumer&lt;Integer&gt; printTask = result -&gt; System.out.printf("Final result: %d\n", result);
 
-        // определяем об'єкт Executor, який буде выполнять задачи
+        // определяем об'єкт Executor, який буде выполнять завданьі
         ExecutorService executor = Executors.newCachedThreadPool();
         // определяем коллбеки
         CompletableFuture
@@ -272,7 +272,7 @@ class Program{
     }
 }
 </code></pre>
-<p>Ключевой момент программы - це, конечно, определение цепочки выполняемых задач:</p>
+<p>Ключевой момент програми - це, конечно, визначенийие цепочки выполняемых завдань:</p>
 <pre class="line-numbers"><code class="language-java">
 CompletableFuture
     .supplyAsync(factorialTask, executor)
@@ -282,19 +282,19 @@ CompletableFuture
 <p>Рассмотрим поэтапно:</p>
 <ol>
 <li><p><code>supplyAsync(factorialTask, executor)</code></p>
-<p>Визначає асинхронную задачу, которая виконується  - це задача factorialTask, которая вычисляет факториала. Эта задача представляє тип <code>Supplier&lt;Integer&gt;</code> и поцему повертає значение типу <code>Integer</code></p>
+<p>Визначає асинхронную завданьу, которая виконується  - це завданьа factorialTask, которая вычисляет факториала. Эта завданьа представляє тип <code>Supplier&lt;Integer&gt;</code> и поцему повертає значення типу <code>Integer</code></p>
 </li>
 
 <li><p><code>thenApply(doubleTask)</code></p>
-<p>Применяет к результату предыдущей задачи (в нашем случае це вычисление факториала) функцию doubleTask. Эта задача представляє тип <code>Function&lt;Integer, Integer&gt;</code>. То есть функция 
-отримує значение типу <code>Integer</code> (факториал числа - результат задачи factorialTask) и повертає також значение типу <code>Integer</code> - удвоенное значение факториала.</p>
+<p>Застосовує к результату предыдущей завданьі (в нашем случае це обчислення факторіалу) функцію doubleTask. Эта завданьа представляє тип <code>Function&lt;Integer, Integer&gt;</code>. То есть функція 
+отримує значення типу <code>Integer</code> (факториал числа - результат завданьі factorialTask) и повертає також значення типу <code>Integer</code> - удвоенное значення факториала.</p>
 </li>
 
 <li><p><code>thenAccept(printTask)</code></p>
-<p>Применяет к результату предыдущей задачи (в нашем случае це результат задачи doubleTask) функцию printTask, которая представляє тип <code>Consumer&lt;Integer&gt;</code>. Эта задача 
-отримує значение типу <code>Integer</code> (результат задачи doubleTask) и ничего не повертає (фактически повертає <code>void</code>) и просто выводит результат на консоль.</p></li>
+<p>Застосовує к результату предыдущей завданьі (в нашем случае це результат завданьі doubleTask) функцію printTask, которая представляє тип <code>Consumer&lt;Integer&gt;</code>. Эта завданьа 
+отримує значення типу <code>Integer</code> (результат завданьі doubleTask) и ничего не повертає (фактически повертає <code>void</code>) и просто виводить результат на консоль.</p></li>
 </ol>
-<p>Консольный вывод программы:</p>
+<p>Консольный вивід програми:</p>
 <pre class="line-numbers"><code class="language-none">
 Main thread started...
 Main thread works...

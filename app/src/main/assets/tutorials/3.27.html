@@ -3,7 +3,7 @@
 <head>
 <title>Java | Зіставлення шаблону. шаблон запису</title>
 <meta charset="utf-8" />
-<meta name="description" content="Pattern матч. record-паттерн в языке программирования Java, проверка типу класса record и сопоставление его полей с переменными за допомогою оператора instanceof и конструкции switch, оператор when, защитные условия guards, проверка на null">
+<meta name="description" content="Pattern матч. record-паттерн в языке програмирования Java, проверка типу класа record и сопоставление его полей с переменными за допомогою оператора instanceof и конструкции switch, оператор when, защитные условия guards, проверка на null">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -13,10 +13,10 @@
 <div class="item center menC">
      <h1>Зіставлення шаблону. шаблон запису</h1><div class="date">Останнє оновлення: 27.09.2025</div>
 
-<p>Начиная с версии Java 21 мы можемо використовувати так называемый <span class="b">шаблон запису</span> - паттерн, який дозволяє проверить на соответствие типу классу record и використовувати его поля. 
+<p>Начиная с версии Java 21 мы можемо використовувати так называемый <span class="b">шаблон запису</span> - паттерн, який дозволяє проверить на соответствие типу класу record и використовувати его поля. 
 Для применения паттерна record можна застосовувати як оператор <code>instanceof</code>, так и конструкции/выражения <code>switch</code>.</p>
 <h3>примірник</h3>
-<p>Пример <code>record patter</code> с применением оператора <code>instanceof</code>:</p>
+<p>Пример <code>record patter</code> с застосуванням оператора <code>instanceof</code>:</p>
 <pre class="line-numbers"><code class="language-java">
 public class Program{
       
@@ -31,8 +31,8 @@ public class Program{
 }
 record Person(String name, int age){}
 </code></pre>
-<p>В данном случае за допомогою выражения <code>tom instanceof Person(var pName, var pAge)</code> мы не лише проверяем, что переменная tom представляє тип Person, но и оголошуємо переменные name и age, которые отримують значения 
-одноименных полей класса Person. Затем внутри блока <code>if</code> мы можемо використовувати эти переменные.</p>
+<p>У даному випадку за допомогою выражения <code>tom instanceof Person(var pName, var pAge)</code> мы не лише проверяем, что змінна tom представляє тип Person, но и оголошуємо змінні name и age, которые отримують значення 
+одноименных полей класа Person. Затем всередині блока <code>if</code> мы можемо використовувати эти змінні.</p>
 <p>Крім того, ми можемоо явно вказати тип змінних</p>
 <pre class="line-numbers"><code class="language-java">
 if(tom instanceof Person(String pName, int pAge)){
@@ -90,20 +90,20 @@ public class Program{
     }
 }
 </code></pre>
-<p>Таким чином, якщо имя  "Tom", то срабатывает блок <code>if</code>:</p>
+<p>Таким чином, якщо ім'я  "Tom", то срабатывает блок <code>if</code>:</p>
 <pre class="line-numbers"><code class="language-java">
 if(person instanceof Person(var pName, _) && pName == "Tom"){
     System.out.println("Hello Tom");
 }
 </code></pre>
-<p>Если же у пользователя другое имя, то срабатывает блок <code>else if</code></p>
+<p>Если же у пользователя другое ім'я, то срабатывает блок <code>else if</code></p>
 <pre class="line-numbers"><code class="language-java">
 else if(person instanceof Person(_, _) ){
     System.out.println("Hello");
 }
 </code></pre>
 
-<p>При использовании <code>switch</code> для создания защитных условий застосовується оператор <code>when</code>, после которого идет условие:</p>
+<p>При использовании <code>switch</code> для створенняя защитных условий застосовується оператор <code>when</code>, після которого идет условие:</p>
 <pre class="line-numbers"><code class="language-java">
 public class Program{
       
@@ -126,7 +126,7 @@ public class Program{
             case Person(_, _) -&gt;                // для всех остальных Person
                 System.out.println("Hello");
 
-            case null -&gt; {}   // якщо null, ничего не выводим
+            case null -&gt; {}   // якщо null, ничего не вивідим
         }
     }
 }
@@ -150,7 +150,7 @@ public class Program{
 record Person(String name, int age){}
 record Company(String name, Person ceo){}
 </code></pre>
-<p>В данном случае второе поле класса Company представляє тип Person. А за допомогою выражения <code>mycorp instanceof Company(_, Person(var name, _))</code> получаем поле name у класса Person в одноименную переменную name.</p>
+<p>У даному випадку второе поле класа Company представляє тип Person. А за допомогою выражения <code>mycorp instanceof Company(_, Person(var name, _))</code> отримуємо поле name у класа Person в одноименную змінну name.</p>
 <p>Аналогичный пример с <code>switch</code>:</p>
 <pre class="line-numbers"><code class="language-java">
 public class Program{

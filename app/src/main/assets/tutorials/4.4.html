@@ -3,7 +3,7 @@
 <head>
 <title>Java | Assert</title>
 <meta charset="utf-8" />
-<meta name="description" content="Оператор Assert и генерация ошибок при разработке и тестировании в языке программирования Java, параметр виконання -enableassertions, тип ошибок AssertionError">
+<meta name="description" content="Оператор Assert и генерація ошибок при разработке и тестировании в языке програмирования Java, параметр виконання -enableassertions, тип ошибок AssertionError">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -13,39 +13,39 @@
 <div class="item center menC">
      <h1>Assert</h1><div class="date">Останнє оновлення: 07.10.2025</div>
 
-<p><b>assertion</b> (утвержение) представляє распространенный паттерн защитного механизма (guard), який дозволяє во час тестирования проверить соблюдение некоторых условий. Для поддержки цього механизма в мові Java есть ключевое слово <b>assert</b>. </p>
-<p>Оператор <b>assert</b> використовується для проверки таких ошибок, при которых нет смысла продолжать программу. Но обычно цей оператор застосовується лише во час разработки и тестирования, наприклад, 
-для поиска внутренних ошибок программы во час тестирования.</p>
+<p><b>assertion</b> (утвержение) представляє распространенный паттерн защитного механизма (guard), який дозволяє во час тестирования проверить соблюдение некоторых условий. Для піддержки цього механизма в мові Java есть ключевое слово <b>assert</b>. </p>
+<p>Оператор <b>assert</b> використовується для проверки таких ошибок, при которых нет смысла продолжать програму. Но обычно цей оператор застосовується лише во час разработки и тестирования, наприклад, 
+для поиска внутренних ошибок програми во час тестирования.</p>
 <h3>Оператор assert</h3>
 <p>Оператор <b>assert</b> имїїт следующие формы:</p>
 <pre class="line-numbers"><code class="language-java">
 assert условие;
 assert условие : выражение;
 </code></pre>
-<p>В обоих формах после оператора <code>assert</code> идет некоторое условие. И среда проверяет истинность цього условия. И якщо условие не соблюдается, то система генерує ошибку типу <b>AssertionError</b></p>
-<p>Під второй форме после условия через двоеточие указывается выражение, которое передаєся в конструктор об'єкта <b>AssertionError</b> и застосовується для создания сообщения об ошибке.</p>
+<p>В обоих формах після оператора <code>assert</code> идет некоторое условие. И среда проверяет истинность цього условия. И якщо условие не соблюдается, то система генерує ошибку типу <b>AssertionError</b></p>
+<p>Під второй форме після условия через двоеточие вказуєся выражение, которое передаєся в конструктор об'єкта <b>AssertionError</b> и застосовується для створенняя сообщения об ошибке.</p>
 <p>Приведу абстрактные примеры. Первая форма:</p>
 
 <pre class="line-numbers"><code class="language-java">
 assert n &gt; 0;
 </code></pre>
-<p>Здесь оператор <code>assert</code> проверяет, что некоторая переменная n больше 0. Если переменная равна 0 або меньше, что система генерує ошибку <b>AssertionError</b></p>
+<p>Здесь оператор <code>assert</code> проверяет, что некоторая змінна n больше 0. Если змінна равна 0 або меньше, что система генерує ошибку <b>AssertionError</b></p>
 <p>Вторая форма:</p>
 <pre class="line-numbers"><code class="language-java">
 assert n &gt; 0 : n;
 </code></pre>
-<p>Здесь фактически все то же самое, лише теперь значение змінної <code>n</code> передаєся в конструктор класса <b>AssertionError</b> и додаєся в сообщение об ошибке.</p>
-<h3>Включение поддержки assert</h3>
-<p>По умолчанию оператор <code>assert</code> не оказывает ниякого действия на работу программы. Ошибка типу <b>AssertionError</b> генериурется, якщо лише <span class="b">при выполнении программы</span> 
-явным чином включена поддержка <code>assert</code>. Для цього при запуске программы утилите <b>java</b> передаєся опция <span class="b">-enableassertions</span> або <span class="b">-ea</span>. 
-Например:</p>
+<p>Здесь фактически все то же самое, лише теперь значення змінної <code>n</code> передаєся в конструктор класа <b>AssertionError</b> и додаєся в сообщение об ошибке.</p>
+<h3>Включение піддержки assert</h3>
+<p>По умолчанию оператор <code>assert</code> не оказывает ниякого действия на работу програми. Ошибка типу <b>AssertionError</b> генериурется, якщо лише <span class="b">при выполнении програми</span> 
+явным чином включена піддержка <code>assert</code>. Для цього при запуску програми утилите <b>java</b> передаєся опция <span class="b">-enableassertions</span> або <span class="b">-ea</span>. 
+Наприклад:</p>
 <pre class="line-numbers"><code class="language-none">java -enableassertions Program</code></pre>
-<p>Також Java дозволяє подключать поддержку <code>assert</code> лише для определенных классов и пакетів:</p>
+<p>Також Java дозволяє підключать піддержку <code>assert</code> лише для визначенийных класов и пакетів:</p>
 <pre class="line-numbers"><code class="language-none">java -ea:SomeClass -ea:com.mycompany.somelib... Program</code></pre>
-<p>Подвыражение <code>-ea:SomeClass</code> включает <code>assert</code> для класса SomeClass, а <code>-ea:com.mycompany.somelib...</code> - для пакета "com.mycompany.somelib".</p>
-<p>Если пакет не имїїт имени (пакет по умолчанию), то для подключения <code>assert</code> можна використовувати следующїї выражение:</p>
+<p>Підвыражение <code>-ea:SomeClass</code> включает <code>assert</code> для класа SomeClass, а <code>-ea:com.mycompany.somelib...</code> - для пакету "com.mycompany.somelib".</p>
+<p>Если пакет не имїїт імені (пакет по умолчанию), то для підключения <code>assert</code> можна використовувати следующїї выражение:</p>
 <pre class="line-numbers"><code class="language-none">-ea:...</code></pre>
-<p>При необхідности також можна отключить <code>assert</code> в определенных классах и пакетах за допомогою опции <span class="b">-disablessertions</span> або <span class="b">-da</span>:</p>
+<p>При необхідности також можна отключить <code>assert</code> в визначенийных класах и пакетух за допомогою опции <span class="b">-disablessertions</span> або <span class="b">-da</span>:</p>
 <pre class="line-numbers"><code class="language-none">java -ea:... -da: SomeClass Program</code></pre>
 <h3>Пример использования assert</h3>
 <p>Рассмотрим небольшой пример использования оператора <b>assert</b>:</p>
@@ -71,7 +71,7 @@ class Program {
     }
 }
 </code></pre>
-<p>Здесь определен метод <code>factorial</code>, який вычисляет факториал числа. Само число передаєся через параметр. Но по условию факториала число повинно быть больше 0. И в самом  методе 
+<p>Здесь визначений метод <code>factorial</code>, який вычисляет факториал числа. Само число передаєся через параметр. Но по условию факториала число повинно быть больше 0. И в самом  методі 
 мы проверяем це условие за допомогою <code>assert</code>:</p>
 <pre class="line-numbers"><code class="language-java">
 static int factorial(int n){
@@ -79,13 +79,13 @@ static int factorial(int n){
     assert n &gt; 0;
     .................
 </code></pre>
-<p>Для демонстрации в методе <code>main()</code> мы два раза вызываем данный метод, передавая в него корректное и некорректное значения:</p>
+<p>Для демонстрации в методі <code>main()</code> мы два раза вызываем данный метод, передавая в него корректное и некорректное значення:</p>
 <pre class="line-numbers"><code class="language-java">
 int f1 = factorial(4);
 
 int f2 = factorial(-4);
 </code></pre>
-<p>Скомпилируем программу и выполним її с флагом <code>-enableassertions</code>:</p>
+<p>Скомпилируем програму и виконаємо її с флагом <code>-enableassertions</code>:</p>
 <pre class="line-numbers"><code class="language-none">
 eugene@Eugene:/workspace/java$ javac Program.java && java -enableassertions Program
 f1: 24
@@ -95,9 +95,9 @@ Exception in thread "main" java.lang.AssertionError
 
 eugene@Eugene:/workspace/java$ 
 </code></pre>
-<p>И мы видим, что первый вызов метода с корректным значением отработал нормально, а при втором вызове возникла ошибка <code>AssertionError</code> на 14-й строке кода. Поймав 
-подобную ошибку при тестировании або разработке, мы увидим, что дані, которые в передаются в метод <code>factorial()</code>, не проверяются, и, возможна, при вызове метода добавим код проверки 
-или якой-нибудь другой механизм, який позволит избежать падения программы.</p>
+<p>И мы видим, что первый вызов методу с корректным значенням отработал нормально, а при втором вызове возникла ошибка <code>AssertionError</code> на 14-й рядківе коду. Поймав 
+підобную ошибку при тестировании або разработке, мы увидим, что дані, которые в передаються в метод <code>factorial()</code>, не проверяются, и, возможна, при вызове методу додамо код проверки 
+или якой-нибудь другой механизм, який дозволить избежать падения програми.</p>
 
 <p>И дополнительно розглянемо, что буде при использовании другой формы оператора <code>assert</code>. Для цього изменим немного метод <code>factorial()</code></p>
 <pre class="line-numbers"><code class="language-java">
@@ -110,7 +110,7 @@ static int factorial(int n){
     return result;
 }
 </code></pre>
-<p>В данном случае выражение <code>assert n &gt; 0 : n</code> указывает, что значение параметра <code>n</code> буде передаваться в сообщение об ошибке. Так, при выполнении программы мы получим немного другое сообщение:</p>
+<p>У даному випадку выражение <code>assert n &gt; 0 : n</code> вказує, что значення параметра <code>n</code> буде передаваться в сообщение об ошибке. Так, при выполнении програми мы получим немного другое сообщение:</p>
 <pre class="line-numbers"><code class="language-none">
 eugene@Eugene:/workspace/java$ javac Program.java && java -enableassertions Program
 f1: 24
@@ -120,8 +120,8 @@ Exception in thread "main" java.lang.AssertionError: -4
 
 eugene@Eugene:/workspace/java$ 
 </code></pre>
-<p>Теперь из сообщения об ошибке мы видим, что стало причиной ошибки. Ну и естественно мы можемо визначати болїї подробные сообщения. Например:</p>
-<pre class="line-numbers"><code class="language-java">assert n > 0 : "Параметр меньше 1";</code></pre>
+<p>Теперь из сообщения об ошибке мы видим, что стало причиной ошибки. Ну и естественно мы можемо визначати болїї підробные сообщения. Наприклад:</p>
+<pre class="line-numbers"><code class="language-java">assert n > 0 : "Параметр менше 1";</code></pre>
 
   </div>
 

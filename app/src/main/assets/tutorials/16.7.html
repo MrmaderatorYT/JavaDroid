@@ -3,7 +3,7 @@
 <head>
 <title>Java | Нативні функції зворотного виклику</title>
 <meta charset="utf-8" />
-<meta name="description" content="Нативні функції зворотного виклику в Foreign Functions та Memory API в языке программирования Java, типы Linker, MethodHandle, FunctionDescriptor, получение дескриптора функций и методів, downcallHandle, створення заглушки функції за допомогою upcallStub">
+<meta name="description" content="Нативні функції зворотного виклику в Foreign Functions та Memory API в языке програмирования Java, типи Linker, MethodHandle, FunctionDescriptor, отримання дескриптора функцій и методів, downcallHandle, створення заглушки функції за допомогою upcallStub">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -13,20 +13,20 @@
 <div class="item center menC">
      <h1>Нативні функції зворотного виклику</h1><div class="date">Останнє оновлення: 22.12.2025</div>
 
-<p>Иногда одна функция в качестве параметра приймає другую функцию - функцию обратного вызова або callback и в процессе своей работы вызывает її. Наприклад, возьмем функцию быстрой сортировки <code>qsort</code>, которая есть в 
+<p>Иногда одна функція в качестве параметра приймає другую функцію - функцію обратного вызова або callback и в процесе своей работы вызывает її. Наприклад, возьмем функцію быстрой сортировки <code>qsort</code>, которая есть в 
 стандартной библиотеке языка C:</p>
 <pre class="line-numbers"><code class="language-java">
 void qsort(void *base, size_t nmemb, size_t size, int (*compare)(const void *, const void *));
 </code></pre>
-<p>При вызове цей функції ей передаются:</p>
+<p>При вызове цей функції ей передаються:</p>
 <ul>
-<li><p><code>base</code>: массив сортируемых элементов</p></li>
-<li><p><code>nmemb</code>: длина массива</p></li>
-<li><p><code>size</code>: размер каждого элемента</p></li>
-<li><p><code>compar</code>: ​​адрес функції обратного вызова, которая собственно сравнивает два элемента</p></li>
+<li><p><code>base</code>: масив сортуємоых елементов</p></li>
+<li><p><code>nmemb</code>: длина масива</p></li>
+<li><p><code>size</code>: размер каждого елемента</p></li>
+<li><p><code>compar</code>: ​​адрес функції обратного вызова, которая собственно сравнивает два елемента</p></li>
 </ul>
-<p>Последний параметр представляє указатель на функцию, которая вызывается при сравнении двух элементов. С точки зрения API FFM, як и любой указатель, указатель на функцию передаєся через значение 
-<code>ValueLayout.ADDRESS</code>. Однак может возникнуть вопрос, як определить подобную функцию и як передать її в вызов. Рассмотрим на примере следующей программы:</p>
+<p>Післядний параметр представляє указатель на функцію, которая вызывается при сравнении двух елементов. С точки зрения API FFM, як и любой указатель, указатель на функцію передаєся через значення 
+<code>ValueLayout.ADDRESS</code>. Однак может возникнуть вопрос, як визначити підобную функцію и як передать її в вызов. Рассмотрим на примере следующей програми:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.lang.foreign.*;
 import java.lang.invoke.*;
@@ -37,21 +37,21 @@ public class Program {
 
     public static void main(String[] args) throws Throwable{
 
-        // получаем линкер/компоновщик 
+        // отримуємо линкер/компоновщик 
         Linker linker = Linker.nativeLinker();
-        // получаем стандартную библиотеку
+        // отримуємо стандартную бібліотеку
         SymbolLookup stdlib = linker.defaultLookup();
 
-        // получаем адрес функції sqort
+        // отримуємо адрес функції sqort
         MemorySegment qsortAddr = stdlib.findOrThrow("qsort");
         // определяем дескриптор функції
         FunctionDescriptor qsortDesc = FunctionDescriptor.ofVoid(ADDRESS, JAVA_LONG, JAVA_LONG, ADDRESS);
         // void qsort(void*, size_t, size_t, int (*)(const void *, const void *))
         MethodHandle qsort = linker.downcallHandle(qsortAddr, qsortDesc);
 
-        // получаем тип метода
+        // отримуємо тип методу
         MethodType compareType = MethodType.methodType(int.class, MemorySegment.class, MemorySegment.class);
-        // получаем дескриптор статического метода
+        // отримуємо дескриптор статического методу
         MethodHandle compareHandle = MethodHandles.lookup().findStatic(Program.class, "compareInt", compareType);
 
         // определяем заглушку для функції
@@ -71,7 +71,7 @@ public class Program {
             MemorySegment numbers_seg = arena.allocateFrom(JAVA_INT, numbers);
             qsort.invoke(numbers_seg, numbers.length, JAVA_INT.byteSize(), compareStub);
 
-            // преобразуем сегмент памяти в массив
+            // преобразуем сегмент памяти в масив
             numbers = numbers_seg.toArray(JAVA_INT);
             System.out.println(Arrays.toString(numbers));   // [0, 1, 2, 3, 5, 5, 8]
         }
@@ -83,26 +83,26 @@ public class Program {
     }
 }
 </code></pre>
-<p>Рассмотрим поэтапно программный код:</p>
+<p>Рассмотрим поэтапно програмный код:</p>
 <ol>
-<li><p>Допустим, мы хочемо, чтобы нативная функция <code>qsort</code> для сортировки использовала следующий метод Java:</p>
+<li><p>Допустим, мы хочемо, чтобы нативная функція <code>qsort</code> для сортировки использовала следующий метод Java:</p>
 <pre class="line-numbers"><code class="language-java">
 static int compareInt(MemorySegment a, MemorySegment b) {
 
     return Integer.compare(a.get(JAVA_INT, 0), b.get(JAVA_INT, 0));
 }
 </code></pre>
-<p>Обратите внимание, что метод призначений для сортировки целочисленных значений типу <code>int</code>, однак параметры представляють значения <code>MemorySegment</code></p>
+<p>Зверніть увагу, что метод призначений для сортировки целочисленных значений типу <code>int</code>, однак параметри представляютьь значення <code>MemorySegment</code></p>
 </li>
 
-<li><p>Для начала нам нам, як и в общем случае, треба отримати дескриптор метода внешней функції:</p>
+<li><p>Для начала нам нам, як и в общем случае, треба отримати дескриптор методу внешней функції:</p>
 <pre class="line-numbers"><code class="language-java">
-// получаем линкер/компоновщик 
+// отримуємо линкер/компоновщик 
 Linker linker = Linker.nativeLinker();
-// получаем стандартную библиотеку
+// отримуємо стандартную бібліотеку
 SymbolLookup stdlib = linker.defaultLookup();
 
-// получаем адрес функції sqort
+// отримуємо адрес функції sqort
 MemorySegment qsortAddr = stdlib.findOrThrow("qsort");
 // определяем дескриптор функції
 FunctionDescriptor qsortDesc = FunctionDescriptor.of(ADDRESS, JAVA_LONG, JAVA_LONG, ADDRESS);
@@ -111,19 +111,19 @@ MethodHandle qsort = linker.downcallHandle(qsortAddr, qsortDesc);
 </code></pre></li>
 
 <li>
-<p>Щоб отримати адрес цього метода, сначала получаем об'єкт <code>MemoryHandle</code> для статического метода Java:</p>
+<p>Щоб отримати адрес цього методу, сначала отримуємо об'єкт <code>MemoryHandle</code> для статического методу Java:</p>
 <pre class="line-numbers"><code class="language-java">
-// получаем тип метода
+// отримуємо тип методу
 MethodType compareType = MethodType.methodType(int.class, MemorySegment.class, MemorySegment.class);
 
-// получаем дескриптор статического метода (Program - текущий класс, где располагается метод)
+// отримуємо дескриптор статического методу (Program - текущий клас, где располагается метод)
 MethodHandle compareHandle = MethodHandles.lookup().findStatic(Program.class, "compareInt", compareType);
 </code></pre>
-<p>Метод <code>MethodType.methodType</code> приймає тип возвращаемого значения и далїї типы параметров метода. В нашем случае метод сортировки <code>compareInt</code> повертає значение <code>int</code> и 
-приймає два значения <code>MemorySegment</code></p>
+<p>Метод <code>MethodType.methodType</code> приймає тип повертаємоого значення и далїї типи параметрів методу. В нашем случае метод сортировки <code>compareInt</code> повертає значення <code>int</code> и 
+приймає два значення <code>MemorySegment</code></p>
 </li>
 
-<li><p>С помощью метода <code>upcallStub()</code> линкера сгенерируем заглушку для функції C, которая затем вызывает дескриптор метода обратного вызова:</p>
+<li><p>За допомогою методу <code>upcallStub()</code> линкера сгенерируем заглушку для функції C, которая затем вызывает дескриптор методу обратного вызова:</p>
 <pre class="line-numbers"><code class="language-java">
 MemorySegment compareStub = linker.upcallStub(
     compareHandle,
@@ -132,26 +132,26 @@ MemorySegment compareStub = linker.upcallStub(
         ADDRESS.withTargetLayout(JAVA_INT)),
     Arena.ofAuto());
 </code></pre>
-<p>Метод <code>upcallStub()</code> створює заглушку вызова, яку можна передать другим внешним функциям в виде указателя на функцию. Вызов такого указателя на функцию из внешнего кода приведет к выполнению предоставленного дескриптора метода:</p>
+<p>Метод <code>upcallStub()</code> створює заглушку вызова, яку можна передать другим внешним функціям в виде указателя на функцію. Вызов такого указателя на функцію из внешнего коду приведет к выполнению предоставленного дескриптора методу:</p>
 <pre class="line-numbers"><code class="language-java">
 MemorySegment upcallStub(MethodHandle target,
  FunctionDescriptor function,
  Arena arena,
  Linker.Option... options)
 </code></pre>
-<p>Метод приймає до 4 параметров:</p>
+<p>Метод приймає до 4 параметрів:</p>
 <ul>
-<li><p><code>target</code>: дескриптор целевого метода</p></li>
+<li><p><code>target</code>: дескриптор целевого методу</p></li>
 <li><p><code>function</code>: дескриптор функції-заглушки вызываемой функції</p></li>
-<li><p><code>arena</code>: арена, связанная с возвращаемым сегментом-заглушкой вызываемой функції</p></li>
-<li><p><code>options</code>: параметры линкера, связанные с цим запросом на компоновку</p></li>
+<li><p><code>arena</code>: арена, связанная с повертаємоым сегментом-заглушкой вызываемой функції</p></li>
+<li><p><code>options</code>: параметри линкера, связанные с цим запросом на компоновку</p></li>
 </ul>
 <p>
-Обратите внимание на вызовы <code>withTargetLayout()</code>. Они настраивают структуру памяти, чтобы линкер мог сгенерировать код для настройки экземпляров MemorySegment, которые отримує обратный вызов 
+Зверніть увагу на вызовы <code>withTargetLayout()</code>. Они настраивают структуру памяти, чтобы линкер мог сгенерировать код для настройки экземпляров MemorySegment, которые отримує обратный вызов 
 Java. Если цього не сделать, вызовы <code>a.get(JAVA_INT, 0)</code> и <code>b.get(JAVA_INT, 0)</code> в Java-коллбэке завершатся ошибкой, поскольку сегменты памяти a и b будуть иметь нулевой размер.
 </p></li>
 
-<li><p>И в конце можна вызвать внешнюю функцию с адресом коллбэка:</p>
+<li><p>И в конце можна вызвать внешнюю функцію с адресом коллбэка:</p>
 <pre class="line-numbers"><code class="language-java">
 float[] samples = . . .;
 MemorySegment csamples = arena.allocateFrom(JAVA_FLOAT, samples);
@@ -160,7 +160,7 @@ qsort.invoke(csamples, samples.length, JAVA_FLOAT.byteSize(), compStub);
 </code></pre></li>
 </ol>
 
-<p>При выполнении программы на вход функції <code>qsort</code> передаем массив <code>{3, 5, 1, 8, 0, 5, 2}</code> и после виконання мы увидим консольный вывод отсортированного массива:</p>
+<p>При выполнении програми на вход функції <code>qsort</code> передаємо масив <code>{3, 5, 1, 8, 0, 5, 2}</code> и після виконання мы увидим консольный вивід отсортированного масива:</p>
 <pre class="line-numbers"><code class="language-none">[0, 1, 2, 3, 5, 5, 8]</code></pre>
 
   </div>

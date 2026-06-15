@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html  lang="uk">
 <head>
-<title>Java | Буферизація символьних потоків. BufferedReader та BufferedWriter</title>
+<title>Java | Буферизація символьних потіків. BufferedReader та BufferedWriter</title>
 <meta charset="utf-8" />
-<meta name="description" content="Считывание текстового файла в буфер и запись из буфера в языке программирования Java за допомогою потоков BufferedReader и BufferedWriter">
+<meta name="description" content="Считывание текстового файлу в буфер и запис из буфера в языке програмирования Java за допомогою потіков BufferedReader и BufferedWriter">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -11,18 +11,18 @@
 <body>
 <div id="container">
 <div class="item center menC">
-     <h2>Буферизація символьних потоків. BufferedReader та BufferedWriter</h2><div class="date">Останнє оновлення: 26.04.2018</div>
+     <h2>Буферизація символьних потіків. BufferedReader та BufferedWriter</h2><div class="date">Останнє оновлення: 26.04.2018</div>
 
-	<h3>Запись текста через буфер и BufferedWriter</h3>
-<p>Класс <span class="b">BufferedWriter</span> записує текст в поток, предварительно буферизируя записываемые символы, тем самым снижая количество 
+	<h3>Запис текста через буфер и BufferedWriter</h3>
+<p>Клас <span class="b">BufferedWriter</span> записує текст в потік, предварительно буферизируя записуємоые символи, тем самым снижая кількість 
 обращений к физическому носителю для записи данных.</p>
-<p>Класс BufferedWriter имїїт следующие конструкторы:</p>
+<p>Клас BufferedWriter имїїт следующие конструктори:</p>
 <pre class="line-numbers"><code class="language-java">
 BufferedWriter(Writer out) 
 BufferedWriter(Writer out, int sz)
 </code></pre>
-<p>В качестве параметра он приймає поток вывода, в який треба осуществить запись. Второй параметр указывает на размер буфера.</p>
-<p>Наприклад, осуществим запись в файл:</p>
+<p>В качестве параметра он приймає потік вивіда, в який треба осуществить запис. Второй параметр вказує на размер буфера.</p>
+<p>Наприклад, осуществим запис в файл:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.io.*;
 
@@ -42,18 +42,18 @@ public class Program {
     } 
 }
 </code></pre>
-<h3>Чтение текста и BufferedReader</h3>
-<p>Класс <span class="b">BufferedReader</span> считывает текст из символьного потока ввода, буферизируя прочитанные символы. Использование буфера 
-призвано увеличить производительность чтения данных из потока.</p>
-<p>Класс BufferedReader имїїт следующие конструкторы:</p>
+<h3>Читання текста и BufferedReader</h3>
+<p>Клас <span class="b">BufferedReader</span> считывает текст из символьного потіка ввода, буферизируя прочитанные символи. Використання буфера 
+призвано увеличить производительность читання данных из потіка.</p>
+<p>Клас BufferedReader имїїт следующие конструктори:</p>
 <pre class="line-numbers"><code class="language-java">
 BufferedReader(Reader in) 
 BufferedReader(Reader in, int sz) 
 </code></pre>
-<p>Второй конструктор, кроме потока ввода, из которого производится чтение, також определяет размер буфера, в який будуть считываться символы.</p>
-<p>Так як BufferedReader найдеся от класса <code>Reader</code>, то он может використовувати все те методы для чтения из потока, которые определены в 
-Reader. И також BufferedReader определяет свой собственный метод <span class="b">readLine()</span>, який дозволяє считывать из потока построчно.</p>
-<p>Рассмотрим применение BufferedReader:</p>
+<p>Второй конструктор, кроме потіка ввода, из которого производится читання, також визначає размер буфера, в який будуть считываться символи.</p>
+<p>Так як BufferedReader найдеся от класа <code>Reader</code>, то он может використовувати все те методи для читання из потіка, которые визначенийы в 
+Reader. И також BufferedReader визначає свой собственный метод <span class="b">readLine()</span>, який дозволяє считывать из потіка построчно.</p>
+<p>Рассмотрим застосування BufferedReader:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.io.*;
 
@@ -63,7 +63,7 @@ public class Program {
        
         try(BufferedReader br = new BufferedReader (new FileReader("notes4.txt")))
         {
-           // чтение посимвольно
+           // читання посимвольно
             int c;
             while((c=br.read())!=-1){
                 
@@ -81,7 +81,7 @@ public class Program {
 <pre class="line-numbers"><code class="language-java">
 try(BufferedReader br = new BufferedReader(new FileReader("notes4.txt")))
 {
-    //чтение построчно
+    //читання построчно
     String s;
     while((s=br.readLine())!=null){
                 
@@ -94,7 +94,7 @@ try(BufferedReader br = new BufferedReader(new FileReader("notes4.txt")))
 } 
 </code></pre>
 <h3>Считывание с консоли в файл</h3>
-<p>Соединим оба класса BufferedReader и BufferedWriter для считывания с консоли в файл. Для цього определим следующий код программы:</p>
+<p>Соединим оба класа BufferedReader и BufferedWriter для считывания с консоли в файл. Для цього визначимо следующий код програми:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.io.*;
 
@@ -105,7 +105,7 @@ public class Program {
         try(BufferedReader br = new BufferedReader (new InputStreamReader(System.in)); 
                 BufferedWriter bw = new BufferedWriter(new FileWriter("notes5.txt")))
         {
-           // чтение построчно
+           // читання построчно
             String text;
             while(!(text=br.readLine()).equals("ESC")){
                  
@@ -120,8 +120,8 @@ public class Program {
     }   
 }
 </code></pre>
-<p>Здесь об'єкт BufferedReader устанавливается для чтения с консоли за допомогою об'єкта <code>new InputStreamReader(System.in)</code>. 
-В цикле while считывается введенный текст. И поки пользователь не введет строку "ESC", об'єкт BufferedWriter буде записывать текст файл.</p>
+<p>Здесь об'єкт BufferedReader встановлюєся для читання с консоли за допомогою об'єкта <code>new InputStreamReader(System.in)</code>. 
+В цикле while считывается введенный текст. И поки пользователь не введет рядок "ESC", об'єкт BufferedWriter буде записывать текст файл.</p>
 
   </div>
 

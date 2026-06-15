@@ -3,7 +3,7 @@
 <head>
 <title>Java | Координація виконання асинхронних завдань</title>
 <meta charset="utf-8" />
-<meta name="description" content="Координація виконання асинхронних завдань в языке программирования Java, ExecutorService и его методы inVokeAll и invokeAny, ожидание завершения всех задач и лише одной задачи">
+<meta name="description" content="Координація виконання асинхронних завдань в языке програмирования Java, ExecutorService и его методи inVokeAll и invokeAny, очікування завершення всех завдань и лише одной завданьі">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -13,22 +13,22 @@
 <div class="item center menC">
      <h1>Координація виконання асинхронних завдань</h1><div class="date">Останнє оновлення: 20.10.2025</div>
 
-<p>Нередко требуется запустить декілька задач одновременно и отримати результат первой успешно выполненной задачи або об'єднати результаты всех выполненных задач. Для цього класс 
-<code>ExecutorService</code> надає два метода: <b>inVokeAll()</b> и <b>invokeAny()</b></p>
+<p>Нередко требуется запустить декілька завдань одновременно и отримати результат первой успешно выполненной завданьі або об'єднати результати всех выполненных завдань. Для цього клас 
+<code>ExecutorService</code> надає два методу: <b>inVokeAll()</b> и <b>invokeAny()</b></p>
 
-<h3>invokeAll. Ожидание завершения всей группы задач</h3>
-<p>Метод <b>invokeAll()</b> надсилає на выполнение все задачи из коллекции об'єктов <code>Callable</code>, блокує их выполнение до завершения всех задач и повертає список об'єктов <b>Future</b>, 
-которые представляють результаты всех задач, в том же порядке, в котором эти задачи буви отправлены. Соответственно в соответствии с порядком можна совместить задачи и их результаты.</p>
-<p>Недостатком данного метода в некоторых ситуациях может быть то, что он ждет завершения всех задач, даже якщо якие-то из них вже завершились с ошибкой.</p>
+<h3>invokeAll. Очікування завершення всей группы завдань</h3>
+<p>Метод <b>invokeAll()</b> надсилає на виконання все завданьі из колекції об'єктов <code>Callable</code>, блокує их виконання до завершення всех завдань и повертає список об'єктов <b>Future</b>, 
+которые представляютьь результати всех завдань, в том же порядке, в котором эти завданьі буви отправлены. Соответственно в соответствии с порядком можна совместить завданьі и их результати.</p>
+<p>Недостатком данного методу в некоторых ситуациях может быть то, что он ждет завершення всех завдань, даже якщо якие-то из них вже завершились с ошибкой.</p>
 <p>Цет метод також имїїт две версии:</p>
 <pre class="line-numbers"><code class="language-java">
 &lt;T&gt; List&lt;Future&lt;T&gt;&gt; invokeAll(Collection&lt;? extends Callable&lt;T&gt;&gt; tasks)
 &lt;T&gt; List&lt;Future&lt;T&gt;&gt; invokeAll(Collection&lt;? extends Callable&lt;T&gt;&gt; tasks, long timeout, TimeUnit unit)
 </code></pre>
-<p>Первая версия приймає коллекцию задач, которые треба выполнить, и повертає список Future-об'єктов со статусом задач и их результатами.</p>
-<p>Вторая версия також дополнительно приймає параметры тайм-аута, до истечения которого повинні быть выполнены все задачи.</p>
+<p>Первая версия приймає колекцію завдань, которые треба выполнить, и повертає список Future-об'єктов со статусом завдань и их результатами.</p>
+<p>Вторая версия також дополнительно приймає параметри тайм-аута, до истечения которого повинні быть выполнены все завданьі.</p>
 
-<p>Рассмотрим на примере вычисления факториалов в следующей программе:</p>
+<p>Рассмотрим на примере вычисления факториалов в следующей програме:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.concurrent.*;
 import java.util.List;
@@ -49,7 +49,7 @@ class FactorialTask implements Callable&lt;FactorialResult&gt;{
         int n = number;
         while(n &gt; 0)  result *= n--; 
 
-        return new FactorialResult(number, result);  // возвращаем результат задачи
+        return new FactorialResult(number, result);  // повертаємо результат завданьі
     };
 }
 
@@ -62,13 +62,13 @@ class Program{
         try (ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor()) {
 
             List&lt;Callable&lt;FactorialResult&gt;&gt; tasks = new ArrayList&lt;Callable&lt;FactorialResult&gt;&gt;();
-            // добавляем декілька задач
+            // додаємо декілька завдань
             for(int i = -1; i &lt; 4; i++) tasks.add(new FactorialTask(i));
 
-            // вызываем и ждем завершения всех задач
+            // вызываем и ждем завершення всех завдань
             List&lt;Future&lt;FactorialResult&gt;&gt; results = executor.invokeAll(tasks);
 
-            // получаем результаты
+            // отримуємо результати
             for (Future&lt;FactorialResult&gt; result : results) {
                 if (result.state() == Future.State.SUCCESS){
                     FactorialResult factorialResult =  result.resultNow();
@@ -89,10 +89,10 @@ class Program{
     }
 }
 </code></pre>
-<p>Здесь для представления результата задачи определен класс FactorialResult:</p>
+<p>Здесь для представления результата завданьі визначений клас FactorialResult:</p>
 <pre class="line-numbers"><code class="language-java">record FactorialResult(int number, int factorial){}</code></pre>
 <p>Зднсь поле number представляє число, для которого вычисляется факториал, а поле factorial - сам вычисленный факториал числа.</p>
-<p>Для представления задачи определен класс FactorialTask, який реализует інтерфейс <code>Callable</code> - в методе <code>call</code> вычисляет факториал числа, послученного через конструктор, и повертає результа - 
+<p>Для представления завданьі визначений клас FactorialTask, який реалізує інтерфейс <code>Callable</code> - в методі <code>call</code> вычисляет факториал числа, послученного через конструктор, и повертає результа - 
 об'єкт FactorialResult.</p>
 <pre class="line-numbers"><code class="language-java">
 public FactorialResult call() throws Exception{
@@ -103,20 +103,20 @@ public FactorialResult call() throws Exception{
     int n = number;
     while(n &gt; 0)  result *= n--; 
 
-    return new FactorialResult(number, result);  // возвращаем результат задачи
+    return new FactorialResult(number, result);  // повертаємо результат завданьі
 };
 </code></pre>
-<p>Допустим, нам треба вычислить факториалы от -1 до 4 (для теста выбираем ряд чисел заведо некорректных). Для цього создаем об'єкт <code>ExecutorService</code>, який буде выполнять задачи на виртуальных потоках, и собственно список задач <code>Callable</code>:</p>
+<p>Допустим, нам треба вычислить факториалы от -1 до 4 (для теста выбираем ряд чисел заведо некорректных). Для цього створюємо об'єкт <code>ExecutorService</code>, який буде выполнять завданьі на виртуальных потіках, и собственно список завдань <code>Callable</code>:</p>
 <pre class="line-numbers"><code class="language-java">
 try (ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor()) {
 
     List&lt;Callable&lt;FactorialResult&gt;&gt; tasks = new ArrayList&lt;Callable&lt;FactorialResult&gt;&gt;();
-    // добавляем декілька задач
+    // додаємо декілька завдань
     for(int i = -1; i &lt; 4; i++) tasks.add(new FactorialTask(i));
 </code></pre>
-<p>Затем вызываем все задачи за допомогою метода <code>executor.invokeAll()</code> и ждем их завершения:</p>
+<p>Затем вызываем все завданьі за допомогою методу <code>executor.invokeAll()</code> и ждем их завершення:</p>
 <pre class="line-numbers"><code class="language-java">List&lt;Future&lt;FactorialResult&gt;&gt; results = executor.invokeAll(tasks);</code></pre>
-<p>На цей строке метод main приостанавливает выполнение и ждет завершения всех задач. И когда от них станут доступны результаты, проходим в цикле по все результатам и обрабатываем их:</p>
+<p>На цей рядківе метод main приостанавливает виконання и ждет завершення всех завдань. И когда от них станут доступны результати, проходим в цикле по все результатам и обробляємо их:</p>
 <pre class="line-numbers"><code class="language-java">
 for (Future&lt;FactorialResult&gt; result : results) {
     if (result.state() == Future.State.SUCCESS){
@@ -130,10 +130,10 @@ for (Future&lt;FactorialResult&gt; result : results) {
     }
 }
 </code></pre>
-<p>Каждый результат представляє об'єкт <code>Future</code>, у которого за допомогою метода <code>state()</code> можна проверить состояние виконання: якщо задача выполнена успешно, то используем 
-метод <code>resultNow()</code> для получения непосредственно самого результата в виде об'єкта <code>FactorialResult</code>. Если выполнение завершилось неудачно, то за допомогою метода 
-<code>exceptionNow()</code> получаем возникшїї исключение и выводим его сообщение на консоль.</p>
-<p>Консольный вывод программы:</p>
+<p>Каждый результат представляє об'єкт <code>Future</code>, у которого за допомогою методу <code>state()</code> можна проверить состояние виконання: якщо завданьа выполнена успешно, то використовуємо 
+метод <code>resultNow()</code> для получения непосредственно самого результата в виде об'єкта <code>FactorialResult</code>. Если виконання завершилось неудачно, то за допомогою методу 
+<code>exceptionNow()</code> отримуємо возникшїї виняток и вивідим его сообщение на консоль.</p>
+<p>Консольный вивід програми:</p>
 <pre class="line-numbers"><code class="language-none">
 Main thread started...
 Factorial exception: Incorrect number: -1. Number must be greater than 0
@@ -144,20 +144,20 @@ Factorial of 3:  6
 Main thread finished...
 </code></pre>
 
-<h3>invokeAny. Ожидание завершения одной задачи их группы</h3>
+<h3>invokeAny. Очікування завершення одной завданьі их группы</h3>
 
-<p>Метод <b>invokeAny()</b> надсилає на выполнение все задачи из коллекции об'єктов <code>Callable</code> и блокує выполнение до тех пор, поки одна из них не завершится успешно, вернув свой результат. Цет метод имїїт две версии:</p>
-<h3>invokeAny. Ожидание завершения одной задачи их группы</h3>
+<p>Метод <b>invokeAny()</b> надсилає на виконання все завданьі из колекції об'єктов <code>Callable</code> и блокує виконання до тех пор, поки одна из них не завершится успешно, вернув свой результат. Цет метод имїїт две версии:</p>
+<h3>invokeAny. Очікування завершення одной завданьі их группы</h3>
 
-<p>Метод <b>invokeAny()</b> надсилає на выполнение все задачи из коллекции об'єктов <code>Callable</code> и блокує выполнение до тех пор, поки одна из них не завершится успешно, вернув свой результат. Цет метод имїїт две версии:</p>
+<p>Метод <b>invokeAny()</b> надсилає на виконання все завданьі из колекції об'єктов <code>Callable</code> и блокує виконання до тех пор, поки одна из них не завершится успешно, вернув свой результат. Цет метод имїїт две версии:</p>
 <pre class="line-numbers"><code class="language-java">
 &lt;T&gt; T invokeAny(Collection&lt;? extends Callable&lt;T&gt;&gt; tasks)
 &lt;T&gt; T invokeAny(Collection&lt;? extends Callable&lt;T&gt;&gt; tasks, long timeout, TimeUnit unit)
 </code></pre>
-<p>Первая версия метода приймає коллекцию задач, из которых треба завершить одну. Результатом метода є результат первой завершенной задачи.</p>
-<p>Вторая версия дополнительно приймає параметры тайм-аута - времени, до истечения которого повинна быть выполнена одна из задач.</p>
-<p>При цем все незавершенные задачи отменяются. Если ни одна задача не бува выполнена успешно, генеруєся исключение <b>ExecutionException</b>.</p>
-<p>Изменим предыдущий код - пусть теперь хотя бы одна из задач по вычислению факториала буде выполнена:</p>
+<p>Первая версия методу приймає колекцію завдань, из которых треба завершить одну. Результатом методу є результат первой завершенной завданьі.</p>
+<p>Вторая версия дополнительно приймає параметри тайм-аута - времени, до истечения которого повинна быть выполнена одна из завдань.</p>
+<p>При цем все незавершенные завданьі отменяются. Если ни одна завданьа не бува выполнена успешно, генеруєся виняток <b>ExecutionException</b>.</p>
+<p>Изменим предыдущий код - пусть теперь хотя бы одна из завдань по вычислению факториала буде выполнена:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.concurrent.*;
 import java.util.List;
@@ -177,7 +177,7 @@ class FactorialTask implements Callable&lt;FactorialResult&gt;{
         int n = number;
         while(n &gt; 0)  result *= n--; 
 
-        return new FactorialResult(number, result);  // возвращаем результат задачи
+        return new FactorialResult(number, result);  // повертаємо результат завданьі
     };
 }
 
@@ -189,10 +189,10 @@ class Program{
 
         try (ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor()) {
             List&lt;Callable&lt;FactorialResult&gt;&gt; tasks = new ArrayList&lt;Callable&lt;FactorialResult&gt;&gt;();
-            // добавляем декілька задач
+            // додаємо декілька завдань
             for(int i = -1; i &lt; 4; i++) tasks.add(new FactorialTask(i));
 
-            // вызываем задачи и ждем, поки хотя бы одна из них не завершенится
+            // вызываем завданьі и ждем, поки хотя бы одна из них не завершенится
             FactorialResult factorialResult = executor.invokeAny(tasks);
             System.out.printf("Factorial of %d:  %d\n", 
                     factorialResult.number(), factorialResult.factorial());
@@ -205,18 +205,18 @@ class Program{
     }
 }
 </code></pre>
-<p>Большая часть логики здесь та же, что и в предыдущем примере. Отличие лише в том что ждем виконання одной задачи за допомогою <code>invokeAny()</code>:</p>
+<p>Большая часть логики здесь та же, что и в предыдущем примере. Отличие лише в том что ждем виконання одной завданьі за допомогою <code>invokeAny()</code>:</p>
 <pre class="line-numbers"><code class="language-java">
 FactorialResult factorialResult = executor.invokeAny(tasks);
 System.out.printf("Factorial of %d:  %d\n",  factorialResult.number(), factorialResult.factorial());
 </code></pre>
-<p>И в данном случае вывод может быть наступним (консольный вывод не детерминирован):</p>
+<p>И у даному випадку вивід может быть наступним (консольный вивід не детерминирован):</p>
 <pre class="line-numbers"><code class="language-none">
 Main thread started...
 Factorial of 3:  6
 Main thread finished...
 </code></pre>
-<p>Если при выполнении задачи возникнет ошибка, то буде сгенерировано исключение, которое буде обработано в блоке <code>catch</code>:</p>
+<p>Если при выполнении завданьі возникнет ошибка, то буде сгенерировано виняток, которое буде обработано в блоке <code>catch</code>:</p>
 <pre class="line-numbers"><code class="language-none">
 Main thread started...
 java.lang.Exception: Incorrect number: -1. Number must be greater than 0

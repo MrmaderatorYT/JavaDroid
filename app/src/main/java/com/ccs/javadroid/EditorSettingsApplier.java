@@ -19,5 +19,6 @@ public final class EditorSettingsApplier {
         editor.setWordwrap(prefs.isWordWrap());
         editor.setTabWidth(prefs.getTabSize());
         editor.setLineSpacing(0f, prefs.getLineSpacing());
+        editor.setLineNumberMarginLeft(12 * editor.getContext().getResources().getDisplayMetrics().density);
     }
 }

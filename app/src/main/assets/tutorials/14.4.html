@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html  lang="uk">
 <head>
-<title>Java | Модифікатори доступу и класс Modifier</title>
+<title>Java | Модифікатори доступу и клас Modifier</title>
 <meta charset="utf-8" />
-<meta name="description" content="Получение модификаторов полей и методів за допомогою рефлексии в программе на языке программирования Java, метод getModifiers, получение и изменение значения поля произвольного об'єкта">
+<meta name="description" content="Отримання модификаторов полей и методів за допомогою рефлексии в програме на языке програмирования Java, метод getModifiers, отримання и зміна значення поля произвольного об'єкта">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -11,11 +11,11 @@
 <body>
 <div id="container">
 <div class="item center menC">
-     <h1>Модифікатори доступу и класс Modifier</h1><div class="date">Останнє оновлення: 29.09.2025</div>
+     <h1>Модифікатори доступу и клас Modifier</h1><div class="date">Останнє оновлення: 29.09.2025</div>
 
-<p>Классы <span class="b">Field</span> (поле класса), <span class="b">Method</span> (метод класса) и <span class="b">Constructor</span> (конструктор класса) имеют метод <code>getModifiers()</code>, 
-який повертає целое число с различными включенными и выключенными битами, которые описують используемые модификаторы, такие як <code>public</code> и 
-<code>static</code>. Затем можна використовувати статические методы класса <code>Modifier</code> для анализа целого числа, возвращаемого <code>getModifiers()</code>:</p>
+<p>Класы <span class="b">Field</span> (поле класа), <span class="b">Method</span> (метод класа) и <span class="b">Constructor</span> (конструктор класа) имеют метод <code>getModifiers()</code>, 
+який повертає целое число с различными включенными и выключенными битами, которые описують використовуємоые модификаторы, такие як <code>public</code> и 
+<code>static</code>. Затем можна використовувати статические методи класа <code>Modifier</code> для анализа целого числа, повертаємоого <code>getModifiers()</code>:</p>
 
 <ul>
 <li><p><code>boolean isAbstract(int mod)<code>:  повертає <code>true</code>, якщо параметр <code>mod</code> містить модификатор <span class="b">abstract</span></p></li>
@@ -40,12 +40,12 @@ public class Program{
         
         Class cl = Person.class;
 
-        // получаем все поля типу Person
+        // отримуємо все поля типу Person
         Field[] fields = cl.getDeclaredFields();
 
-        // выводим информацию о полях
+        // вивідим информацию о полях
         for(Field f : fields){
-            // получаем модификаторы
+            // отримуємо модификаторы
             int mod = f.getModifiers();
             if(Modifier.isPublic(mod)){
                 System.out.print("public ");
@@ -60,10 +60,10 @@ public class Program{
                 System.out.print("static ");
             }
 
-            // получаем тип 
+            // отримуємо тип 
             String type = f.getType().getName();
             System.out.print(type + " ");
-            // получаем имя
+            // отримуємо ім'я
             String name = f.getName();
             System.out.println(name + ";");
         }
@@ -85,11 +85,11 @@ class Person {
     }
 } 
 </code></pre>
-<p>В данном случае получаем все поля класса Person. Затем в цикле переьираем каждое поле, получаем его модификаторы и смотрим, представляють они <code>public</code>, <code>protected</code>. 
+<p>У даному випадку отримуємо все поля класа Person. Затем в цикле переьираем каждое поле, отримуємо его модификаторы и смотрим, представляютьь они <code>public</code>, <code>protected</code>. 
 <code>private</code> або <code>static</code>:</p>
 <pre class="line-numbers"><code class="language-java">
 for(Field f : fields){
-    // получаем модификаторы
+    // отримуємо модификаторы
     int mod = f.getModifiers();
     if(Modifier.isPublic(mod)){
         System.out.print("public ");
@@ -104,13 +104,13 @@ for(Field f : fields){
         System.out.print("static ");
     }
 </code></pre>
-<p>Затем получаем тип и имя поля и выводим на консоль. В итоге мы получим следующий консольный вывод:</p>
+<p>Затем отримуємо тип и ім'я поля и вивідим на консоль. В итоге мы получим следующий консольный вивід:</p>
 <pre class="line-numbers"><code class="language-none">
 public java.lang.String name;
 private int id;
 private static int count;
 </code></pre>
-<p>Для вывода модификаторов можна використовувати метод <code>Modifier.toString()</code>. Например:</p>
+<p>Для вивіда модификаторов можна використовувати метод <code>Modifier.toString()</code>. Наприклад:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.lang.reflect.*;
 
@@ -120,16 +120,16 @@ public class Program{
         
         Class cl = Person.class;
 
-        // получаем все поля типу Person
+        // отримуємо все поля типу Person
         Field[] fields = cl.getDeclaredFields();
 
-        // выводим информацию о полях
+        // вивідим информацию о полях
         for(Field f : fields){
-            // получаем модификаторы
+            // отримуємо модификаторы
             String modifiers = Modifier.toString(f.getModifiers());
-             // получаем тип 
+             // отримуємо тип 
             String type = f.getType().getName();
-            // получаем имя
+            // отримуємо ім'я
             String name = f.getName();
 
             System.out.printf("%s %s %s;\n", modifiers, type, name);
@@ -153,7 +153,7 @@ class Person {
 } 
 </code></pre>
 
-<p>Для получения модификаторов в виде строки передаем целочисленный код модификаторов в метод <code>Modifier.toString()</code></p>
+<p>Для получения модификаторов в виде рядки передаємо целочисленный код модификаторов в метод <code>Modifier.toString()</code></p>
 <pre class="line-numbers"><code class="language-java">String modifiers = Modifier.toString(f.getModifiers());</code></pre>
 
   </div>

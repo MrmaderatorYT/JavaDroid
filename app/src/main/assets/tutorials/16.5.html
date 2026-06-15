@@ -3,7 +3,7 @@
 <head>
 <title>Java | Складні дані та MemoryLayout</title>
 <meta charset="utf-8" />
-<meta name="description" content="Структуры и сложные дані в Foreign Functions та Memory API в языке программирования Java, MemoryLayout, StructLayout, SequenceLayout, работа с массивом структур">
+<meta name="description" content="Структуры и сложные дані в Foreign Functions та Memory API в языке програмирования Java, MemoryLayout, StructLayout, SequenceLayout, работа с масивом структур">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -13,8 +13,8 @@
 <div class="item center menC">
      <h1>Складні дані та MemoryLayout</h1><div class="date">Останнє оновлення: 21.12.2025</div>
 
-<p>Ранїї мы рассмотрели, як работать с сегментами памяти, которые містять строки UTF-8 и массивы значений примитивного типу. Но возникает вопрос, як быть с болїї сложными по структуре данными? 
-В языке C для описания таких данных застосовуються структуры. В Java для преобразования в нативний формат и обратно застосовуються кастомные структуры памяти, которые визначаються за допомогою метода 
+<p>Ранїї мы рассмотрели, як працювати с сегментами памяти, которые містять рядки UTF-8 и масивы значений примитивного типу. Но возникает вопрос, як быть с болїї сложными по структуре данными? 
+В языке C для описания таких данных застосовуються структуры. В Java для преобразования в нативний формат и обратно застосовуються кастомные структуры памяти, которые визначаються за допомогою методу 
 <code>MemoryLayout.structLayout()</code>:</p>
 <pre class="line-numbers"><code class="language-java">static StructLayout structLayout(MemoryLayout... elements)</code></pre>
 <p>В цей метод передаєся набор значений типу <span class="b">MemoryLayout</span>. 
@@ -33,7 +33,7 @@ StructLayout POINT = MemoryLayout.structLayout(
     ValueLayout.JAVA_INT.withName("y")
 );
 </pre>
-<p>Интерфейс <code>MemoryLayout</code> надає ряд специальных методів для управления выделенной памятью, в частности, метод 
+<p>Інтерфейс <code>MemoryLayout</code> надає ряд специальных методів для управления выделенной памятью, зокрема, метод 
 <code>withName(String name)</code> повертає структуру памяти (об'єкт <code>MemoryLayout</code>) с теми же характеристиками, что и данная структура, но с заданным именем. Таким чином, за допомогою выражения</p>
 <pre class="line-numbers"><code class="language-java">ValueLayout.JAVA_INT.withName("x")</code></pre>
 <p>определяем сегмент памяти размером в 4 байта (размера типу <code>int</code> в Java), який сопоставлен с именем "x".</p>
@@ -60,9 +60,9 @@ public class Program {
     }
 }
 </code></pre>
-<p>При сопоставлении типов C и Java длины байтов повинні совпадать. Но беззнаковые типы C сопоставляются с их эквивалентами в Java. При обработке цих значений в Java необхідно самостоятельно обробляти их як беззнаковые значения.</p>
+<p>При сопоставлении типів C и Java длины байтов повинні совпадать. Но беззнаковые типи C сопоставляются с их эквивалентами в Java. При обработке цих значений в Java необхідно самостоятельно обробляти их як беззнаковые значення.</p>
 
-<p>В примере выше мы не просто так установили для выделенных сегментов памяти имена ("x" и "y"). Используя методы сегментов памяти, мы можемо затем отримати або установить компоненты структуры:</p>
+<p>В примере выше мы не просто так установили для выделенных сегментов памяти имена ("x" и "y"). Використовуючи методи сегментов памяти, мы можемо затем отримати або установить компоненты структуры:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.lang.foreign.*;
 import static java.lang.foreign.ValueLayout.*;
@@ -81,11 +81,11 @@ public class Program {
             // выделяем память для 1 об'єкта POINT
             MemorySegment point_seg = arena.allocate(POINT);
 
-            // устанавливаем значения x и y
+            // устанавливаем значення x и y
             point_seg.set(ValueLayout.JAVA_INT, POINT.byteOffset(PathElement.groupElement("x")), 20);
             point_seg.set(ValueLayout.JAVA_INT, POINT.byteOffset(PathElement.groupElement("y")), 15);
 
-            // получаем значения x и y
+            // отримуємо значення x и y
             int x = point_seg.get(ValueLayout.JAVA_INT, POINT.byteOffset(PathElement.groupElement("x")));
             int y = point_seg.get(ValueLayout.JAVA_INT, POINT.byteOffset(PathElement.groupElement("y")));
 
@@ -95,35 +95,35 @@ public class Program {
     }
 }
 </code></pre>
-<p>Методи <code>get/set</code> обращаются к определенным участкам памяти, используя смщения. Для получения смщения застосовується метод <code>byteOffset()</code>, в який передаєся путь к элементу в памяти. 
-Для получения пути використовується имя. Наприклад, выражение</p>
+<p>Методи <code>get/set</code> обращаются к визначенийным участкам памяти, використовуючи смщения. Для получения смщения застосовується метод <code>byteOffset()</code>, в який передаєся путь к елементу в памяти. 
+Для получения пути використовується ім'я. Наприклад, выражение</p>
 <pre class="line-numbers"><code class="language-java">POINT.byteOffset(PathElement.groupElement("x"))</code></pre>
 <p>дозволяє отримати смщение относительно начала структуры для сегмента, який сопоставляется с именем "x".</p>
 
-<p>В принципе мы могли бы передать и числовое значение смщения, якщо оно нам известно:</p>
+<p>В принципе мы могли бы передать и числовое значення смщения, якщо оно нам известно:</p>
 <pre class="line-numbers"><code class="language-java">
 // поле y смщено на 4 байта относительно начала структуры
 point_seg.set(ValueLayout.JAVA_INT, 4, 17);
 
-// получаем значения  y
+// отримуємо значення  y
 int y = point_seg.get(ValueLayout.JAVA_INT, POINT.byteOffset(PathElement.groupElement("y")));
 
 System.out.println("y: " + y);  // y: 17
 </code></pre>
 <h3>Об'єднання</h3>
-<p>Подобно тому, як <code>StructLayout</code> описує расположение структур C, тип <span class="b">UnionLayout</span> описує об'єднание (union) языка C. Работа с <span class="b">UnionLayout</span> 
+<p>Підобно тому, як <code>StructLayout</code> описує расположение структур C, тип <span class="b">UnionLayout</span> описує об'єднание (union) языка C. Работа с <span class="b">UnionLayout</span> 
 во многом аналогична работе с <code>StructLayout</code>.</p>
 <h3>Составная компоновка SequenceLayout</h3>
-<p>Говоря о компоновке памяти, йде відзначити інтерфейс <span class="b">SequenceLayout</span>, який надає составную компоновку - однородное повторение заданной компоновки элементов або последовательность. 
-Количество повторений називається количеством элементов в последовательности. Последовательность можна рассматривать як структурную компоновку, в которой количество повторений элементов равно количеству элементов в последовательности.</p>
-<p>Для создания цього типу компоновки памяти застосовується метод <code>MemoryLayout.sequenceLayout()</code></p>
+<p>Говоря о компоновке памяти, йде відзначити інтерфейс <span class="b">SequenceLayout</span>, який надає составную компоновку - однородное повторение заданной компоновки елементов або післядовательность. 
+Количество повторений називається кількістьм елементов в післядовательности. Післядовательность можна рассматривать як структурную компоновку, в которой кількість повторений елементов равно количеству елементов в післядовательности.</p>
+<p>Для створенняя цього типу компоновки памяти застосовується метод <code>MemoryLayout.sequenceLayout()</code></p>
 <pre class="line-numbers"><code class="language-java">
 static SequenceLayout sequenceLayout(long elementCount, MemoryLayout elementLayout)
 </code></pre>
-<p>Метод приймає количество элементов и компоновку элемента в виде значения <code>MemoryLayout</code></p>
-<p>Наприклад, используем <code>SequenceLayout</code> для определения массива структур:</p>
+<p>Метод приймає кількість елементів и компоновку елемента в виде значення <code>MemoryLayout</code></p>
+<p>Наприклад, використовуємо <code>SequenceLayout</code> для визначенийия масива структур:</p>
 <pre class="line-numbers"><code class="language-java">
-// массив структур
+// масив структур
 SequenceLayout points_layout = MemoryLayout.sequenceLayout(count, 
     MemoryLayout.structLayout( 
         JAVA_INT.withName("x"),
@@ -138,14 +138,14 @@ long offset = points_layout.byteOffset(
     PathElement.groupElement("y")
 );
 </code></pre>
-<p>Здесь метод byteOffset отримує последовательность об'єктов <code>MemoryLayout.PathElement</code>, которые дозволяють отримати смщение к потрібному компоненту.</p>
-<p>Получив соответствующий сегмент памяти, мы можемо отримати або установить само значение компонента:</p>
+<p>Здесь метод byteOffset отримує післядовательность об'єктов <code>MemoryLayout.PathElement</code>, которые дозволяють отримати смщение к потрібному компоненту.</p>
+<p>Получив соответствующий сегмент памяти, мы можемо отримати або установить само значення компонента:</p>
 <pre class="line-numbers"><code class="language-java">
 MemorySegment points = Arena.global().allocate(point_layout);
-int value = 6;  // значение для y
+int value = 6;  // значення для y
 points.set(JAVA_FLOAT, offset, value, y);
 </code></pre>
-<p>Пример программы полностью:</p>
+<p>Пример програми полностью:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.lang.foreign.*;
 import static java.lang.foreign.ValueLayout.*;
@@ -154,8 +154,8 @@ public class Program {
 
     public static void main(String[] args) {
 
-        int count = 4;  // количество структур
-        // массив структур
+        int count = 4;  // кількість структур
+        // масив структур
         SequenceLayout points_layout = MemoryLayout.sequenceLayout(count, 
             MemoryLayout.structLayout( 
                 JAVA_INT.withName("x"),
@@ -164,20 +164,20 @@ public class Program {
         );
         try (Arena arena = Arena.ofConfined()) {
 
-            // выделяем память для массива структур
+            // выделяем память для масива структур
             MemorySegment points = arena.allocate(points_layout);
 
-            int index = 1;      // индекс потрібной структуры в массиве
+            int index = 1;      // индекс потрібной структуры в масиве
 
-            // получаем смщение поля y для структуры с индексом index
+            // отримуємо смщение поля y для структуры с индексом index
             long offset = points_layout.byteOffset( 
                 PathElement.sequenceElement(index), 
                 PathElement.groupElement("y")
             );
-            // устанавливаем значение y
+            // устанавливаем значення y
             points.set(ValueLayout.JAVA_INT, offset, 24);
 
-            // получаем значение y для структуры с индексом index
+            // отримуємо значення y для структуры с индексом index
             int y = points.get(ValueLayout.JAVA_INT, offset);
 
             System.out.println("y: " + y);  // 24

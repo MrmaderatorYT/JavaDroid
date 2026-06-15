@@ -3,7 +3,7 @@
 <head>
 <title>Java | Сериализация</title>
 <meta charset="utf-8" />
-<meta name="description" content="Сериализация и десериализация сложных об'єктов в языке программирования Java, сохранение об'єктов классов в файл и чтение их из файла">
+<meta name="description" content="Сериализация и десериализация сложных об'єктов в языке програмирования Java, сохранение об'єктов класов в файл и читання их из файлу">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -13,36 +13,36 @@
 <div class="item center menC">
      <h2>Сериализация</h2><div class="date">Останнє оновлення: 26.04.2018</div>
 
-	<p><span class="b">Сериализация</span> представляє процесс записи состояния об'єкта в поток, соответственно процесс извлечения або восстановления состояния об'єкта из потока називається 
-<span class="b">десериализацией</span>. Сериализация очень удобна, когда идет работа со сложными об'єктами.</p>
-<h3>Интерфейс Serializable</h3>
-<p>Сразу треба сказать, что сериализовать можна лише те об'єкты, которые реализуют інтерфейс <span class="b">Serializable</span>. 
-Цет інтерфейс не определяет нияких методів, просто он служит указателем системе, что об'єкт, реализующий его, может быть сериализован.</p>
-<h3>Сериализация. Класс ObjectOutputStream</h3>
-<p>Для сериализации об'єктов в поток використовується класс <span class="b">ObjectOutputStream</span>. Он записує дані в поток.</p>
-<p>Для создания об'єкта ObjectOutputStream в конструктор передаєся поток, в який производится запись:</p>
+	<p><span class="b">Сериализация</span> представляє процес записи состояния об'єкта в потік, соответственно процес извлечения або восстановления состояния об'єкта из потіка називається 
+<span class="b">десериализацией</span>. Сериализация дуже удобна, когда идет работа со сложными об'єктами.</p>
+<h3>Інтерфейс Serializable</h3>
+<p>Сразу треба сказать, что сериализовать можна лише те об'єкты, которые реалізують інтерфейс <span class="b">Serializable</span>. 
+Цет інтерфейс не визначає нияких методів, просто он служит указателем системе, что об'єкт, реализующий его, может быть сериализован.</p>
+<h3>Сериализация. Клас ObjectOutputStream</h3>
+<p>Для сериализации об'єктов в потік використовується клас <span class="b">ObjectOutputStream</span>. Он записує дані в потік.</p>
+<p>Для створенняя об'єкта ObjectOutputStream в конструктор передаєся потік, в який производится запис:</p>
 <pre class="line-numbers"><code class="language-java">
 ObjectOutputStream(OutputStream out)
 </code></pre>
-<p>Для записи данных ObjectOutputStream использует ряд методів, среди которых можна выделить следующие:</p>
+<p>Для записи данных ObjectOutputStream використовує ряд методів, среди которых можна выделить следующие:</p>
 <ul>
-<li><p><span class="b">void close()</span>: закрывает поток</p></li>
-<li><p><span class="b">void flush()</span>: очищает буфер и сбрасывает его содержимое в выходной поток</p></li>
-<li><p><span class="b">void write(byte[] buf)</span>: записує в поток массив байтов</p></li>
-<li><p><span class="b">void write(int val)</span>: записує в поток один младший байт из val</p></li>
-<li><p><span class="b">void writeBoolean(boolean val)</span>: записує в поток значение boolean</p></li>
-<li><p><span class="b">void writeByte(int val)</span>: записує в поток один младший байт из val</p></li>
-<li><p><span class="b">void writeChar(int val)</span>: записує в поток значение типу char, представленное целочисленным значением</p></li>
-<li><p><span class="b">void writeDouble(double val)</span>: записує в поток значение типу double</p></li>
-<li><p><span class="b">void writeFloat(float val)</span>: записує в поток значение типу float</p></li>
-<li><p><span class="b">void writeInt(int val)</span>: записує целочисленное значение int</p></li>
-<li><p><span class="b">void writeLong(long val)</span>: записує значение типу long</p></li>
-<li><p><span class="b">void writeShort(int val)</span>: записує значение типу short</p></li>
-<li><p><span class="b">void writeUTF(String str)</span>: записує в поток строку в кодировке UTF-8</p></li>
-<li><p><span class="b">void writeObject(Object obj)</span>: записує в поток отдельный об'єкт</p></li>
+<li><p><span class="b">void close()</span>: закрывает потік</p></li>
+<li><p><span class="b">void flush()</span>: очищает буфер и сбрасывает его вміст в выходной потік</p></li>
+<li><p><span class="b">void write(byte[] buf)</span>: записує в потік масив байтов</p></li>
+<li><p><span class="b">void write(int val)</span>: записує в потік один младший байт из val</p></li>
+<li><p><span class="b">void writeBoolean(boolean val)</span>: записує в потік значення boolean</p></li>
+<li><p><span class="b">void writeByte(int val)</span>: записує в потік один младший байт из val</p></li>
+<li><p><span class="b">void writeChar(int val)</span>: записує в потік значення типу char, представленное целочисленным значенням</p></li>
+<li><p><span class="b">void writeDouble(double val)</span>: записує в потік значення типу double</p></li>
+<li><p><span class="b">void writeFloat(float val)</span>: записує в потік значення типу float</p></li>
+<li><p><span class="b">void writeInt(int val)</span>: записує целочисленное значення int</p></li>
+<li><p><span class="b">void writeLong(long val)</span>: записує значення типу long</p></li>
+<li><p><span class="b">void writeShort(int val)</span>: записує значення типу short</p></li>
+<li><p><span class="b">void writeUTF(String str)</span>: записує в потік рядок в кодировке UTF-8</p></li>
+<li><p><span class="b">void writeObject(Object obj)</span>: записує в потік отдельный об'єкт</p></li>
 </ul>
-<p>Эти методы охватывают весь спектр данных, которые можна сериализовать.</p>
-<p>Наприклад, сохраним в файл один об'єкт класса Person:</p>
+<p>Эти методи охватывают весь спектр данных, которые можна сериализовать.</p>
+<p>Наприклад, сохраним в файл один об'єкт класа Person:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.io.*;
 
@@ -82,29 +82,29 @@ class Person implements Serializable{
 }
 </code></pre>
 
-<h3>Десериализация. Класс ObjectInputStream</h3>
-<p>Класс ObjectInputStream отвечает за обратный процесс - чтение ранїї сериализованных данных из потока. В конструкторе он приймає ссылку на поток ввода:</p>
+<h3>Десериализация. Клас ObjectInputStream</h3>
+<p>Клас ObjectInputStream отвечает за обратный процес - читання ранїї сериализованных данных из потіка. В конструкторе он приймає ссылку на потік ввода:</p>
 <pre class="line-numbers"><code class="language-java">
 ObjectInputStream(InputStream in)
 </code></pre>
-<p>Функционал ObjectInputStream сосредоточен в методах, призначенийных для чтения различных типов данных. Рассмотрим основные методы цього класса:</p>
+<p>Функционал ObjectInputStream сосредоточен в методух, призначенийных для читання различных типів данных. Рассмотрим основные методи цього класа:</p>
 <ul>
-<li><p><span class="b">void close()</span>: закрывает поток</p></li>
-<li><p><span class="b">int skipBytes(int len)</span>: пропускает при чтении декілька байт, количество которых равно len</p></li>
-<li><p><span class="b">int available()</span>: повертає количество байт, доступных для чтения</p></li>
-<li><p><span class="b">int read()</span>: считывает из потока один байт и повертає его целочисленное представление</p></li>
-<li><p><span class="b">boolean readBoolean()</span>: считывает из потока одно значение boolean</p></li>
-<li><p><span class="b">byte readByte()</span>: считывает из потока один байт</p></li>
-<li><p><span class="b">char readChar()</span>: считывает из потока один символ char</p></li>
-<li><p><span class="b">double readDouble()</span>: считывает значение типу double</p></li>
-<li><p><span class="b">float readFloat()</span>: считывает из потока значение типу float</p></li>
-<li><p><span class="b">int readInt()</span>: считывает целочисленное значение int</p></li>
-<li><p><span class="b">long readLong()</span>: считывает значение типу long</p></li>
-<li><p><span class="b">short readShort()</span>: считывает значение типу short</p></li>
-<li><p><span class="b">String readUTF()</span>: считывает строку в кодировке UTF-8</p></li>
-<li><p><span class="b">Object readObject()</span>: считывает из потока об'єкт</p></li>
+<li><p><span class="b">void close()</span>: закрывает потік</p></li>
+<li><p><span class="b">int skipBytes(int len)</span>: пропускает при чтении декілька байт, кількість которых равно len</p></li>
+<li><p><span class="b">int available()</span>: повертає кількість байт, доступных для читання</p></li>
+<li><p><span class="b">int read()</span>: считывает из потіка один байт и повертає его целочисленное представление</p></li>
+<li><p><span class="b">boolean readBoolean()</span>: считывает из потіка одно значення boolean</p></li>
+<li><p><span class="b">byte readByte()</span>: считывает из потіка один байт</p></li>
+<li><p><span class="b">char readChar()</span>: считывает из потіка один символ char</p></li>
+<li><p><span class="b">double readDouble()</span>: считывает значення типу double</p></li>
+<li><p><span class="b">float readFloat()</span>: считывает из потіка значення типу float</p></li>
+<li><p><span class="b">int readInt()</span>: считывает целочисленное значення int</p></li>
+<li><p><span class="b">long readLong()</span>: считывает значення типу long</p></li>
+<li><p><span class="b">short readShort()</span>: считывает значення типу short</p></li>
+<li><p><span class="b">String readUTF()</span>: считывает рядок в кодировке UTF-8</p></li>
+<li><p><span class="b">Object readObject()</span>: считывает из потіка об'єкт</p></li>
 </ul>
-<p>Наприклад, извлечем выше сохраненный об'єкт Person из файла:</p>
+<p>Наприклад, извлечем выше сохраненный об'єкт Person из файлу:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.io.*;
 
@@ -124,7 +124,7 @@ public class Program {
     } 
 }
 </code></pre>
-<p>Теперь совместим сохранение и восстановление из файла на примере списка об'єктов:</p>
+<p>Теперь совместим сохранение и восстановление из файлу на примере списку об'єктов:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.io.*;
 import java.util.ArrayList;
@@ -135,7 +135,7 @@ public class Program {
     public static void main(String[] args) {
         
         String filename = "people.dat";
-        // создадим список об'єктов, которые будем записывать
+        // створимо список об'єктов, которые будем записывать
         ArrayList&lt;Person&gt; people = new ArrayList&lt;Person&gt;();
         people.add(new Person("Tom", 30, 175, false));
         people.add(new Person("Sam", 33, 178, true));
@@ -186,9 +186,9 @@ class Person implements Serializable{
 	boolean getMarried(){return married;}
 }
 </code></pre>
-<h3>Исключение данных из сериализации</h3>
-<p>По умолчанию сериализуются все переменные об'єкта. Однак, возможна, мы хочемо, чтобы некоторые поля буви исключены из сериализации. 
-Для цього они повинні быть оголошенийы с модификатором <span class="b">transient</span>. Наприклад, исключим из сериализации об'єкта Person переменные 
+<h3>Виняток данных из сериализации</h3>
+<p>По умолчанию сериализуются все змінні об'єкта. Однак, возможна, мы хочемо, чтобы некоторые поля буви исключены из сериализации. 
+Для цього они повинні быть оголошенийы с модификатором <span class="b">transient</span>. Наприклад, исключим из сериализации об'єкта Person змінні 
 height и married:</p>
 <pre class="line-numbers"><code class="language-java">
 class Person implements Serializable{

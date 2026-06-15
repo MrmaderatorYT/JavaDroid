@@ -3,7 +3,7 @@
 <head>
 <title>Java | Словники. Інтерфейс Map та клас HashMap</title>
 <meta charset="utf-8" />
-<meta name="description" content="Словари и хеш-карты в языке программирования Java, інтерфейс Map и класс HashMap, их методы, добавление и удаление элементов в словаре">
+<meta name="description" content="Словники и хеш-карты в языке програмирования Java, інтерфейс Map и клас HashMap, их методи, додавання и видалення елементов в словаре">
 <meta name="viewport" content="width=device-width">
 
 <link href="../prism/prism.css" rel="stylesheet" />
@@ -13,49 +13,49 @@
 <div class="item center menC">
      <h1>Словники. Інтерфейс Map та клас HashMap</h1><div class="date">Останнє оновлення: 12.10.2025</div>
 
-	<p>Словари (також называемые картами и отображениями) дозволяють сопоставить с определенным ключом некоторое значение. В мові Java для определения базового функционала словарей имїїтся інтерфейс 
-<span class="b">Map&lt;K, V&gt;</span>. Он представляє структуру данных, где каждый элемент представляє пару "ключ-значение". При цем в рамках об'єкта <code>Map</code> 
-все ключи уникальные. Такие коллекции облегчают поиск элемента, якщо нам известен ключ - уникальный идентификатор об'єкта.</p>
-<p>Следует відзначити, что в отличие от других інтерфейсов, которые представляють коллекции, інтерфейс Map НЕ расширяет інтерфейс <code>Collection</code>.</p>
+	<p>Словники (також называемые картами и отображениями) дозволяють сопоставить с визначенийным ключом некоторое значення. В мові Java для визначенийия базового функционала словарей имїїтся інтерфейс 
+<span class="b">Map&lt;K, V&gt;</span>. Он представляє структуру данных, где каждый елемент представляє пару "ключ-значення". При цем в рамках об'єкта <code>Map</code> 
+все ключи уникальные. Такие колекції облегчают поиск елемента, якщо нам известен ключ - уникальный идентификатор об'єкта.</p>
+<p>Следует відзначити, что в отличие от других інтерфейсов, которые представляютьь колекції, інтерфейс Map НЕ расширяет інтерфейс <code>Collection</code>.</p>
 <p>Среди методів інтерфейса <code>Map</code> можна выделить следующие:</p>
 <ul>
-<li><p><code>void clear()</code>: очищает коллекцию</p></li>
-<li><p><code>boolean containsKey(Object k)</code>: повертає true, якщо коллекция містить ключ k</p></li>
-<li><p><code>boolean containsValue(Object v)</code>: повертає true, якщо коллекция містить значение v</p></li>
-<li><p><code>Set&lt;Map.Entry&lt;K, V&gt;&gt; entrySet()</code>: повертає набор элементов коллекции. Все элементы представляють об'єкт <code>Map.Entry</code></p></li>
-<li><p><code>boolean equals(Object obj)</code>: повертає true, якщо коллекция идентична коллекции, передаваемой через параметр obj</p></li>
-<li><p><code>boolean isEmpty()</code>: повертає <code>true</code>, якщо коллекция пуста</p></li>
-<li><p><code>V get(Object k)</code>: повертає значение об'єкта, ключ которого равен k. Если такого элемента не окажется, то повертаєся значение <code>null</code></p></li>
-<li><p><code>V getOrDefault(Object k, V defaultValue)</code>: повертає значение об'єкта, ключ которого равен k. Если такого элемента не окажется, 
-то повертаєся значение <code>defaultVlue</code></p></li>
-<li><p><code>V put(K k, V v)</code>: помещает в коллекцию новый об'єкт с ключом k и значением v. Если в коллекции вже есть об'єкт с подобным ключом, 
-то он перезаписуєся. После добавления повертає предыдущїї значення для ключа k, якщо он вже був в коллекции. Если же ключа ще не буво в коллекции, 
-то повертаєся значение <code>null</code></p></li>
-<li><p><code>V putIfAbsent(K k, V v)</code>: помещает в коллекцию новый об'єкт с ключом k и значением v, якщо в коллекции ще нет элемента с подобным ключом.</p></li>
-<li><p><code>Set&lt;K&gt; keySet()</code>: повертає набор всех ключей словаря</p></li>
-<li><p><code>Collection&lt;V&gt; values()</code>: повертає набор всех значений словаря</p></li>
-<li><p><code>void putAll(Map&lt;? extends K, ? extends V&gt; map)</code>: додає в коллекцию все об'єкты из словаря map</p></li>
+<li><p><code>void clear()</code>: очищает колекцію</p></li>
+<li><p><code>boolean containsKey(Object k)</code>: повертає true, якщо колекція містить ключ k</p></li>
+<li><p><code>boolean containsValue(Object v)</code>: повертає true, якщо колекція містить значення v</p></li>
+<li><p><code>Set&lt;Map.Entry&lt;K, V&gt;&gt; entrySet()</code>: повертає набор елементов колекції. Все елементы представляютьь об'єкт <code>Map.Entry</code></p></li>
+<li><p><code>boolean equals(Object obj)</code>: повертає true, якщо колекція идентична колекції, передаваемой через параметр obj</p></li>
+<li><p><code>boolean isEmpty()</code>: повертає <code>true</code>, якщо колекція пуста</p></li>
+<li><p><code>V get(Object k)</code>: повертає значення об'єкта, ключ которого равен k. Если такого елемента не окажется, то повертаєся значення <code>null</code></p></li>
+<li><p><code>V getOrDefault(Object k, V defaultValue)</code>: повертає значення об'єкта, ключ которого равен k. Если такого елемента не окажется, 
+то повертаєся значення <code>defaultVlue</code></p></li>
+<li><p><code>V put(K k, V v)</code>: помещает в колекцію новый об'єкт с ключом k и значенням v. Если в колекції вже есть об'єкт с підобным ключом, 
+то он перезаписуєся. Після добавления повертає предыдущїї значення для ключа k, якщо он вже був в колекції. Если же ключа ще не буво в колекції, 
+то повертаєся значення <code>null</code></p></li>
+<li><p><code>V putIfAbsent(K k, V v)</code>: помещает в колекцію новый об'єкт с ключом k и значенням v, якщо в колекції ще нет елемента с підобным ключом.</p></li>
+<li><p><code>Set&lt;K&gt; keySet()</code>: повертає набор всех ключей словника</p></li>
+<li><p><code>Collection&lt;V&gt; values()</code>: повертає набор всех значений словника</p></li>
+<li><p><code>void putAll(Map&lt;? extends K, ? extends V&gt; map)</code>: додає в колекцію все об'єкты из словника map</p></li>
 <li><p><code>V remove(Object k)</code>: видаляє об'єкт с ключом k</p></li>
 <li><p><code>boolean remove(Object k, Object v)</code>: видаляє об'єкт с ключом k, якщо лише його значення равно v</p></li>
-<li><p><code>V replace(K k, V v)</code>: заменяет значение для указанного ключа k на v</p></li>
-<li><p><code>boolean replace(K key, V oldValue, V newValue)</code>: заменяет значение для указанного ключа key на newValue, якщо лише старое значение равно oldValue</p></li>
-<li><p><code>int size()</code>: повертає количество элементов коллекции</p></li>
-<li><p><code>static &lt;K,V&gt; Map&lt;K,V&gt; ofEntries(Map.Entry&lt;? extends K, ? extends V&gt;... entries)</code>: повертає неизменяемые словарь, який містить элементы из entries</p></li>
+<li><p><code>V replace(K k, V v)</code>: заменяет значення для указанного ключа k на v</p></li>
+<li><p><code>boolean replace(K key, V oldValue, V newValue)</code>: заменяет значення для указанного ключа key на newValue, якщо лише старое значення равно oldValue</p></li>
+<li><p><code>int size()</code>: повертає кількість елементів колекції</p></li>
+<li><p><code>static &lt;K,V&gt; Map&lt;K,V&gt; ofEntries(Map.Entry&lt;? extends K, ? extends V&gt;... entries)</code>: повертає незмінюємоые словник, який містить елементы из entries</p></li>
 </ul>
-<p>Щоб положить об'єкт в коллекцию, використовується метод <code>put</code>, а чтобы отримати по ключу - метод <code>get</code>. Реализация інтерфейса 
-Map також дозволяє отримати наборы як ключей, так и значений. А метод <code>entrySet()</code> повертає набор всех элементов в виде об'єктов 
+<p>Щоб положить об'єкт в колекцію, використовується метод <code>put</code>, а чтобы отримати по ключу - метод <code>get</code>. Реалізація інтерфейса 
+Map також дозволяє отримати наборы як ключей, так и значений. А метод <code>entrySet()</code> повертає набор всех елементов в виде об'єктов 
 <span class="b">Map.Entry&lt;K, V&gt;</span>.</p>
-<p>Обобщенный інтерфейс <code>Map.Entry&lt;K, V&gt;</code> представляє об'єкт с ключом типу K и значением типу V и определяет следующие методы:</p>
+<p>Обобщенный інтерфейс <code>Map.Entry&lt;K, V&gt;</code> представляє об'єкт с ключом типу K и значенням типу V и визначає следующие методи:</p>
 <ul>
 <li><p><code>boolean equals(Object obj)</code>: повертає true, якщо об'єкт obj, представляющий інтерфейс <code>Map.Entry</code>, идентичен текущему</p></li>
-<li><p><code>K getKey()</code>: повертає ключ об'єкта словаря</p></li>
-<li><p><code>V getValue()</code>: повертає значение об'єкта словаря</p></li>
-<li><p><code>V setValue(V v)</code>: устанавливает для текущего об'єкта значение v</p></li>
+<li><p><code>K getKey()</code>: повертає ключ об'єкта словника</p></li>
+<li><p><code>V getValue()</code>: повертає значення об'єкта словника</p></li>
+<li><p><code>V setValue(V v)</code>: встановлює для текущего об'єкта значення v</p></li>
 <li><p><code>int hashCode()</code>: повертає хеш-код данного об'єкта</p></li>
 </ul>
-<p>При переборе об'єктов словаря мы будем оперировать цими методами для работы с ключами и значениями об'єктов.</p>
+<p>При переборе об'єктов словника мы будем оперировать цими методуми для работы с ключами и значеннями об'єктов.</p>
 
-<p>Наприклад, создадим неизменяемый словарь:</p>
+<p>Наприклад, створимо незмінюємоый словник:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.Map;
  
@@ -72,13 +72,13 @@ public class Program{
     }
 }
 </code></pre>
-<p>В данном случае створюєся словарь, где ключи представляють тип <code>Integer</code>, а значения - тип <code>String</code>. Для создания словаря застосовується мтеод <code>Map.ofEntries()</code>, 
-в який передаются об'єкты <code>Map.Entry</code>, создаваемые за допомогою метода <code>Map.entry()</code>. Первый параметр цього метода - ключ, а второй - сопоставляемое с ним значение.</p>
+<p>У даному випадку створюєся словник, где ключи представляютьь тип <code>Integer</code>, а значення - тип <code>String</code>. Для створенняя словника застосовується мтеод <code>Map.ofEntries()</code>, 
+в який передаються об'єкты <code>Map.Entry</code>, создаваемые за допомогою методу <code>Map.entry()</code>. Первый параметр цього методу - ключ, а второй - сопоставляемое с ним значення.</p>
 <p>Наприклад, выражение</p>
 <pre class="line-numbers"><code class="language-java">Map.entry(1, "Tom")</code></pre>
-<p>Створює об'єкт <code>Map.Entry</code>, где ключ - число 1, а значение - строка "Tom".</p>
+<p>Створює об'єкт <code>Map.Entry</code>, где ключ - число 1, а значення - рядок "Tom".</p>
 
-<p>Поскольку результатом метода <code></code> є неизменяемый словарь типу <code>java.util.ImmutableCollections$MapN</code>, то мы не можемо изменять его значения. Но посмотрим, якие другие операции мы можемо произвести со словарем.</p>
+<p>Поскольку результатом методу <code></code> є незмінюємоый словник типу <code>java.util.ImmutableCollections$MapN</code>, то мы не можемо изменять его значення. Но посмотрим, якие другие операції мы можемо произвести со словарем.</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.Map;
  
@@ -92,24 +92,24 @@ public class Program{
                                         Map.entry(3, "Sam")
                                     );
 
-        // получаем размер словаряя
+        // отримуємо размер словникая
         System.out.println(map.size());   // 3
 
-        // получаем все ключи
+        // отримуємо все ключи
         System.out.println(map.keySet());   // [3, 2, 1]
-        // получаем все значения
+        // отримуємо все значення
         System.out.println(map.values());   // [Sam, Bob, Tom]
 
-        // получаем значение по ключу 2 из словаря
+        // отримуємо значення по ключу 2 из словника
         String item2 = map.get(2);
         System.out.println("Item 2: " + item2);   // Item 2: Bob
 
-        // перебор словаря
+        // перебор словника
         for(Map.Entry&lt;Integer,String&gt; item : map.entrySet()){
 
-            // получаем ключ
+            // отримуємо ключ
             Integer key = item.getKey();
-            // получаем значение
+            // отримуємо значення
             String value = item.getValue();
             System.out.printf("{ %d : %s}\n", key, value);
         }
@@ -118,20 +118,20 @@ public class Program{
 </code></pre>
 
 <h3>HashMap</h3>
-<p>Базовым классом для всех словарей є абстрактный класс <span class="b">AbstractMap</span>, 
-який реализует большую часть методів інтерфейса Map. Наиболїї распространенным классом словарей є <span class="b">HashMap</span>, 
-який найдеся от класса <code>AbstractMap</code> и представляє реализацию інтерфейса <code>Map</code> на основе хеш-таблицы.</p>
-<p>Для создания словаря <code>HashMap</code> застосовується ряд конструкторов:</p>
+<p>Базовым класом для всех словарей є абстрактный клас <span class="b">AbstractMap</span>, 
+який реалізує большую часть методів інтерфейса Map. Наиболїї распространенным класом словарей є <span class="b">HashMap</span>, 
+який найдеся от класа <code>AbstractMap</code> и представляє реализацию інтерфейса <code>Map</code> на основе хеш-таблиці.</p>
+<p>Для створенняя словника <code>HashMap</code> застосовується ряд конструкторов:</p>
 <ul>
-<li><p><code>HashMap()</code>: створює пустой<code>HashMap</code>с начальной емкостью по умолчанию (16) и коэффициентом загрузки по умолчанию (0,75)</p></li>
+<li><p><code>HashMap()</code>: створює порожній<code>HashMap</code>с начальной емкостью по умолчанию (16) и коэффициентом загрузки по умолчанию (0,75)</p></li>
 
-<li><p><code>HashMap(int initialCapacity)</code>: створює пустой<code>HashMap</code>с указанной начальной ємністью и коэффициентом загрузки по умолчанию (0,75)</p></li>
+<li><p><code>HashMap(int initialCapacity)</code>: створює порожній<code>HashMap</code>с указанной начальной ємністью и коэффициентом загрузки по умолчанию (0,75)</p></li>
 
-<li><p><code>HashMap(int initialCapacity, float loadFactor)</code>: створює пустой<code>HashMap</code>с указанной начальной емкостью и коэффициентом загрузки</p></li>
+<li><p><code>HashMap(int initialCapacity, float loadFactor)</code>: створює порожній<code>HashMap</code>с указанной начальной емкостью и коэффициентом загрузки</p></li>
 
 <li><p><code>HashMap(Map&lt;? extends K, ? extends V&gt; m)</code>: створює новый<code>HashMap</code>с теми же сопоставлениями, что и у заданного Map</p></li>
 </ul>
-<p>Створення <code>HashMap</code> и добавление в него элементов:</p>
+<p>Створення <code>HashMap</code> и додавання в него елементов:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.Map;
 import java.util.HashMap;
@@ -140,10 +140,10 @@ public class Program{
       
     public static void main(String[] args) {
           
-        // пустой словарь
+        // порожній словник
         var dict = new HashMap&lt;String,String&gt;();
 
-        // добавляем в него элементы
+        // додаємо в него елементы
         dict.put("red", "красный");
         dict.put("green", "зеленый");
         dict.put("blue", "синий");
@@ -153,14 +153,14 @@ public class Program{
                                     Map.entry("yellow", "желтый"),
                                     Map.entry("brown", "коричневый")
                                 );
-        // добавляем другой словарь с данными
+        // додаємо другой словник с данными
         dict.putAll(map);
         System.out.println(dict);   // {red=красный, green=зеленый, blue=синий, yellow=желтый, brown=коричневый}
     }
 }
 </code></pre>
-<p>В данном случае создаем словарь, где и ключи, и значения представляють строки. Затем за допомогою методів <code>put()/putAll()</code> добавляем ряд об'єктов.</p>
-<p>ПРимер получения данных из словаря:</p>
+<p>У даному випадку створюємо словник, где и ключи, и значення представляютьь рядки. Затем за допомогою методів <code>put()/putAll()</code> додаємо ряд об'єктов.</p>
+<p>ПРимер получения данных из словника:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.Map;
 import java.util.HashMap;
@@ -178,15 +178,15 @@ public class Program{
         var dict = new HashMap&lt;String,String&gt;(map);
         System.out.println(dict);   // {red=красный, yellow=желтый, green=зеленый, blue=синий}
 
-        // получаем размер словаряя
+        // отримуємо размер словникая
         System.out.println(dict.size());   // 4
 
-        // получаем все ключи
+        // отримуємо все ключи
         System.out.println(dict.keySet());   // [red, yellow, green, blue]
-        // получаем все значения
+        // отримуємо все значення
         System.out.println(dict.values());   // [красный, желтый, зеленый, синий]
 
-        // получаем значение по ключу "red" из словаря
+        // отримуємо значення по ключу "red" из словника
         String red = dict.get("red");
         System.out.println("red: " + red);   // red: красный
 
@@ -194,12 +194,12 @@ public class Program{
         var hasBlack = dict.containsKey("black");
         System.out.println("black: " + (hasBlack ? dict.get("black"):" отсутствует"));   // black:  отсутствует
 
-        // перебор словаря
+        // перебор словника
         for(var word : dict.entrySet()){
 
-            // получаем ключ 
+            // отримуємо ключ 
             var source = word.getKey();
-            // получаем значение
+            // отримуємо значення
             var translation = word.getValue();
             System.out.printf("%s : %s\n", source, translation);
         }
@@ -207,7 +207,7 @@ public class Program{
 }
 </code></pre>
 
-<p>Пример изменения и удаления элементов словаря:</p>
+<p>Пример изменения и удаления елементов словника:</p>
 <pre class="line-numbers"><code class="language-java">
 import java.util.Map;
 import java.util.HashMap;
@@ -225,25 +225,25 @@ public class Program{
         var dict = new HashMap&lt;String,String&gt;(map);
         System.out.println(dict);   // {red=красный, green=зеленый, blue=синий, yellow=желтый}
 
-        // меняем по ключу "red" значение на "червонный"
+        // меняем по ключу "red" значення на "червонный"
         dict.replace("red", "червонный");
         System.out.println(dict);   // {red=червонный, green=зеленый, blue=синий, yellow=желтый}
 
-        // меняем по ключу "red" значение на "алый", лише якщо значение "красный"
+        // меняем по ключу "red" значення на "алый", лише якщо значення "красный"
         dict.replace("red", "алый", "красный");
 
-        // удаляем yellow
+        // видаляємо yellow
         dict.remove("yellow");
         System.out.println(dict);   // {red=червонный, green=зеленый, blue=синий}
 
-        // удаляем все элементы
+        // видаляємо всі елементи
         dict.clear();
         System.out.println(dict);   // {}
     }
 }
 </code></pre>
-<p>Щоб добавить або заменить элемент, використовується метод put, або replace, а чтобы отримати його значення по ключу - метод get. С помощью других методів 
-інтерфейса Map також производятся другие манипуляции над элементами: перебор, получение ключей, значений, удаление.</p>
+<p>Щоб добавить або заменить елемент, використовується метод put, або replace, а чтобы отримати його значення по ключу - метод get. За допомогою других методів 
+інтерфейса Map також производятся другие манипуляции над елементами: перебор, отримання ключей, значений, видалення.</p>
 
   </div>
 
