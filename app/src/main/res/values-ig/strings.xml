@@ -114,7 +114,7 @@
     <string name="bytecode_empty">Enweghị bytecode ga-ege ntị</string>
     <string name="bytecode_no_methods">Enweghị methods</string>
     <string name="bytecode_search_hint">Chọta opcode…</string>
-    <string name="bytecode_select_method">Họpụọ method n'akụkụ</string>
+    <string name="bytecode_select_method">Họpụọ method n\'akụkụ</string>
     <string name="console_debug_resumed">▶ Aga nihu ọzọ</string>
     <string name="console_mvn_package">▶ mvn package…</string>
     <string name="console_mvn_test_compile">▶ mvn test-compile…</string>
@@ -169,7 +169,7 @@
     <string name="git_no_repo">Project a abụghị nhikwọtara Git ka.\n%1$s</string>
     <string name="git_no_repo_short">enweghị .git</string>
     <string name="git_quick_commit_done">Nkata ngwa ngwa agwụla</string>
-    <string name="git_quick_init_first">Bido nhikwọtara Git n'ime project a mbụ?</string>
+    <string name="git_quick_init_first">Bido nhikwọtara Git n\'ime project a mbụ?</string>
     <string name="git_remote_origin">Remote: origin</string>
     <string name="git_save_creds">Chekwaa credentials maka host a</string>
     <string name="git_save_remote">Chekwaa remote</string>
@@ -178,14 +178,14 @@
     <string name="git_stage_all_first">Tinye mgbanwe niile tupu ikata</string>
     <string name="git_tab_remote">Remote</string>
     <string name="git_token_hint">Token / Password</string>
-    <string name="git_token_hint_long">Maka GitHub: jiri Personal Access Token (Settings → Developer settings → Tokens). A na-echekwa n'ime ụlọ na obfuscation siri.</string>
+    <string name="git_token_hint_long">Maka GitHub: jiri Personal Access Token (Settings → Developer settings → Tokens). A na-echekwa n\'ime ụlọ na obfuscation siri.</string>
     <string name="git_unstage">Kpochaa</string>
     <string name="git_url_hint">https://github.com/user/repo.git</string>
     <string name="git_user_hint">Aha onye ji</string>
     <string name="kotlin_run_warning_title">Gbanyụọ Kotlin</string>
-    <string name="kotlin_run_warning_message">Ịgbanyụọ na imepụta faịlụ Kotlin (.kt) ozugbo na onye na-eji aka ga-agaghi n'ihi nnukwu mkpa.</string>
+    <string name="kotlin_run_warning_message">Ịgbanyụọ na imepụta faịlụ Kotlin (.kt) ozugbo na onye na-eji aka ga-agaghi n\'ihi nnukwu mkpa.</string>
     <string name="lib_add_dependency">Tinye dependency?</string>
-    <string name="lib_add_dependency_message">Ị ga-achọrọ itinye %1$s:%2$s:%3$s n'ime pom.xml?</string>
+    <string name="lib_add_dependency_message">Ị ga-achọrọ itinye %1$s:%2$s:%3$s n\'ime pom.xml?</string>
     <string name="lib_added">Etinyelarị: %1$s</string>
     <string name="lib_loading_versions">Na-abu versions…</string>
     <string name="lib_search_hint">dị ka gson, okhttp, junit</string>
@@ -218,8 +218,8 @@
     <string name="settings_tab_size_n">Ntọhapụ tab: %1$d</string>
     <string name="settings_theme_custom">Ọhụrụ</string>
     <string name="share_file_chooser">Kekọrịta file</string>
-    <string name="soon">n'oge na adịghị</string>
-    <string name="soon_in_development">Na-abịa n'oge na adịghị n'ime mmepe</string>
+    <string name="soon">n\'oge na adịghị</string>
+    <string name="soon_in_development">Na-abịa n\'oge na adịghị n\'ime mmepe</string>
     <string name="tab_debug_console">Console</string>
     <string name="toast_console_empty">Console pụtara ọ̀jọ̀</string>
     <string name="toast_error_prefix">Nkebi: %1$s</string>
@@ -227,7 +227,7 @@
     <string name="toast_export_failed">Ewepụtaghị: %1$s</string>
     <string name="toast_file_exists">%1$s.java dị na</string>
     <string name="toast_imported_to">Ebulitara dị ka %1$s</string>
-    <string name="toast_only_java_supported">Faịlụ .java naanị a na-akwado n'ime project</string>
+    <string name="toast_only_java_supported">Faịlụ .java naanị a na-akwado n\'ime project</string>
     <string name="toast_only_text_files">Faịlụ akwụkwọ naanị a na-akwado</string>
     <string name="toast_project_path_copied">Ụzọ project ekpịrịtara</string>
     <string name="toast_rename_failed">Ịgbanwe aha agbaghị</string>

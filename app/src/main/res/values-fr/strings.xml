@@ -229,15 +229,15 @@
     <string name="debug_stop">Arrêter</string>
     <string name="debug_add_watch">Ajouter un suivi</string>
     <string name="debug_watch_hint">Saisir une expression (ex. x, obj.name, list.size())</string>
-    <string name="debug_evaluate">Évaluer l'expression</string>
+    <string name="debug_evaluate">Évaluer l\'expression</string>
     <string name="debug_evaluate_hint">Expression</string>
-    <string name="dialog_debug_evaluate_title">Évaluer l'expression</string>
+    <string name="dialog_debug_evaluate_title">Évaluer l\'expression</string>
     <string name="dialog_debug_watch_title">Ajouter une expression de suivi</string>
     <string name="dialog_create_folder_title">Créer un dossier</string>
     <string name="dialog_create_folder_hint">Nom du dossier (ex. model)</string>
-    <string name="dialog_select_encoding">Choisir l'encodage du fichier</string>
+    <string name="dialog_select_encoding">Choisir l\'encodage du fichier</string>
     <string name="debug_no_variables">Pas de variables dans la portée</string>
-    <string name="debug_no_stack">Pas de pile d'appels</string>
+    <string name="debug_no_stack">Pas de pile d\'appels</string>
     <string name="debug_not_debugging">Pas en mode débogage</string>
     <string name="settings_format_on_save">Formater le code à la sauvegarde</string>
     <string name="settings_verbose_logging">Journalisation détaillée (Logcat)</string>
@@ -257,5 +257,5 @@
     <string name="bytecode_search_hint">Rechercher un opcode…</string>
     <string name="bytecode_select_method">Sélectionnez une méthode à gauche</string>
     <string name="kotlin_run_warning_title">Exécuter Kotlin</string>
-    <string name="kotlin_run_warning_message">L'exécution et la compilation de fichiers Kotlin (.kt) directement sur l'appareil ne sont pas prises en charge. Veuillez utiliser la coloration syntaxique pour l'édition et compiler sur un serveur externe ou un PC.</string>
+    <string name="kotlin_run_warning_message">L\'exécution et la compilation de fichiers Kotlin (.kt) directement sur l\'appareil ne sont pas prises en charge. Veuillez utiliser la coloration syntaxique pour l\'édition et compiler sur un serveur externe ou un PC.</string>
 </resources>

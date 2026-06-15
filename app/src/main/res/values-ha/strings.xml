@@ -183,7 +183,7 @@
     <string name="git_url_hint">https://github.com/user/repo.git</string>
     <string name="git_user_hint">Sunan mai amfani</string>
     <string name="kotlin_run_warning_title">Gudu Kotlin</string>
-    <string name="kotlin_run_warning_message">Gudu da gina fayilolin Kotlin (.kt) kai tsaye a cikin na'urar ba tallafi ba saboda buƙatun.</string>
+    <string name="kotlin_run_warning_message">Gudu da gina fayilolin Kotlin (.kt) kai tsaye a cikin na\'urar ba tallafi ba saboda buƙatun.</string>
     <string name="lib_add_dependency">Ƙara haɗi?</string>
     <string name="lib_add_dependency_message">Kuna so ku ƙara %1$s:%2$s:%3$s zuwa pom.xml?</string>
     <string name="lib_added">An ƙara: %1$s</string>
