@@ -24,8 +24,21 @@ public final class CourseRegistry {
 
     private CourseRegistry() {
         // Реєстрація курсів при першому створенні.
-        courses.add(JavaReferenceCourse.create());
-        courses.add(EssentialsCourse.create());
+        addCourse(JavaReferenceCourse.create());
+        addCourse(Jdk8DeepDiveCourse.create());
+        addCourse(EssentialsCourse.create());
+        addCourse(AdvancedJavaCourse.create());
+        addCourse(AlgorithmsCourse.create());
+        addCourse(ArchitectureCourse.create());
+        addCourse(NetworkCourse.create());
+        addCourse(TestingCourse.create());
+        addCourse(SpringBootCourse.create());
+        addCourse(DevOpsCourse.create());
+        addCourse(JavaTutorials.create());
+    }
+
+    private void addCourse(Course course) {
+        courses.add(BeginnerFriendlyContent.apply(course));
     }
 
     public static CourseRegistry getInstance() {

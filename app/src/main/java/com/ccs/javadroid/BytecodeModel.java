@@ -671,4 +671,103 @@ public final class BytecodeModel {
         public static final int LABEL       = 7;  // jump-мітка
         public static final int LABEL_DECL  = 8;  // оголошення мітки
     }
+
+    /**
+     * Apply ProGuard/R8 deobfuscation to this model.
+     * Returns a new model with deobfuscated names (or this if no deobfuscator).
+     */
+    public BytecodeModel deobfuscate(Deobfuscator deobfuscator) {
+        if (deobfuscator == null || !deobfuscator.hasMapping()) return this;
+
+        // Deobfuscate class info
+        ClassInfo newClassInfo = new ClassInfo(
+                classInfo.accessText,
+                classInfo.access,
+                deobfuscator.className(classInfo.name),
+                classInfo.internalName,
+                deobfuscator.className(classInfo.superName),
+                classInfo.superInternal,
+                classInfo.interfaces,
+                classInfo.signature,
+                classInfo.versionLabel,
+                classInfo.version);
+
+        // Deobfuscate fields
+        List<FieldInfo> newFields = new ArrayList<>();
+        for (FieldInfo f : fields) {
+            String deobfName = deobfuscator.fieldName(classInfo.internalName, f.name);
+            String deobfOwner = deobfuscator.getOriginalClassName(classInfo.internalName);
+            if (deobfOwner == null) deobfOwner = classInfo.internalName;
+            newFields.add(new FieldInfo(
+                    f.accessText,
+                    f.access,
+                    deobfName,
+                    f.desc,
+                    f.typeText,
+                    f.signature,
+                    f.value));
+        }
+
+        // Deobfuscate methods and their instructions
+        List<MethodInfo> newMethods = new ArrayList<>();
+        for (MethodInfo m : methods) {
+            String deobfName = deobfuscator.methodName(
+                    classInfo.internalName, m.name, m.desc);
+            String deobfOwner = deobfuscator.getOriginalClassName(classInfo.internalName);
+            if (deobfOwner == null) deobfOwner = classInfo.internalName;
+
+            List<Instruction> newInsns = new ArrayList<>();
+            for (Instruction insn : m.instructions) {
+                String newOperand = insn.operand;
+                String newComment = insn.comment;
+
+                if (insn.tokenType == Token.METHOD && insn.operand != null) {
+                    // Try to deobfuscate method call target
+                    int dotIdx = insn.operand.indexOf('.');
+                    if (dotIdx > 0) {
+                        String owner = insn.operand.substring(0, dotIdx);
+                        String methName = insn.operand.substring(dotIdx + 1);
+                        String deobfMethodOwner = deobfuscator.className(owner);
+                        String deobfMethodName = deobfuscator.methodName(owner, methName, "");
+                        if (deobfMethodOwner != null || deobfMethodName != null) {
+                            newOperand = (deobfMethodOwner != null ? deobfMethodOwner : owner)
+                                    + "." + (deobfMethodName != null ? deobfMethodName : methName);
+                        }
+                    }
+                } else if (insn.tokenType == Token.FIELD && insn.operand != null) {
+                    int dotIdx = insn.operand.indexOf('.');
+                    if (dotIdx > 0) {
+                        String owner = insn.operand.substring(0, dotIdx);
+                        String fieldName = insn.operand.substring(dotIdx + 1);
+                        String deobfFieldOwner = deobfuscator.className(owner);
+                        String deobfFieldName = deobfuscator.fieldName(owner, fieldName);
+                        if (deobfFieldOwner != null || deobfFieldName != null) {
+                            newOperand = (deobfFieldOwner != null ? deobfFieldOwner : owner)
+                                    + "." + (deobfFieldName != null ? deobfFieldName : fieldName);
+                        }
+                    }
+                }
+
+                newInsns.add(new Instruction(insn.offset, insn.opcode, newOperand,
+                        insn.comment, insn.comment, insn.tokenType, insn.argIndex,
+                        insn.sourceLine, insn.label));
+            }
+
+            newMethods.add(new MethodInfo(
+                    m.accessText,
+                    m.access,
+                    deobfName,
+                    m.desc,
+                    m.signatureText,
+                    m.shortText,
+                    m.genericSignature,
+                    newInsns,
+                    m.locals,
+                    m.handlers,
+                    m.maxStack,
+                    m.maxLocals));
+        }
+
+        return new BytecodeModel(newClassInfo, newFields, newMethods, rawBytes);
+    }
 }

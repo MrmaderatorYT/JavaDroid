@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Курс EPAM-style: поглиблені теми (рівень enterprise).
+ * Курс Essentials: поглиблені теми (рівень enterprise).
  * Date/Time API, Concurrency Essentials (ч.1 та ч.2), JVM Memory, RDBMS/SQL,
  * JDBC/DAO, Web Basics, Servlet/JSP.
  */
@@ -13,9 +13,9 @@ final class EssentialsCourse {
 
     static Course create() {
         Course c = new Course(
-                "epam_essentials",
-                "EPAM Essentials: від Date/Time до Web",
-                "EPAM Essentials: from Date/Time to Web",
+                "java_essentials",
+                "Essentials: від Date/Time до Web",
+                "Essentials: from Date/Time to Web",
                 "Поглиблені enterprise-теми з прикладами: час, конкурентність, пам'ять JVM, "
                 + "бази даних, JDBC, Servlet/JSP.",
                 "Advanced enterprise topics with examples: time, concurrency, JVM memory, "
@@ -400,8 +400,8 @@ final class EssentialsCourse {
                 + "pool.awaitTermination(1, TimeUnit.MINUTES);"));
             uk.add(LessonBlock.warning(
                 "НИКОЛИ не забувайте shutdown() — інакше пул триматиме JVM живою. "
-                + "У продакшені — використовуйте try-with-resources (Java 19+) або "
-                + "явний finally { pool.shutdown(); }."));
+                + "У JDK 8 використовуйте явний finally { pool.shutdown(); }, якщо після "
+                + "submit/execute може статися виняток."));
             List<LessonBlock> en = new ArrayList<>();
             en.add(LessonBlock.heading("ExecutorService — thread pool"));
             en.add(LessonBlock.paragraph(
@@ -421,8 +421,8 @@ final class EssentialsCourse {
                 + "pool.awaitTermination(1, TimeUnit.MINUTES);"));
             en.add(LessonBlock.warning(
                 "NEVER forget shutdown() — otherwise the pool keeps the JVM alive. "
-                + "In production use try-with-resources (Java 19+) or an explicit "
-                + "finally { pool.shutdown(); }."));
+                + "In JDK 8, use an explicit finally { pool.shutdown(); } if an exception "
+                + "may happen after submit/execute."));
             return new Lesson("c2.1", "ExecutorService", "ExecutorService", uk, en);
         }
 
@@ -498,8 +498,8 @@ final class EssentialsCourse {
             List<LessonBlock> uk = new ArrayList<>();
             uk.add(LessonBlock.heading("CompletableFuture — асинхронні ланцюжки"));
             uk.add(LessonBlock.paragraph(
-                    "CompletableFuture — Future на стероїдах: композиція через thenApply, "
-                    + "thenAccept, thenCombine, exceptionally. Аналог Promise/Future у JS."));
+                    "CompletableFuture — розширена версія Future, що підтримує композицію "
+                    + "через методи thenApply, thenAccept, thenCombine та exceptionally. Є аналогом концепції Promise у JavaScript."));
             uk.add(LessonBlock.code(
                 "CompletableFuture.supplyAsync(() -> \"hello\")     // фонова задача\n"
                 + "    .thenApply(String::toUpperCase)               // перетворення\n"
@@ -510,8 +510,8 @@ final class EssentialsCourse {
             List<LessonBlock> en = new ArrayList<>();
             en.add(LessonBlock.heading("CompletableFuture — async chains"));
             en.add(LessonBlock.paragraph(
-                "CompletableFuture is Future on steroids: composition via thenApply, "
-                + "thenAccept, thenCombine, exceptionally. Like Promise/Future in JS."));
+                "CompletableFuture is an enhanced implementation of the Future interface that supports composition "
+                + "via thenApply, thenAccept, thenCombine, and exceptionally. It is analogous to Promises in JavaScript."));
             en.add(LessonBlock.code(
                 "CompletableFuture.supplyAsync(() -> \"hello\")     // background task\n"
                 + "    .thenApply(String::toUpperCase)               // transform\n"
@@ -573,8 +573,8 @@ final class EssentialsCourse {
             uk.add(LessonBlock.heading("Garbage Collector"));
             uk.add(LessonBlock.paragraph(
                     "GC автоматично звільняє об'єкти, на які не лишилося сильних посилань. "
-                    + "Сучасні збирачі (G1 за замовчуванням з Java 9, ZGC, Shenandoah) "
-                    + "мінімізують паузи."));
+                    + "У JDK 8 можна зустріти Serial, Parallel, CMS та G1 GC. Головна ідея "
+                    + "для початку: збирач шукає недосяжні об'єкти й повертає пам'ять JVM."));
             uk.add(LessonBlock.list(
                 "Young generation (Eden + S0/S1) — нові об'єкти, часта збірка (minor GC).",
                 "Old (Tenured) generation — об'єкти, що вижили кілька minor GC.",
@@ -584,8 +584,9 @@ final class EssentialsCourse {
             List<LessonBlock> en = new ArrayList<>();
             en.add(LessonBlock.heading("Garbage Collector"));
             en.add(LessonBlock.paragraph(
-                "The GC automatically frees objects with no strong references left. Modern "
-                + "collectors (G1 by default since Java 9, ZGC, Shenandoah) minimize pauses."));
+                "The GC automatically frees objects with no strong references left. In JDK 8 "
+                + "you may see Serial, Parallel, CMS, and G1 GC. The beginner-level idea is "
+                + "simple: the collector finds unreachable objects and returns memory to the JVM."));
             en.add(LessonBlock.list(
                 "Young generation (Eden + S0/S1) — fresh objects, frequent collection (minor GC).",
                 "Old (Tenured) generation — objects surviving several minor GCs.",
@@ -797,8 +798,8 @@ final class EssentialsCourse {
                 + "    }\n"
                 + "}   // try-with-resources автоматично закриває Connection"));
             uk.add(LessonBlock.warning(
-                "НИКОЛИ не конкатенуйте значення у SQL-рядок — це SQL-ін'єкція. "
-                + "Завжди PreparedStatement з параметрами."));
+                "Уникайте конкатенації значень безпосередньо у рядок SQL-запиту, оскільки це створює критичну вразливість перед SQL-ін'єкціями. "
+                + "Завжди використовуйте PreparedStatement із параметризованими запитами."));
             List<LessonBlock> en = new ArrayList<>();
             en.add(LessonBlock.heading("Connecting via JDBC"));
             en.add(LessonBlock.paragraph(
@@ -818,8 +819,8 @@ final class EssentialsCourse {
                 + "    }\n"
                 + "}   // try-with-resources auto-closes the Connection"));
             en.add(LessonBlock.warning(
-                "NEVER concatenate values into an SQL string — that's SQL injection. "
-                + "Always use PreparedStatement with parameters."));
+                "Do not concatenate parameters directly into the SQL query string to prevent SQL injection vulnerabilities. "
+                + "Always use PreparedStatement with query parameters."));
             return new Lesson("jdbc.1", "JDBC основи", "JDBC basics", uk, en);
         }
 
@@ -999,20 +1000,38 @@ final class EssentialsCourse {
                 + "  \\_/   \\_________/ \\_/ \\______/ \\_____________/ \\______/\n"
                 + " scheme     host    port  path      query         fragment"));
             uk.add(LessonBlock.paragraph(
-                    "Java-клас java.net.URI розбирає ці складові. HttpClient (з Java 11) — "
-                    + "сучасний клієнт для HTTP-запитів."));
+                    "Java-клас java.net.URI розбирає ці складові. Для JDK 8 використовуйте "
+                    + "HttpURLConnection або бібліотеку на кшталт OkHttp, якщо вона підключена до проєкту."));
             uk.add(LessonBlock.code(
-                "import java.net.URI;\n"
-                + "import java.net.http.*;\n"
+                "import java.io.BufferedReader;\n"
+                + "import java.io.InputStreamReader;\n"
+                + "import java.net.HttpURLConnection;\n"
+                + "import java.net.URI;\n"
+                + "import java.net.URL;\n"
                 + "\n"
-                + "HttpClient client = HttpClient.newHttpClient();\n"
-                + "HttpRequest req = HttpRequest.newBuilder()\n"
-                + "    .uri(URI.create(\"https://api.github.com/repos/octocat/Hello-World\"))\n"
-                + "    .GET().build();\n"
-                + "HttpResponse<String> resp = client.send(req,\n"
-                + "    HttpResponse.BodyHandlers.ofString());\n"
-                + "System.out.println(resp.statusCode());   // 200\n"
-                + "System.out.println(resp.body());         // JSON"));
+                + "URI uri = URI.create(\"https://api.github.com/repos/octocat/Hello-World\");\n"
+                + "URL url = uri.toURL();\n"
+                + "HttpURLConnection conn = (HttpURLConnection) url.openConnection();\n"
+                + "conn.setRequestMethod(\"GET\");\n"
+                + "conn.setConnectTimeout(10000);\n"
+                + "conn.setReadTimeout(10000);\n"
+                + "conn.setRequestProperty(\"Accept\", \"application/json\");\n"
+                + "\n"
+                + "int status = conn.getResponseCode();\n"
+                + "System.out.println(status);   // 200\n"
+                + "\n"
+                + "try (BufferedReader reader = new BufferedReader(\n"
+                + "        new InputStreamReader(conn.getInputStream(), \"UTF-8\"))) {\n"
+                + "    String line;\n"
+                + "    while ((line = reader.readLine()) != null) {\n"
+                + "        System.out.println(line);       // JSON\n"
+                + "    }\n"
+                + "} finally {\n"
+                + "    conn.disconnect();\n"
+                + "}"));
+            uk.add(LessonBlock.note(
+                    "На Android мережевий запит не можна виконувати в головному UI-потоці. "
+                    + "Додайте permission INTERNET і запускайте запит у фоновому потоці."));
             List<LessonBlock> en = new ArrayList<>();
             en.add(LessonBlock.heading("URL and URI"));
             en.add(LessonBlock.code(
@@ -1020,21 +1039,39 @@ final class EssentialsCourse {
                 + "  \\_/   \\_________/ \\_/ \\______/ \\_____________/ \\______/\n"
                 + " scheme     host    port  path      query         fragment"));
             en.add(LessonBlock.paragraph(
-                "Java's java.net.URI parses those components. HttpClient (since Java 11) is "
-                + "the modern client for HTTP requests."));
+                "Java's java.net.URI parses those components. For JDK 8 use HttpURLConnection "
+                + "or a library such as OkHttp if it is added to the project."));
             en.add(LessonBlock.code(
-                "import java.net.URI;\n"
-                + "import java.net.http.*;\n"
+                "import java.io.BufferedReader;\n"
+                + "import java.io.InputStreamReader;\n"
+                + "import java.net.HttpURLConnection;\n"
+                + "import java.net.URI;\n"
+                + "import java.net.URL;\n"
                 + "\n"
-                + "HttpClient client = HttpClient.newHttpClient();\n"
-                + "HttpRequest req = HttpRequest.newBuilder()\n"
-                + "    .uri(URI.create(\"https://api.github.com/repos/octocat/Hello-World\"))\n"
-                + "    .GET().build();\n"
-                + "HttpResponse<String> resp = client.send(req,\n"
-                + "    HttpResponse.BodyHandlers.ofString());\n"
-                + "System.out.println(resp.statusCode());   // 200\n"
-                + "System.out.println(resp.body());         // JSON"));
-            return new Lesson("web.2", "URL/HttpClient", "URL/HttpClient", uk, en);
+                + "URI uri = URI.create(\"https://api.github.com/repos/octocat/Hello-World\");\n"
+                + "URL url = uri.toURL();\n"
+                + "HttpURLConnection conn = (HttpURLConnection) url.openConnection();\n"
+                + "conn.setRequestMethod(\"GET\");\n"
+                + "conn.setConnectTimeout(10000);\n"
+                + "conn.setReadTimeout(10000);\n"
+                + "conn.setRequestProperty(\"Accept\", \"application/json\");\n"
+                + "\n"
+                + "int status = conn.getResponseCode();\n"
+                + "System.out.println(status);   // 200\n"
+                + "\n"
+                + "try (BufferedReader reader = new BufferedReader(\n"
+                + "        new InputStreamReader(conn.getInputStream(), \"UTF-8\"))) {\n"
+                + "    String line;\n"
+                + "    while ((line = reader.readLine()) != null) {\n"
+                + "        System.out.println(line);       // JSON\n"
+                + "    }\n"
+                + "} finally {\n"
+                + "    conn.disconnect();\n"
+                + "}"));
+            en.add(LessonBlock.note(
+                    "On Android, do not run network requests on the main UI thread. Add the "
+                    + "INTERNET permission and run the request on a background thread."));
+            return new Lesson("web.2", "URL/HttpURLConnection", "URL/HttpURLConnection", uk, en);
         }
     }
 
@@ -1105,8 +1142,8 @@ final class EssentialsCourse {
             uk.add(LessonBlock.heading("JSP"));
             uk.add(LessonBlock.paragraph(
                     "JSP (JavaServer Pages) — HTML із вставками Java <% ... %> та EL ${expr}. "
-                    + "Під капотом компілюється у сервлет. Сьогодні частіше використовують "
-                    + "Thymeleaf/Freemarker, але JSP досі поширений."));
+                    + "Внутрішньо JSP компілюється у сервлет. Сьогодні частіше використовують "
+                    + "Thymeleaf/Freemarker, але JSP досі зустрічається в legacy-проектах."));
             uk.add(LessonBlock.code(
                 "<%@ page contentType=\"text/html; charset=UTF-8\" %>\n"
                 + "<ul>\n"
@@ -1121,8 +1158,8 @@ final class EssentialsCourse {
             en.add(LessonBlock.heading("JSP"));
             en.add(LessonBlock.paragraph(
                 "JSP (JavaServer Pages) is HTML with embedded Java <% ... %> and EL ${expr}. "
-                + "Under the hood it compiles into a servlet. Today Thymeleaf/Freemarker are "
-                + "more common, but JSP is still widespread."));
+                + "Internally, it compiles into a servlet. Today template engines like Thymeleaf/Freemarker are "
+                + "more common, but JSP is still maintained in legacy projects."));
             en.add(LessonBlock.code(
                 "<%@ page contentType=\"text/html; charset=UTF-8\" %>\n"
                 + "<ul>\n"

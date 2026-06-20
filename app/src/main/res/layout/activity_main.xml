@@ -33,6 +33,35 @@
                 android:textSize="13sp"
                 android:fontFamily="sans-serif" />
 
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/toolbarBack"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:gravity="center"
+                android:text="←"
+                android:textColor="@color/idea_text"
+                android:textSize="18sp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:layout_marginEnd="4dp"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/toolbarOverflow"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_gravity="end"
+                android:gravity="center"
+                android:text="⋮"
+                android:textColor="@color/idea_text"
+                android:textSize="20sp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:layout_marginEnd="4dp" />
+
         </androidx.appcompat.widget.Toolbar>
 
         <!-- ── FILE TABS BAR ── -->
@@ -136,6 +165,19 @@
                     android:gravity="center"
                     android:layout_marginStart="4dp"
                     android:background="?attr/selectableItemBackground" />
+
+                <Switch
+                    android:id="@+id/switchFindScope"
+                    android:layout_width="wrap_content"
+                    android:layout_height="28dp"
+                    android:text="File"
+                    android:textColor="@color/idea_accent"
+                    android:textSize="10sp"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="6dp"
+                    android:layout_marginStart="4dp"
+                    android:thumbTint="@color/idea_accent"
+                    android:trackTint="@color/idea_toolbar" />
 
             </LinearLayout>
 
@@ -474,6 +516,19 @@
                         android:clickable="true"
                         android:focusable="true"
                         android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/tabCallGraph"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:gravity="center_vertical"
+                        android:text="Graph"
+                        android:textColor="@color/idea_accent"
+                        android:textSize="11sp"
+                        android:clickable="true"
+                        android:focusable="true" />
                 </LinearLayout>
             </HorizontalScrollView>
 
@@ -595,6 +650,78 @@
                         android:paddingEnd="8dp"
                         android:text="Cmt"
                         android:textColor="@color/idea_console_text"
+                        android:textSize="11sp"
+                        android:fontFamily="monospace"
+                        android:background="?attr/selectableItemBackground" />
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="16dp"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginEnd="4dp"
+                        android:background="@color/idea_separator" />
+
+                    <TextView
+                        android:id="@+id/bytecodeEditInsn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="26dp"
+                        android:gravity="center"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text="Edit"
+                        android:textColor="@color/idea_accent"
+                        android:textSize="11sp"
+                        android:fontFamily="monospace"
+                        android:background="?attr/selectableItemBackground" />
+
+                    <TextView
+                        android:id="@+id/bytecodeSave"
+                        android:layout_width="wrap_content"
+                        android:layout_height="26dp"
+                        android:gravity="center"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text="Save"
+                        android:textColor="@color/idea_run_green"
+                        android:textSize="11sp"
+                        android:fontFamily="monospace"
+                        android:background="?attr/selectableItemBackground" />
+
+                    <TextView
+                        android:id="@+id/bytecodeRun"
+                        android:layout_width="wrap_content"
+                        android:layout_height="26dp"
+                        android:gravity="center"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text="▶ Run"
+                        android:textColor="@color/idea_run_green"
+                        android:textSize="11sp"
+                        android:fontFamily="monospace"
+                        android:background="?attr/selectableItemBackground" />
+
+                    <TextView
+                        android:id="@+id/bytecodeOpenEditor"
+                        android:layout_width="wrap_content"
+                        android:layout_height="26dp"
+                        android:gravity="center"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text="Editor"
+                        android:textColor="@color/idea_accent"
+                        android:textSize="11sp"
+                        android:fontFamily="monospace"
+                        android:background="?attr/selectableItemBackground" />
+
+                    <TextView
+                        android:id="@+id/bytecodeCallGraph"
+                        android:layout_width="wrap_content"
+                        android:layout_height="26dp"
+                        android:gravity="center"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text="Graph"
+                        android:textColor="@color/idea_accent"
                         android:textSize="11sp"
                         android:fontFamily="monospace"
                         android:background="?attr/selectableItemBackground" />
@@ -806,6 +933,84 @@
                         </ScrollView>
                     </LinearLayout>
                 </LinearLayout>
+            </LinearLayout>
+
+            <!-- Call Graph panel -->
+            <LinearLayout
+                android:id="@+id/callGraphRoot"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:background="@color/idea_console_bg"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:id="@+id/callGraphToolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="32dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@color/idea_toolbar"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="6dp">
+
+                    <EditText
+                        android:id="@+id/callGraphSearch"
+                        android:layout_width="0dp"
+                        android:layout_height="26dp"
+                        android:layout_weight="1"
+                        android:hint="Search method..."
+                        android:textColorHint="@color/idea_text_dim"
+                        android:textColor="@color/idea_console_text"
+                        android:textSize="11sp"
+                        android:singleLine="true"
+                        android:imeOptions="actionSearch"
+                        android:inputType="text"
+                        android:background="@android:color/transparent"
+                        android:paddingStart="4dp"
+                        android:paddingEnd="4dp" />
+
+                    <TextView
+                        android:id="@+id/callGraphRefresh"
+                        android:layout_width="wrap_content"
+                        android:layout_height="26dp"
+                        android:gravity="center"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text="↻"
+                        android:textColor="@color/idea_accent"
+                        android:textSize="14sp"
+                        android:background="?attr/selectableItemBackground" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/callGraphStatus"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    android:textSize="10sp"
+                    android:textColor="@color/idea_text_dim"
+                    android:fontFamily="monospace"
+                    android:background="@color/idea_console_bg" />
+
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
+
+                    <LinearLayout
+                        android:id="@+id/callGraphContent"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="6dp" />
+
+                </ScrollView>
+
             </LinearLayout>
 
         </FrameLayout>

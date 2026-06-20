@@ -71,7 +71,7 @@ public class LibraryManagerActivity extends AppCompatActivity {
         }
 
         setContentView(buildRootLayout());
-        showEmptyState(false);
+        FullScreenHelper.enable(this);        showEmptyState(false);
     }
 
     private View buildRootLayout() {

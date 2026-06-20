@@ -77,6 +77,7 @@ public class GitActivity extends AppCompatActivity {
         projectDir = new File(dir);
 
         setContentView(buildRoot());
+        FullScreenHelper.enable(this);
         if (!GitManager.isGitRepo(projectDir)) {
             showInitOrCloneScreen();
         } else {
@@ -241,6 +242,11 @@ public class GitActivity extends AppCompatActivity {
         btnCreateGitHub.setOnClickListener(v -> showCreateOnGitHubDialog(true));
         box.addView(btnCreateGitHub);
 
+        box.addView(spacer(dp(8)));
+        TextView btnCreateGitLab = secondaryButton("Create on GitLab");
+        btnCreateGitLab.setOnClickListener(v -> showCreateOnGitLabDialog(true));
+        box.addView(btnCreateGitLab);
+
         ScrollView sv = new ScrollView(this);
         sv.addView(box);
         panel.addView(sv);
@@ -352,6 +358,73 @@ public class GitActivity extends AppCompatActivity {
                         }
                         GitManager.setRemoteOrigin(projectDir, cloneUrl);
                         // Save the token for the specific repo URL so pull/push works seamlessly
+                        creds.save(cloneUrl, "", tk);
+                        return cloneUrl;
+                    }, url -> {
+                        Toast.makeText(this, "Created: " + url, Toast.LENGTH_LONG).show();
+                        switchTab(TAB_STATUS);
+                        refreshHeader();
+                    }, this::showError);
+                })
+                .setNegativeButton(R.string.dialog_cancel, null)
+                .show();
+    }
+
+    private void showCreateOnGitLabDialog(boolean doInitLocal) {
+        LinearLayout box = new LinearLayout(this);
+        box.setOrientation(LinearLayout.VERTICAL);
+        int p = dp(16);
+        box.setPadding(p, p, p, p);
+
+        EditText etBaseUrl = newEdit("GitLab URL (e.g. https://gitlab.com)");
+        etBaseUrl.setText("https://gitlab.com");
+
+        EditText name = newEdit("Project Name");
+        name.setText(projectDir.getName());
+
+        CheckBox isPrivate = new CheckBox(this);
+        isPrivate.setText("Private Project");
+        isPrivate.setTextColor(theme.text);
+
+        EditText token = newEdit("Personal Access Token");
+        token.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        token.setText(creds.token("https://gitlab.com/"));
+
+        CheckBox save = new CheckBox(this);
+        save.setText(getString(R.string.git_save_creds));
+        save.setTextColor(theme.text);
+        save.setChecked(true);
+
+        box.addView(etBaseUrl);
+        box.addView(name);
+        box.addView(isPrivate);
+        box.addView(spacer(dp(8)));
+        box.addView(token);
+        box.addView(save);
+
+        new AlertDialog.Builder(this)
+                .setTitle("Create on GitLab")
+                .setView(box)
+                .setPositiveButton("Create", (d, w) -> {
+                    String baseUrl = etBaseUrl.getText().toString().trim();
+                    String repoName = name.getText().toString().trim();
+                    String tk = token.getText().toString().trim();
+                    boolean priv = isPrivate.isChecked();
+                    if (repoName.isEmpty() || tk.isEmpty()) {
+                        Toast.makeText(this, "Name and Token are required", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    if (save.isChecked()) {
+                        creds.save(baseUrl, "", tk);
+                    }
+
+                    doBackground(() -> {
+                        GitLabApiClient client = new GitLabApiClient(baseUrl, tk);
+                        String cloneUrl = client.createProject(repoName, priv);
+                        if (doInitLocal) {
+                            GitManager.init(projectDir);
+                        }
+                        GitManager.setRemoteOrigin(projectDir, cloneUrl);
                         creds.save(cloneUrl, "", tk);
                         return cloneUrl;
                     }, url -> {

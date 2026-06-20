@@ -80,6 +80,7 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getWindow().setWindowAnimations(0);
         setContentView(buildRoot());
+        FullScreenHelper.enable(this);
     }
 
     @Override
@@ -610,31 +611,31 @@ public class SettingsActivity extends AppCompatActivity {
         // NDK Installation Button
         TextView ndkBtn = new TextView(this);
         boolean ndkInstalled = NdkManager.isNdkInstalled(this);
-        ndkBtn.setText(ndkInstalled ? "C++ NDK Installed (Uninstall)" : "Install C++ NDK (~130MB)");
+        ndkBtn.setText(ndkInstalled ? R.string.settings_ndk_installed : R.string.settings_ndk_install);
         ndkBtn.setTextColor(ndkInstalled ? theme.errorText : theme.accent);
         ndkBtn.setTextSize(14);
         ndkBtn.setPadding(dp(8), dp(16), dp(8), dp(8));
         ndkBtn.setOnClickListener(v -> {
             if (NdkManager.isNdkInstalled(this)) {
                 new AlertDialog.Builder(this)
-                        .setTitle("Uninstall NDK")
-                        .setMessage("Remove the C++ NDK to free up space?")
-                        .setPositiveButton("Remove", (di, w) -> {
+                        .setTitle(R.string.settings_ndk_uninstall_title)
+                        .setMessage(R.string.settings_ndk_uninstall_message)
+                        .setPositiveButton(R.string.settings_ndk_remove, (di, w) -> {
                             deleteRecursive(NdkManager.getNdkDir(this).getParentFile());
-                            ndkBtn.setText("Install C++ NDK (~130MB)");
+                            ndkBtn.setText(R.string.settings_ndk_install);
                             ndkBtn.setTextColor(theme.accent);
-                            Toast.makeText(this, "NDK Removed", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, getString(R.string.settings_ndk_removed), Toast.LENGTH_SHORT).show();
                         })
                         .setNegativeButton("Cancel", null)
                         .show();
             } else {
                 new AlertDialog.Builder(this)
-                        .setTitle("Install C++ NDK")
-                        .setMessage("This will download ~130MB (extracts to ~500MB) of Clang/LLVM toolchain for full C++ support. Proceed?")
-                        .setPositiveButton("Download", (di, w) -> {
+                        .setTitle(R.string.settings_ndk_install_title)
+                        .setMessage(R.string.settings_ndk_install_message)
+                        .setPositiveButton(R.string.settings_ndk_download, (di, w) -> {
                             android.app.ProgressDialog pd = new android.app.ProgressDialog(this);
-                            pd.setTitle("Installing NDK");
-                            pd.setMessage("Connecting...");
+                            pd.setTitle(R.string.settings_ndk_installing);
+                            pd.setMessage(getString(R.string.settings_ndk_connecting));
                             pd.setCancelable(false);
                             pd.setProgressStyle(android.app.ProgressDialog.STYLE_HORIZONTAL);
                             pd.setMax(100);
@@ -649,17 +650,17 @@ public class SettingsActivity extends AppCompatActivity {
                                 @Override
                                 public void onSuccess() {
                                     pd.dismiss();
-                                    ndkBtn.setText("C++ NDK Installed (Uninstall)");
+                                    ndkBtn.setText(R.string.settings_ndk_installed);
                                     ndkBtn.setTextColor(theme.errorText);
-                                    Toast.makeText(SettingsActivity.this, "NDK Installed Successfully!", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(SettingsActivity.this, getString(R.string.settings_ndk_success), Toast.LENGTH_LONG).show();
                                 }
                                 @Override
                                 public void onError(String error) {
                                     pd.dismiss();
                                     new AlertDialog.Builder(SettingsActivity.this)
-                                            .setTitle("Error")
-                                            .setMessage("Failed to install NDK:\n" + error)
-                                            .setPositiveButton("OK", null)
+                                            .setTitle(R.string.settings_ndk_error_title)
+                                            .setMessage(getString(R.string.settings_ndk_error_message, error))
+                                            .setPositiveButton(R.string.settings_ndk_ok, null)
                                             .show();
                                 }
                             });

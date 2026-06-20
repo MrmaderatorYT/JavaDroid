@@ -14,18 +14,100 @@ public class PomModel {
     /** Повне ім'я головного класу з pom.properties або exec-maven-plugin */
     public String mainClass;
 
+    /** Parent POM coordinates */
+    public String parentGroupId;
+    public String parentArtifactId;
+    public String parentVersion;
+
     public final Map<String, String> properties = new LinkedHashMap<>();
     public final List<MavenDependency> dependencies = new ArrayList<>();
+    public final List<MavenRepository> repositories = new ArrayList<>();
+    public final List<MavenDependency> dependencyManagement = new ArrayList<>();
+    public final List<MavenProfile> profiles = new ArrayList<>();
 
+    /**
+     * Resolves a property placeholder like ${java.version} or a plain string.
+     * Supports built-in project.* properties: ${project.version}, ${project.groupId},
+     * ${project.artifactId}, ${project.basedir}, ${project.build.sourceEncoding}.
+     */
     public String resolveProperty(String raw) {
         if (raw == null) return null;
         String s = raw.trim();
         if (s.startsWith("${") && s.endsWith("}")) {
             String key = s.substring(2, s.length() - 1);
+
+            // Built-in project.* properties
+            switch (key) {
+                case "project.version":
+                    return version != null ? version : s;
+                case "project.groupId":
+                    return groupId != null ? groupId : s;
+                case "project.artifactId":
+                    return artifactId != null ? artifactId : s;
+                case "project.basedir":
+                    return ".";
+                case "project.build.sourceEncoding":
+                case "project.encoding":
+                    return properties.get("project.build.sourceEncoding") != null
+                            ? properties.get("project.build.sourceEncoding")
+                            : "UTF-8";
+            }
+
+            // User-defined properties
             String v = properties.get(key);
-            return v != null ? v : s;
+            if (v != null) {
+                // Recursive resolution: ${${x}} chains
+                if (v.startsWith("${") && v.endsWith("}")) {
+                    return resolveProperty(v);
+                }
+                return v;
+            }
+            return s;
         }
         return s;
+    }
+
+    /** Inherit missing coordinates from parent (if parent is set). */
+    public void inheritFromParent() {
+        if (groupId == null || groupId.isEmpty()) groupId = parentGroupId;
+        if (version == null || version.isEmpty()) version = parentVersion;
+    }
+
+    /** Merge a parent POM's properties into this model (parent wins on conflict). */
+    public void mergeParentProperties(Map<String, String> parentProps) {
+        if (parentProps == null) return;
+        // Parent properties become defaults; child overrides win
+        Map<String, String> merged = new LinkedHashMap<>(parentProps);
+        merged.putAll(properties);
+        properties.clear();
+        properties.putAll(merged);
+    }
+
+    /** Activate profiles based on JDK and activeByDefault flag. */
+    public List<MavenProfile> activeProfiles() {
+        List<MavenProfile> active = new ArrayList<>();
+        String jdk = System.getProperty("java.specification.version");
+        if (jdk == null) jdk = System.getProperty("java.version");
+        if (jdk != null && jdk.startsWith("1.")) jdk = jdk.substring(2);
+        for (MavenProfile p : profiles) {
+            if (p.activeByDefault) {
+                active.add(p);
+                continue;
+            }
+            if (p.activationJdk != null && !p.activationJdk.isEmpty()) {
+                try {
+                    if (jdk != null && jdk.startsWith(p.activationJdk)) {
+                        active.add(p);
+                        continue;
+                    }
+                } catch (Exception ignored) {}
+            }
+            // If no activation criteria, activate by default
+            if (p.activationJdk == null && p.activationOs == null && p.activeByDefault) {
+                active.add(p);
+            }
+        }
+        return active;
     }
 
     public List<MavenDependency> compileDependencies() {
@@ -44,12 +126,22 @@ public class PomModel {
         return out;
     }
 
+    // ─── Nested model classes ───────────────────────────────────────────────
+
     public static class MavenDependency {
         public String groupId;
         public String artifactId;
         public String version;
         /** test, provided, runtime, compile (default) */
         public String scope;
+        /** Optional classifier (e.g. "sources", "javadoc") */
+        public String classifier;
+        /** Optional type (e.g. "jar", "war", "aar") */
+        public String type;
+        /** Whether this dependency is optional */
+        public boolean optional;
+        /** Exclusions — do not pull these transitive deps */
+        public final List<MavenDependency> exclusions = new ArrayList<>();
 
         public boolean isForCompile() {
             String s = scope == null ? "compile" : scope.trim();
@@ -61,5 +153,39 @@ public class PomModel {
             return "test".equalsIgnoreCase(s) || "compile".equalsIgnoreCase(s)
                     || "runtime".equalsIgnoreCase(s) || s.isEmpty();
         }
+
+        /** Key for deduplication: groupId:artifactId */
+        public String key() {
+            return (groupId != null ? groupId : "") + ":" + (artifactId != null ? artifactId : "");
+        }
+
+        /** Check if a given artifact is excluded by this dependency's exclusions */
+        public boolean isExcluded(String gid, String aid) {
+            for (MavenDependency ex : exclusions) {
+                boolean matchG = "*".equals(ex.groupId) || ex.groupId.equals(gid);
+                boolean matchA = "*".equals(ex.artifactId) || ex.artifactId.equals(aid);
+                if (matchG && matchA) return true;
+            }
+            return false;
+        }
+    }
+
+    public static class MavenRepository {
+        public String id;
+        public String url;
+
+        /** Build URL path for an artifact: baseUrl/groupId/path/artifactId/version/file */
+        public String artifactUrl(String gid, String aid, String ver, String fileName) {
+            return url + "/" + gid.replace('.', '/') + "/" + aid + "/" + ver + "/" + fileName;
+        }
+    }
+
+    public static class MavenProfile {
+        public String id;
+        public boolean activeByDefault;
+        public String activationJdk;
+        public String activationOs;
+        public final Map<String, String> properties = new LinkedHashMap<>();
+        public final List<MavenDependency> dependencies = new ArrayList<>();
     }
 }

@@ -46,6 +46,7 @@ public class LearnActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_learn);
+        FullScreenHelper.enable(this);
 
         Toolbar toolbar = findViewById(R.id.learnToolbar);
         setSupportActionBar(toolbar);

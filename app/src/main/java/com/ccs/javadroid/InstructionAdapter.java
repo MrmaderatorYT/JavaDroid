@@ -45,6 +45,7 @@ public class InstructionAdapter extends RecyclerView.Adapter<InstructionAdapter.
     private String query = "";
     private boolean showLineNumbers = true;
     private boolean showComments = true;
+    private int selectedItemIndex = -1;
 
     public void setTheme(AppTheme theme) {
         this.theme = theme;
@@ -82,6 +83,15 @@ public class InstructionAdapter extends RecyclerView.Adapter<InstructionAdapter.
 
     public boolean isShowLineNumbers() { return showLineNumbers; }
     public boolean isShowComments() { return showComments; }
+
+    public int getSelectedItemIndex() { return selectedItemIndex; }
+
+    public void setSelectedItemIndex(int index) {
+        int old = selectedItemIndex;
+        selectedItemIndex = index;
+        if (old >= 0 && old < insns.size()) notifyItemChanged(old);
+        if (index >= 0 && index < insns.size()) notifyItemChanged(index);
+    }
 
     @Override
     public int getItemCount() {
@@ -161,6 +171,21 @@ public class InstructionAdapter extends RecyclerView.Adapter<InstructionAdapter.
 
         // підсвітка пошукового запиту
         applySearchHighlight(h, in);
+
+        // Виділення вибраного рядка
+        boolean isSelected = (position == selectedItemIndex);
+        if (isSelected) {
+            int selBg = theme != null
+                    ? (theme.accent & 0x00FFFFFF) | 0x55000000
+                    : 0x559876AA;
+            h.itemView.setBackgroundColor(selBg);
+        } else if (query.isEmpty()) {
+            h.itemView.setBackgroundColor(0);
+        }
+
+        h.itemView.setOnClickListener(v -> {
+            setSelectedItemIndex(h.getAdapterPosition());
+        });
     }
 
     private void bindOperand(VH h, BytecodeModel.Instruction in, int clrNumber, int clrString) {

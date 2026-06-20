@@ -13,6 +13,9 @@
     <string name="menu_sync_deps">Синхронізувати залежності</string>
     <string name="menu_maven_package">Maven package</string>
     <string name="menu_maven_test">Maven test (компіляція тестів)</string>
+    <string name="menu_maven_test_run">Maven test (запуск тестів)</string>
+    <string name="menu_maven_clean">Maven clean</string>
+    <string name="menu_maven_install">Maven install</string>
     <string name="menu_settings">Налаштування</string>
     <string name="menu_clear_console">Очистити консоль</string>
     <string name="menu_copy_console">Копіювати консоль</string>
@@ -258,4 +261,246 @@
     <string name="debug_no_variables">Немає змінних в області видимості</string>
     <string name="debug_no_stack">Немає стеку викликів</string>
     <string name="debug_not_debugging">Не в режимі зневадження</string>
+
+    <!-- Missing existing entries -->
+    <string name="menu_pastebin">Поділитися в Pastebin</string>
+    <string name="pastebin_title">API ключ Pastebin</string>
+    <string name="pastebin_message">Отримайте безкоштовний API ключ на pastebin.com/doc_api\nПотім вставте його нижче:</string>
+    <string name="pastebin_hint">Ваш Pastebin API dev ключ</string>
+    <string name="pastebin_uploading">Завантаження на Pastebin…</string>
+    <string name="pastebin_success">Вставлено! URL скопійовано в буфер</string>
+    <string name="pastebin_error">Помилка Pastebin: %1$s</string>
+    <string name="dialog_new_project_title">Новий проєкт</string>
+    <string name="project_type_maven">Maven (Java)</string>
+    <string name="project_type_gradle">Gradle (Java)</string>
+    <string name="project_type_bytecode">Bytecode (чистий .class)</string>
+    <string name="dialog_new_gradle_title">Новий Gradle-проєкт</string>
+    <string name="dialog_new_gradle_message">Структура Gradle (як у IntelliJ): build.gradle, src/main/java з package-шляхом, src/test/java.\nКорінь: Documents/JavaDroid/ у сховищі застосунку.</string>
+    <string name="dialog_new_bytecode_title">Новий Bytecode-проєкт</string>
+    <string name="dialog_new_bytecode_message">Чистий bytecode-проєкт — пишіть .asm файли, компілюйте у .class та запускайте.\nБез Maven, без pom.xml. Лише bytecode.\nКорінь: Documents/JavaDroid/ у сховищі застосунку.</string>
+    <string name="console_mvn_test_run">▶ mvn test (запуск)…</string>
+    <string name="console_mvn_clean">▶ mvn clean…</string>
+    <string name="console_mvn_install">▶ mvn install…</string>
+    <string name="menu_import_files">Імпортувати файли до проєкту…</string>
+    <string name="toast_imported_files">Імпортовано %1$d файл(ів)</string>
+    <string name="menu_class_browser">Огляд класів</string>
+    <string name="class_browser_title">Огляд класів</string>
+    <string name="class_browser_hint">напр. System, ArrayList, okhttp3…</string>
+    <string name="class_browser_hint_count">напр. System, ArrayList, okhttp3… (%1$d класів)</string>
+    <string name="class_browser_clear">Очистити</string>
+    <string name="class_browser_loading">Завантаження класів…</string>
+    <string name="class_browser_scanning">Сканування JAR-файлів…</string>
+    <string name="class_browser_no_results">Класів не знайдено</string>
+    <string name="class_browser_found">%1$d класів</string>
+    <string name="class_browser_import_copied">Скопійовано: %1$s</string>
+    <string name="class_browser_opened">Відкрито %1$s (лише читання)</string>
+    <string name="class_browser_jar_not_found">JAR-файл не знайдено</string>
+    <string name="class_browser_class_not_found">Клас не знайдено в JAR</string>
+    <string name="class_browser_view_bytecode">Переглянути байткод</string>
+    <string name="menu_global_search">Пошук у проєкті</string>
+    <string name="global_search_hint">Пошук у всіх файлах…</string>
+    <string name="menu_play_media">Відтворити медіафайл</string>
+    <string name="media_player_title">Медіапрогравач</string>
+    <string name="media_no_file">Медіафайл не обрано</string>
+    <string name="media_not_supported">Цей формат файлу не підтримується</string>
+    <string name="bytecode_save">Зберегти змінений байткод</string>
+    <string name="bytecode_edit_instruction">Редагувати інструкцію</string>
+    <string name="bytecode_save_success">Байткод збережено</string>
+    <string name="bytecode_save_failed">Помилка збереження: %1$s</string>
+    <string name="bytecode_edit_operand">Значення операнда</string>
+    <string name="bytecode_edit_var">Індекс змінної</string>
+    <string name="bytecode_edit_incr">Значення збільшення</string>
+    <string name="bytecode_edit_ldc">Значення константи LDC</string>
+    <string name="bytecode_delete_insn">Видалити інструкцію</string>
+    <string name="bytecode_insert_before">Вставити інструкцію перед</string>
+    <string name="bytecode_insert_after">Вставити інструкцію після</string>
+    <string name="bytecode_select_opcode">Оберіть опкод</string>
+    <string name="bytecode_insert_snippet">Вставити снипет</string>
+    <string name="bytecode_snippet">Снипет</string>
+    <string name="bytecode_snippet_nop">NOP</string>
+    <string name="bytecode_snippet_iconst_m1">iconst_m1</string>
+    <string name="bytecode_snippet_iconst_0">iconst_0</string>
+    <string name="bytecode_snippet_iconst_1">iconst_1</string>
+    <string name="bytecode_snippet_lconst_0">lconst_0</string>
+    <string name="bytecode_snippet_lconst_1">lconst_1</string>
+    <string name="bytecode_snippet_dconst_0">dconst_0</string>
+    <string name="bytecode_snippet_dconst_1">dconst_1</string>
+    <string name="bytecode_snippet_aconst_null">aconst_null</string>
+    <string name="bytecode_snippet_pop">pop</string>
+    <string name="bytecode_snippet_dup">dup</string>
+    <string name="bytecode_snippet_iadd">iadd</string>
+    <string name="bytecode_snippet_isub">isub</string>
+    <string name="bytecode_snippet_imul">imul</string>
+    <string name="bytecode_snippet_idiv">idiv</string>
+    <string name="bytecode_snippet_irem">irem</string>
+    <string name="bytecode_snippet_ineg">ineg</string>
+    <string name="bytecode_snippet_ireturn">ireturn</string>
+    <string name="bytecode_snippet_areturn">areturn</string>
+    <string name="bytecode_snippet_return">return</string>
+    <string name="bytecode_snippet_athrow">athrow</string>
+    <string name="bytecode_snippet_arraylength">arraylength</string>
+    <string name="menu_ai_chat">AI-асистент</string>
+    <string name="ai_title">AI-асистент</string>
+    <string name="ai_no_api_key">Встановіть API ключ Gemini в Налаштуваннях</string>
+    <string name="ai_explain">Пояснити</string>
+    <string name="ai_find_bugs">Знайти помилки</string>
+    <string name="ai_refactor">Рефакторинг</string>
+    <string name="ai_optimize">Оптимізувати</string>
+    <string name="ai_document">Документувати</string>
+    <string name="ai_generate_test">Згенерувати тест</string>
+    <string name="ai_input_hint">Запитайте про ваш код…</string>
+    <string name="ai_send">Надіслати</string>
+    <string name="ai_clear">Очистити</string>
+    <string name="ai_change_model">Змінити модель</string>
+    <string name="ai_model_select">Оберіть AI-модель</string>
+    <string name="ai_api_key_title">API ключ Gemini</string>
+    <string name="ai_api_key_message">Отримайте безкоштовний API ключ на aistudio.google.com</string>
+    <string name="ai_api_key_hint">Вставте ваш API ключ з aistudio.google.com</string>
+    <string name="ai_open_studio">Відкрити AI Studio</string>
+    <string name="ai_error">Помилка: %1$s</string>
+    <string name="ai_loading">Обробка…</string>
+    <string name="settings_ai_section">Налаштування AI</string>
+    <string name="settings_ai_api_key">API ключ Gemini</string>
+    <string name="settings_ai_model">AI-модель</string>
+
+    <!-- WelcomeActivity - Project options dialog -->
+    <string name="welcome_project_options_open">Відкрити</string>
+    <string name="welcome_project_options_remove">Видалити з історії</string>
+    <string name="welcome_project_options_delete">Видалити проєкт з диска</string>
+    <string name="welcome_delete_project_title">Видалити проєкт</string>
+    <string name="welcome_delete_project_message">Ви впевнені, що хочете назавжди видалити %1$s та всі його файли? Цю дію не можна скасувати.</string>
+    <string name="welcome_no_projects">Ще немає проєктів у Documents/JavaDroid.</string>
+    <string name="welcome_open_folder_title">Відкрити папку проєкту</string>
+    <string name="welcome_clone_url_hint">URL репозиторію (https://…)</string>
+    <string name="welcome_clone_name_hint">Назва папки проєкту</string>
+    <string name="welcome_clone_user_hint">Ім\'я користувача (необов\'язково, для приватних репозиторіїв)</string>
+    <string name="welcome_clone_token_hint">Токен / Пароль (необов\'язково)</string>
+    <string name="welcome_clone_repo_title">Клонувати репозиторій</string>
+    <string name="welcome_clone_repo_message">Клонуйте будь-який Git-репозиторій з GitHub, GitLab, Bitbucket або будь-якого URL.</string>
+    <string name="welcome_clone_button">Клонувати</string>
+    <string name="welcome_url_required">Потрібен URL</string>
+    <string name="welcome_cloning">Клонування…</string>
+    <string name="welcome_cloned_success">Успішно клоновано!</string>
+    <string name="welcome_clone_failed">Помилка клонування: %1$s</string>
+    <string name="welcome_playground_option">Площадка (демо-проєкт)</string>
+    <string name="welcome_creating_playground">Створення площадки…</string>
+    <string name="welcome_playground_created">Площадку створено!</string>
+    <string name="welcome_playground_hint">Назва папки проєкту (напр. MyBytecode)</string>
+    <string name="welcome_invalid_git_url">Некоректний Git URL</string>
+    <string name="welcome_error">Помилка: %1$s</string>
+    <string name="welcome_project_name_hint">Назва папки проєкту (напр. MyApp)</string>
+    <string name="welcome_project_group_hint">Group ID / package (напр. com.company.app)</string>
+    <string name="welcome_project_artifact_hint">Artifact ID (напр. myapp), можна лишити порожнім</string>
+    <string name="welcome_project_name_bytecode_hint">Назва папки проєкту (напр. MyBytecode)</string>
+    <string name="project_type_playground">Playground (демо-проєкт)</string>
+
+    <!-- SettingsActivity - NDK -->
+    <string name="settings_ndk_install">Встановити C++ NDK (~130MB)</string>
+    <string name="settings_ndk_installed">C++ NDK встановлено (Видалити)</string>
+    <string name="settings_ndk_uninstall_title">Видалити NDK</string>
+    <string name="settings_ndk_uninstall_message">Видалити C++ NDK для звільнення місця?</string>
+    <string name="settings_ndk_remove">Видалити</string>
+    <string name="settings_ndk_removed">NDK видалено</string>
+    <string name="settings_ndk_install_title">Встановити C++ NDK</string>
+    <string name="settings_ndk_install_message">Буде завантажено ~130MB (розпаковується до ~500MB) інструментарію Clang/LLVM для повної підтримки C++. Продовжити?</string>
+    <string name="settings_ndk_download">Завантажити</string>
+    <string name="settings_ndk_installing">Встановлення NDK</string>
+    <string name="settings_ndk_connecting">З\'єднання…</string>
+    <string name="settings_ndk_success">NDK успішно встановлено!</string>
+    <string name="settings_ndk_error_title">Помилка</string>
+    <string name="settings_ndk_error_message">Не вдалося встановити NDK:\n%1$s</string>
+    <string name="settings_ndk_ok">OK</string>
+
+    <!-- MainActivity - Find & Replace -->
+    <string name="find_scope_project">Проєкт</string>
+    <string name="find_scope_file">Файл</string>
+    <string name="find_scope_hint">Пошук у всіх файлах…</string>
+
+    <!-- MainActivity - Debug -->
+    <string name="debug_breakpoint_set">● Брейкпоінт на рядку %1$d</string>
+    <string name="debug_breakpoint_removed">○ Видалено брейкпоінт на рядку %1$d</string>
+    <string name="debug_no_watch">Немає виразів спостереження.\nНатисніть \'+ Додати спостереження\' щоб додати.</string>
+    <string name="debug_java_only">Зневадження підтримує лише файли .java</string>
+    <string name="debug_starting">▶ Запуск сесії зневадження…</string>
+    <string name="debug_file_label">Файл: %1$s</string>
+    <string name="debug_breakpoints_label">Брейкпоінти: %1$d</string>
+
+    <!-- MainActivity - Breakpoint dialog -->
+    <string name="breakpoint_dialog_title">Брейкпоінт на рядку %1$d</string>
+    <string name="breakpoint_condition_hint">умова, напр. i == 5</string>
+    <string name="breakpoint_set_button">Встановити</string>
+    <string name="breakpoint_remove_button">Видалити</string>
+    <string name="breakpoint_unconditional">● Безумовний BP на рядку %1$d</string>
+    <string name="breakpoint_conditional">● Умовний BP на рядку %1$d: %1$s</string>
+
+    <!-- MainActivity - Call Graph -->
+    <string name="call_graph_title">Граф викликів</string>
+    <string name="call_graph_no_methods">Методів не знайдено</string>
+    <string name="call_graph_calls">Виклики (%1$d)</string>
+    <string name="call_graph_called_by">Викликається з (%1$d)</string>
+    <string name="call_graph_none">— немає</string>
+    <string name="call_graph_no_project">Проєкт не відкритий</string>
+    <string name="call_graph_analyzing">Аналіз проєкту…</string>
+    <string name="call_graph_stats">%1$d методів, %2$d викликів</string>
+
+    <!-- MainActivity - Actions dialog -->
+    <string name="actions_title">Дії</string>
+    <string name="actions_search_hint">Пошук дій…</string>
+    <string name="actions_no_matching">Відповідних дій не знайдено</string>
+
+    <!-- MainActivity - Markdown preview -->
+    <string name="md_preview_title">Попередній перегляд Markdown</string>
+    <string name="close_button">Закрити</string>
+    <string name="md_only_markdown">Лише файли Markdown (.md) можна переглядати</string>
+    <string name="file_is_empty">Файл порожній</string>
+
+    <!-- MainActivity - Auto-import -->
+    <string name="auto_import_java_only">Автоімпорт лише для файлів .java</string>
+    <string name="auto_import_none">Не знайдено відсутніх імпортів</string>
+    <string name="auto_import_title">Додати імпорти</string>
+    <string name="auto_import_add">Додати</string>
+
+    <!-- MainActivity - Formatted view -->
+    <string name="formatted_only_json_xml">Лише файли JSON та XML можна форматувати</string>
+    <string name="copy_button">Копіювати</string>
+    <string name="apply_to_editor">Застосувати до редактора</string>
+
+    <!-- MainActivity - C++ Module dialog -->
+    <string name="cpp_module_hint">Назва модуля/бібліотеки (напр. native-lib)</string>
+    <string name="cpp_module_c_option">C (Швидкий, вбудований компілятор TCC)</string>
+    <string name="cpp_module_cpp_option">C++ (Потребує зовнішній NDK ~130MB)</string>
+    <string name="cpp_module_exists">Нативний файл вже існує</string>
+    <string name="cpp_module_created">C++ модуль успішно створено</string>
+    <string name="cpp_module_failed">Не вдалося створити C++ модуль: %1$s</string>
+
+    <!-- MainActivity - Folder dialogs -->
+    <string name="folder_already_exists">Папка вже існує</string>
+    <string name="folder_create_failed">Не вдалося створити папку</string>
+
+    <!-- MainActivity - ProGuard mapping -->
+    <string name="mapping_loaded">Мапінг завантажено: %1$s</string>
+    <string name="mapping_load_failed">Не вдалося завантажити мапінг: %1$s</string>
+
+    <!-- Searchable menu items -->
+    <string name="menu_bytecode_view">Перегляд байткоду</string>
+    <string name="menu_load_mapping">Завантажити ProGuard мапінг</string>
+    <string name="menu_http_client">HTTP-клієнт</string>
+    <string name="menu_webview_preview">Попередній перегляд WebView</string>
+    <string name="menu_call_graph">Граф викликів</string>
+
+    <!-- ProjectCompiler - NDK warnings -->
+    <string name="ndk_warning_c_not_available">Попередження: вбудований компілятор C недоступний, пропускаємо компіляцію нативного коду</string>
+    <string name="ndk_warning_cpp_requires_ndk">Попередження: C++ джерельні коди потребують зовнішній NDK. Пропускаємо.</string>
+    <string name="ndk_warning_cannot_read">Попередження: Не вдалося прочитати %1$s: %2$s</string>
+    <string name="ndk_warning_c_error">Попередження: Помилка компіляції C (%1$s): %2$s</string>
+    <string name="ndk_compiled_tcc">Скомпільовано (TCC) %1$s → %2$s</string>
+    <string name="ndk_warning_cpp_error">Попередження: Помилка компіляції C++ (%1$s): %2$s</string>
+    <string name="ndk_warning_cpp_failed">Попередження: Помилка компіляції C++ (%1$s): %2$s</string>
+    <string name="ndk_compiled_clang">Скомпільовано (Clang++) %1$s → %2$s</string>
+    <string name="ndk_error_c_not_available">❌ Помилка збірки нативного коду:\nВбудований компілятор C недоступний на цьому пристрої.</string>
+    <string name="ndk_error_cannot_read">❌ Не вдалося прочитати %1$s: %2$s</string>
+    <string name="ndk_error_c_compile">❌ Помилка компіляції C (%1$s):\n%2$s</string>
+    <string name="ndk_error_cpp_ndk_required">❌ Помилка збірки C++:\nC++ джерельні коди (.cpp) потребують зовнішній NDK.\n\nБудь ласка, перейдіть до Налаштування → Встановити C++ NDK для завантаження інструментарію (~130MB).\nАбо перепишіть JNI-код чистою C (.c) для використання вбудованого швидкого компілятора.</string>
+    <string name="ndk_error_cpp_compile">❌ Помилка компіляції C++ (%1$s):\n%2$s</string>
+    <string name="ndk_error_cpp_execute">❌ Помилка збірки C++:\nНе вдалося виконати clang++ для %1$s: %2$s</string>
 </resources>

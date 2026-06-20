@@ -17,6 +17,8 @@ import android.text.style.UnderlineSpan;
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -125,6 +127,29 @@ public final class MarkdownRenderer {
             if (isOrderedListItem(line)) {
                 String content = getOrderedListContent(line);
                 appendListItem(sb, content, dark, baseFontSize, true, getIndentLevel(line));
+                sb.append("\n");
+                continue;
+            }
+
+            // Table: | col | col |
+            if (line.trim().startsWith("|") && line.trim().endsWith("|")) {
+                // Collect table rows
+                List<String> tableRows = new ArrayList<>();
+                while (i < lines.length && lines[i].trim().startsWith("|") && lines[i].trim().endsWith("|")) {
+                    tableRows.add(lines[i].trim());
+                    i++;
+                }
+                i--; // will be incremented by for loop
+                appendTable(sb, tableRows, dark, baseFontSize);
+                sb.append("\n");
+                continue;
+            }
+
+            // Task list: - [ ] or - [x]
+            if (isTaskListItem(line)) {
+                String content = getTaskListContent(line);
+                boolean checked = line.contains("[x]") || line.contains("[X]");
+                appendTaskListItem(sb, content, dark, baseFontSize, checked, getIndentLevel(line));
                 sb.append("\n");
                 continue;
             }
@@ -716,5 +741,132 @@ public final class MarkdownRenderer {
         int i = 0;
         while (i < s.length() && s.charAt(i) == ' ') i++;
         return s.substring(i);
+    }
+
+    // ── Task list ────────────────────────────────────────────
+
+    private static boolean isTaskListItem(String line) {
+        String trimmed = trimStart(line);
+        return (trimmed.startsWith("- [ ] ") || trimmed.startsWith("- [x] ")
+                || trimmed.startsWith("- [X] ") || trimmed.startsWith("* [ ] ")
+                || trimmed.startsWith("* [x] ") || trimmed.startsWith("* [X] "));
+    }
+
+    private static String getTaskListContent(String line) {
+        String trimmed = trimStart(line);
+        if (trimmed.startsWith("- [ ] ") || trimmed.startsWith("* [ ] "))
+            return trimmed.substring(6);
+        if (trimmed.startsWith("- [x] ") || trimmed.startsWith("- [X] ")
+                || trimmed.startsWith("* [x] ") || trimmed.startsWith("* [X] "))
+            return trimmed.substring(6);
+        return trimmed;
+    }
+
+    private static void appendTaskListItem(SpannableStringBuilder sb, String text, boolean dark,
+                                           int baseFontSize, boolean checked, int indent) {
+        int pad = indent * 2;
+        for (int p = 0; p < pad; p++) sb.append("  ");
+
+        int start = sb.length();
+        sb.append(checked ? "☑ " : "☐ ");
+        sb.setSpan(new ForegroundColorSpan(dark ? 0xFF499C54 : 0xFF107C10),
+                start, sb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        start = sb.length();
+        appendInlineFormatted(sb, text, dark);
+        if (checked) {
+            sb.setSpan(new StrikethroughSpan(), start, sb.length(),
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+    }
+
+    // ── Table ────────────────────────────────────────────────
+
+    private static void appendTable(SpannableStringBuilder sb, List<String> rows, boolean dark,
+                                    int baseFontSize) {
+        if (rows.isEmpty()) return;
+
+        // Parse header
+        String headerRow = rows.get(0);
+        String[] headers = parseTableRow(headerRow);
+
+        // Skip separator row (|---|---|)
+        int dataStart = 1;
+        if (rows.size() > 1 && rows.get(1).matches("\\|[-:|\\s]+\\|")) {
+            dataStart = 2;
+        }
+
+        // Header
+        int start = sb.length();
+        sb.append("┌");
+        for (int h = 0; h < headers.length; h++) {
+            sb.append("─".repeat(Math.max(1, headers[h].length() + 2)));
+            if (h < headers.length - 1) sb.append("┬");
+        }
+        sb.append("┐\n");
+        sb.setSpan(new ForegroundColorSpan(dark ? 0xFF555555 : 0xFFCCCCCC),
+                start, sb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        // Header content
+        start = sb.length();
+        sb.append("│");
+        for (int h = 0; h < headers.length; h++) {
+            String cell = headers[h].trim();
+            sb.append(" ").append(cell);
+            int pad = Math.max(0, headers[h].length() + 1 - cell.length());
+            for (int p = 0; p < pad; p++) sb.append(" ");
+            sb.append("│");
+        }
+        sb.append("\n");
+        sb.setSpan(new ForegroundColorSpan(dark ? COLOR_HEADING : COLOR_HEADING_LIGHT),
+                start, sb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        sb.setSpan(new StyleSpan(Typeface.BOLD), start, sb.length(),
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        // Separator
+        start = sb.length();
+        sb.append("├");
+        for (int h = 0; h < headers.length; h++) {
+            sb.append("─".repeat(Math.max(1, headers[h].length() + 2)));
+            if (h < headers.length - 1) sb.append("┼");
+        }
+        sb.append("┤\n");
+        sb.setSpan(new ForegroundColorSpan(dark ? 0xFF555555 : 0xFFCCCCCC),
+                start, sb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        // Data rows
+        for (int r = dataStart; r < rows.size(); r++) {
+            String[] cells = parseTableRow(rows.get(r));
+            start = sb.length();
+            sb.append("│");
+            for (int c = 0; c < headers.length; c++) {
+                String cell = c < cells.length ? cells[c].trim() : "";
+                sb.append(" ").append(cell);
+                int pad = Math.max(0, headers.length > c ? headers[c].length() + 1 - cell.length() : 0);
+                for (int p = 0; p < pad; p++) sb.append(" ");
+                sb.append("│");
+            }
+            sb.append("\n");
+            sb.setSpan(new ForegroundColorSpan(dark ? COLOR_TEXT : COLOR_TEXT_LIGHT),
+                    start, sb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+
+        // Bottom border
+        start = sb.length();
+        sb.append("└");
+        for (int h = 0; h < headers.length; h++) {
+            sb.append("─".repeat(Math.max(1, headers[h].length() + 2)));
+            if (h < headers.length - 1) sb.append("┴");
+        }
+        sb.append("┘\n");
+        sb.setSpan(new ForegroundColorSpan(dark ? 0xFF555555 : 0xFFCCCCCC),
+                start, sb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+    }
+
+    private static String[] parseTableRow(String row) {
+        String trimmed = row.trim();
+        if (trimmed.startsWith("|")) trimmed = trimmed.substring(1);
+        if (trimmed.endsWith("|")) trimmed = trimmed.substring(0, trimmed.length() - 1);
+        return trimmed.split("\\|", -1);
     }
 }

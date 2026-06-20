@@ -13,8 +13,10 @@ final class JavaReferenceCourse {
                 "java_reference_9",
                 "Java: Повний довідник (9-те видання, JDK 8)",
                 "Java: The Complete Reference (9th Edition, JDK 8)",
-                "Класичний курс Герберта Шилдта — від основ до Stream API, лямбда-виразів та модулів.",
-                "Herbert Schildt's classic course — from basics to the Stream API, lambda expressions and modules.");
+                "Класичний курс Герберта Шилдта для JDK 8: від основ до ООП, колекцій, "
+                + "Stream API та лямбда-виразів.",
+                "Herbert Schildt's classic JDK 8 course: from basics to OOP, collections, "
+                + "the Stream API, and lambda expressions.");
 
         JrcChapter01Intro.add(c);
         JrcChapter02Basics.add(c);

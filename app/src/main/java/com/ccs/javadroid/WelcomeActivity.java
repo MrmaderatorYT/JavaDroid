@@ -6,7 +6,10 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -29,6 +32,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class WelcomeActivity extends AppCompatActivity {
 
@@ -46,6 +51,9 @@ public class WelcomeActivity extends AppCompatActivity {
     private final List<String> allRecentPaths = new ArrayList<>();
     private final List<String> filteredPaths = new ArrayList<>();
 
+    private final ExecutorService io = Executors.newSingleThreadExecutor();
+    private final Handler ui = new Handler(Looper.getMainLooper());
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         appPrefs = new AppPreferences(this);
@@ -54,6 +62,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
+        FullScreenHelper.enable(this);
 
         bindViews();
         applyThemeStyles();
@@ -223,7 +232,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
         btnNewProject.setOnClickListener(v -> showNewMavenProjectDialog());
         btnOpenProject.setOnClickListener(v -> showOpenFolderDialog());
-        btnCloneRepo.setOnClickListener(v -> Toast.makeText(this, R.string.soon, Toast.LENGTH_SHORT).show());
+        btnCloneRepo.setOnClickListener(v -> showCloneRepoDialog());
 
         View sidebarCustomize = findViewById(R.id.sidebarCustomize);
         if (sidebarCustomize != null) {
@@ -309,7 +318,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
     private void showProjectOptions(String path, View anchor) {
         final File file = new File(path);
-        String[] options = { "Open", "Remove from history", "Delete project from disk" };
+        String[] options = { getString(R.string.welcome_project_options_open), getString(R.string.welcome_project_options_remove), getString(R.string.welcome_project_options_delete) };
         new AlertDialog.Builder(this)
                 .setTitle(file.getName())
                 .setItems(options, (dialog, which) -> {
@@ -320,8 +329,8 @@ public class WelcomeActivity extends AppCompatActivity {
                         setupRecentProjects();
                     } else if (which == 2) {
                         new AlertDialog.Builder(this)
-                                .setTitle("Delete Project")
-                                .setMessage("Are you sure you want to permanently delete " + file.getName() + " and all its files? This action cannot be undone.")
+                                .setTitle(R.string.welcome_delete_project_title)
+                                .setMessage(getString(R.string.welcome_delete_project_message, file.getName()))
                                 .setPositiveButton(R.string.dialog_delete, (d, w) -> {
                                     deleteRecursive(file);
                                     appPrefs.removeRecentProject(path);
@@ -338,7 +347,7 @@ public class WelcomeActivity extends AppCompatActivity {
         File base = MavenPaths.getJavaDroidBase(this);
         final File[] dirs = base.listFiles(File::isDirectory);
         if (dirs == null || dirs.length == 0) {
-            Toast.makeText(this, "No projects inside Documents/JavaDroid yet.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.welcome_no_projects), Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -348,21 +357,132 @@ public class WelcomeActivity extends AppCompatActivity {
         }
 
         new AlertDialog.Builder(this)
-                .setTitle("Open Project Folder")
+                .setTitle(R.string.welcome_open_folder_title)
                 .setItems(names, (dialog, which) -> openProject(dirs[which].getAbsolutePath()))
                 .setNegativeButton(R.string.dialog_cancel, null)
                 .show();
     }
 
-    private void showNewMavenProjectDialog() {
+    private void showCloneRepoDialog() {
         int pad = dp(12);
         LinearLayout box = new LinearLayout(this);
         box.setOrientation(LinearLayout.VERTICAL);
         box.setPadding(pad, pad, pad, pad);
 
-        EditText etName = newEditForDialog("Project folder name (e.g. MyApp)");
-        EditText etGroup = newEditForDialog("Group ID / package (e.g. com.company.app)");
-        EditText etArtifact = newEditForDialog("Artifact ID (e.g. myapp), optional");
+        EditText etUrl = newEditForDialog(getString(R.string.welcome_clone_url_hint));
+        EditText etName = newEditForDialog(getString(R.string.welcome_clone_name_hint));
+        EditText etUser = newEditForDialog(getString(R.string.welcome_clone_user_hint));
+        EditText etToken = newEditForDialog(getString(R.string.welcome_clone_token_hint));
+        etToken.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+
+        box.addView(etUrl);
+        box.addView(etName);
+        box.addView(etUser);
+        box.addView(etToken);
+
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.welcome_clone_repo_title)
+                .setMessage(R.string.welcome_clone_repo_message)
+                .setView(box)
+                .setPositiveButton(R.string.welcome_clone_button, (d, w) -> {
+                    String url = etUrl.getText().toString().trim();
+                    String name = etName.getText().toString().trim();
+                    String user = etUser.getText().toString().trim();
+                    String token = etToken.getText().toString().trim();
+
+                    if (url.isEmpty()) {
+                        Toast.makeText(this, getString(R.string.welcome_url_required), Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    if (!GitManager.isValidGitUrl(url)) {
+                        Toast.makeText(this, getString(R.string.welcome_invalid_git_url), Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    if (name.isEmpty()) {
+                        // Extract name from URL
+                        name = url.substring(url.lastIndexOf('/') + 1);
+                        if (name.endsWith(".git")) name = name.substring(0, name.length() - 4);
+                    }
+
+                    File projectDir = new File(MavenPaths.getJavaDroidBase(this), name);
+
+                    Toast.makeText(this, getString(R.string.welcome_cloning), Toast.LENGTH_SHORT).show();
+
+                    io.execute(() -> {
+                        try {
+                            GitManager.clone(url, projectDir,
+                                    user.isEmpty() ? null : user,
+                                    token.isEmpty() ? null : token);
+                            ui.post(() -> {
+                                appPrefs.setProjectRoot(projectDir.getAbsolutePath());
+                                appPrefs.addRecentProject(projectDir.getAbsolutePath());
+                                Toast.makeText(this, getString(R.string.welcome_cloned_success), Toast.LENGTH_SHORT).show();
+                                openProject(projectDir.getAbsolutePath());
+                            });
+                        } catch (Exception e) {
+                            ui.post(() -> {
+                                Toast.makeText(this, getString(R.string.welcome_clone_failed, e.getMessage()),
+                                        Toast.LENGTH_LONG).show();
+                            });
+                        }
+                    });
+                })
+                .setNegativeButton(R.string.dialog_cancel, null)
+                .show();
+    }
+
+    private void showNewMavenProjectDialog() {
+        String[] projectTypes = {
+            getString(R.string.project_type_maven),
+            getString(R.string.project_type_gradle),
+            getString(R.string.project_type_bytecode),
+            getString(R.string.project_type_playground)
+        };
+
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.dialog_new_project_title)
+                .setItems(projectTypes, (dialog, which) -> {
+                    if (which == 0) {
+                        showMavenProjectForm();
+                    } else if (which == 1) {
+                        showGradleProjectForm();
+                    } else if (which == 2) {
+                        showBytecodeProjectForm();
+                    } else if (which == 3) {
+                        createPlaygroundProject();
+                    }
+                })
+                .setNegativeButton(R.string.dialog_cancel, null)
+                .show();
+    }
+
+    private void createPlaygroundProject() {
+        Toast.makeText(this, getString(R.string.welcome_creating_playground), Toast.LENGTH_SHORT).show();
+        io.execute(() -> {
+            try {
+                File root = PlaygroundProjectFactory.create(this);
+                ui.post(() -> {
+                    appPrefs.setProjectRoot(root.getAbsolutePath());
+                    appPrefs.addRecentProject(root.getAbsolutePath());
+                    Toast.makeText(this, getString(R.string.welcome_playground_created), Toast.LENGTH_SHORT).show();
+                    openProject(root.getAbsolutePath());
+                });
+            } catch (Exception e) {
+                ui.post(() -> Toast.makeText(this, getString(R.string.welcome_error, e.getMessage()),
+                        Toast.LENGTH_LONG).show());
+            }
+        });
+    }
+
+    private void showMavenProjectForm() {
+        int pad = dp(12);
+        LinearLayout box = new LinearLayout(this);
+        box.setOrientation(LinearLayout.VERTICAL);
+        box.setPadding(pad, pad, pad, pad);
+
+        EditText etName = newEditForDialog(getString(R.string.welcome_project_name_hint));
+        EditText etGroup = newEditForDialog(getString(R.string.welcome_project_group_hint));
+        EditText etArtifact = newEditForDialog(getString(R.string.welcome_project_artifact_hint));
 
         box.addView(etName);
         box.addView(etGroup);
@@ -381,7 +501,76 @@ public class WelcomeActivity extends AppCompatActivity {
                         File root = MavenProjectFactory.create(this, name, group, artifact);
                         appPrefs.setProjectRoot(root.getAbsolutePath());
                         appPrefs.addRecentProject(root.getAbsolutePath());
-                        
+
+                        Intent intent = new Intent(this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                    } catch (Exception e) {
+                        Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton(R.string.dialog_cancel, null)
+                .show();
+    }
+
+    private void showGradleProjectForm() {
+        int pad = dp(12);
+        LinearLayout box = new LinearLayout(this);
+        box.setOrientation(LinearLayout.VERTICAL);
+        box.setPadding(pad, pad, pad, pad);
+
+        EditText etName = newEditForDialog(getString(R.string.welcome_project_name_hint));
+        EditText etGroup = newEditForDialog(getString(R.string.welcome_project_group_hint));
+
+        box.addView(etName);
+        box.addView(etGroup);
+
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.dialog_new_gradle_title)
+                .setMessage(R.string.dialog_new_gradle_message)
+                .setView(box)
+                .setPositiveButton(R.string.dialog_create, (d, w) -> {
+                    String name = etName.getText().toString().trim();
+                    if (name.isEmpty()) return;
+                    String group = etGroup.getText().toString().trim();
+                    try {
+                        File root = GradleProjectFactory.create(this, name, group);
+                        appPrefs.setProjectRoot(root.getAbsolutePath());
+                        appPrefs.addRecentProject(root.getAbsolutePath());
+
+                        Intent intent = new Intent(this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                    } catch (Exception e) {
+                        Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton(R.string.dialog_cancel, null)
+                .show();
+    }
+
+    private void showBytecodeProjectForm() {
+        int pad = dp(12);
+        LinearLayout box = new LinearLayout(this);
+        box.setOrientation(LinearLayout.VERTICAL);
+        box.setPadding(pad, pad, pad, pad);
+
+        EditText etName = newEditForDialog(getString(R.string.welcome_project_name_bytecode_hint));
+
+        box.addView(etName);
+
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.dialog_new_bytecode_title)
+                .setMessage(R.string.dialog_new_bytecode_message)
+                .setView(box)
+                .setPositiveButton(R.string.dialog_create, (d, w) -> {
+                    String name = etName.getText().toString().trim();
+                    if (name.isEmpty()) return;
+                    try {
+                        File root = BytecodeProjectFactory.create(this, name);
+                        appPrefs.setProjectRoot(root.getAbsolutePath());
+                        appPrefs.addRecentProject(root.getAbsolutePath());
+
                         Intent intent = new Intent(this, MainActivity.class);
                         startActivity(intent);
                         finish();

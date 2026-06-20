@@ -15,10 +15,20 @@
     <string name="menu_sync_deps">Sync / Download Dependencies</string>
     <string name="menu_maven_package">Maven package</string>
     <string name="menu_maven_test">Maven test (compile tests)</string>
+    <string name="menu_maven_test_run">Maven test (run tests)</string>
+    <string name="menu_maven_clean">Maven clean</string>
+    <string name="menu_maven_install">Maven install</string>
     <string name="menu_settings">Settings</string>
     <string name="menu_clear_console">Clear Console</string>
     <string name="menu_copy_console">Copy console</string>
     <string name="menu_share_file">Share current file</string>
+    <string name="menu_pastebin">Share to Pastebin</string>
+    <string name="pastebin_title">Pastebin API Key</string>
+    <string name="pastebin_message">Get your free API key at pastebin.com/doc_api\nThen paste it below:</string>
+    <string name="pastebin_hint">Your Pastebin API dev key</string>
+    <string name="pastebin_uploading">Uploading to Pastebin…</string>
+    <string name="pastebin_success">Pasted! URL copied to clipboard</string>
+    <string name="pastebin_error">Pastebin error: %1$s</string>
     <string name="menu_split_screen">Split Screen</string>
     <string name="menu_auto_import">Auto-import</string>
     <string name="menu_view_formatted">View formatted (JSON/XML)</string>
@@ -81,6 +91,15 @@
     <string name="dialog_new_java_title">New Java File</string>
     <string name="dialog_new_java_hint">Class name (e.g. MyHelper)</string>
 
+    <string name="dialog_new_project_title">New Project</string>
+    <string name="project_type_maven">Maven (Java)</string>
+    <string name="project_type_gradle">Gradle (Java)</string>
+    <string name="project_type_bytecode">Bytecode (pure .class)</string>
+    <string name="dialog_new_gradle_title">New Gradle Project</string>
+    <string name="dialog_new_gradle_message">Gradle layout (like IntelliJ): build.gradle, src/main/java with package path, src/test/java.\nRoot: app storage Documents/JavaDroid/.</string>
+    <string name="dialog_new_bytecode_title">New Bytecode Project</string>
+    <string name="dialog_new_bytecode_message">Pure bytecode project — write .asm files, compile to .class, and run.\nNo Maven, no pom.xml. Just bytecode.\nRoot: app storage Documents/JavaDroid/.</string>
+
     <string name="dialog_new_maven_title">New Maven project</string>
     <string name="dialog_new_maven_message">Maven layout (like IntelliJ): src/main/java with package path, main/resources, test/java, test/resources.\nRoot: app storage Documents/JavaDroid/.</string>
     <string name="dialog_maven_name_hint">Project folder name (e.g. MyApp)</string>
@@ -107,6 +126,9 @@
     <string name="console_sync_done">Sync finished.</string>
     <string name="console_mvn_package">▶ mvn package…</string>
     <string name="console_mvn_test_compile">▶ mvn test-compile…</string>
+    <string name="console_mvn_test_run">▶ mvn test (run)…</string>
+    <string name="console_mvn_clean">▶ mvn clean…</string>
+    <string name="console_mvn_install">▶ mvn install…</string>
 
     <string name="bytecode_compiling">Compiling…</string>
     <string name="bytecode_only_java">Open a .java file to view JVM bytecode (ASM / javap-style).</string>
@@ -157,6 +179,8 @@
 
     <!-- New features -->
     <string name="menu_open_file">Open file…</string>
+    <string name="menu_import_files">Import files to project…</string>
+    <string name="toast_imported_files">Imported %1$d file(s)</string>
     <string name="menu_save_as">Save as…</string>
     <string name="menu_export_project">Export project (zip)</string>
     <string name="toast_imported_to">Imported as %1$s</string>
@@ -266,4 +290,234 @@
     <string name="debug_no_variables">No variables in scope</string>
     <string name="debug_no_stack">No call stack</string>
     <string name="debug_not_debugging">Not debugging</string>
+
+    <!-- Class Browser -->
+    <string name="menu_class_browser">Browse Classes</string>
+    <string name="class_browser_title">Class Browser</string>
+    <string name="class_browser_hint">e.g. System, ArrayList, okhttp3…</string>
+    <string name="class_browser_hint_count">e.g. System, ArrayList, okhttp3… (%1$d classes)</string>
+    <string name="class_browser_clear">Clear</string>
+    <string name="class_browser_loading">Loading classes…</string>
+    <string name="class_browser_scanning">Scanning JAR files…</string>
+    <string name="class_browser_no_results">No classes found</string>
+    <string name="class_browser_found">%1$d classes</string>
+    <string name="class_browser_import_copied">Copied: %1$s</string>
+    <string name="class_browser_opened">Opened %1$s (read-only)</string>
+    <string name="class_browser_jar_not_found">JAR file not found</string>
+    <string name="class_browser_class_not_found">Class not found in JAR</string>
+    <string name="class_browser_view_bytecode">View bytecode</string>
+
+    <!-- Global Search -->
+    <string name="menu_global_search">Search in Project</string>
+    <string name="global_search_hint">Search in all files…</string>
+
+    <!-- Media Player -->
+    <string name="menu_play_media">Play Media File</string>
+    <string name="media_player_title">Media Player</string>
+    <string name="media_no_file">No media file selected</string>
+    <string name="media_not_supported">This file format is not supported</string>
+
+    <!-- Bytecode Editor -->
+    <string name="bytecode_save">Save modified bytecode</string>
+    <string name="bytecode_edit_instruction">Edit Instruction</string>
+    <string name="bytecode_save_success">Bytecode saved</string>
+    <string name="bytecode_save_failed">Save failed: %1$s</string>
+    <string name="bytecode_edit_operand">Operand value</string>
+    <string name="bytecode_edit_var">Variable index</string>
+    <string name="bytecode_edit_incr">Increment value</string>
+    <string name="bytecode_edit_ldc">LDC constant value</string>
+    <string name="bytecode_delete_insn">Delete instruction</string>
+    <string name="bytecode_insert_before">Insert instruction before</string>
+    <string name="bytecode_insert_after">Insert instruction after</string>
+    <string name="bytecode_select_opcode">Select opcode</string>
+    <string name="bytecode_insert_snippet">Insert snippet</string>
+    <string name="bytecode_snippet">Snippet</string>
+    <string name="bytecode_snippet_nop">NOP</string>
+    <string name="bytecode_snippet_iconst_m1">iconst_m1</string>
+    <string name="bytecode_snippet_iconst_0">iconst_0</string>
+    <string name="bytecode_snippet_iconst_1">iconst_1</string>
+    <string name="bytecode_snippet_lconst_0">lconst_0</string>
+    <string name="bytecode_snippet_lconst_1">lconst_1</string>
+    <string name="bytecode_snippet_dconst_0">dconst_0</string>
+    <string name="bytecode_snippet_dconst_1">dconst_1</string>
+    <string name="bytecode_snippet_aconst_null">aconst_null</string>
+    <string name="bytecode_snippet_pop">pop</string>
+    <string name="bytecode_snippet_dup">dup</string>
+    <string name="bytecode_snippet_iadd">iadd</string>
+    <string name="bytecode_snippet_isub">isub</string>
+    <string name="bytecode_snippet_imul">imul</string>
+    <string name="bytecode_snippet_idiv">idiv</string>
+    <string name="bytecode_snippet_irem">irem</string>
+    <string name="bytecode_snippet_ineg">ineg</string>
+    <string name="bytecode_snippet_ireturn">ireturn</string>
+    <string name="bytecode_snippet_areturn">areturn</string>
+    <string name="bytecode_snippet_return">return</string>
+    <string name="bytecode_snippet_athrow">athrow</string>
+    <string name="bytecode_snippet_arraylength">arraylength</string>
+
+    <!-- AI Chat -->
+    <string name="menu_ai_chat">AI Assistant</string>
+    <string name="ai_title">AI Assistant</string>
+    <string name="ai_no_api_key">Set your Gemini API key in Settings</string>
+    <string name="ai_explain">Explain</string>
+    <string name="ai_find_bugs">Find bugs</string>
+    <string name="ai_refactor">Refactor</string>
+    <string name="ai_optimize">Optimize</string>
+    <string name="ai_document">Document</string>
+    <string name="ai_generate_test">Generate test</string>
+    <string name="ai_input_hint">Ask about your code…</string>
+    <string name="ai_send">Send</string>
+    <string name="ai_clear">Clear</string>
+    <string name="ai_change_model">Change model</string>
+    <string name="ai_model_select">Select AI Model</string>
+    <string name="ai_api_key_title">Gemini API Key</string>
+    <string name="ai_api_key_message">Get your free API key at aistudio.google.com</string>
+    <string name="ai_api_key_hint">Paste your API key from aistudio.google.com</string>
+    <string name="ai_open_studio">Open AI Studio</string>
+    <string name="ai_error">Error: %1$s</string>
+    <string name="ai_loading">Thinking…</string>
+    <string name="settings_ai_section">AI Settings</string>
+    <string name="settings_ai_api_key">Gemini API Key</string>
+    <string name="settings_ai_model">AI Model</string>
+
+    <!-- WelcomeActivity - Project options dialog -->
+    <string name="welcome_project_options_open">Open</string>
+    <string name="welcome_project_options_remove">Remove from history</string>
+    <string name="welcome_project_options_delete">Delete project from disk</string>
+    <string name="welcome_delete_project_title">Delete Project</string>
+    <string name="welcome_delete_project_message">Are you sure you want to permanently delete %1$s and all its files? This action cannot be undone.</string>
+    <string name="welcome_no_projects">No projects inside Documents/JavaDroid yet.</string>
+    <string name="welcome_open_folder_title">Open Project Folder</string>
+    <string name="welcome_clone_url_hint">Repository URL (https://…)</string>
+    <string name="welcome_clone_name_hint">Project folder name</string>
+    <string name="welcome_clone_user_hint">Username (optional, for private repos)</string>
+    <string name="welcome_clone_token_hint">Token / Password (optional)</string>
+    <string name="welcome_clone_repo_title">Clone Repository</string>
+    <string name="welcome_clone_repo_message">Clone any Git repository from GitHub, GitLab, Bitbucket, or any URL.</string>
+    <string name="welcome_clone_button">Clone</string>
+    <string name="welcome_url_required">URL is required</string>
+    <string name="welcome_cloning">Cloning…</string>
+    <string name="welcome_cloned_success">Cloned successfully!</string>
+    <string name="welcome_clone_failed">Clone failed: %1$s</string>
+    <string name="welcome_playground_option">Playground (demo project)</string>
+    <string name="welcome_creating_playground">Creating Playground…</string>
+    <string name="welcome_playground_created">Playground created!</string>
+    <string name="welcome_playground_hint">Project folder name (e.g. MyBytecode)</string>
+    <string name="welcome_invalid_git_url">Invalid Git URL</string>
+    <string name="welcome_error">Error: %1$s</string>
+    <string name="welcome_project_name_hint">Project folder name (e.g. MyApp)</string>
+    <string name="welcome_project_group_hint">Group ID / package (e.g. com.company.app)</string>
+    <string name="welcome_project_artifact_hint">Artifact ID (e.g. myapp), optional</string>
+    <string name="welcome_project_name_bytecode_hint">Project folder name (e.g. MyBytecode)</string>
+    <string name="project_type_playground">Playground (demo project)</string>
+
+    <!-- SettingsActivity - NDK -->
+    <string name="settings_ndk_install">Install C++ NDK (~130MB)</string>
+    <string name="settings_ndk_installed">C++ NDK Installed (Uninstall)</string>
+    <string name="settings_ndk_uninstall_title">Uninstall NDK</string>
+    <string name="settings_ndk_uninstall_message">Remove the C++ NDK to free up space?</string>
+    <string name="settings_ndk_remove">Remove</string>
+    <string name="settings_ndk_removed">NDK Removed</string>
+    <string name="settings_ndk_install_title">Install C++ NDK</string>
+    <string name="settings_ndk_install_message">This will download ~130MB (extracts to ~500MB) of Clang/LLVM toolchain for full C++ support. Proceed?</string>
+    <string name="settings_ndk_download">Download</string>
+    <string name="settings_ndk_installing">Installing NDK</string>
+    <string name="settings_ndk_connecting">Connecting…</string>
+    <string name="settings_ndk_success">NDK Installed Successfully!</string>
+    <string name="settings_ndk_error_title">Error</string>
+    <string name="settings_ndk_error_message">Failed to install NDK:\n%1$s</string>
+    <string name="settings_ndk_ok">OK</string>
+
+    <!-- MainActivity - Find & Replace -->
+    <string name="find_scope_project">Project</string>
+    <string name="find_scope_file">File</string>
+    <string name="find_scope_hint">Search in all files…</string>
+
+    <!-- MainActivity - Debug -->
+    <string name="debug_breakpoint_set">● Breakpoint at line %1$d</string>
+    <string name="debug_breakpoint_removed">○ Removed breakpoint at line %1$d</string>
+    <string name="debug_no_watch">No watch expressions.\nTap \'+ Add Watch\' to add one.</string>
+    <string name="debug_java_only">Debug only supports .java files</string>
+    <string name="debug_starting">▶ Starting debug session…</string>
+    <string name="debug_file_label">File: %1$s</string>
+    <string name="debug_breakpoints_label">Breakpoints: %1$d</string>
+
+    <!-- MainActivity - Breakpoint dialog -->
+    <string name="breakpoint_dialog_title">Breakpoint at line %1$d</string>
+    <string name="breakpoint_condition_hint">condition, e.g. i == 5</string>
+    <string name="breakpoint_set_button">Set</string>
+    <string name="breakpoint_remove_button">Remove</string>
+    <string name="breakpoint_unconditional">● Unconditional BP at line %1$d</string>
+    <string name="breakpoint_conditional">● Conditional BP at line %1$d: %1$s</string>
+
+    <!-- MainActivity - Call Graph -->
+    <string name="call_graph_title">Call Graph</string>
+    <string name="call_graph_no_methods">No methods found</string>
+    <string name="call_graph_calls">Calls (%1$d)</string>
+    <string name="call_graph_called_by">Called by (%1$d)</string>
+    <string name="call_graph_none">— none</string>
+    <string name="call_graph_no_project">No project open</string>
+    <string name="call_graph_analyzing">Analyzing project…</string>
+    <string name="call_graph_stats">%1$d methods, %2$d calls</string>
+
+    <!-- MainActivity - Actions dialog -->
+    <string name="actions_title">Actions</string>
+    <string name="actions_search_hint">Search actions…</string>
+    <string name="actions_no_matching">No matching actions</string>
+
+    <!-- MainActivity - Markdown preview -->
+    <string name="md_preview_title">Markdown preview</string>
+    <string name="close_button">Close</string>
+    <string name="md_only_markdown">Only Markdown files (.md) can be previewed</string>
+    <string name="file_is_empty">File is empty</string>
+
+    <!-- MainActivity - Auto-import -->
+    <string name="auto_import_java_only">Auto-import only for .java files</string>
+    <string name="auto_import_none">No missing imports found</string>
+    <string name="auto_import_title">Add imports</string>
+    <string name="auto_import_add">Add</string>
+
+    <!-- MainActivity - Formatted view -->
+    <string name="formatted_only_json_xml">Only JSON and XML files can be formatted</string>
+    <string name="copy_button">Copy</string>
+    <string name="apply_to_editor">Apply to editor</string>
+
+    <!-- MainActivity - C++ Module dialog -->
+    <string name="cpp_module_hint">Module/Library name (e.g. native-lib)</string>
+    <string name="cpp_module_c_option">C (Fast, built-in TCC compiler)</string>
+    <string name="cpp_module_cpp_option">C++ (Requires external NDK ~130MB)</string>
+    <string name="cpp_module_exists">Native file already exists</string>
+    <string name="cpp_module_created">C++ Module created successfully</string>
+    <string name="cpp_module_failed">Failed to create C++ module: %1$s</string>
+
+    <!-- MainActivity - Folder dialogs -->
+    <string name="folder_already_exists">Folder already exists</string>
+    <string name="folder_create_failed">Failed to create folder</string>
+
+    <!-- MainActivity - ProGuard mapping -->
+    <string name="mapping_loaded">Mapping loaded: %1$s</string>
+    <string name="mapping_load_failed">Failed to load mapping: %1$s</string>
+
+    <!-- Searchable menu items -->
+    <string name="menu_bytecode_view">Bytecode View</string>
+    <string name="menu_load_mapping">Load ProGuard Mapping</string>
+    <string name="menu_http_client">HTTP Client</string>
+    <string name="menu_webview_preview">WebView Preview</string>
+    <string name="menu_call_graph">Call Graph</string>
+
+    <!-- ProjectCompiler - NDK warnings -->
+    <string name="ndk_warning_c_not_available">Warning: built-in C compiler not available, skipping native compilation</string>
+    <string name="ndk_warning_cpp_requires_ndk">Warning: C++ sources require external NDK. Skipping.</string>
+    <string name="ndk_warning_cannot_read">Warning: Cannot read %1$s: %2$s</string>
+    <string name="ndk_warning_c_error">Warning: C compilation error (%1$s): %2$s</string>
+    <string name="ndk_compiled_tcc">Compiled (TCC) %1$s → %2$s</string>
+    <string name="ndk_warning_cpp_error">Warning: C++ compilation error (%1$s): %2$s</string>
+    <string name="ndk_warning_cpp_failed">Warning: C++ compilation failed (%1$s): %2$s</string>
+    <string name="ndk_compiled_clang">Compiled (Clang++) %1$s → %2$s</string>
+    <string name="ndk_error_c_not_available">❌ Native Build Error:\nBuilt-in C compiler is not available on this device.</string>
+    <string name="ndk_error_cannot_read">❌ Cannot read %1$s: %2$s</string>
+    <string name="ndk_error_c_compile">❌ C Compilation Error (%1$s):\n%2$s</string>
+    <string name="ndk_error_cpp_ndk_required">❌ C++ Build Error:\nC++ sources (.cpp) require the external NDK.\n\nPlease go to Settings → Install C++ NDK to download the toolchain (~130MB).\nOr rewrite your JNI code in pure C (.c) to use the built-in fast compiler.</string>
+    <string name="ndk_error_cpp_compile">❌ C++ Compilation Error (%1$s):\n%2$s</string>
+    <string name="ndk_error_cpp_execute">❌ C++ Build Error:\nFailed to execute clang++ for %1$s: %2$s</string>
 </resources>

@@ -74,6 +74,21 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/action_maven_test_run"
+        android:title="@string/menu_maven_test_run"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_maven_clean"
+        android:title="@string/menu_maven_clean"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_maven_install"
+        android:title="@string/menu_maven_install"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/action_settings"
         android:title="@string/menu_settings"
         android:icon="@drawable/ic_settings"
@@ -93,10 +108,18 @@
         android:id="@+id/action_share_file"
         android:title="@string/menu_share_file"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_pastebin"
+        android:title="@string/menu_pastebin"
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/action_open_file"
         android:title="@string/menu_open_file"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_import_files"
+        android:title="@string/menu_import_files"
         app:showAsAction="never" />
 
     <item
@@ -139,4 +162,20 @@
         android:id="@+id/action_split_screen"
         android:title="@string/menu_split_screen"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_play_media"
+        android:title="@string/menu_play_media"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_class_browser"
+        android:title="@string/menu_class_browser"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_load_mapping"
+        android:title="Load ProGuard Mapping"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_ai_chat"
+        android:title="@string/menu_ai_chat"
+        app:showAsAction="always" />
 </menu>

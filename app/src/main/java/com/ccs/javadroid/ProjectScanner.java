@@ -46,11 +46,28 @@ public final class ProjectScanner {
         if (pom.exists()) {
             out.add(new FileTreeNode(pom, 0, false));
         }
+
+        // Root-level files (non-Java, like .html, .css, .js, .http, .sql, .svg, .md, .kt)
+        File[] rootFiles = projectRoot.listFiles();
+        if (rootFiles != null) {
+            Arrays.sort(rootFiles, Comparator.comparing(File::getName));
+            for (File f : rootFiles) {
+                if (f.isFile() && !shouldSkipFile(f)) {
+                    out.add(new FileTreeNode(f, 0, false));
+                }
+            }
+        }
+
         File src = new File(projectRoot, "src");
         if (src.isDirectory()) {
             walkTree(out, src, 0);
         }
         return out;
+    }
+
+    private static boolean shouldSkipFile(File f) {
+        String name = f.getName();
+        return name.startsWith(".") || name.equals("pom.xml");
     }
 
     private static void walkTree(List<FileTreeNode> out, File dir, int depth) {

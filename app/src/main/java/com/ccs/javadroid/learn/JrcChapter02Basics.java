@@ -100,7 +100,7 @@ final class JrcChapter02Basics {
                 + "} else {\n"
                 + "    System.out.println(\"Треба більше старатись\");\n"
                 + "}"));
-        uk.add(LessonBlock.paragraph("Switch (з Java 7 працює з String, з Java 14 — arrow-форма):"));
+        uk.add(LessonBlock.paragraph("Switch у JDK 8 працює з числами, enum та String:"));
         uk.add(LessonBlock.code(
                 "String day = \"MON\";\n"
                 + "switch (day) {\n"
@@ -116,7 +116,7 @@ final class JrcChapter02Basics {
                 + "}"));
         uk.add(LessonBlock.warning(
                 "Забуття break у класичному switch призведе до «провалювання» (fall-through) у "
-                + "наступний case. З Java 14 arrow-форма switch уникає цієї пастки."));
+                + "наступний case. Для JDK 8 це базове правило, яке треба довести до автоматизму."));
 
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Control flow: if / switch"));
@@ -130,7 +130,7 @@ final class JrcChapter02Basics {
                 + "} else {\n"
                 + "    System.out.println(\"Try harder\");\n"
                 + "}"));
-        en.add(LessonBlock.paragraph("Switch (since Java 7 works with String, since Java 14 — arrow form):"));
+        en.add(LessonBlock.paragraph("In JDK 8, switch works with numbers, enums, and String:"));
         en.add(LessonBlock.code(
                 "String day = \"MON\";\n"
                 + "switch (day) {\n"
@@ -146,7 +146,7 @@ final class JrcChapter02Basics {
                 + "}"));
         en.add(LessonBlock.warning(
                 "Forgetting break in a classic switch leads to fall-through into the next case. "
-                + "The Java 14+ arrow form of switch avoids this trap."));
+                + "For JDK 8 this is a basic rule to turn into a habit."));
 
         return new Lesson("2.2", "Керування потоком", "Control flow", uk, en);
     }
