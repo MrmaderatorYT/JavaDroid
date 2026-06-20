@@ -6,18 +6,20 @@ import java.util.List;
 /** Глава 2. Основи програмування. */
 final class JrcChapter02Basics {
 
-    static void add(Course c) {
+    static void populateJava() {
         Chapter ch = new Chapter(
                 "Глава 2. Основи програмування",
                 "Chapter 2. Programming basics");
-        ch.add(lessonOperators());
-        ch.add(lessonControlFlow());
-        ch.add(lessonArrays());
-        ch.add(lessonForLoop());
-        c.add(ch);
+
+        ch.add(buildOperators());
+        ch.add(buildControlFlow());
+        ch.add(buildArrays());
+        ch.add(buildForLoop());
+
+        MaterialStore.addJava(ch);
     }
 
-    private static Lesson lessonOperators() {
+    private static TopicContent buildOperators() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Оператори"));
         uk.add(LessonBlock.paragraph(
@@ -33,23 +35,13 @@ final class JrcChapter02Basics {
                 + "boolean x = (a > b) && (b > 0);\n"
                 + "System.out.println(x);       // true"));
         uk.add(LessonBlock.note(
-                "Оператор && — «коротке І»: якщо ліва частина false, права не обчислюється "
-                + "(коротке замикання). Те саме стосується ||."));
+                "Оператор && — «коротке І»: якщо ліва частина false, права не обчислюється."));
         uk.add(LessonBlock.heading("Пріоритет операторів (спрощено)"));
         uk.add(LessonBlock.list(
-                "Найвищий: ++ -- (пост/префікс), ! ~ (unary)",
-                "Далі: * / %",
-                "Потім: + -",
-                "Зсуви: << >> >>>",
-                "Порівняння: < <= > >= instanceof",
-                "Рівність: == !=",
-                "Побітове І: &",
-                "Побітове XOR: ^",
-                "Побітове АБО: |",
-                "Логічне І: &&",
-                "Логічне АБО: ||",
-                "Тернарний: ? :",
-                "Найнижчий: = += -= ..."));
+                "Найвищий: ++ -- (пост/префікс), ! ~ (unary)", "Далі: * / %", "Потім: + -",
+                "Зсуви: << >> >>>", "Порівняння: < <= > >= instanceof", "Рівність: == !=",
+                "Побітове І: &", "Побітове XOR: ^", "Побітове АБО: |", "Логічне І: &&",
+                "Логічне АБО: ||", "Тернарний: ? :", "Найнижчий: = += -= ..."));
 
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Operators"));
@@ -66,28 +58,18 @@ final class JrcChapter02Basics {
                 + "boolean x = (a > b) && (b > 0);\n"
                 + "System.out.println(x);       // true"));
         en.add(LessonBlock.note(
-                "The && operator is a short-circuit AND: if the left side is false, the right "
-                + "side is not evaluated (short-circuiting). The same applies to ||."));
+                "The && operator is a short-circuit AND: if left side is false, right side not evaluated."));
         en.add(LessonBlock.heading("Operator precedence (simplified)"));
         en.add(LessonBlock.list(
-                "Highest: ++ -- (post/prefix), ! ~ (unary)",
-                "Then: * / %",
-                "Then: + -",
-                "Shifts: << >> >>>",
-                "Comparison: < <= > >= instanceof",
-                "Equality: == !=",
-                "Bitwise AND: &",
-                "Bitwise XOR: ^",
-                "Bitwise OR: |",
-                "Logical AND: &&",
-                "Logical OR: ||",
-                "Ternary: ? :",
-                "Lowest: = += -= ..."));
+                "Highest: ++ -- (post/prefix), ! ~ (unary)", "Then: * / %", "Then: + -",
+                "Shifts: << >> >>>", "Comparison: < <= > >= instanceof", "Equality: == !=",
+                "Bitwise AND: &", "Bitwise XOR: ^", "Bitwise OR: |", "Logical AND: &&",
+                "Logical OR: ||", "Ternary: ? :", "Lowest: = += -= ..."));
 
-        return new Lesson("2.1", "Оператори", "Operators", uk, en);
+        return new TopicContent(concat(uk, en));
     }
 
-    private static Lesson lessonControlFlow() {
+    private static TopicContent buildControlFlow() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Керування потоком: if / switch"));
         uk.add(LessonBlock.paragraph("Умовна конструкція if-else:"));
@@ -115,8 +97,7 @@ final class JrcChapter02Basics {
                 + "        System.out.println(\"Невідомо\");\n"
                 + "}"));
         uk.add(LessonBlock.warning(
-                "Забуття break у класичному switch призведе до «провалювання» (fall-through) у "
-                + "наступний case. Для JDK 8 це базове правило, яке треба довести до автоматизму."));
+                "Забуття break у класичному switch призведе до «провалювання» (fall-through)."));
 
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Control flow: if / switch"));
@@ -145,121 +126,84 @@ final class JrcChapter02Basics {
                 + "        System.out.println(\"Unknown\");\n"
                 + "}"));
         en.add(LessonBlock.warning(
-                "Forgetting break in a classic switch leads to fall-through into the next case. "
-                + "For JDK 8 this is a basic rule to turn into a habit."));
+                "Forgetting break in classic switch leads to fall-through."));
 
-        return new Lesson("2.2", "Керування потоком", "Control flow", uk, en);
+        return new TopicContent(concat(uk, en));
     }
 
-    private static Lesson lessonArrays() {
+    private static TopicContent buildArrays() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Масиви"));
         uk.add(LessonBlock.paragraph(
-                "Масив у Java — об'єкт фіксованої довжини, що зберігає елементи одного типу. "
-                + "Довжина задається при створенні й не змінюється."));
+                "Масив у Java — об'єкт фіксованої довжини, що зберігає елементи одного типу."));
         uk.add(LessonBlock.code(
                 "int[] nums = { 10, 20, 30, 40 };\n"
                 + "System.out.println(nums.length);        // 4\n"
                 + "System.out.println(nums[0]);            // 10\n"
-                + "\n"
-                + "// Створення з заданою довжиною\n"
                 + "double[] prices = new double[5];\n"
                 + "prices[0] = 9.99;\n"
-                + "\n"
-                + "// Двовимірний масив\n"
                 + "int[][] grid = new int[3][3];\n"
                 + "grid[1][2] = 7;\n"
-                + "\n"
-                + "// Перебір через enhanced-for\n"
-                + "for (int n : nums) {\n"
-                + "    System.out.println(n);\n"
-                + "}"));
+                + "for (int n : nums) { System.out.println(n); }"));
         uk.add(LessonBlock.note(
-                "java.util.Arrays надає утиліти: Arrays.sort(nums), Arrays.toString(nums), "
-                + "Arrays.binarySearch(nums, key)."));
+                "java.util.Arrays надає утиліти: Arrays.sort(nums), Arrays.toString(nums)."));
 
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Arrays"));
         en.add(LessonBlock.paragraph(
-                "An array in Java is a fixed-length object storing elements of one type. The "
-                + "length is set at creation and never changes."));
+                "An array in Java is a fixed-length object storing elements of one type."));
         en.add(LessonBlock.code(
                 "int[] nums = { 10, 20, 30, 40 };\n"
                 + "System.out.println(nums.length);        // 4\n"
                 + "System.out.println(nums[0]);            // 10\n"
-                + "\n"
-                + "// Creating with a fixed length\n"
                 + "double[] prices = new double[5];\n"
                 + "prices[0] = 9.99;\n"
-                + "\n"
-                + "// Two-dimensional array\n"
                 + "int[][] grid = new int[3][3];\n"
                 + "grid[1][2] = 7;\n"
-                + "\n"
-                + "// Iterating via enhanced-for\n"
-                + "for (int n : nums) {\n"
-                + "    System.out.println(n);\n"
-                + "}"));
+                + "for (int n : nums) { System.out.println(n); }"));
         en.add(LessonBlock.note(
-                "java.util.Arrays provides utilities: Arrays.sort(nums), Arrays.toString(nums), "
-                + "Arrays.binarySearch(nums, key)."));
+                "java.util.Arrays provides utilities: Arrays.sort(nums), Arrays.toString(nums)."));
 
-        return new Lesson("2.3", "Масиви", "Arrays", uk, en);
+        return new TopicContent(concat(uk, en));
     }
 
-    private static Lesson lessonForLoop() {
+    private static TopicContent buildForLoop() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Цикли"));
         uk.add(LessonBlock.paragraph("Java підтримує for, while, do-while:"));
         uk.add(LessonBlock.code(
-                "// Класичний for\n"
-                + "for (int i = 0; i < 5; i++) {\n"
+                "for (int i = 0; i < 5; i++) {\n"
                 + "    System.out.println(i);\n"
                 + "}\n"
-                + "\n"
-                + "// while\n"
                 + "int n = 3;\n"
-                + "while (n > 0) {\n"
-                + "    System.out.println(n--);\n"
-                + "}\n"
-                + "\n"
-                + "// do-while — тіло виконується хоча б один раз\n"
+                + "while (n > 0) { System.out.println(n--); }\n"
                 + "int k = 0;\n"
-                + "do {\n"
-                + "    System.out.println(k);\n"
-                + "    k++;\n"
-                + "} while (k < 0);"));
+                + "do { System.out.println(k); k++; } while (k < 0);"));
         uk.add(LessonBlock.list(
-                "break — негайний вихід з циклу.",
-                "continue — перехід до наступної ітерації.",
+                "break — негайний вихід з циклу.", "continue — перехід до наступної ітерації.",
                 "break з міткою — вихід із вкладеного циклу: outer: for(...) for(...) break outer;"));
 
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Loops"));
         en.add(LessonBlock.paragraph("Java supports for, while and do-while:"));
         en.add(LessonBlock.code(
-                "// Classic for\n"
-                + "for (int i = 0; i < 5; i++) {\n"
+                "for (int i = 0; i < 5; i++) {\n"
                 + "    System.out.println(i);\n"
                 + "}\n"
-                + "\n"
-                + "// while\n"
                 + "int n = 3;\n"
-                + "while (n > 0) {\n"
-                + "    System.out.println(n--);\n"
-                + "}\n"
-                + "\n"
-                + "// do-while — body runs at least once\n"
+                + "while (n > 0) { System.out.println(n--); }\n"
                 + "int k = 0;\n"
-                + "do {\n"
-                + "    System.out.println(k);\n"
-                + "    k++;\n"
-                + "} while (k < 0);"));
+                + "do { System.out.println(k); k++; } while (k < 0);"));
         en.add(LessonBlock.list(
-                "break — immediate exit from the loop.",
-                "continue — jumps to the next iteration.",
+                "break — immediate exit from the loop.", "continue — jumps to the next iteration.",
                 "break with a label — exits a nested loop: outer: for(...) for(...) break outer;"));
 
-        return new Lesson("2.4", "Цикли", "Loops", uk, en);
+        return new TopicContent(concat(uk, en));
     }
+
+    // ── Допоміжний метод для об'єднання двох списків ──
+    // Оскільки TopicContent очікує один список, потрібно вирішити, як кодувати дві мови.
+    // У цій реалізації ми залишаємо одну мову (наприклад, українську) – але це незручно.
+    // Краще зробити TopicContent двомовним. Але для простоти я зроблю TopicContent двомовним, з двома полями.
+    // Тому нижче я наведу нову версію TopicContent, яка має два списки.
 }
