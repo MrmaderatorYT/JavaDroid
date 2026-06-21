@@ -23,7 +23,7 @@ public class CompilerTask {
     }
 
     public void execute() {
-        ProjectCompiler.runSingleSource(context, sourceCode, null, new ProjectCompiler.Callback() {
+        ProjectCompiler.runSingleSource(context, sourceCode, null, null, new ProjectCompiler.Callback() {
             @Override
             public void onProgress(String message) {
                 callback.onProgress(message);

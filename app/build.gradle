@@ -17,7 +17,7 @@ android {
         applicationId 'com.ccs.javadroid'
         minSdk 26
         targetSdk 35
-        versionCode 9
+        versionCode 10
         versionName '1.6.0'
 
         ndk {

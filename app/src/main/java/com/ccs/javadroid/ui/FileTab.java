@@ -9,6 +9,9 @@ public class FileTab {
     /** Байтки .class файлу (для байткод-в'ювера); null для текстових файлів. */
     public byte[] classBytes;
 
+    public int cursorLine = 0;
+    public int cursorColumn = 0;
+
     public FileTab(File file) {
         this.file = file;
         this.isModified = false;

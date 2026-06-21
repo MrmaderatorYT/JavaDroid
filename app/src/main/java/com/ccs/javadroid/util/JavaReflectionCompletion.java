@@ -28,6 +28,10 @@ import java.util.regex.Pattern;
 import io.github.rosemoe.sora.lang.completion.CompletionItemKind;
 import io.github.rosemoe.sora.lang.completion.CompletionPublisher;
 import io.github.rosemoe.sora.lang.completion.SimpleCompletionItem;
+import io.github.rosemoe.sora.lang.completion.SimpleSnippetCompletionItem;
+import io.github.rosemoe.sora.lang.completion.SnippetDescription;
+import io.github.rosemoe.sora.lang.completion.snippet.parser.CodeSnippetParser;
+
 import io.github.rosemoe.sora.text.CharPosition;
 import io.github.rosemoe.sora.text.ContentReference;
 
@@ -204,92 +208,89 @@ public final class JavaReflectionCompletion {
 
     private static final String[][] COMMON_SNIPPETS = {
             // ── Print / Output ──────────────────────────────
-            {"sout",  "System.out.println()",        "Print to stdout"},
-            {"soutv", "System.out.println(\"var=\");", "Print variable with name"},
-            {"serr",  "System.err.println()",        "Print to stderr"},
-            {"printf", "System.out.printf(\"%s\", );", "Formatted print"},
+            {"sout",  "System.out.println($1);",        "Print to stdout"},
+            {"soutv", "System.out.println(\"$1 = \" + $1);", "Print variable with name"},
+            {"serr",  "System.err.println($1);",        "Print to stderr"},
+            {"printf", "System.out.printf(\"$1%n\", $2);", "Formatted print"},
 
             // ── Control flow ────────────────────────────────
-            {"if",      "if () {}",                                   "If statement"},
-            {"ife",     "if () {} else {}",                           "If-else statement"},
-            {"ifnn",    "if ( != null) {}",                           "If not null check"},
-            {"ifeq",    "if ( == ) {}",                               "If equals check"},
-            {"while",   "while () {}",                                "While loop"},
-            {"for",     "for ( ; ; ) {}",                             "For loop"},
-            {"fori",    "for (int i = 0; i < ; i++) {}",             "Indexed for loop"},
-            {"foreach", "for ( : ) {}",                               "Enhanced for-each loop"},
-            {"switch",  "switch () {\n    case :\n        break;\n    default:\n        break;\n}", "Switch statement"},
+            {"if",      "if ($1) {\n    $2\n}",                                   "If statement"},
+            {"ife",     "if ($1) {\n    $2\n} else {\n    $3\n}",                 "If-else statement"},
+            {"ifnn",    "if ($1 != null) {\n    $2\n}",                           "If not null check"},
+            {"ifeq",    "if ($1.equals($2)) {\n    $3\n}",                        "If equals check"},
+            {"while",   "while ($1) {\n    $2\n}",                                "While loop"},
+            {"for",     "for ($1; $2; $3) {\n    $4\n}",                          "For loop"},
+            {"fori",    "for (int ${1:i} = 0; ${1:i} < $2; ${1:i}++) {\n    $3\n}", "Indexed for loop"},
+            {"foreach", "for (${1:Type} ${2:item} : ${3:iterable}) {\n    $4\n}",  "Enhanced for-each loop"},
+            {"switch",  "switch ($1) {\n    case $2:\n        $3\n        break;\n    default:\n        break;\n}", "Switch statement"},
 
             // ── Try / Catch ─────────────────────────────────
-            {"try",     "try {} catch (Exception e) {}",              "Try-catch block"},
-            {"tryc",    "try {} catch (Exception e) {}",              "Try-catch block"},
-            {"tryf",    "try {} finally {}",                          "Try-finally block"},
-            {"trycf",   "try {} catch (Exception e) {} finally {}",  "Try-catch-finally"},
-            {"tryr",    "try () {}",                                  "Try-with-resources"},
+            {"try",     "try {\n    $1\n} catch (Exception ${2:e}) {\n    $3\n}",              "Try-catch block"},
+            {"tryc",    "try {\n    $1\n} catch (Exception ${2:e}) {\n    $3\n}",              "Try-catch block"},
+            {"tryf",    "try {\n    $1\n} finally {\n    $2\n}",                          "Try-finally block"},
+            {"trycf",   "try {\n    $1\n} catch (Exception ${2:e}) {\n    $3\n} finally {\n    $4\n}",  "Try-catch-finally"},
+            {"tryr",    "try ($1) {\n    $2\n}",                                  "Try-with-resources"},
 
             // ── Methods / Classes ────────────────────────────
-            {"main",  "public static void main(String[] args) {}",   "Main method"},
-            {"psvm",  "public static void main(String[] args) {}",   "public static void main"},
-            {"psvm",  "public static void main(String[] args) {}",   "public static void main"},
-            {"cw",    "public class  {}",                             "New public class"},
-            {"ab",    "abstract class  {}",                           "Abstract class"},
-            {"itf",   "public interface  {}",                         "Public interface"},
-            {"enum",  "enum  {}",                                     "Enum declaration"},
-            {"ann",   "@interface  {}",                               "Annotation interface"},
-            {"ctor",  "public  () {}",                                "Constructor"},
-            {"m",     "public void  () {}",                           "Public void method"},
-            {"ms",    "public static void  () {}",                    "Static void method"},
-            {"mf",    "public int  () {}",                            "Method returning int"},
+            {"main",  "public static void main(String[] args) {\n    $1\n}",   "Main method"},
+            {"psvm",  "public static void main(String[] args) {\n    $1\n}",   "public static void main"},
+            {"cw",    "public class $1 {\n    $2\n}",                             "New public class"},
+            {"ab",    "abstract class $1 {\n    $2\n}",                           "Abstract class"},
+            {"itf",   "public interface $1 {\n    $2\n}",                         "Public interface"},
+            {"enum",  "enum $1 {\n    $2\n}",                                     "Enum declaration"},
+            {"ann",   "@interface $1 {\n    $2\n}",                               "Annotation interface"},
+            {"ctor",  "public $1() {\n    $2\n}",                                "Constructor"},
+            {"m",     "public void $1() {\n    $2\n}",                           "Public void method"},
+            {"ms",    "public static void $1() {\n    $2\n}",                    "Static void method"},
+            {"mf",    "public int $1() {\n    return $2;\n}",                            "Method returning int"},
 
             // ── Object creation ──────────────────────────────
-            {"new",    "new ()",                     "New object instance"},
-            {"newa",   "new [0]",                    "New array"},
+            {"new",    "new $1($2)",                     "New object instance"},
+            {"newa",   "new $1[$2]",                    "New array"},
 
             // ── Return / Throw ───────────────────────────────
-            {"return", "return ;",                   "Return statement"},
-            {"throw",  "throw new ();",              "Throw exception"},
-            {"throws", "throws ",                    "Throws declaration"},
+            {"return", "return $1;",                   "Return statement"},
+            {"throw",  "throw new $1($2);",              "Throw exception"},
+            {"throws", "throws $1",                    "Throws declaration"},
 
             // ── Lambda / Streams ─────────────────────────────
-            {"lambda",  "() -> {}",                                                     "Lambda expression"},
-            {"lsp",     "(s) -> s.",                                                    "Lambda single param"},
-            {"stream",  ".stream().filter().map().collect(Collectors.toList())",        "Stream pipeline"},
-            {"filter",  ".stream().filter( -> ).collect(Collectors.toList())",          "Filter stream"},
-            {"map",     ".stream().map( -> ).collect(Collectors.toList())",             "Map stream"},
-            {"foreach", "for ( : ) {}",                                                 "For-each loop"},
+            {"lambda",  "($1) -> {\n    $2\n}",                                                     "Lambda expression"},
+            {"lsp",     "(${1:s}) -> ${1:s}.$2",                                                    "Lambda single param"},
+            {"stream",  ".stream().filter($1).map($2).collect(Collectors.toList())",        "Stream pipeline"},
+            {"filter",  ".stream().filter(${1:item} -> $2).collect(Collectors.toList())",          "Filter stream"},
+            {"map",     ".stream().map(${1:item} -> $2).collect(Collectors.toList())",             "Map stream"},
             {"collect", ".collect(Collectors.toList())",                                "Collect to list"},
 
             // ── Collections ──────────────────────────────────
             {"list",   "new ArrayList<>()",          "New ArrayList"},
             {"map",    "new HashMap<>()",            "New HashMap"},
             {"set",    "new HashSet<>()",            "New HashSet"},
-            {"coll",   "Collections.",               "Collections utility"},
+            {"coll",   "Collections.$1",               "Collections utility"},
 
             // ── Optional / Null safety ───────────────────────
-            {"opt",   "Optional.ofNullable().orElse()",             "Optional wrap"},
-            {"optif", "Optional.ofNullable().ifPresent( -> {})",    "Optional ifPresent"},
+            {"opt",   "Optional.ofNullable($1).orElse($2)",             "Optional wrap"},
+            {"optif", "Optional.ofNullable($1).ifPresent(${2:val} -> {\n    $3\n})",    "Optional ifPresent"},
 
             // ── Common patterns ──────────────────────────────
-            {"sync",       "synchronized () {}",                                              "Synchronized block"},
-            {"inst",       "instanceof ",                                                      "Instanceof check"},
-            {"sout",       "System.out.println()",                                            "Print to stdout"},
-            {"sleep",      "Thread.sleep()",                                                   "Thread sleep"},
-            {"run",        "new Thread(() -> {}).start();",                                    "New thread"},
-            {"runnable",   "Runnable r = () -> {};",                                           "Runnable lambda"},
-            {"comparable", "implements Comparable<>",                                          "Implement Comparable"},
-            {"iterable",   "implements Iterable<>",                                            "Implement Iterable"},
+            {"sync",       "synchronized ($1) {\n    $2\n}",                                              "Synchronized block"},
+            {"inst",       "instanceof $1",                                                      "Instanceof check"},
+            {"sleep",      "Thread.sleep($1);",                                                   "Thread sleep"},
+            {"run",        "new Thread(() -> {\n    $1\n}).start();",                                    "New thread"},
+            {"runnable",   "Runnable ${1:r} = () -> {\n    $2\n};",                                           "Runnable lambda"},
+            {"comparable", "implements Comparable<$1>",                                          "Implement Comparable"},
+            {"iterable",   "implements Iterable<$1>",                                            "Implement Iterable"},
 
             // ── Annotations ──────────────────────────────────
-            {"ovr",  "@Override",                    "Override annotation"},
-            {"dep",  "@Deprecated",                  "Deprecated annotation"},
-            {"sup",  "@SuppressWarnings(\"all\")",  "Suppress warnings"},
-            {"fn",   "@FunctionalInterface",         "Functional interface"},
+            {"ovr",  "@Override\n",                    "Override annotation"},
+            {"dep",  "@Deprecated\n",                  "Deprecated annotation"},
+            {"sup",  "@SuppressWarnings(\"$1\")\n",  "Suppress warnings"},
+            {"fn",   "@FunctionalInterface\n",         "Functional interface"},
 
             // ── Logging ──────────────────────────────────────
-            {"log",   "private static final Logger log = Logger.getLogger(.class.getName());", "Logger field"},
-            {"logi",  "log.info(\"\");",             "Log INFO"},
-            {"logw",  "log.warning(\"\");",          "Log WARNING"},
-            {"loge",  "log.severe(\"\");",           "Log SEVERE"},
+            {"log",   "private static final Logger log = Logger.getLogger($1.class.getName());", "Logger field"},
+            {"logi",  "log.info(\"$1\");",             "Log INFO"},
+            {"logw",  "log.warning(\"$1\");",          "Log WARNING"},
+            {"loge",  "log.severe(\"$1\");",           "Log SEVERE"}
     };
 
     private JavaReflectionCompletion() {}
@@ -354,11 +355,19 @@ public final class JavaReflectionCompletion {
         String pl = prefix.toLowerCase(Locale.ROOT);
         for (String[] snippet : COMMON_SNIPPETS) {
             if (snippet[0].startsWith(pl)) {
-                String desc = snippet.length > 2 ? snippet[2] : snippet[1];
-                SimpleCompletionItem it = new SimpleCompletionItem(
-                        snippet[0], desc, prefix.length(), snippet[1]);
-                it.kind(CompletionItemKind.Snippet);
-                pub.addItem(it);
+                try {
+                    String desc = snippet.length > 2 ? snippet[2] : snippet[1];
+                    SnippetDescription sDesc = new SnippetDescription(
+                        prefix.length(),
+                        CodeSnippetParser.parse(snippet[1]),
+                        true
+                    );
+                    SimpleSnippetCompletionItem it = new SimpleSnippetCompletionItem(snippet[0], desc, sDesc);
+                    it.kind(CompletionItemKind.Snippet);
+                    pub.addItem(it);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

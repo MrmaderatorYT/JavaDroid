@@ -47,6 +47,10 @@ public class FileTreeAdapter extends RecyclerView.Adapter<FileTreeAdapter.FileVi
         notifyDataSetChanged();
     }
 
+    public File getActiveFile() {
+        return activeFile;
+    }
+
     @NonNull
     @Override
     public FileViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

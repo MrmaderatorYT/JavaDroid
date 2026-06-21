@@ -97,13 +97,13 @@ public final class ProjectCompiler {
     }
 
     public static void runSingleSource(Context context, String sourceCode, Callback callback) {
-        runSingleSource(context, sourceCode, null, callback);
+        runSingleSource(context, sourceCode, null, null, callback);
     }
 
     /**
-     * @param logicalSourceFile файл у проєкті (редактор); шляхи помилок ECJ з кешу підміняються на нього
+     * Компілює та запускає ОДИН файл (.java або .kt) як окремий процес.
      */
-    public static void runSingleSource(Context context, String sourceCode, File logicalSourceFile,
+    public static void runSingleSource(Context context, String sourceCode, File logicalSourceFile, File projectRoot,
                                        Callback rawCallback) {
         final Callback callback = wrapCallback(context, rawCallback);
         new Thread(() -> {
@@ -134,7 +134,7 @@ public final class ProjectCompiler {
                     File srcFile = new File(cacheDir, className + ".kt");
                     writeUtf8(srcFile, sourceCode);
 
-                    List<File> classFiles = compileKotlinViaCompilerApi(srcFile, cacheDir, androidJar, className, callback, context);
+                    List<File> classFiles = compileKotlinViaCompilerApi(srcFile, projectRoot, cacheDir, androidJar, className, callback, context);
                     if (classFiles == null || classFiles.isEmpty()) {
                         return;
                     }
@@ -223,7 +223,7 @@ public final class ProjectCompiler {
      * Compile and run a single source in debug mode: instruments bytecode
      * with debug hooks, loads DexClassLoader, and starts a debug session.
      */
-    public static void debugSingleSource(Context context, String sourceCode, File logicalSourceFile,
+    public static void debugSingleSource(Context context, String sourceCode, File logicalSourceFile, File projectRoot,
                                           Callback rawCallback) {
         final Callback callback = wrapCallback(context, rawCallback);
         new Thread(() -> {
@@ -304,15 +304,16 @@ public final class ProjectCompiler {
 
                 // Compile native sources for debug mode
                 File jniLibsDir = null;
-                if (logicalSourceFile != null) {
-                    File projectRoot = logicalSourceFile.getParentFile();
-                    while (projectRoot != null && !new File(projectRoot, "pom.xml").exists()
-                            && !new File(projectRoot, ".project").exists()) {
-                        projectRoot = projectRoot.getParentFile();
+                File resolvedProjectRoot = projectRoot;
+                if (resolvedProjectRoot == null && logicalSourceFile != null) {
+                    resolvedProjectRoot = logicalSourceFile.getParentFile();
+                    while (resolvedProjectRoot != null && !new File(resolvedProjectRoot, "pom.xml").exists()
+                            && !new File(resolvedProjectRoot, ".project").exists()) {
+                        resolvedProjectRoot = resolvedProjectRoot.getParentFile();
                     }
-                    if (projectRoot != null) {
-                        jniLibsDir = compileNativeSources(context, projectRoot, callback);
-                    }
+                }
+                if (resolvedProjectRoot != null) {
+                    jniLibsDir = compileNativeSources(context, resolvedProjectRoot, callback);
                 }
 
                 // Instrument bytecode with debug hooks
@@ -1554,7 +1555,22 @@ public final class ProjectCompiler {
      *
      * @return list of generated .class files, or null on failure
      */
-    private static List<File> compileKotlinViaCompilerApi(File srcFile, File cacheDir,
+    private static void collectSources(File dir, List<File> out) {
+        File[] files = dir.listFiles();
+        if (files == null) return;
+        for (File f : files) {
+            if (f.isDirectory()) {
+                String name = f.getName();
+                if (!name.equals("build") && !name.equals("target") && !name.equals(".idea") && !name.equals(".git") && !name.equals(".javadroid")) {
+                    collectSources(f, out);
+                }
+            } else if (f.getName().endsWith(".java") || f.getName().endsWith(".kt")) {
+                out.add(f);
+            }
+        }
+    }
+
+    private static List<File> compileKotlinViaCompilerApi(File srcFile, File projectRoot, File cacheDir,
                                                            File androidJar, String className,
                                                            Callback callback, Context context) {
         try {
@@ -1691,6 +1707,18 @@ public final class ProjectCompiler {
                     String.class, boolean.class, String.class)
                     .newInstance(srcFile.getAbsolutePath(), false, null);
             addMethod.invoke(config, contentRootsField.get(null), sourceRoot);
+
+            if (projectRoot != null && projectRoot.exists()) {
+                List<File> allSources = new java.util.ArrayList<>();
+                collectSources(projectRoot, allSources);
+                for (File f : allSources) {
+                    if (f.getAbsolutePath().equals(srcFile.getAbsolutePath())) continue;
+                    Object extSourceRoot = kotlinSourceRootClass.getDeclaredConstructor(
+                            String.class, boolean.class, String.class)
+                            .newInstance(f.getAbsolutePath(), false, null);
+                    addMethod.invoke(config, contentRootsField.get(null), extSourceRoot);
+                }
+            }
 
             // JvmClasspathRoot — classpath entries (android.jar + kotlin-stdlib)
             Class<?> jvmCpRootClass = Class.forName("org.jetbrains.kotlin.cli.jvm.config.JvmClasspathRoot", true, kotlinCl);

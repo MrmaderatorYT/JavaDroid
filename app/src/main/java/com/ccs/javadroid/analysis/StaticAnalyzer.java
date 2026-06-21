@@ -57,7 +57,7 @@ public final class StaticAnalyzer {
     private static final Pattern P_FIELD_DECL = Pattern.compile(
             "^\\s*(?:private|protected|public)\\s+(?:static\\s+)?(?:final\\s+)?[\\w<>,\\[\\]]+\\s+(\\w+)\\s*[=;]");
     private static final Pattern P_LOCAL_VAR = Pattern.compile(
-            "^\\s*(?:final\\s+)?[A-Z][\\w<>\\[\\],]*\\s+(\\w+)\\s*[=;]");
+            "^\\s*(?:final\\s+)?(?:[A-Z][\\w<>\\[\\],]*|int|boolean|byte|char|short|long|float|double|var)\\s+(\\w+)\\s*[=;]");
     private static final Pattern P_RETURN_STMT = Pattern.compile("\\breturn\\b");
     private static final Pattern P_THIS_OR_SUPER = Pattern.compile("\\bthis\\.|super\\.");
     private static final Pattern P_GENERIC_RETURN = Pattern.compile(
@@ -358,7 +358,13 @@ public final class StaticAnalyzer {
                 }
             }
 
-            int methodLength = endLine - startLine + 1;
+            int methodLength = 0;
+            for (int i = startLine; i <= endLine && i < lines.length; i++) {
+                String tl = lines[i].trim();
+                if (!tl.isEmpty() && !tl.startsWith("//") && !tl.startsWith("*") && !tl.startsWith("/*")) {
+                    methodLength++;
+                }
+            }
             int complexity = computeCyclomaticComplexity(lines, startLine, endLine);
             int paramCount = countParameters(lines[startLine]);
 
@@ -451,7 +457,6 @@ public final class StaticAnalyzer {
             String l = lines[i].trim();
             if (l.startsWith("//") || l.startsWith("*")) continue;
             cc += countPattern(l, "\\bif\\b");
-            cc += countPattern(l, "\\belse\\s+if\\b");
             cc += countPattern(l, "\\bcase\\b");
             cc += countPattern(l, "\\bfor\\b");
             cc += countPattern(l, "\\bwhile\\b");

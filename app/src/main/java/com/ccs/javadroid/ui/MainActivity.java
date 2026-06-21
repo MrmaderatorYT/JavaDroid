@@ -750,6 +750,12 @@ public class MainActivity extends AppCompatActivity {
 
         View btnNewFile = findViewById(R.id.btnNewFile);
         if (btnNewFile != null) btnNewFile.setOnClickListener(v -> showNewFileDialog());
+
+        View btnImportFiles = findViewById(R.id.btnImportFiles);
+        if (btnImportFiles != null) btnImportFiles.setOnClickListener(v -> {
+            drawerLayout.closeDrawer(GravityCompat.START);
+            importFilesToProject();
+        });
     }
 
     private void saveEditorToTab(CodeEditor ed, FileTab tab) {
@@ -757,6 +763,8 @@ public class MainActivity extends AppCompatActivity {
         try {
             projectManager.writeFile(tab.file, ed.getText().toString());
             tab.isModified = false;
+            tab.cursorLine = ed.getCursor().getLeftLine();
+            tab.cursorColumn = ed.getCursor().getLeftColumn();
         } catch (IOException e) {
             Toast.makeText(this, getString(R.string.toast_save_failed, e.getMessage()), Toast.LENGTH_SHORT).show();
         }
@@ -1610,7 +1618,7 @@ public class MainActivity extends AppCompatActivity {
 
         String source = activeEditor.getText().toString();
 
-        ProjectCompiler.debugSingleSource(this, source, activeTab.file,
+        ProjectCompiler.debugSingleSource(this, source, activeTab.file, projectManager.getProjectDir(),
                 new ProjectCompiler.Callback() {
                     @Override
                     public void onProgress(String msg) {
@@ -2325,20 +2333,21 @@ public class MainActivity extends AppCompatActivity {
                         && session.activeIndex < tabsAdapter.getTabs().size()) {
                     switchTab(session.activeIndex);
                 }
-                // Restore cursor positions
+                // Restore cursor positions to tabs and active editor
                 for (int i = 0; i < session.tabPaths.size(); i++) {
                     if (i < session.cursorLines.size()) {
                         File f = new File(session.tabPaths.get(i));
                         int idx = tabsAdapter.indexOfFile(f);
                         if (idx >= 0) {
-                            CodeEditor ed = null;
+                            int line = session.cursorLines.get(i) - 1;
+                            int col = (i < session.cursorCols.size()) ? session.cursorCols.get(i) : 0;
+                            FileTab tab = tabsAdapter.getTabs().get(idx);
+                            tab.cursorLine = line;
+                            tab.cursorColumn = col;
                             if (idx == tabsAdapter.getActiveIndex()) {
-                                ed = activeEditor;
-                            }
-                            if (ed != null) {
-                                int line = session.cursorLines.get(i) - 1;
-                                int col = (i < session.cursorCols.size()) ? session.cursorCols.get(i) : 0;
-                                ed.setSelection(line, col);
+                                try {
+                                    activeEditor.setSelection(line, col);
+                                } catch (Exception e) {}
                             }
                         }
                     }
@@ -2973,6 +2982,9 @@ public class MainActivity extends AppCompatActivity {
             isProgrammaticChange = false;
             applyEditorLanguage(tab.file, activeEditor);
             activeEditor.setEditable(true);
+            try {
+                activeEditor.setSelection(tab.cursorLine, tab.cursorColumn);
+            } catch (Exception e) {}
             tabsAdapter.markModified(index, false);
             tabsRecycler.scrollToPosition(index);
             updateStatusFileName(tab.file);
@@ -3180,7 +3192,11 @@ public class MainActivity extends AppCompatActivity {
         int idx = tabsAdapter.getActiveIndex();
         if (idx < 0 || tabsAdapter.getTabs().isEmpty()) return;
         FileTab tab = tabsAdapter.getTabs().get(idx);
-        saveEditorToTab(activeEditor, tab);
+        tab.cursorLine = activeEditor.getCursor().getLeftLine();
+        tab.cursorColumn = activeEditor.getCursor().getLeftColumn();
+        if (tab.isModified) {
+            saveEditorToTab(activeEditor, tab);
+        }
     }
 
     private void saveSessionState() {
@@ -3192,18 +3208,19 @@ public class MainActivity extends AppCompatActivity {
         List<Integer> cursorLines = new ArrayList<>();
         List<Integer> cursorCols = new ArrayList<>();
 
+        // Ensure current active tab's position is updated before saving
+        int activeIdx = tabsAdapter.getActiveIndex();
+        if (activeIdx >= 0 && activeIdx < tabsAdapter.getTabs().size()) {
+            FileTab activeTab = tabsAdapter.getTabs().get(activeIdx);
+            activeTab.cursorLine = activeEditor.getCursor().getLeftLine();
+            activeTab.cursorColumn = activeEditor.getCursor().getLeftColumn();
+        }
+
         for (FileTab tab : tabsAdapter.getTabs()) {
             if (tab.file != null) {
                 tabPaths.add(tab.file.getAbsolutePath());
-                // Find cursor position for this tab
-                CodeEditor ed = getEditorForTab(tab);
-                if (ed != null) {
-                    cursorLines.add(ed.getCursor().getLeftLine() + 1);
-                    cursorCols.add(ed.getCursor().getLeftColumn());
-                } else {
-                    cursorLines.add(1);
-                    cursorCols.add(0);
-                }
+                cursorLines.add(tab.cursorLine + 1); // 1-indexed for persistence (legacy)
+                cursorCols.add(tab.cursorColumn);
             }
         }
 
@@ -3598,7 +3615,7 @@ public class MainActivity extends AppCompatActivity {
         switchBottomPanel(PANEL_RUN);
         appendConsole(getString(R.string.console_running_file, activeTab.file.getName()), theme.textDim);
 
-        ProjectCompiler.runSingleSource(this, activeEditor.getText().toString(), activeTab.file,
+        ProjectCompiler.runSingleSource(this, activeEditor.getText().toString(), activeTab.file, projectManager.getProjectDir(),
                 new ProjectCompiler.Callback() {
                     @Override
                     public void onProgress(String msg) {
@@ -4617,6 +4634,12 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
+        File targetDir = projectDir;
+        if (fileTreeAdapter != null && fileTreeAdapter.getActiveFile() != null) {
+            File active = fileTreeAdapter.getActiveFile();
+            targetDir = active.isDirectory() ? active : active.getParentFile();
+        }
+
         List<Uri> uris = new ArrayList<>();
         if (data.getClipData() != null) {
             android.content.ClipData clip = data.getClipData();
@@ -4639,8 +4662,10 @@ public class MainActivity extends AppCompatActivity {
                 try (InputStream in = getContentResolver().openInputStream(uri)) {
                     if (in == null) continue;
                     byte[] data2 = readAll(in);
-                    File target = new File(projectDir, name);
-                    projectManager.writeFile(target, new String(data2, StandardCharsets.UTF_8));
+                    File target = new File(targetDir, name);
+                    try (java.io.FileOutputStream out = new java.io.FileOutputStream(target)) {
+                        out.write(data2);
+                    }
                     imported++;
                 }
             } catch (Exception e) {
@@ -5259,7 +5284,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        ProjectCompiler.runSingleSource(this, source, ktFile,
+        ProjectCompiler.runSingleSource(this, source, ktFile, projectManager.getProjectDir(),
                 new ProjectCompiler.Callback() {
                     @Override
                     public void onProgress(String msg) {
