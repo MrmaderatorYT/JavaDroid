@@ -1099,6 +1099,9 @@ public class MainActivity extends AppCompatActivity {
         if (mode == PANEL_CALL_GRAPH) {
             refreshCallGraphPanel();
         }
+        if (mode == PANEL_BOOKMARKS) {
+            refreshBookmarksList();
+        }
     }
 
     private static int blend(int a, int b, float t) {
@@ -1367,6 +1370,7 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, has ? getString(R.string.bookmark_set, line) : getString(R.string.bookmark_removed, line),
                 Toast.LENGTH_SHORT).show();
         refreshBookmarkMarkers();
+        if (bottomPanelMode == PANEL_BOOKMARKS) refreshBookmarksList();
     }
 
     private void refreshBookmarkMarkers() {
@@ -1902,7 +1906,7 @@ public class MainActivity extends AppCompatActivity {
             classIcon.setText("c");
             classIcon.setTextColor(theme.accent);
             classIcon.setTextSize(10);
-            classIcon.setTypeface(android.graphics.Typeface.MONOSPACE, android.graphics.Typeface.BOLD);
+            classIcon.setTypeface(new AppPreferences(this).resolveTypeface(), android.graphics.Typeface.BOLD);
             classIcon.setPadding(dp(2), dp(1), dp(6), dp(1));
             classHeader.addView(classIcon);
 
@@ -1941,7 +1945,7 @@ public class MainActivity extends AppCompatActivity {
                 TextView methodItem = new TextView(this);
                 methodItem.setPadding(dp(28), dp(3), dp(8), dp(3));
                 methodItem.setTextSize(11);
-                methodItem.setTypeface(android.graphics.Typeface.MONOSPACE);
+                methodItem.setTypeface(new AppPreferences(this).resolveTypeface());
                 methodItem.setBackgroundResource(android.R.drawable.list_selector_background);
 
                 SpannableStringBuilder sb = new SpannableStringBuilder();
@@ -2000,7 +2004,7 @@ public class MainActivity extends AppCompatActivity {
         hv.setText(header);
         hv.setTextColor(theme.accent);
         hv.setTextSize(12);
-        hv.setTypeface(android.graphics.Typeface.MONOSPACE);
+        hv.setTypeface(new AppPreferences(this).resolveTypeface());
         hv.setPadding(dp(4), dp(6), dp(4), dp(6));
         callGraphContent.addView(hv);
 
@@ -2072,7 +2076,7 @@ public class MainActivity extends AppCompatActivity {
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         item.setText(sb);
         item.setTextSize(11);
-        item.setTypeface(android.graphics.Typeface.MONOSPACE);
+        item.setTypeface(new AppPreferences(this).resolveTypeface());
         item.setPadding(dp(16), dp(2), dp(4), dp(2));
         item.setBackgroundResource(android.R.drawable.list_selector_background);
         item.setOnClickListener(v -> showCallGraphDetail(m));
@@ -2285,11 +2289,12 @@ public class MainActivity extends AppCompatActivity {
 
         // Check if external storage project is accessible, if not — copy to internal
         if (root != null && isExternalPath(root) && !canReadRoot(root)) {
+            String oldRootPath = root.getAbsolutePath();
             File internalRoot = copyToInternal(root);
             if (internalRoot != null) {
                 root = internalRoot;
                 prefs.edit().putString("project_root", root.getAbsolutePath()).apply();
-                sessionState.clear(root.getAbsolutePath());
+                sessionState.clear(oldRootPath);
                 Toast.makeText(this, "Project copied to internal storage", Toast.LENGTH_SHORT).show();
             }
         }
@@ -2306,9 +2311,13 @@ public class MainActivity extends AppCompatActivity {
                 boolean anyOpened = false;
                 for (int i = 0; i < session.tabPaths.size(); i++) {
                     File f = new File(session.tabPaths.get(i));
-                    if (f.exists()) {
-                        openFile(f);
-                        anyOpened = true;
+                    if (f.exists() && f.canRead()) {
+                        try {
+                            openFile(f);
+                            anyOpened = true;
+                        } catch (Exception e) {
+                            // Skip unreadable files
+                        }
                     }
                 }
                 // Restore active tab
@@ -2322,7 +2331,6 @@ public class MainActivity extends AppCompatActivity {
                         File f = new File(session.tabPaths.get(i));
                         int idx = tabsAdapter.indexOfFile(f);
                         if (idx >= 0) {
-                            // Find which editor has this tab
                             CodeEditor ed = null;
                             if (idx == tabsAdapter.getActiveIndex()) {
                                 ed = activeEditor;
@@ -2333,6 +2341,13 @@ public class MainActivity extends AppCompatActivity {
                                 ed.setSelection(line, col);
                             }
                         }
+                    }
+                }
+                // Fallback: if no files opened from session, open first file
+                if (!anyOpened) {
+                    List<File> files = projectManager.getJavaFiles();
+                    if (!files.isEmpty()) {
+                        openFile(files.get(0));
                     }
                 }
             } else {
@@ -2914,6 +2929,7 @@ public class MainActivity extends AppCompatActivity {
                 rightTab = tab;
             }
             refreshProblemsMergedAsync();
+            refreshBookmarkMarkers();
         } catch (IOException e) {
             String msg = e.getMessage();
             if (msg != null && msg.contains("permission denied")) {
@@ -2968,6 +2984,7 @@ public class MainActivity extends AppCompatActivity {
                 rightTab = tab;
             }
             refreshProblemsMergedAsync();
+            refreshBookmarkMarkers();
         } catch (IOException e) {
             Toast.makeText(this, getString(R.string.error_cannot_read, e.getMessage()), Toast.LENGTH_SHORT).show();
         }
@@ -3058,6 +3075,7 @@ public class MainActivity extends AppCompatActivity {
                 } catch (IOException ignored) {}
             }
         }
+        refreshBookmarkMarkers();
     }
 
     private void toggleSplitScreen() {
@@ -3411,7 +3429,7 @@ public class MainActivity extends AppCompatActivity {
 
         TextView formattedOutput = new TextView(this);
         formattedOutput.setText(formatted);
-        formattedOutput.setTypeface(Typeface.MONOSPACE);
+        formattedOutput.setTypeface(new AppPreferences(this).resolveTypeface());
         formattedOutput.setTextSize(13);
         formattedOutput.setBackgroundColor(theme.consoleBg);
         formattedOutput.setTextColor(theme.consoleText);

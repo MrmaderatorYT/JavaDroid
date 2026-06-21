@@ -1,4 +1,6 @@
 package com.ccs.javadroid.tools.bytecode;
+
+import com.ccs.javadroid.util.AppPreferences;
 import com.ccs.javadroid.R;
 import com.ccs.javadroid.util.FullScreenHelper;
 
@@ -108,7 +110,7 @@ public class BytecodeEditorActivity extends AppCompatActivity {
         tvTitle.setText(new File(filePath).getName() + " — Bytecode Editor");
         tvTitle.setTextColor(0xFFBBBBBB);
         tvTitle.setTextSize(14);
-        tvTitle.setTypeface(Typeface.MONOSPACE);
+        tvTitle.setTypeface(new AppPreferences(this).resolveTypeface());
         LinearLayout.LayoutParams titleLp = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
         tvTitle.setLayoutParams(titleLp);
         toolbar.addView(tvTitle);
@@ -153,7 +155,7 @@ public class BytecodeEditorActivity extends AppCompatActivity {
         lineNumbers.setId(android.R.id.text1);
         lineNumbers.setTextColor(0xFF606366);
         lineNumbers.setTextSize(12);
-        lineNumbers.setTypeface(Typeface.MONOSPACE);
+        lineNumbers.setTypeface(new AppPreferences(this).resolveTypeface());
         lineNumbers.setPadding(dp(8), dp(8), dp(8), dp(8));
         lineNumbers.setBackgroundColor(0xFF252526);
         lineNumbers.setGravity(Gravity.END);
@@ -169,7 +171,7 @@ public class BytecodeEditorActivity extends AppCompatActivity {
         codeEditor = new EditText(this);
         codeEditor.setTextColor(0xFFBBBBBB);
         codeEditor.setTextSize(12);
-        codeEditor.setTypeface(Typeface.MONOSPACE);
+        codeEditor.setTypeface(new AppPreferences(this).resolveTypeface());
         codeEditor.setBackgroundColor(0xFF1E1E1E);
         codeEditor.setPadding(dp(8), dp(8), dp(8), dp(8));
         codeEditor.setGravity(android.view.Gravity.TOP | android.view.Gravity.START);

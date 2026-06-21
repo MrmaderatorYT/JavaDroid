@@ -243,4 +243,117 @@
     <string name="debug_watch_hint">İfadə daxil edin (məs. x, obj.name, list.size())</string>
     <string name="debug_evaluate">İfadəni Qiymətləndir</string>
     <string name="debug_evaluate_hint">İfadə</string>
+    <string name="settings_section_power_saving">Enerji qənaəti</string>
+    <string name="settings_power_saving_mode">Enerji qənaət rejimi</string>
+    <string name="settings_power_saving_auto">Avtomatik (batareya &lt; 30%%)</string>
+    <string name="settings_power_saving_disabled">Deaktiv</string>
+    <string name="settings_power_saving_performance">Həmişə Performans</string>
+    <string name="settings_power_saving_desc">Avtomatik: batareya az olduqda funksiyaları azaldır. Performans: həmişə bütün funksiyaları aktiv edir.</string>
+    <string name="sa_empty_file">Boş fayl</string>
+    <string name="sa_long_line">Sətir %1$d simvoldan uzundur (%2$d)</string>
+    <string name="sa_todo">Kodda TODO</string>
+    <string name="sa_fixme">Kodda FIXME — düzəliş lazımdır</string>
+    <string name="sa_hack">Kodda HACK — müvəqqəti həll</string>
+    <string name="sa_xxx">Kodda XXX markeri</string>
+    <string name="sa_trailing_space">Sətir sonunda boşluq</string>
+    <string name="sa_mixed_tabs">Qarışdırılmış tabulatorlar</string>
+    <string name="sa_commented_code">Şərh edilmiş kod</string>
+    <string name="sa_deprecated_api">@Deprecated istifadəsi</string>
+    <string name="sa_system_exit">Kodda System.exit()</string>
+    <string name="sa_thread_sleep">Thread.sleep InterruptedException işlənmədən</string>
+    <string name="sa_raw_type">Raw type — parametrized tip istifadə edin</string>
+    <string name="sa_hardcoded_path">Hardkod edilmiş fayl yolu</string>
+    <string name="sa_hardcoded_ip">Hardkod edilmiş IP ünvanı</string>
+    <string name="sa_password_in_code">Kodda mümkün şifrə/açar!</string>
+    <string name="sa_multiple_statements">Bir sətirdə çoxlu əməliyyat</string>
+    <string name="sa_wildcard_import">Wildcard import — konkret importlar</string>
+    <string name="sa_empty_string_concat">Birləşdirmədə boş sətir</string>
+    <string name="sa_resource_leak">Mümkün resurs sızması — try-with-resources</string>
+    <string name="sa_unused_import">İstifadə olunmayan import: %1$s</string>
+    <string name="sa_duplicate_import">Dublikat import: %1$s</string>
+    <string name="sa_long_method">Metod çox uzundur (%1$d sətir)</string>
+    <string name="sa_high_complexity">Yüksək siklomatik mürəkkəblik (%1$d)</string>
+    <string name="sa_many_params">Çoxlu parametr (%1$d)</string>
+    <string name="sa_deep_nesting">Dərin bəndləmə (%1$d səviyyə)</string>
+    <string name="sa_empty_method">Boş metod</string>
+    <string name="sa_method_name_uppercase">Metod adı böyük hərflə başlayır: %1$s</string>
+    <string name="sa_many_returns">Çoxlu return (%1$d)</string>
+    <string name="sa_missing_javadoc_method">Əsas metod JavaDocsuz</string>
+    <string name="sa_many_local_vars">Çoxlu lokal dəyişən (%1$d)</string>
+    <string name="sa_no_return">Metod dəyər qaytarmır (tip: %1$s)</string>
+    <string name="sa_class_too_long">Klas çox uzundur (%1$d sətir)</string>
+    <string name="sa_too_many_fields">Çoxlu klas sahəsi (%1$d)</string>
+    <string name="sa_god_class">God class — çoxlu məsuliyyət</string>
+    <string name="sa_serial_version_uid">Serializable tətbiq edən klas serialVersionUIDsiz</string>
+    <string name="sa_missing_override">%1$s üçün @Override yoxdur</string>
+    <string name="sa_unused_field">İstifadə olunmayan sahə: %1$s</string>
+    <string name="sa_empty_catch">Boş catch bloku</string>
+    <string name="sa_catch_no_log">Catch işlənmədən — xəta itir</string>
+    <string name="sa_string_equals">Sətirləri == ilə müqayisə (daha yaxşı .equals())</string>
+    <string name="sa_system_out">System.out — logger istifadə edin</string>
+    <string name="sa_system_err">System.err — logger istifadə edin</string>
+    <string name="sa_print_stacktrace">printStackTrace() — cause ilə logger</string>
+    <string name="sa_redundant_tostring">Lazımsız .toString()</string>
+    <string name="sa_concat_in_loop">Dövrdə sətir birləşdirməsi — StringBuilder</string>
+    <string name="sa_autoboxing">Autoboxing — ədədlər istifadə edin</string>
+    <string name="sa_collections_sort">Collections.sort() — Java 8+ list.sort()</string>
+    <string name="sa_redundant_null_instanceof">Lazımsız null instanceof-dan əvvəl</string>
+    <string name="sa_indexof_contains">indexOf() == -1 — daha yaxşı .contains()</string>
+    <string name="sa_length_zero">.length() == 0 — daha yaxşı .isEmpty()</string>
+    <string name="sa_size_zero">.size() == 0 — daha yaxşı .isEmpty()</string>
+    <string name="sa_one_line_block">Susları olmadan tək sətir bloku</string>
+    <string name="sa_long_ternary">Uzun ternar operator</string>
+    <string name="sa_unnecessary_semicolon">Lazımsız nöqtə-vergül</string>
+    <string name="sa_redundant_this">Lazımsız this.</string>
+    <string name="sa_bool_true_false">== true / == false — lazımsız</string>
+    <string name="sa_redundant_boxing">Lazımsız boxing/unboxing</string>
+    <string name="sa_catch_throwable">Throwable/Exception tutma</string>
+    <string name="sa_finalize">finalize() köhnəlmiş — try-with-resources</string>
+    <string name="sa_double_float_eq">double/float-i == ilə müqayisə</string>
+    <string name="sa_java_util_date">java.util.Date — daha yaxşı java.time</string>
+    <string name="sa_simple_date_format">SimpleDateFormat thread-safe deyil</string>
+    <string name="sa_sql_injection">SQL birləşdirmə ilə — SQL injeksiya!</string>
+    <string name="sa_math_random">Math.random() — SecureRandom</string>
+    <string name="sa_runtime_exec">Xarici prosesin işə salınması</string>
+    <string name="sa_mutable_static">Dəyişkən static sahə</string>
+    <string name="sa_long_chain">Uzun metod zənciri (%1$d çağırış)</string>
+    <string name="sa_connection_leak">Connection try-with-resources olmadan</string>
+    <string name="sa_socket_leak">Socket try-with-resources olmadan</string>
+    <string name="sa_executor_no_shutdown">ExecutorService shutdown olmadan</string>
+    <string name="sa_temp_no_delete">Temp fayl deleteOnExit olmadan</string>
+    <string name="sa_npe_after_null_check">Null check-dən sonra dereference</string>
+    <string name="sa_return_null">Null qaytarma — Optional və ya Collections.empty*</string>
+    <string name="sa_null_in_collection">Kolleksiyada null</string>
+    <string name="sa_optional_get">Optional.get() yoxlamadan</string>
+    <string name="sa_optional_field">Optional sahə kimi — anti-nümunə</string>
+    <string name="sa_optional_or_null">Optional.orElse(null)</string>
+    <string name="sa_override_missing">%1$s üçün @Override yoxdur</string>
+    <string name="sa_lambda_long">Lambda &gt; 5 sətir — metoda çıxarın</string>
+    <string name="sa_lambda_method_ref">Lambda metod istinadı ola bilər</string>
+    <string name="sa_test_no_assert">Assertsiz test</string>
+    <string name="sa_test_sysout">Testdə System.out — assert istifadə edin</string>
+    <string name="sa_test_empty">Boş test</string>
+    <string name="sa_missing_class_javadoc">Klas JavaDocsuz</string>
+    <string name="sa_hashtable_vector">Köhnə klas — HashMap/ArrayList</string>
+    <string name="sa_date_new">new Date() — Instant.now()</string>
+    <string name="sa_calendar">Calendar.getInstance() — LocalDateTime</string>
+    <string name="sa_stream_no_terminal">Terminal əməliyyatsız Stream</string>
+    <string name="sa_collect_tolist">collect(toList()) — Java 16+ .toList()</string>
+    <string name="sa_findfirst_get">findFirst().get() — .findFirst().orElseThrow()</string>
+    <string name="sa_pattern_compile_loop">Dövrdə Pattern.compile()</string>
+    <string name="sa_string_matches">String.matches() — Pattern.compile</string>
+    <string name="sa_fallthrough">Switch-də fall-through — break unutmusunuz?</string>
+    <string name="sa_switch_no_default">Default olmadan switch</string>
+    <string name="sa_final_local">Lokal dəyişən \'%1$s\' — oxunaqlılıq üçün final</string>
+
+
+
+    <!-- Storage Permission -->
+    <string name="permission_storage_title">Fayl girişi</string>
+    <string name="permission_storage_message">Layihə faylları ilə işləmək üçün tətbiq fayl sisteminə girişi lazımdır.\n\nZəhmət olmasa növbəti ekranda \"Bütün fayllara giriş\"-i aktiv edin.</string>
+    <string name="permission_storage_open_settings">Parametrləri aç</string>
+    <string name="permission_storage_exit">Çıx</string>
+    <string name="permission_storage_denied_title">Giriş verilməyib</string>
+    <string name="permission_storage_denied_message">Fayl girişi olmadan tətbiq layihələrlə işləyə bilməz.</string>
+    <string name="permission_storage_try_again">Yenidən cəhd edin</string>
 </resources>

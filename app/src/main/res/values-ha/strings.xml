@@ -232,4 +232,117 @@
     <string name="toast_project_path_copied">An kwafi hanyar shirin</string>
     <string name="toast_rename_failed">An gaza sake suna</string>
     <string name="toolbar_project_a11y">Sunan shiri. Matsa tsaye don kwafin hanyar fayil ɗin shiri.</string>
+    <string name="settings_section_power_saving">Adana wutar</string>
+    <string name="settings_power_saving_mode">Yanayin adana wutar</string>
+    <string name="settings_power_saving_auto">Ta atomatik (baturar &lt; 30%%)</string>
+    <string name="settings_power_saving_disabled">An soke</string>
+    <string name="settings_power_saving_performance">Koyaushe aiki</string>
+    <string name="settings_power_saving_desc">Ta atomatik: rage ayyuka idan baturar ta yi ragi. Aiki: koyaushe kunna duk ayyuka.</string>
+    <string name="sa_empty_file">Fayil ɗore</string>
+    <string name="sa_long_line">Lambar ta fi tsayi da haruffa %1$d (%2$d)</string>
+    <string name="sa_todo">TODO a cikin lambar</string>
+    <string name="sa_fixme">FIXME a cikin lambar — ana buƙatar gyarawa</string>
+    <string name="sa_hack">HACK a cikin lambar — maganin lokaci</string>
+    <string name="sa_xxx">Alamar XXX a cikin lambar</string>
+    <string name="sa_trailing_space">Filayi a ƙarshen lambar</string>
+    <string name="sa_mixed_tabs">Tab da filayi haɗe</string>
+    <string name="sa_commented_code">Lambar da aka rubuta</string>
+    <string name="sa_deprecated_api">Amfani da @Deprecated</string>
+    <string name="sa_system_exit">System.exit() a cikin lambar</string>
+    <string name="sa_thread_sleep">Thread.sleep ba tare da SQLException ba</string>
+    <string name="sa_raw_type">Raw type — yi amfani da nau\'i mai lambar</string>
+    <string name="sa_hardcoded_path">Hanyar fayil hardkodiyar</string>
+    <string name="sa_hardcoded_ip">Adireshin IP hardkodiyar</string>
+    <string name="sa_password_in_code">Kalmar sirri a cikin lambar!</string>
+    <string name="sa_multiple_statements">Ayyuka da yawa a sati ɗaya</string>
+    <string name="sa_wildcard_import">Wildcard import — yi amfani da imports masu zaman kansu</string>
+    <string name="sa_empty_string_concat">Kalmar maras amfani a haɗawa</string>
+    <string name="sa_resource_leak">Tarur a resource — try-with-resources</string>
+    <string name="sa_unused_import">Import maras amfani: %1$s</string>
+    <string name="sa_duplicate_import">Import biyu: %1$s</string>
+    <string name="sa_long_method">Dabarar ta tsayi (%1$d layi)</string>
+    <string name="sa_high_complexity">Matsalar tsawo (%1$d)</string>
+    <string name="sa_many_params">Abubuwan da yawa (%1$d)</string>
+    <string name="sa_deep_nesting">Haɗawa mai zurfi (%1$d mataki)</string>
+    <string name="sa_empty_method">Dabara maras amfani</string>
+    <string name="sa_method_name_uppercase">Sunan dabara tana da haruffa babba: %1$s</string>
+    <string name="sa_many_returns">Return da yawa (%1$d)</string>
+    <string name="sa_missing_javadoc_method">Dabara ta jama\'a maras JavaDoc</string>
+    <string name="sa_many_local_vars">Abubuwan gida da yawa (%1$d)</string>
+    <string name="sa_no_return">Dabara ba ta dawo da komai (%1$s)</string>
+    <string name="sa_class_too_long">Jam\'iyyar ta tsayi (%1$d layi)</string>
+    <string name="sa_too_many_fields">Filayin da yawa (%1$d)</string>
+    <string name="sa_god_class">God class — ayyuka da yawa</string>
+    <string name="sa_serial_version_uid">Serializable ba tare da serialVersionUID ba</string>
+    <string name="sa_missing_override">@Override ya sauka ga %1$s</string>
+    <string name="sa_unused_field">Filayi maras amfani: %1$s</string>
+    <string name="sa_empty_catch">Catch block ɗore</string>
+    <string name="sa_catch_no_log">Catch ba tare da kulawa ba</string>
+    <string name="sa_string_equals">Gwadawa tare da == (mafi kyau .equals())</string>
+    <string name="sa_system_out">System.out — yi amfani da logger</string>
+    <string name="sa_system_err">System.err — yi amfani da logger</string>
+    <string name="sa_print_stacktrace">printStackTrace() — logger tare da cause</string>
+    <string name="sa_redundant_tostring">.toString ɗin da ba a buƙata ba</string>
+    <string name="sa_concat_in_loop">Haɗawa a cikin loop — StringBuilder</string>
+    <string name="sa_autoboxing">Autoboxing — yi amfani da adadi</string>
+    <string name="sa_collections_sort">Collections.sort() — Java 8+ list.sort()</string>
+    <string name="sa_redundant_null_instanceof">Null maras amfani kafin instanceof</string>
+    <string name="sa_indexof_contains">indexOf() == -1 — mafi kyau .contains()</string>
+    <string name="sa_length_zero">.length() == 0 — mafi kyau .isEmpty()</string>
+    <string name="sa_size_zero">.size() == 0 — mafi kyau .isEmpty()</string>
+    <string name="sa_one_line_block">Block sati ɗaya ba tare da curly braces ba</string>
+    <string name="sa_long_ternary">Ternary mai tsayi</string>
+    <string name="sa_unnecessary_semicolon">Semicolon maras amfani</string>
+    <string name="sa_redundant_this">this. maras amfani</string>
+    <string name="sa_bool_true_false">== true / == false — maras amfani</string>
+    <string name="sa_redundant_boxing">Boxing/Unboxing maras amfani</string>
+    <string name="sa_catch_throwable">Ɗaukar Throwable/Exception</string>
+    <string name="sa_finalize">finalize() tsoho — try-with-resources</string>
+    <string name="sa_double_float_eq">Gwadawa double/float tare da ==</string>
+    <string name="sa_java_util_date">java.util.Date — mafi kyau java.time</string>
+    <string name="sa_simple_date_format">SimpleDateFormat ba thread-safe ba</string>
+    <string name="sa_sql_injection">SQL ta haɗawa — SQL injection!</string>
+    <string name="sa_math_random">Math.random() — SecureRandom</string>
+    <string name="sa_runtime_exec">Gudanar da tsarin waje</string>
+    <string name="sa_mutable_static">Filayi static mai canzawa</string>
+    <string name="sa_long_chain">Sakamakon da ya tsayi (%1$d kiran)</string>
+    <string name="sa_connection_leak">Connection ba tare da try-with-resources ba</string>
+    <string name="sa_socket_leak">Socket ba tare da try-with-resources ba</string>
+    <string name="sa_executor_no_shutdown">ExecutorService ba tare da shutdown ba</string>
+    <string name="sa_temp_no_delete">Fayil ɗin ɗan lokaci ba tare da deleteOnExit ba</string>
+    <string name="sa_npe_after_null_check">Dereference bayan null check</string>
+    <string name="sa_return_null">Dawo da null — Optional ko Collections.empty*</string>
+    <string name="sa_null_in_collection">null a cikin kungiya</string>
+    <string name="sa_optional_get">Optional.get() ba tare da gwadawa ba</string>
+    <string name="sa_optional_field">Optional a matsayin filayi — anti-pattern</string>
+    <string name="sa_optional_or_null">Optional.orElse(null)</string>
+    <string name="sa_override_missing">@Override ya sauka ga %1$s</string>
+    <string name="sa_lambda_long">Lambda &gt; 5 layi — cire zuwa dabara</string>
+    <string name="sa_lambda_method_ref">Lambda zai iya zama misalin dabara</string>
+    <string name="sa_test_no_assert">Gwaji ba tare da assert ba</string>
+    <string name="sa_test_sysout">System.out a cikin gwaji — yi amfani da assert</string>
+    <string name="sa_test_empty">Gwaji ɗore</string>
+    <string name="sa_missing_class_javadoc">Jam\'iyyar ba tare da JavaDoc ba</string>
+    <string name="sa_hashtable_vector">Jam\'iyyar tsoho — HashMap/ArrayList</string>
+    <string name="sa_date_new">new Date() — Instant.now()</string>
+    <string name="sa_calendar">Calendar.getInstance() — LocalDateTime</string>
+    <string name="sa_stream_no_terminal">Stream ba tare da aikin ƙarshe ba</string>
+    <string name="sa_collect_tolist">collect(toList()) — Java 16+ .toList()</string>
+    <string name="sa_findfirst_get">findFirst().get() — .findFirst().orElseThrow()</string>
+    <string name="sa_pattern_compile_loop">Pattern.compile() a cikin loop</string>
+    <string name="sa_string_matches">String.matches() — Pattern.compile</string>
+    <string name="sa_fallthrough">Fall-through a cikin switch — an manta break?</string>
+    <string name="sa_switch_no_default">Switch ba tare da default ba</string>
+    <string name="sa_final_local">Canjin gida \'%1$s\' — final don karantawa</string>
+
+
+
+    <!-- Storage Permission -->
+    <string name="permission_storage_title">Samun Damar Fayil</string>
+    <string name="permission_storage_message">Don aiki da fayilolin shiri, app ɗin yana buƙatar samun damar tsarin fayil.\n\nDa fatan za a kunna \"Samun damar fayiloli duka\" a saman tafiyar gaba.</string>
+    <string name="permission_storage_open_settings">Buɗe Saituna</string>
+    <string name="permission_storage_exit">Fita</string>
+    <string name="permission_storage_denied_title">Ba a ba da damar samun fayil ba</string>
+    <string name="permission_storage_denied_message">Ba tare da damar samun fayil ba, app ɗin ba zai iya aiki da shirye-shiryi ba.</string>
+    <string name="permission_storage_try_again">Sake gwadawa</string>
 </resources>

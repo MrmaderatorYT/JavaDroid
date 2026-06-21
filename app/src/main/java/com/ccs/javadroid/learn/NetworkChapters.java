@@ -8,19 +8,19 @@ import java.util.List;
  */
 final class NetworkChapters {
 
-    static void add(Course c) {
+    static void add(Course s) {
         Chapter ch1 = new Chapter("Базові мережеві протоколи", "Basic Network Protocols");
-        ch1.add(lessonTcpSockets());
-        ch1.add(lessonUdpSockets());
-        c.add(ch1);
+        ch1.add(materialTcpSockets());
+        ch1.add(materialUdpSockets());
+        s.add(ch1);
 
         Chapter ch2 = new Chapter("Сучасні мережеві інструменти", "Modern Networking Tools");
-        ch2.add(lessonHttpClient());
-        ch2.add(lessonNioNetworking());
-        c.add(ch2);
+        ch2.add(materialHttpClient());
+        ch2.add(materialNioNetworking());
+        s.add(ch2);
     }
 
-    private static Lesson lessonTcpSockets() {
+    private static Lesson materialTcpSockets() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("TCP Сокети (Sockets)"));
         uk.add(LessonBlock.paragraph(
@@ -72,7 +72,7 @@ final class NetworkChapters {
         return new Lesson("net.1", "TCP Сокети", "TCP Sockets", uk, en);
     }
 
-    private static Lesson lessonUdpSockets() {
+    private static Lesson materialUdpSockets() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("UDP: DatagramSocket"));
         uk.add(LessonBlock.paragraph(
@@ -126,7 +126,7 @@ final class NetworkChapters {
         return new Lesson("net.2", "UDP (Datagram)", "UDP (Datagram)", uk, en);
     }
 
-    private static Lesson lessonHttpClient() {
+    private static Lesson materialHttpClient() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("HTTP-запити у JDK 8"));
         uk.add(LessonBlock.paragraph(
@@ -203,7 +203,7 @@ final class NetworkChapters {
         return new Lesson("net.3", "HTTP у JDK 8", "HTTP in JDK 8", uk, en);
     }
 
-    private static Lesson lessonNioNetworking() {
+    private static Lesson materialNioNetworking() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("NIO Selectors (Неблокуючий ввід-вивід)"));
         uk.add(LessonBlock.paragraph(

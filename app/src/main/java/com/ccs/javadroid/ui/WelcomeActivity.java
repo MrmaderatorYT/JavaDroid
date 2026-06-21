@@ -246,7 +246,7 @@ public class WelcomeActivity extends AppCompatActivity {
         View sidebarMaterials = findViewById(R.id.sidebarMaterials);
         if (sidebarMaterials != null) {
             sidebarMaterials.setOnClickListener(v -> {
-                Intent intent = new Intent(this, MaterialsActivity.class);
+                Intent intent = new Intent(this, LearnActivity.class);
                 startActivity(intent);
             });
         }

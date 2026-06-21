@@ -148,7 +148,7 @@ public class HttpApiClientActivity extends AppCompatActivity {
         methodSpinner.setText("GET");
         methodSpinner.setTextColor(theme.successText);
         methodSpinner.setTextSize(13);
-        methodSpinner.setTypeface(Typeface.MONOSPACE, Typeface.BOLD);
+        methodSpinner.setTypeface(new AppPreferences(this).resolveTypeface(), Typeface.BOLD);
         methodSpinner.setBackgroundColor(theme.consoleBg);
         methodSpinner.setPadding(dp(8), dp(8), dp(8), dp(8));
         methodSpinner.setSingleLine(true);
@@ -162,7 +162,7 @@ public class HttpApiClientActivity extends AppCompatActivity {
         urlInput.setHintTextColor(theme.textDim);
         urlInput.setTextColor(theme.text);
         urlInput.setTextSize(12);
-        urlInput.setTypeface(Typeface.MONOSPACE);
+        urlInput.setTypeface(new AppPreferences(this).resolveTypeface());
         urlInput.setBackgroundColor(theme.consoleBg);
         urlInput.setPadding(dp(8), dp(8), dp(8), dp(8));
         urlInput.setSingleLine(true);
@@ -184,7 +184,7 @@ public class HttpApiClientActivity extends AppCompatActivity {
         headersInput.setHintTextColor(theme.textDim);
         headersInput.setTextColor(theme.text);
         headersInput.setTextSize(11);
-        headersInput.setTypeface(Typeface.MONOSPACE);
+        headersInput.setTypeface(new AppPreferences(this).resolveTypeface());
         headersInput.setBackgroundColor(theme.consoleBg);
         headersInput.setPadding(dp(8), dp(6), dp(8), dp(6));
         headersInput.setMinLines(2);
@@ -200,7 +200,7 @@ public class HttpApiClientActivity extends AppCompatActivity {
         bodyInput.setHintTextColor(theme.textDim);
         bodyInput.setTextColor(theme.text);
         bodyInput.setTextSize(11);
-        bodyInput.setTypeface(Typeface.MONOSPACE);
+        bodyInput.setTypeface(new AppPreferences(this).resolveTypeface());
         bodyInput.setBackgroundColor(theme.consoleBg);
         bodyInput.setPadding(dp(8), dp(6), dp(8), dp(6));
         bodyInput.setMinLines(3);
@@ -221,13 +221,13 @@ public class HttpApiClientActivity extends AppCompatActivity {
         responseStatus = new TextView(this);
         responseStatus.setTextColor(theme.textDim);
         responseStatus.setTextSize(12);
-        responseStatus.setTypeface(Typeface.MONOSPACE, Typeface.BOLD);
+        responseStatus.setTypeface(new AppPreferences(this).resolveTypeface(), Typeface.BOLD);
         statusRow.addView(responseStatus);
 
         timingText = new TextView(this);
         timingText.setTextColor(theme.textDim);
         timingText.setTextSize(11);
-        timingText.setTypeface(Typeface.MONOSPACE);
+        timingText.setTypeface(new AppPreferences(this).resolveTypeface());
         timingText.setPadding(dp(12), 0, 0, 0);
         statusRow.addView(timingText);
 
@@ -237,7 +237,7 @@ public class HttpApiClientActivity extends AppCompatActivity {
         responseHeaders = new TextView(this);
         responseHeaders.setTextColor(theme.textDim);
         responseHeaders.setTextSize(10);
-        responseHeaders.setTypeface(Typeface.MONOSPACE);
+        responseHeaders.setTypeface(new AppPreferences(this).resolveTypeface());
         responseHeaders.setPadding(0, dp(2), 0, dp(6));
         content.addView(responseHeaders);
 
@@ -459,7 +459,7 @@ public class HttpApiClientActivity extends AppCompatActivity {
             tv.setText(formatted);
             tv.setTextColor(theme.consoleText);
             tv.setTextSize(11);
-            tv.setTypeface(Typeface.MONOSPACE);
+            tv.setTypeface(new AppPreferences(this).resolveTypeface());
             tv.setPadding(0, 0, 0, dp(4));
             responseBody.addView(tv);
             return;
@@ -472,7 +472,7 @@ public class HttpApiClientActivity extends AppCompatActivity {
             tv.setText(formatted);
             tv.setTextColor(theme.consoleText);
             tv.setTextSize(11);
-            tv.setTypeface(Typeface.MONOSPACE);
+            tv.setTypeface(new AppPreferences(this).resolveTypeface());
             tv.setPadding(0, 0, 0, dp(4));
             responseBody.addView(tv);
             return;
@@ -487,7 +487,7 @@ public class HttpApiClientActivity extends AppCompatActivity {
         tv.setText(text);
         tv.setTextColor(color);
         tv.setTextSize(11);
-        tv.setTypeface(Typeface.MONOSPACE);
+        tv.setTypeface(new AppPreferences(this).resolveTypeface());
         tv.setPadding(0, 0, 0, dp(4));
         responseBody.addView(tv);
     }
@@ -510,7 +510,7 @@ public class HttpApiClientActivity extends AppCompatActivity {
         btn.setText(text);
         btn.setTextColor(color);
         btn.setTextSize(13);
-        btn.setTypeface(Typeface.MONOSPACE, Typeface.BOLD);
+        btn.setTypeface(new AppPreferences(this).resolveTypeface(), Typeface.BOLD);
         btn.setPadding(dp(12), dp(8), dp(12), dp(8));
         btn.setBackgroundResource(android.R.drawable.list_selector_background);
         btn.setGravity(Gravity.CENTER);

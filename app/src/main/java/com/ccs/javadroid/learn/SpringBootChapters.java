@@ -8,22 +8,22 @@ import java.util.List;
  */
 final class SpringBootChapters {
 
-    static void add(Course c) {
+    static void add(Course s) {
         Chapter ch1 = new Chapter("Вступ до Spring", "Introduction to Spring");
-        ch1.add(lessonIoCAndDI());
-        ch1.add(lessonSpringBootMagic());
-        c.add(ch1);
+        ch1.add(materialIoCAndDI());
+        ch1.add(materialSpringBootMagic());
+        s.add(ch1);
 
         Chapter ch2 = new Chapter("Веб-розробка", "Web Development");
-        ch2.add(lessonRestApi());
-        c.add(ch2);
+        ch2.add(materialRestApi());
+        s.add(ch2);
 
         Chapter ch3 = new Chapter("Робота з Даними", "Data Access");
-        ch3.add(lessonSpringDataJpa());
-        c.add(ch3);
+        ch3.add(materialSpringDataJpa());
+        s.add(ch3);
     }
 
-    private static Lesson lessonIoCAndDI() {
+    private static Lesson materialIoCAndDI() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("IoC та Dependency Injection"));
         uk.add(LessonBlock.paragraph(
@@ -85,7 +85,7 @@ final class SpringBootChapters {
         return new Lesson("sb.1", "IoC та DI", "IoC & DI", uk, en);
     }
 
-    private static Lesson lessonSpringBootMagic() {
+    private static Lesson materialSpringBootMagic() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Магія Spring Boot"));
         uk.add(LessonBlock.paragraph(
@@ -131,7 +131,7 @@ final class SpringBootChapters {
         return new Lesson("sb.2", "Основи Spring Boot", "Spring Boot Basics", uk, en);
     }
 
-    private static Lesson lessonRestApi() {
+    private static Lesson materialRestApi() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Створення REST API"));
         uk.add(LessonBlock.paragraph(
@@ -203,7 +203,7 @@ final class SpringBootChapters {
         return new Lesson("sb.3", "REST API", "REST API", uk, en);
     }
 
-    private static Lesson lessonSpringDataJpa() {
+    private static Lesson materialSpringDataJpa() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Spring Data JPA"));
         uk.add(LessonBlock.paragraph(

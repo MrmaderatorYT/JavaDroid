@@ -148,7 +148,7 @@ public class WebViewPreviewActivity extends AppCompatActivity {
         urlBar.setHintTextColor(theme.textDim);
         urlBar.setTextColor(theme.text);
         urlBar.setTextSize(12);
-        urlBar.setTypeface(android.graphics.Typeface.MONOSPACE);
+        urlBar.setTypeface(new AppPreferences(this).resolveTypeface());
         urlBar.setBackgroundColor(Color.TRANSPARENT);
         urlBar.setSingleLine(true);
         urlBar.setSelectAllOnFocus(true);
@@ -196,7 +196,7 @@ public class WebViewPreviewActivity extends AppCompatActivity {
         consoleOutput.setBackgroundColor(theme.consoleBg);
         consoleOutput.setTextColor(theme.successText);
         consoleOutput.setTextSize(10);
-        consoleOutput.setTypeface(android.graphics.Typeface.MONOSPACE);
+        consoleOutput.setTypeface(new AppPreferences(this).resolveTypeface());
         consoleOutput.setPadding(dp(8), dp(2), dp(8), dp(4));
         consoleOutput.setMaxLines(6);
         consoleOutput.setSingleLine(true);
@@ -357,7 +357,7 @@ public class WebViewPreviewActivity extends AppCompatActivity {
         btn.setText(text);
         btn.setTextColor(color);
         btn.setTextSize(12);
-        btn.setTypeface(android.graphics.Typeface.MONOSPACE, android.graphics.Typeface.BOLD);
+        btn.setTypeface(new AppPreferences(this).resolveTypeface(), android.graphics.Typeface.BOLD);
         btn.setPadding(dp(10), dp(6), dp(10), dp(6));
         btn.setBackgroundResource(android.R.drawable.list_selector_background);
         btn.setGravity(Gravity.CENTER);

@@ -180,13 +180,13 @@ public class MediaPlayerActivity extends AppCompatActivity {
         tvCurrentTime.setText("00:00");
         tvCurrentTime.setTextColor(0xFFFFFFFF);
         tvCurrentTime.setTextSize(11);
-        tvCurrentTime.setTypeface(Typeface.MONOSPACE);
+        tvCurrentTime.setTypeface(new AppPreferences(this).resolveTypeface());
 
         tvDuration = new TextView(this);
         tvDuration.setText("00:00");
         tvDuration.setTextColor(0xFFFFFFFF);
         tvDuration.setTextSize(11);
-        tvDuration.setTypeface(Typeface.MONOSPACE);
+        tvDuration.setTypeface(new AppPreferences(this).resolveTypeface());
         tvDuration.setGravity(Gravity.END);
         tvDuration.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
 
@@ -238,13 +238,13 @@ public class MediaPlayerActivity extends AppCompatActivity {
         tvCurrentTime.setText("00:00");
         tvCurrentTime.setTextColor(dimColor);
         tvCurrentTime.setTextSize(12);
-        tvCurrentTime.setTypeface(Typeface.MONOSPACE);
+        tvCurrentTime.setTypeface(new AppPreferences(this).resolveTypeface());
 
         tvDuration = new TextView(this);
         tvDuration.setText("00:00");
         tvDuration.setTextColor(dimColor);
         tvDuration.setTextSize(12);
-        tvDuration.setTypeface(Typeface.MONOSPACE);
+        tvDuration.setTypeface(new AppPreferences(this).resolveTypeface());
         tvDuration.setGravity(Gravity.END);
         tvDuration.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
 

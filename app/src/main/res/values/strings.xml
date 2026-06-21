@@ -68,7 +68,9 @@
     <string name="toast_sync_done">Dependencies updated</string>
     <string name="toast_pom_required">pom.xml required</string>
     <string name="find_not_found">\"%1$s\" not found</string>
-    <string name="toast_file_exists">%1$s.java already exists</string>
+    <string name="toast_file_exists">%1$s already exists</string>
+    <string name="toast_file_exists_title">File exists</string>
+    <string name="dialog_overwrite">Overwrite</string>
     <string name="toast_error_prefix">Error: %1$s</string>
     <string name="toast_copied_clipboard">Copied to clipboard</string>
     <string name="toast_console_empty">Console is empty</string>
@@ -109,6 +111,13 @@
     <string name="dialog_file_context_open">Open</string>
     <string name="dialog_file_context_rename">Rename</string>
     <string name="dialog_file_context_delete">Delete</string>
+    <string name="dialog_file_context_copy">Copy</string>
+    <string name="dialog_folder_context_paste">Paste file here</string>
+    <string name="dialog_folder_context_archive">Create archive</string>
+    <string name="toast_file_copied">File copied. Long-press a folder to paste.</string>
+    <string name="toast_file_pasted">File pasted to %1$s</string>
+    <string name="toast_archive_created">Archive created: %1$s</string>
+    <string name="toast_archive_failed">Failed to create archive: %1$s</string>
 
     <string name="dialog_delete_file_title">Delete file</string>
     <string name="dialog_delete_file_message">Delete %1$s? This cannot be undone.</string>
@@ -167,6 +176,11 @@
     <string name="font_sans">Sans-serif</string>
     <string name="font_serif">Serif</string>
     <string name="font_default">System default</string>
+    <string name="font_jetbrains">JetBrains Mono</string>
+    <string name="font_fira_code">Fira Code</string>
+    <string name="font_source_code">Source Code Pro</string>
+    <string name="font_dejavu_mono">DejaVu Sans Mono</string>
+    <string name="font_roboto_mono">Roboto Mono</string>
 
     <string name="settings_java_target">Java target</string>
     <string name="settings_java_hint">Affects ECJ compilation. Higher targets may not run via D8 desugaring.</string>
@@ -450,6 +464,14 @@
     <string name="breakpoint_unconditional">● Unconditional BP at line %1$d</string>
     <string name="breakpoint_conditional">● Conditional BP at line %1$d: %1$s</string>
 
+    <!-- Bookmarks -->
+    <string name="bookmark_set">★ Bookmark at line %1$d</string>
+    <string name="bookmark_removed">☆ Removed bookmark at line %1$d</string>
+    <string name="bookmark_list_title">Bookmarks</string>
+    <string name="bookmark_none">No bookmarks set</string>
+    <string name="menu_toggle_bookmark">Toggle Bookmark</string>
+    <string name="menu_show_bookmarks">Show Bookmarks</string>
+
     <!-- MainActivity - Call Graph -->
     <string name="call_graph_title">Call Graph</string>
     <string name="call_graph_no_methods">No methods found</string>
@@ -520,4 +542,184 @@
     <string name="ndk_error_cpp_ndk_required">❌ C++ Build Error:\nC++ sources (.cpp) require the external NDK.\n\nPlease go to Settings → Install C++ NDK to download the toolchain (~130MB).\nOr rewrite your JNI code in pure C (.c) to use the built-in fast compiler.</string>
     <string name="ndk_error_cpp_compile">❌ C++ Compilation Error (%1$s):\n%2$s</string>
     <string name="ndk_error_cpp_execute">❌ C++ Build Error:\nFailed to execute clang++ for %1$s: %2$s</string>
+
+    <!-- Power Saving -->
+    <string name="settings_section_power_saving">Power Saving</string>
+    <string name="settings_power_saving_mode">Power Saving Mode</string>
+    <string name="settings_power_saving_auto">Auto (when battery &lt; 30%%)</string>
+    <string name="settings_power_saving_disabled">Disabled</string>
+    <string name="settings_power_saving_performance">Always Performance</string>
+    <string name="settings_power_saving_desc">Auto: reduces features when battery is low. Performance: enables all features always.</string>
+    <string name="settings_auto_search">Auto-search in files</string>
+    <string name="settings_auto_search_desc">Search automatically as you type in project files</string>
+
+    <!-- Static Analysis -->
+    <string name="sa_empty_file">Empty file</string>
+    <string name="sa_long_line">Line longer than %1$d characters (%2$d)</string>
+    <string name="sa_todo">TODO in code</string>
+    <string name="sa_fixme">FIXME in code — needs fixing</string>
+    <string name="sa_hack">HACK in code — temporary solution</string>
+    <string name="sa_xxx">XXX marker in code</string>
+    <string name="sa_nosonar">NOSONAR — hides SonarQube warnings</string>
+    <string name="sa_noinspection">noinspection — hides analyzer warnings</string>
+    <string name="sa_trailing_space">Trailing whitespace</string>
+    <string name="sa_mixed_tabs">Mixed tabs and spaces</string>
+    <string name="sa_commented_code">Commented-out code</string>
+    <string name="sa_deprecated_api">Using @Deprecated method/class</string>
+    <string name="sa_system_exit">System.exit() in code (may kill process)</string>
+    <string name="sa_thread_sleep">Thread.sleep without handling InterruptedException</string>
+    <string name="sa_raw_type">Raw type — use parameterized type</string>
+    <string name="sa_hardcoded_path">Hardcoded file path</string>
+    <string name="sa_hardcoded_ip">Hardcoded IP address</string>
+    <string name="sa_password_in_code">Possible password/key in code!</string>
+    <string name="sa_empty_block">Empty block %1$s</string>
+    <string name="sa_multiple_statements">Multiple operations on one line</string>
+    <string name="sa_wildcard_import">Wildcard import — use specific imports</string>
+    <string name="sa_suppress_all">SuppressWarnings(\"all\") — hides ALL warnings</string>
+    <string name="sa_empty_string_concat">Empty string in concatenation</string>
+    <string name="sa_resource_leak">Possible resource leak — use try-with-resources</string>
+    <string name="sa_unused_import">Unused import: %1$s</string>
+    <string name="sa_duplicate_import">Duplicate import: %1$s</string>
+    <string name="sa_long_method">Method too long (%1$d lines)</string>
+    <string name="sa_high_complexity">High cyclomatic complexity (%1$d)</string>
+    <string name="sa_many_params">Too many parameters (%1$d)</string>
+    <string name="sa_deep_nesting">Deep nesting (%1$d levels)</string>
+    <string name="sa_empty_method">Empty method</string>
+    <string name="sa_method_name_uppercase">Method name starts with uppercase: %1$s</string>
+    <string name="sa_many_returns">Many return statements (%1$d)</string>
+    <string name="sa_missing_javadoc_method">Public method without JavaDoc</string>
+    <string name="sa_many_local_vars">Too many local variables (%1$d)</string>
+    <string name="sa_no_return">Method doesn\'t return value (type: %1$s)</string>
+    <string name="sa_class_too_long">Class too long (%1$d lines)</string>
+    <string name="sa_too_many_fields">Too many class fields (%1$d)</string>
+    <string name="sa_god_class">God class — too much responsibility</string>
+    <string name="sa_serial_version_uid">Class implements Serializable without serialVersionUID</string>
+    <string name="sa_missing_override">Missing @Override for %1$s</string>
+    <string name="sa_unused_field">Unused field: %1$s</string>
+    <string name="sa_empty_catch">Empty catch block</string>
+    <string name="sa_catch_no_log">Catch without handling — error may be lost</string>
+    <string name="sa_string_equals">String comparison with == (use .equals())</string>
+    <string name="sa_magic_number">Magic number %1$s — extract to constant</string>
+    <string name="sa_system_out">System.out — use logger</string>
+    <string name="sa_system_err">System.err — use logger</string>
+    <string name="sa_print_stacktrace">printStackTrace() — use logger with cause</string>
+    <string name="sa_redundant_tostring">Redundant .toString() in concatenation</string>
+    <string name="sa_concat_in_loop">String concatenation in loop — StringBuilder</string>
+    <string name="sa_autoboxing">Autoboxing — use literals</string>
+    <string name="sa_collections_sort">Collections.sort() — in Java 8+ list.sort(comparator)</string>
+    <string name="sa_redundant_null_instanceof">Redundant null before instanceof</string>
+    <string name="sa_indexof_contains">indexOf() == -1 — use .contains()</string>
+    <string name="sa_length_zero">.length() == 0 — use .isEmpty()</string>
+    <string name="sa_size_zero">.size() == 0 — use .isEmpty()</string>
+    <string name="sa_one_line_block">Single-line block without braces</string>
+    <string name="sa_long_ternary">Long ternary operator</string>
+    <string name="sa_unnecessary_semicolon">Unnecessary semicolon</string>
+    <string name="sa_constant_naming">Constant \'%1$s\' — UPPER_CASE</string>
+    <string name="sa_redundant_this">Redundant this.</string>
+    <string name="sa_bool_true_false">== true / == false — redundant</string>
+    <string name="sa_redundant_boxing">Redundant boxing/unboxing</string>
+    <string name="sa_catch_throwable">Catching Throwable/Exception — use specific exceptions</string>
+    <string name="sa_finalize">finalize() deprecated — use try-with-resources/Cleaner</string>
+    <string name="sa_double_float_eq">Comparing double/float with ==</string>
+    <string name="sa_java_util_date">java.util.Date — use java.time</string>
+    <string name="sa_simple_date_format">SimpleDateFormat not thread-safe</string>
+    <string name="sa_sql_injection">SQL via string concatenation — possible SQL injection!</string>
+    <string name="sa_math_random">Math.random() — use SecureRandom for security</string>
+    <string name="sa_runtime_exec">Running external process — validate input</string>
+    <string name="sa_mutable_static">Mutable static field — thread-unsafe</string>
+    <string name="sa_field_final">Field \'%1$s\' can be final</string>
+    <string name="sa_long_chain">Long method chain (%1$d calls)</string>
+    <string name="sa_single_char_var">Single-char variable \'%1$s\'</string>
+    <string name="sa_bool_naming">Boolean \'%1$s\' — prefix is/has/can</string>
+    <string name="sa_hungarian">Hungarian notation (mField) — not recommended</string>
+    <string name="sa_connection_leak">Connection without try-with-resources — connection leak</string>
+    <string name="sa_socket_leak">Socket without try-with-resources</string>
+    <string name="sa_executor_no_shutdown">ExecutorService without shutdown — possible thread leak</string>
+    <string name="sa_temp_no_delete">Temp file without deleteOnExit</string>
+    <string name="sa_npe_after_null_check">Dereference after null check — possible NPE</string>
+    <string name="sa_return_null">Returning null — consider Optional or Collections.empty*</string>
+    <string name="sa_null_in_collection">null in collection — possible NPE</string>
+    <string name="sa_optional_get">Optional.get() without check — NoSuchElementException</string>
+    <string name="sa_simple_date_format_static">SimpleDateFormat in static context — thread-unsafe</string>
+    <string name="sa_hashmap_threaded">HashMap in multi-threaded context — ConcurrentHashMap?</string>
+    <string name="sa_dcl_volatile">Double-checked locking without volatile — unsafe!</string>
+    <string name="sa_indexed_for_list">Indexed for on List — for-each or stream()</string>
+    <string name="sa_anonymous_to_lambda">Anonymous class — lambda expression shorter</string>
+    <string name="sa_stringbuilder_chain">StringBuilder — consider String.join() or stream().collect()</string>
+    <string name="sa_arraycopy">System.arraycopy — Arrays.copyOf() shorter</string>
+    <string name="sa_arraystostring">Arrays.toString() — use Arrays.deepToString() for debug</string>
+    <string name="sa_date_parse">SimpleDateFormat.parse — LocalDate.parse() in Java 8+</string>
+    <string name="sa_diamond_operator">Diamond operator &lt;&gt; — remove types on right</string>
+    <string name="sa_fallthrough">Fall-through in switch — forgot break?</string>
+    <string name="sa_switch_string">Switch with String — consider enum or Map</string>
+    <string name="sa_test_no_assert">Test without assert — check does nothing</string>
+    <string name="sa_test_sysout">System.out in test — use assert</string>
+    <string name="sa_test_sleep">Thread.sleep in test — unreliable, use Awaitility</string>
+    <string name="sa_test_empty">Empty test</string>
+    <string name="sa_missing_class_javadoc">Class without JavaDoc</string>
+    <string name="sa_hashtable_vector">Obsolete class — use HashMap/ArrayList/StringBuilder</string>
+    <string name="sa_tostring_equals">.toString().equals() — Object.equals() or String.equals()</string>
+    <string name="sa_addall_after_create">addAll after creation — pass elements in constructor</string>
+    <string name="sa_keyset_get">keySet() + get() — entrySet() more efficient</string>
+    <string name="sa_list_fill">Creating and filling — List.of() or Arrays.asList()</string>
+    <string name="sa_unmodifiable_list">Final collection — use unmodifiableList/Map/Set</string>
+    <string name="sa_string_field_final">String field can be final</string>
+    <string name="sa_raw_type_generic">Raw type — add parameter &lt;T&gt;</string>
+    <string name="sa_unchecked_cast">Possible unchecked cast — add @SuppressWarnings</string>
+    <string name="sa_wildcard_return">Wildcard &lt;? extends T&gt; in return — PECS</string>
+    <string name="sa_deep_generic">Deep generic nesting (&gt; 2) — consider TypeAlias</string>
+    <string name="sa_stream_no_terminal">Stream without terminal operation — does nothing</string>
+    <string name="sa_collect_tolist">collect(toList()) — in Java 16+ .toList() shorter</string>
+    <string name="sa_findfirst_get">findFirst().get() — .findFirst().orElseThrow() safer</string>
+    <string name="sa_parallel_stream">parallelStream() — overhead for small collections</string>
+    <string name="sa_foreach_return">return in forEach lambda doesn\'t exit method</string>
+    <string name="sa_optional_field">Optional as field — anti-pattern (not Serializable)</string>
+    <string name="sa_optional_or_null">Optional.orElse(null) — loses Optional purpose</string>
+    <string name="sa_override_missing">@Override missing for %1$s</string>
+    <string name="sa_suppress_unchecked">@SuppressWarnings(\"unchecked\") — add comment why</string>
+    <string name="sa_deprecated_javadoc">@Deprecated without @deprecated javadoc tag</string>
+    <string name="sa_multiple_suppress">Multiple suppressions — code may need refactoring</string>
+    <string name="sa_nullable_dereference">Dereference on @Nullable value</string>
+    <string name="sa_enum_constants">Enum with %1$d constants — consider Strategy pattern</string>
+    <string name="sa_enum_ordinal">ordinal() — unreliable, use name() or custom field</string>
+    <string name="sa_enummap">HashMap with enum keys — EnumMap more efficient</string>
+    <string name="sa_switch_no_default">switch without default — new enum constants won\'t be handled</string>
+    <string name="sa_mutable_collection_return">Returning mutable collection — unmodifiableList?</string>
+    <string name="sa_boolean_param">Boolean parameter — consider Builder or two methods</string>
+    <string name="sa_public_field">Public field — encapsulation (getter/setter)</string>
+    <string name="sa_public_static_mutable">Public static mutable field — thread-unsafe</string>
+    <string name="sa_duplicate_line">Duplicated line (%1$d times): %2$s</string>
+    <string name="sa_triple_duplicate">Triple line duplication — extract to method</string>
+    <string name="sa_constant_before_fields">Constants should be before regular fields</string>
+    <string name="sa_field_one_use">Field \'%1$s\' used in one place — local variable?</string>
+    <string name="sa_case_no_break">Fall-through in switch — forgot break?</string>
+    <string name="sa_switch_many_cases">Switch with %1$d cases — consider polymorphism or Map</string>
+    <string name="sa_lambda_long">Lambda > 5 lines — extract to method</string>
+    <string name="sa_lambda_method_ref">Lambda can be method reference</string>
+    <string name="sa_optional_get_equals">Optional.get().equals() — .map().orElse() safer</string>
+    <string name="sa_optional_empty_filter">Optional.empty().filter() — does nothing</string>
+    <string name="sa_date_new">new Date() — Instant.now() or LocalDateTime.now()</string>
+    <string name="sa_calendar">Calendar.getInstance() — LocalDateTime/LocalDate</string>
+    <string name="sa_simple_date_format_use">SimpleDateFormat — DateTimeFormatter (thread-safe)</string>
+    <string name="sa_date_gettime">Date.getTime() for comparison — Instant/LocalDateTime</string>
+    <string name="sa_sql_date">java.sql.Date/Timestamp — LocalDateTime</string>
+    <string name="sa_timezone">TimeZone.getDefault() — ZoneId.systemDefault()</string>
+    <string name="sa_pattern_compile_loop">Pattern.compile() in loop — compile in advance</string>
+    <string name="sa_string_matches">String.matches() — Pattern.compile better for reuse</string>
+    <string name="sa_greedy_regex">Greedy quantifier .* — consider .*? (lazy)</string>
+    <string name="sa_split_dot">.split(\".\") — Pattern.quote(\".\") safer</string>
+    <string name="sa_enum_too_many">Enum with %1$d constants — consider Strategy pattern</string>
+    <string name="sa_enum_ordinal_use">ordinal() — unreliable, use name() or custom field</string>
+    <string name="sa_enum_hashmap">HashMap with enum keys — EnumMap more efficient</string>
+    <string name="sa_inline_method">Method \'%1$s\' used 1 time and short — inline</string>
+    <string name="sa_final_local">Local variable \'%1$s\' — final for readability</string>
+
+    <!-- Storage Permission -->
+    <string name="permission_storage_title">File Access</string>
+    <string name="permission_storage_message">To work with project files, the app needs access to the file system.\n\nPlease enable \"Access to all files\" on the next screen.</string>
+    <string name="permission_storage_open_settings">Open Settings</string>
+    <string name="permission_storage_exit">Exit</string>
+    <string name="permission_storage_denied_title">Access not granted</string>
+    <string name="permission_storage_denied_message">Without file access, the app cannot work with projects.</string>
+    <string name="permission_storage_try_again">Try again</string>
 </resources>

@@ -8,19 +8,19 @@ import java.util.List;
  */
 final class TestingChapters {
 
-    static void add(Course c) {
+    static void add(Course s) {
         Chapter ch1 = new Chapter("Основи модульного тестування", "Unit Testing Basics");
-        ch1.add(lessonJUnit5());
-        ch1.add(lessonTdd());
-        c.add(ch1);
+        ch1.add(materialJUnit5());
+        ch1.add(materialTdd());
+        s.add(ch1);
 
         Chapter ch2 = new Chapter("Мокування та Ізоляція", "Mocking and Isolation");
-        ch2.add(lessonMockito());
-        ch2.add(lessonIntegrationTesting());
-        c.add(ch2);
+        ch2.add(materialMockito());
+        ch2.add(materialIntegrationTesting());
+        s.add(ch2);
     }
 
-    private static Lesson lessonJUnit5() {
+    private static Lesson materialJUnit5() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("JUnit 5"));
         uk.add(LessonBlock.paragraph(
@@ -86,7 +86,7 @@ final class TestingChapters {
         return new Lesson("test.1", "JUnit 5", "JUnit 5", uk, en);
     }
 
-    private static Lesson lessonTdd() {
+    private static Lesson materialTdd() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Test-Driven Development (TDD)"));
         uk.add(LessonBlock.paragraph(
@@ -115,7 +115,7 @@ final class TestingChapters {
         return new Lesson("test.2", "TDD", "TDD", uk, en);
     }
 
-    private static Lesson lessonMockito() {
+    private static Lesson materialMockito() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Mockito: Заглушки (Mocks & Stubs)"));
         uk.add(LessonBlock.paragraph(
@@ -174,7 +174,7 @@ final class TestingChapters {
         return new Lesson("test.3", "Mockito (Mocks)", "Mockito (Mocks)", uk, en);
     }
 
-    private static Lesson lessonIntegrationTesting() {
+    private static Lesson materialIntegrationTesting() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Інтеграційне тестування"));
         uk.add(LessonBlock.paragraph(

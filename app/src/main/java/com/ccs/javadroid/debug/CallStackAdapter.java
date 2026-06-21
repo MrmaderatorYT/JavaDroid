@@ -1,4 +1,5 @@
 package com.ccs.javadroid.debug;
+import com.ccs.javadroid.R;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,7 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.ccs.javadroid.AppTheme;
+import com.ccs.javadroid.util.AppTheme;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.JavaDroid.Fullscreen">
         <activity
-            android:name=".WelcomeActivity"
+            android:name=".ui.WelcomeActivity"
             android:exported="true"
             android:screenOrientation="landscape"
             android:theme="@style/Theme.JavaDroid.Fullscreen">
@@ -23,39 +23,39 @@
         </activity>
 
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.MainActivity"
             android:exported="true"
             android:screenOrientation="landscape"
             android:theme="@style/Theme.JavaDroid.Fullscreen" />
 
         <activity
-            android:name=".SettingsActivity"
+            android:name=".ui.SettingsActivity"
             android:exported="false"
             android:label="@string/menu_settings"
             android:screenOrientation="landscape"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".ui.MainActivity" />
 
         <activity
-            android:name=".GitActivity"
+            android:name=".git.GitActivity"
             android:exported="false"
             android:label="@string/git_activity_title"
             android:screenOrientation="landscape"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".ui.MainActivity" />
 
         <activity
-            android:name=".LibraryManagerActivity"
+            android:name=".ui.LibraryManagerActivity"
             android:exported="false"
             android:label="@string/lib_title"
             android:screenOrientation="landscape"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".ui.MainActivity" />
 
         <activity
-            android:name=".LearnActivity"
+            android:name=".ui.LearnActivity"
             android:exported="false"
             android:screenOrientation="landscape" />
 
         <activity
-            android:name=".TutorialActivity"
+            android:name=".ui.TutorialActivity"
             android:exported="false"
             android:screenOrientation="landscape" />
 
@@ -65,81 +65,88 @@
             android:screenOrientation="landscape" />
 
         <activity
-            android:name=".GlobalSearchActivity"
+            android:name=".ui.GlobalSearchActivity"
             android:exported="false"
             android:label="@string/menu_global_search"
             android:screenOrientation="landscape"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".ui.MainActivity" />
 
         <activity
-            android:name=".MediaPlayerActivity"
+            android:name=".ui.MediaPlayerActivity"
             android:exported="false"
             android:label="@string/media_player_title"
             android:screenOrientation="landscape"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".ui.MainActivity" />
 
         <activity
-            android:name=".AiChatActivity"
+            android:name=".ai.AiChatActivity"
             android:exported="false"
             android:label="@string/ai_title"
             android:screenOrientation="landscape"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".ui.MainActivity" />
 
         <activity
-            android:name=".BytecodeEditorActivity"
+            android:name=".tools.bytecode.BytecodeEditorActivity"
             android:exported="false"
             android:label="Bytecode Editor"
             android:screenOrientation="landscape"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".ui.MainActivity" />
 
         <activity
-            android:name=".ClassBrowserActivity"
+            android:name=".ui.ClassBrowserActivity"
             android:exported="false"
             android:label="@string/class_browser_title"
             android:screenOrientation="landscape"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".ui.MainActivity" />
 
         <activity
-            android:name=".SvgViewerActivity"
+            android:name=".ui.SvgViewerActivity"
             android:exported="false"
             android:label="SVG Viewer"
             android:screenOrientation="landscape"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".ui.MainActivity" />
 
         <activity
-            android:name=".ImageViewerActivity"
+            android:name=".ui.ImageViewerActivity"
             android:exported="false"
             android:label="Image Viewer"
             android:screenOrientation="landscape"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".ui.MainActivity" />
 
         <activity
-            android:name=".CallGraphActivity"
+            android:name=".ui.CallGraphActivity"
             android:exported="false"
             android:label="Call Graph"
             android:screenOrientation="landscape"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".ui.MainActivity" />
 
         <activity
-            android:name=".DatabaseInspectorActivity"
+            android:name=".ui.DatabaseInspectorActivity"
             android:exported="false"
             android:label="Database Inspector"
             android:screenOrientation="landscape"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".ui.MainActivity" />
 
         <activity
-            android:name=".HttpApiClientActivity"
+            android:name=".ui.HttpApiClientActivity"
             android:exported="false"
             android:label="HTTP Client"
             android:screenOrientation="landscape"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".ui.MainActivity" />
 
         <activity
-            android:name=".WebViewPreviewActivity"
+            android:name=".ui.WebViewPreviewActivity"
             android:exported="false"
             android:label="WebView Preview"
             android:screenOrientation="landscape"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".ui.MainActivity" />
+
+        <activity
+            android:name=".ui.MarkdownPreviewActivity"
+            android:exported="false"
+            android:label="@string/menu_md_preview"
+            android:screenOrientation="landscape"
+            android:parentActivityName=".ui.MainActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

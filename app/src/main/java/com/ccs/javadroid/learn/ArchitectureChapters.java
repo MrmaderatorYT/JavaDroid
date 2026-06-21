@@ -8,24 +8,24 @@ import java.util.List;
  */
 final class ArchitectureChapters {
 
-    static void add(Course c) {
+    static void add(Course s) {
         Chapter ch1 = new Chapter("Базові принципи розробки", "Basic Development Principles");
-        ch1.add(lessonDryKissYagni());
-        c.add(ch1);
+        ch1.add(materialDryKissYagni());
+        s.add(ch1);
 
         Chapter ch2 = new Chapter("Принципи SOLID", "SOLID Principles");
-        ch2.add(lessonSRPandOCP());
-        ch2.add(lessonLSPandISP());
-        ch2.add(lessonDIP());
-        c.add(ch2);
+        ch2.add(materialSRPandOCP());
+        ch2.add(materialLSPandISP());
+        ch2.add(materialDIP());
+        s.add(ch2);
 
         Chapter ch3 = new Chapter("Архітектурні патерни", "Architectural Patterns");
-        ch3.add(lessonMVCandMVVM());
-        ch3.add(lessonCleanArchitecture());
-        c.add(ch3);
+        ch3.add(materialMVCandMVVM());
+        ch3.add(materialCleanArchitecture());
+        s.add(ch3);
     }
 
-    private static Lesson lessonDryKissYagni() {
+    private static Lesson materialDryKissYagni() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("DRY, KISS та YAGNI"));
         uk.add(LessonBlock.paragraph(
@@ -61,7 +61,7 @@ final class ArchitectureChapters {
         return new Lesson("arch.1", "DRY, KISS, YAGNI", "DRY, KISS, YAGNI", uk, en);
     }
 
-    private static Lesson lessonSRPandOCP() {
+    private static Lesson materialSRPandOCP() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("S & O з SOLID"));
         uk.add(LessonBlock.paragraph(
@@ -123,7 +123,7 @@ final class ArchitectureChapters {
         return new Lesson("arch.2", "SRP та OCP", "SRP and OCP", uk, en);
     }
 
-    private static Lesson lessonLSPandISP() {
+    private static Lesson materialLSPandISP() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("L & I з SOLID"));
         uk.add(LessonBlock.paragraph(
@@ -185,7 +185,7 @@ final class ArchitectureChapters {
         return new Lesson("arch.3", "LSP та ISP", "LSP and ISP", uk, en);
     }
 
-    private static Lesson lessonDIP() {
+    private static Lesson materialDIP() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("D з SOLID: Dependency Inversion"));
         uk.add(LessonBlock.paragraph(
@@ -246,7 +246,7 @@ final class ArchitectureChapters {
         return new Lesson("arch.4", "DIP (Інверсія)", "DIP (Inversion)", uk, en);
     }
 
-    private static Lesson lessonMVCandMVVM() {
+    private static Lesson materialMVCandMVVM() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Патерни UI: MVC, MVP, MVVM"));
         uk.add(LessonBlock.paragraph(
@@ -280,7 +280,7 @@ final class ArchitectureChapters {
         return new Lesson("arch.5", "MVC та MVVM", "MVC and MVVM", uk, en);
     }
 
-    private static Lesson lessonCleanArchitecture() {
+    private static Lesson materialCleanArchitecture() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Чиста Архітектура (Clean Architecture)"));
         uk.add(LessonBlock.paragraph(

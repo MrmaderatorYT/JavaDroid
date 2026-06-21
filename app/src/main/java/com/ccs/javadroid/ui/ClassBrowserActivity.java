@@ -563,8 +563,8 @@ public class ClassBrowserActivity extends AppCompatActivity {
             }
 
             TextView className = new TextView(parent.getContext());
-            className.setTextSize(13);
-            className.setTypeface(Typeface.MONOSPACE);
+            className.setTextSize(14);
+            className.setTypeface(new AppPreferences(className.getContext()).resolveTypeface());
             className.setTextColor(theme.text);
             row.addView(className);
 

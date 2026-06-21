@@ -8,21 +8,21 @@ import java.util.List;
  */
 final class JrcChapter01Intro {
 
-    static void add(Course c) {
+    static void add(Course s) {
         Chapter ch = new Chapter(
                 "Глава 1. Історія та філософія Java",
                 "Chapter 1. History and Philosophy of Java");
-        ch.add(lessonWhatIsJava());
-        ch.add(lessonFeatures());
-        ch.add(lessonBytecode());
-        ch.add(lessonFirstProgram());
-        ch.add(lessonVariables());
-        c.add(ch);
+        ch.add(materialWhatIsJava());
+        ch.add(materialFeatures());
+        ch.add(materialBytecode());
+        ch.add(materialFirstProgram());
+        ch.add(materialVariables());
+        s.add(ch);
     }
 
     // ── 1.1 Що таке Java ───────────────────────────────────────────────────
 
-    private static Lesson lessonWhatIsJava() {
+    private static Lesson materialWhatIsJava() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Що таке Java"));
         uk.add(LessonBlock.paragraph(
@@ -63,7 +63,7 @@ final class JrcChapter01Intro {
 
     // ── 1.2 Основні властивості ────────────────────────────────────────────
 
-    private static Lesson lessonFeatures() {
+    private static Lesson materialFeatures() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Ключові властивості мови"));
         uk.add(LessonBlock.list(
@@ -101,7 +101,7 @@ final class JrcChapter01Intro {
 
     // ── 1.3 Байткод ────────────────────────────────────────────────────────
 
-    private static Lesson lessonBytecode() {
+    private static Lesson materialBytecode() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Байткод і JVM"));
         uk.add(LessonBlock.paragraph(
@@ -136,7 +136,7 @@ final class JrcChapter01Intro {
 
     // ── 1.4 Перша програма ─────────────────────────────────────────────────
 
-    private static Lesson lessonFirstProgram() {
+    private static Lesson materialFirstProgram() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Перша програма"));
         uk.add(LessonBlock.paragraph(
@@ -187,7 +187,7 @@ final class JrcChapter01Intro {
 
     // ── 1.5 Змінні ─────────────────────────────────────────────────────────
 
-    private static Lesson lessonVariables() {
+    private static Lesson materialVariables() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Змінні та типи"));
         uk.add(LessonBlock.paragraph(

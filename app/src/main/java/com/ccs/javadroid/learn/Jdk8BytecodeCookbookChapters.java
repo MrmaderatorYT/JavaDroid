@@ -13,23 +13,23 @@ final class Jdk8BytecodeCookbookChapters {
     private Jdk8BytecodeCookbookChapters() {
     }
 
-    static void add(Course c) {
+    static void add(Course s) {
         Chapter ch = new Chapter(
                 "JDK 8 bytecode cookbook: інструкції, lowering, drills",
                 "JDK 8 bytecode cookbook: instructions, lowering, drills");
-        ch.add(lessonConstantsLoadsStoresStack());
-        ch.add(lessonNumericConversionsAndComparisons());
-        ch.add(lessonBranchesSwitchCookbook());
-        ch.add(lessonFieldsVolatileFinalTransient());
-        ch.add(lessonInnerAnonymousEnumBytecode());
-        ch.add(lessonMethodHandleInvokePackage());
-        ch.add(lessonAnnotationAttributesBytecode());
-        ch.add(lessonRawClassFileReading());
-        ch.add(lessonJavapDrills());
-        c.add(ch);
+        ch.add(materialConstantsLoadsStoresStack());
+        ch.add(materialNumericConversionsAndComparisons());
+        ch.add(materialBranchesSwitchCookbook());
+        ch.add(materialFieldsVolatileFinalTransient());
+        ch.add(materialInnerAnonymousEnumBytecode());
+        ch.add(materialMethodHandleInvokePackage());
+        ch.add(materialAnnotationAttributesBytecode());
+        ch.add(materialRawClassFileReading());
+        ch.add(materialJavapDrills());
+        s.add(ch);
     }
 
-    private static Lesson lessonConstantsLoadsStoresStack() {
+    private static Lesson materialConstantsLoadsStoresStack() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Constants, loads, stores, stack manipulation"));
         uk.add(LessonBlock.paragraph(
@@ -135,7 +135,7 @@ final class Jdk8BytecodeCookbookChapters {
         return new Lesson("jdk8.bytecode.cookbook.1", "Constants/load/store/stack", "Constants/load/store/stack", uk, en);
     }
 
-    private static Lesson lessonNumericConversionsAndComparisons() {
+    private static Lesson materialNumericConversionsAndComparisons() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Numeric conversions і comparisons"));
         uk.add(LessonBlock.paragraph(
@@ -237,7 +237,7 @@ final class Jdk8BytecodeCookbookChapters {
         return new Lesson("jdk8.bytecode.cookbook.2", "Numeric conversions", "Numeric conversions", uk, en);
     }
 
-    private static Lesson lessonBranchesSwitchCookbook() {
+    private static Lesson materialBranchesSwitchCookbook() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Branches, tableswitch, lookupswitch, String switch"));
         uk.add(LessonBlock.paragraph(
@@ -333,7 +333,7 @@ final class Jdk8BytecodeCookbookChapters {
         return new Lesson("jdk8.bytecode.cookbook.3", "Branches і switch", "Branches and switch", uk, en);
     }
 
-    private static Lesson lessonFieldsVolatileFinalTransient() {
+    private static Lesson materialFieldsVolatileFinalTransient() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Fields: static, final, volatile, transient"));
         uk.add(LessonBlock.paragraph(
@@ -412,7 +412,7 @@ final class Jdk8BytecodeCookbookChapters {
         return new Lesson("jdk8.bytecode.cookbook.4", "Field flags", "Field flags", uk, en);
     }
 
-    private static Lesson lessonInnerAnonymousEnumBytecode() {
+    private static Lesson materialInnerAnonymousEnumBytecode() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Inner classes, anonymous classes, enum bytecode"));
         uk.add(LessonBlock.paragraph(
@@ -504,7 +504,7 @@ final class Jdk8BytecodeCookbookChapters {
         return new Lesson("jdk8.bytecode.cookbook.5", "Inner/anonymous/enum bytecode", "Inner/anonymous/enum bytecode", uk, en);
     }
 
-    private static Lesson lessonMethodHandleInvokePackage() {
+    private static Lesson materialMethodHandleInvokePackage() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("java.lang.invoke у Java 8"));
         uk.add(LessonBlock.paragraph(
@@ -580,7 +580,7 @@ final class Jdk8BytecodeCookbookChapters {
         return new Lesson("jdk8.bytecode.cookbook.6", "java.lang.invoke", "java.lang.invoke", uk, en);
     }
 
-    private static Lesson lessonAnnotationAttributesBytecode() {
+    private static Lesson materialAnnotationAttributesBytecode() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Annotations як class file attributes"));
         uk.add(LessonBlock.paragraph(
@@ -660,7 +660,7 @@ final class Jdk8BytecodeCookbookChapters {
         return new Lesson("jdk8.bytecode.cookbook.7", "Annotation attributes", "Annotation attributes", uk, en);
     }
 
-    private static Lesson lessonRawClassFileReading() {
+    private static Lesson materialRawClassFileReading() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Читання raw .class bytes"));
         uk.add(LessonBlock.paragraph(
@@ -758,7 +758,7 @@ final class Jdk8BytecodeCookbookChapters {
         return new Lesson("jdk8.bytecode.cookbook.8", "Raw .class bytes", "Raw .class bytes", uk, en);
     }
 
-    private static Lesson lessonJavapDrills() {
+    private static Lesson materialJavapDrills() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Javap drills: 40 bytecode задач"));
         uk.add(LessonBlock.paragraph(

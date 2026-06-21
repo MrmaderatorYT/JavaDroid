@@ -124,7 +124,7 @@ public class GitActivity extends AppCompatActivity {
         headerBranch = new TextView(this);
         headerBranch.setTextColor(theme.text);
         headerBranch.setTextSize(13);
-        headerBranch.setTypeface(android.graphics.Typeface.MONOSPACE);
+        headerBranch.setTypeface(new AppPreferences(this).resolveTypeface());
         headerStats = new TextView(this);
         headerStats.setTextColor(theme.textDim);
         headerStats.setTextSize(11);
@@ -519,7 +519,7 @@ public class GitActivity extends AppCompatActivity {
             name.setText(f);
             name.setTextColor(theme.text);
             name.setTextSize(12);
-            name.setTypeface(android.graphics.Typeface.MONOSPACE);
+            name.setTypeface(new AppPreferences(this).resolveTypeface());
             LinearLayout.LayoutParams nlp = new LinearLayout.LayoutParams(0,
                     ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
             name.setLayoutParams(nlp);
@@ -674,7 +674,7 @@ public class GitActivity extends AppCompatActivity {
                 header.setText(c.shortHash + "  " + c.message);
                 header.setTextColor(theme.text);
                 header.setTextSize(12);
-                header.setTypeface(android.graphics.Typeface.MONOSPACE);
+                header.setTypeface(new AppPreferences(this).resolveTypeface());
                 row.addView(header);
 
                 TextView meta = new TextView(this);
@@ -741,7 +741,7 @@ public class GitActivity extends AppCompatActivity {
                 name.setText(label);
                 name.setTextColor(b.current ? theme.successText : theme.text);
                 name.setTextSize(12);
-                name.setTypeface(android.graphics.Typeface.MONOSPACE);
+                name.setTypeface(new AppPreferences(this).resolveTypeface());
                 LinearLayout.LayoutParams nlp = new LinearLayout.LayoutParams(0,
                         ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
                 name.setLayoutParams(nlp);
@@ -937,7 +937,7 @@ public class GitActivity extends AppCompatActivity {
         t.setText(text);
         t.setTextColor(theme.text);
         t.setTextSize(11);
-        t.setTypeface(android.graphics.Typeface.MONOSPACE);
+        t.setTypeface(new AppPreferences(this).resolveTypeface());
         t.setPadding(dp(16), dp(16), dp(16), dp(16));
         ScrollView sv = new ScrollView(this);
         sv.addView(t);

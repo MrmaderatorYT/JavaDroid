@@ -433,6 +433,14 @@
     <string name="breakpoint_unconditional">● Безумовний BP на рядку %1$d</string>
     <string name="breakpoint_conditional">● Умовний BP на рядку %1$d: %1$s</string>
 
+    <!-- Bookmarks -->
+    <string name="bookmark_set">★ Закладка на рядку %1$d</string>
+    <string name="bookmark_removed">☆ Видалено закладку на рядку %1$d</string>
+    <string name="bookmark_list_title">Закладки</string>
+    <string name="bookmark_none">Немає закладок</string>
+    <string name="menu_toggle_bookmark">Переключити закладку</string>
+    <string name="menu_show_bookmarks">Показати закладки</string>
+
     <!-- MainActivity - Call Graph -->
     <string name="call_graph_title">Граф викликів</string>
     <string name="call_graph_no_methods">Методів не знайдено</string>
@@ -503,4 +511,202 @@
     <string name="ndk_error_cpp_ndk_required">❌ Помилка збірки C++:\nC++ джерельні коди (.cpp) потребують зовнішній NDK.\n\nБудь ласка, перейдіть до Налаштування → Встановити C++ NDK для завантаження інструментарію (~130MB).\nАбо перепишіть JNI-код чистою C (.c) для використання вбудованого швидкого компілятора.</string>
     <string name="ndk_error_cpp_compile">❌ Помилка компіляції C++ (%1$s):\n%2$s</string>
     <string name="ndk_error_cpp_execute">❌ Помилка збірки C++:\nНе вдалося виконати clang++ для %1$s: %2$s</string>
+    <string name="settings_section_power_saving">Енергозбереження</string>
+    <string name="settings_power_saving_mode">Режим енергозбереження</string>
+    <string name="settings_power_saving_auto">Автоматично (батарея &lt; 30%%)</string>
+    <string name="settings_power_saving_disabled">Вимкнено</string>
+    <string name="settings_power_saving_performance">Завжди продуктивний</string>
+    <string name="settings_power_saving_desc">Автоматично: зменшує функції при низькому заряді. Продуктивний: завжди вмикає всі функції.</string>
+
+    <!-- Fonts -->
+    <string name="font_jetbrains">JetBrains Mono</string>
+    <string name="font_fira_code">Fira Code</string>
+    <string name="font_source_code">Source Code Pro</string>
+    <string name="font_dejavu_mono">DejaVu Sans Mono</string>
+    <string name="font_roboto_mono">Roboto Mono</string>
+
+    <!-- File Operations -->
+    <string name="dialog_file_context_copy">Копіювати</string>
+    <string name="dialog_folder_context_paste">Вставити файл сюди</string>
+    <string name="dialog_folder_context_archive">Створити архів</string>
+    <string name="dialog_overwrite">Перезаписати</string>
+    <string name="toast_file_copied">Файл скопійовано. Довге натискання на папку для вставки.</string>
+    <string name="toast_file_pasted">Файл вставлено до %1$s</string>
+    <string name="toast_file_exists_title">Файл існує</string>
+    <string name="toast_archive_created">Архів створено: %1$s</string>
+    <string name="toast_archive_failed">Не вдалося створити архів: %1$s</string>
+
+    <!-- Search -->
+    <string name="settings_auto_search">Автопошук у файлах</string>
+    <string name="settings_auto_search_desc">Автоматичний пошук під час введення у файлах проєкту</string>
+
+    <!-- Static Analysis -->
+    <string name="sa_empty_file">Порожній файл</string>
+    <string name="sa_long_line">Рядок довший за %1$d символів (%2$d)</string>
+    <string name="sa_todo">TODO у коді</string>
+    <string name="sa_fixme">FIXME у коді — потребує виправлення</string>
+    <string name="sa_hack">HACK у коді — тимчасове рішення</string>
+    <string name="sa_xxx">XXX позначка у коді</string>
+    <string name="sa_nosonar">NOSONAR — приховує попередження SonarQube</string>
+    <string name="sa_noinspection">noinspection — приховує попередження аналізатора</string>
+    <string name="sa_trailing_space">Пробіл в кінці рядка</string>
+    <string name="sa_mixed_tabs">Змішані табуляції та пробіли</string>
+    <string name="sa_commented_code">Закоментований код</string>
+    <string name="sa_deprecated_api">Використання @Deprecated методу/класу</string>
+    <string name="sa_system_exit">System.exit() у коді (може вбити процес)</string>
+    <string name="sa_thread_sleep">Thread.sleep без обробки InterruptedException</string>
+    <string name="sa_raw_type">Raw type — використовуйте параметризований тип</string>
+    <string name="sa_hardcoded_path">Захардкоджений шлях до файлу</string>
+    <string name="sa_hardcoded_ip">Захардкоджена IP-адреса</string>
+    <string name="sa_password_in_code">Можливий пароль/ключ у коді!</string>
+    <string name="sa_empty_block">Порожній блок %1$s</string>
+    <string name="sa_multiple_statements">Кілька операцій в одному рядку</string>
+    <string name="sa_wildcard_import">Wildcard import — краще конкретні імпорти</string>
+    <string name="sa_suppress_all">SuppressWarnings(\"all\") — приховує ВСІ попередження</string>
+    <string name="sa_empty_string_concat">Порожній рядок у конкатенації</string>
+    <string name="sa_resource_leak">Можливий витік ресурсу — try-with-resources</string>
+    <string name="sa_unused_import">Невикористаний імпорт: %1$s</string>
+    <string name="sa_duplicate_import">Дублікат імпорту: %1$s</string>
+    <string name="sa_long_method">Метод занадто довгий (%1$d рядків)</string>
+    <string name="sa_high_complexity">Висока цикломатична складність (%1$d)</string>
+    <string name="sa_many_params">Забагато параметрів (%1$d)</string>
+    <string name="sa_deep_nesting">Глибока вкладеність (%1$d рівнів)</string>
+    <string name="sa_empty_method">Порожній метод</string>
+    <string name="sa_method_name_uppercase">Назва методу з великої літери: %1$s</string>
+    <string name="sa_many_returns">Багато return-ів (%1$d)</string>
+    <string name="sa_missing_javadoc_method">Публічний метод без JavaDoc</string>
+    <string name="sa_many_local_vars">Забагато локальних змінних (%1$d)</string>
+    <string name="sa_no_return">Метод не повертає значення (тип: %1$s)</string>
+    <string name="sa_class_too_long">Клас занадто великий (%1$d рядків)</string>
+    <string name="sa_too_many_fields">Забагато полів класу (%1$d)</string>
+    <string name="sa_god_class">God class — занадто багато відповідальності</string>
+    <string name="sa_serial_version_uid">Клас реалізує Serializable без serialVersionUID</string>
+    <string name="sa_missing_override">Відсутній @Override для %1$s</string>
+    <string name="sa_unused_field">Невикористане поле: %1$s</string>
+    <string name="sa_empty_catch">Порожній catch-блок</string>
+    <string name="sa_catch_no_log">Catch без обробки — помилка може бути загублена</string>
+    <string name="sa_string_equals">Порівняння рядків через == (краще .equals())</string>
+    <string name="sa_magic_number">Magic number %1$s — винесіть у константу</string>
+    <string name="sa_system_out">System.out — використовуйте логгер</string>
+    <string name="sa_system_err">System.err — використовуйте логгер</string>
+    <string name="sa_print_stacktrace">printStackTrace() — використовуйте логгер з cause</string>
+    <string name="sa_redundant_tostring">Redundant .toString() у конкатенації</string>
+    <string name="sa_concat_in_loop">Конкатенація рядків у циклі — StringBuilder</string>
+    <string name="sa_autoboxing">Autoboxing — використовуйте літерали</string>
+    <string name="sa_collections_sort">Collections.sort() — у Java 8+ list.sort(comparator)</string>
+    <string name="sa_redundant_null_instanceof">Redundant null перед instanceof</string>
+    <string name="sa_indexof_contains">indexOf() == -1 — краще .contains()</string>
+    <string name="sa_length_zero">.length() == 0 — краще .isEmpty()</string>
+    <string name="sa_size_zero">.size() == 0 — краще .isEmpty()</string>
+    <string name="sa_one_line_block">Однорядковий блок без фігурних дужок</string>
+    <string name="sa_long_ternary">Довгий тернарний оператор</string>
+    <string name="sa_unnecessary_semicolon">Непотрібна крапка з комою</string>
+    <string name="sa_constant_naming">Константа \'%1$s\' — UPPER_CASE</string>
+    <string name="sa_redundant_this">Redundant this.</string>
+    <string name="sa_bool_true_false">== true / == false — redundant</string>
+    <string name="sa_redundant_boxing">Redundant boxing/unboxing</string>
+    <string name="sa_catch_throwable">Ловите Throwable/Exception — конкретні винятки</string>
+    <string name="sa_finalize">finalize() deprecated — try-with-resources/Cleaner</string>
+    <string name="sa_double_float_eq">Порівняння double/float через ==</string>
+    <string name="sa_java_util_date">java.util.Date — краще java.time</string>
+    <string name="sa_simple_date_format">SimpleDateFormat не потокобезпечний</string>
+    <string name="sa_sql_injection">SQL конкатенацією — можлива SQL-ін\'єкція!</string>
+    <string name="sa_math_random">Math.random() — для безпеки SecureRandom</string>
+    <string name="sa_runtime_exec">Запуск зовнішнього процесу — перевіряйте вхід</string>
+    <string name="sa_mutable_static">Мутабельне static поле — потоконебезпечно</string>
+    <string name="sa_field_final">Поле \'%1$s\' можна зробити final</string>
+    <string name="sa_long_chain">Довгий ланцюжок викликів (%1$d)</string>
+    <string name="sa_single_char_var">Однолітерна змінна \'%1$s\'</string>
+    <string name="sa_bool_naming">Boolean \'%1$s\' — префікс is/has/can</string>
+    <string name="sa_hungarian">Hungarian notation (mField) — не рекомендується</string>
+    <string name="sa_connection_leak">Connection без try-with-resources — витік з\'єднання</string>
+    <string name="sa_socket_leak">Socket без try-with-resources</string>
+    <string name="sa_executor_no_shutdown">ExecutorService без shutdown — можливий витік потоків</string>
+    <string name="sa_temp_no_delete">Temp файл без deleteOnExit</string>
+    <string name="sa_npe_after_null_check">Dereference після null check — можливий NPE</string>
+    <string name="sa_return_null">Повернення null — Optional або Collections.empty*</string>
+    <string name="sa_null_in_collection">null у колекції — можливий NPE</string>
+    <string name="sa_optional_get">Optional.get() без перевірки — NoSuchElementException</string>
+    <string name="sa_simple_date_format_static">SimpleDateFormat в static контексті — потоконебезпечно</string>
+    <string name="sa_hashmap_threaded">HashMap в multi-threaded контексті — ConcurrentHashMap?</string>
+    <string name="sa_dcl_volatile">Double-checked locking без volatile — небезпечно!</string>
+    <string name="sa_indexed_for_list">Indexed for на List — for-each або stream()</string>
+    <string name="sa_anonymous_to_lambda">Анонімний клас — лямбда вираз коротший</string>
+    <string name="sa_stringbuilder_chain">StringBuilder — String.join() або stream().collect()</string>
+    <string name="sa_arraycopy">System.arraycopy — Arrays.copyOf() коротший</string>
+    <string name="sa_arraystostring">Arrays.toString() — Arrays.deepToString() для дебагу</string>
+    <string name="sa_date_parse">SimpleDateFormat.parse — LocalDate.parse() в Java 8+</string>
+    <string name="sa_diamond_operator">Diamond operator &lt;&gt; — приберіть типи справа</string>
+    <string name="sa_fallthrough">Fall-through в switch — забули break?</string>
+    <string name="sa_switch_string">Switch з String — enum або Map</string>
+    <string name="sa_test_no_assert">Тест без assert — перевірка нічого не робить</string>
+    <string name="sa_test_sysout">System.out у тесті — використовуйте assert</string>
+    <string name="sa_test_sleep">Thread.sleep у тесті — Awaitility</string>
+    <string name="sa_test_empty">Порожній тест</string>
+    <string name="sa_missing_class_javadoc">Клас без JavaDoc</string>
+    <string name="sa_hashtable_vector">Застарій клас — HashMap/ArrayList/StringBuilder</string>
+    <string name="sa_tostring_equals">.toString().equals() — Object.equals() або String.equals()</string>
+    <string name="sa_addall_after_create">addAll після створення — елементи в конструктор</string>
+    <string name="sa_keyset_get">keySet() + get() — entrySet() ефективніше</string>
+    <string name="sa_list_fill">Створення та заповнення — List.of() або Arrays.asList()</string>
+    <string name="sa_unmodifiable_list">Final колекція — unmodifiableList/Map/Set</string>
+    <string name="sa_string_field_final">String поле можна зробити final</string>
+    <string name="sa_raw_type_generic">Raw type — додайте параметри &lt;T&gt;</string>
+    <string name="sa_unchecked_cast">Можливий unchecked cast — @SuppressWarnings</string>
+    <string name="sa_wildcard_return">Wildcard &lt;? extends T&gt; в return — PECS</string>
+    <string name="sa_deep_generic">Глибока вкладеність generic (&gt; 2) — TypeAlias</string>
+    <string name="sa_stream_no_terminal">Stream без terminal operation — нічого не робить</string>
+    <string name="sa_collect_tolist">collect(toList()) — у Java 16+ .toList()</string>
+    <string name="sa_findfirst_get">findFirst().get() — .findFirst().orElseThrow()</string>
+    <string name="sa_parallel_stream">parallelStream() — overhead для малих колекцій</string>
+    <string name="sa_foreach_return">return у forEach lambda не виходить з методу</string>
+    <string name="sa_optional_field">Optional як поле — anti-pattern</string>
+    <string name="sa_optional_or_null">Optional.orElse(null) — втрачає сенс Optional</string>
+    <string name="sa_override_missing">Відсутній @Override для %1$s</string>
+    <string name="sa_suppress_unchecked">@SuppressWarnings(\"unchecked\") — пояснення</string>
+    <string name="sa_deprecated_javadoc">@Deprecated без @deprecated javadoc тегу</string>
+    <string name="sa_multiple_suppress">Кілька suppressions — рефакторинг</string>
+    <string name="sa_nullable_dereference">Dereference на @Nullable значенні</string>
+    <string name="sa_enum_constants">Enum з %1$d константами — Strategy pattern</string>
+    <string name="sa_enum_ordinal">ordinal() — ненадійний, name() або custom field</string>
+    <string name="sa_enum_hashmap">HashMap з enum ключами — EnumMap</string>
+    <string name="sa_enummap">HashMap з enum ключами — EnumMap ефективніше</string>
+    <string name="sa_switch_no_default">switch без default — нові константи не обробляються</string>
+    <string name="sa_mutable_collection_return">Повернення мутабельної колекції — unmodifiableList?</string>
+    <string name="sa_boolean_param">Boolean параметр — Builder або два методи</string>
+    <string name="sa_public_field">Публічне поле — інкапсуляція (getter/setter)</string>
+    <string name="sa_public_static_mutable">Public static mutable поле — потоконебезпечно</string>
+    <string name="sa_duplicate_line">Дубльований рядок (%1$d разів): %2$s</string>
+    <string name="sa_triple_duplicate">Троїсте дублювання рядків — винесіть у метод</string>
+    <string name="sa_constant_before_fields">Константи мають бути перед звичайними полями</string>
+    <string name="sa_field_one_use">Поле \'%1$s\' в одному місці — локальна змінна?</string>
+    <string name="sa_case_no_break">Fall-through в switch — забули break?</string>
+    <string name="sa_switch_many_cases">Switch з %1$d case — polymorphism або Map</string>
+    <string name="sa_lambda_long">Лямбда > 5 рядків — винесіть у метод</string>
+    <string name="sa_lambda_method_ref">Лямбда може бути method reference</string>
+    <string name="sa_optional_get_equals">Optional.get().equals() — .map().orElse()</string>
+    <string name="sa_optional_empty_filter">Optional.empty().filter() — нічого не зробить</string>
+    <string name="sa_date_new">new Date() — Instant.now() або LocalDateTime.now()</string>
+    <string name="sa_calendar">Calendar.getInstance() — LocalDateTime/LocalDate</string>
+    <string name="sa_simple_date_format_use">SimpleDateFormat — DateTimeFormatter</string>
+    <string name="sa_date_gettime">Date.getTime() для порівняння — Instant/LocalDateTime</string>
+    <string name="sa_sql_date">java.sql.Date/Timestamp — LocalDateTime</string>
+    <string name="sa_timezone">TimeZone.getDefault() — ZoneId.systemDefault()</string>
+    <string name="sa_pattern_compile_loop">Pattern.compile() в циклі — компілюйте заздалегідь</string>
+    <string name="sa_string_matches">String.matches() — Pattern.compile для повтору</string>
+    <string name="sa_greedy_regex">Жадібний квантифікатор .* — .*? (lazy)</string>
+    <string name="sa_split_dot">.split(\".\") — Pattern.quote(\".\")</string>
+    <string name="sa_enum_too_many">Enum з %1$d константами — Strategy pattern</string>
+    <string name="sa_enum_ordinal_use">ordinal() — name() або custom field</string>
+    <string name="sa_inline_method">Метод \'%1$s\' використовується 1 раз — inline</string>
+    <string name="sa_final_local">Локальна змінна \'%1$s\' — final для читабельності</string>
+
+    <!-- Storage Permission -->
+    <string name="permission_storage_title">Доступ до файлів</string>
+    <string name="permission_storage_message">Для роботи з проєктами додатку потрібен доступ до файлової системи.\n\nБудь ласка, увімкніть \"Доступ до всіх файлів\" у наступному екрані.</string>
+    <string name="permission_storage_open_settings">Відкрити налаштування</string>
+    <string name="permission_storage_exit">Вийти</string>
+    <string name="permission_storage_denied_title">Доступ не надано</string>
+    <string name="permission_storage_denied_message">Без доступу до файлів додаток не зможе працювати з проєктами.</string>
+    <string name="permission_storage_try_again">Спробувати ще</string>
 </resources>

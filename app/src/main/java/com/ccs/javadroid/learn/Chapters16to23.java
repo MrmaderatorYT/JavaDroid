@@ -11,31 +11,31 @@ import java.util.List;
  */
 final class Chapters16to23 {
 
-    static void add(Course c) {
-        addChapter16(c);
-        addChapter17(c);
-        addChapter18(c);
-        addChapter19(c);
-        addChapter20(c);
-        addChapter21(c);
-        addChapter22(c);
-        addChapter23(c);
+    static void add(Course s) {
+        addChapter16(s);
+        addChapter17(s);
+        addChapter18(s);
+        addChapter19(s);
+        addChapter20(s);
+        addChapter21(s);
+        addChapter22(s);
+        addChapter23(s);
     }
 
     // ── Глава 16. Date/Time ─────────────────────────────────────────────────
 
-    private static void addChapter16(Course c) {
+    private static void addChapter16(Course s) {
         Chapter ch = new Chapter(
                 "Глава 16. Дата/час: Timeline, Local і Zone Time, форматування",
                 "Chapter 16. Date/Time: Timeline, Local and Zone time, formatting");
-        ch.add(lessonInstant());
-        ch.add(lessonLocal());
-        ch.add(lessonZoned());
-        ch.add(lessonFormat());
-        c.add(ch);
+        ch.add(materialInstant());
+        ch.add(materialLocal());
+        ch.add(materialZoned());
+        ch.add(materialFormat());
+        s.add(ch);
     }
 
-    private static Lesson lessonInstant() {
+    private static Lesson materialInstant() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Timeline: Instant"));
         uk.add(LessonBlock.paragraph(
@@ -73,7 +73,7 @@ final class Chapters16to23 {
         return new Lesson("16.1", "Timeline (Instant)", "Timeline (Instant)", uk, en);
     }
 
-    private static Lesson lessonLocal() {
+    private static Lesson materialLocal() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("LocalDate / LocalTime / LocalDateTime"));
         uk.add(LessonBlock.paragraph(
@@ -109,7 +109,7 @@ final class Chapters16to23 {
         return new Lesson("16.2", "Local date/time", "Local date/time", uk, en);
     }
 
-    private static Lesson lessonZoned() {
+    private static Lesson materialZoned() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("ZonedDateTime"));
         uk.add(LessonBlock.paragraph(
@@ -141,7 +141,7 @@ final class Chapters16to23 {
         return new Lesson("16.3", "ZonedDateTime", "ZonedDateTime", uk, en);
     }
 
-    private static Lesson lessonFormat() {
+    private static Lesson materialFormat() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Форматування та парсинг"));
         uk.add(LessonBlock.paragraph(
@@ -183,18 +183,18 @@ final class Chapters16to23 {
 
     // ── Глава 17. Concurrency ч.1 ────────────────────────────────────────────
 
-    private static void addChapter17(Course c) {
+    private static void addChapter17(Course s) {
         Chapter ch = new Chapter(
                 "Глава 17. Конкурентність (частина 1)",
                 "Chapter 17. Concurrency (Part 1)");
-        ch.add(lessonThreads());
-        ch.add(lessonSync());
-        ch.add(lessonVolatile());
-        ch.add(lessonAtomic());
-        c.add(ch);
+        ch.add(materialThreads());
+        ch.add(materialSync());
+        ch.add(materialVolatile());
+        ch.add(materialAtomic());
+        s.add(ch);
     }
 
-    private static Lesson lessonThreads() {
+    private static Lesson materialThreads() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Створення потоків"));
         uk.add(LessonBlock.paragraph(
@@ -230,7 +230,7 @@ final class Chapters16to23 {
         return new Lesson("17.1", "Потоки", "Threads", uk, en);
     }
 
-    private static Lesson lessonSync() {
+    private static Lesson materialSync() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Синхронізація: synchronized"));
         uk.add(LessonBlock.paragraph(
@@ -275,7 +275,7 @@ final class Chapters16to23 {
         return new Lesson("17.2", "Синхронізація", "Synchronization", uk, en);
     }
 
-    private static Lesson lessonVolatile() {
+    private static Lesson materialVolatile() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("volatile — видимість між потоками"));
         uk.add(LessonBlock.paragraph(
@@ -317,7 +317,7 @@ final class Chapters16to23 {
         return new Lesson("17.3", "volatile", "volatile", uk, en);
     }
 
-    private static Lesson lessonAtomic() {
+    private static Lesson materialAtomic() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Atomic-класи (lock-free)"));
         uk.add(LessonBlock.paragraph(
@@ -362,18 +362,18 @@ final class Chapters16to23 {
 
     // ── Глава 18. Concurrency ч.2 ────────────────────────────────────────────
 
-    private static void addChapter18(Course c) {
+    private static void addChapter18(Course s) {
         Chapter ch = new Chapter(
                 "Глава 18. Конкурентність (частина 2)",
                 "Chapter 18. Concurrency (Part 2)");
-        ch.add(lessonExecutor());
-        ch.add(lessonFuture());
-        ch.add(lessonConcurrentCollections());
-        ch.add(lessonCompletableFuture());
-        c.add(ch);
+        ch.add(materialExecutor());
+        ch.add(materialFuture());
+        ch.add(materialConcurrentCollections());
+        ch.add(materialCompletableFuture());
+        s.add(ch);
     }
 
-    private static Lesson lessonExecutor() {
+    private static Lesson materialExecutor() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("ExecutorService — пул потоків"));
         uk.add(LessonBlock.paragraph(
@@ -418,7 +418,7 @@ final class Chapters16to23 {
         return new Lesson("18.1", "ExecutorService", "ExecutorService", uk, en);
     }
 
-    private static Lesson lessonFuture() {
+    private static Lesson materialFuture() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Callable та Future"));
         uk.add(LessonBlock.paragraph(
@@ -458,7 +458,7 @@ final class Chapters16to23 {
         return new Lesson("18.2", "Future/Callable", "Future/Callable", uk, en);
     }
 
-    private static Lesson lessonConcurrentCollections() {
+    private static Lesson materialConcurrentCollections() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Concurrent-колекції"));
         uk.add(LessonBlock.paragraph(
@@ -500,7 +500,7 @@ final class Chapters16to23 {
         return new Lesson("18.3", "Concurrent-колекції", "Concurrent collections", uk, en);
     }
 
-    private static Lesson lessonCompletableFuture() {
+    private static Lesson materialCompletableFuture() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("CompletableFuture — асинхронні ланцюжки"));
         uk.add(LessonBlock.paragraph(
@@ -536,17 +536,17 @@ final class Chapters16to23 {
 
     // ── Глава 19. JVM Memory ─────────────────────────────────────────────────
 
-    private static void addChapter19(Course c) {
+    private static void addChapter19(Course s) {
         Chapter ch = new Chapter(
                 "Глава 19. Керування пам'яттю JVM",
                 "Chapter 19. JVM Memory Management");
-        ch.add(lessonAreas());
-        ch.add(lessonGc());
-        ch.add(lessonLeaks());
-        c.add(ch);
+        ch.add(materialAreas());
+        ch.add(materialGc());
+        ch.add(materialLeaks());
+        s.add(ch);
     }
 
-    private static Lesson lessonAreas() {
+    private static Lesson materialAreas() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Області пам'яті JVM"));
         uk.add(LessonBlock.paragraph("Пам'ять JVM поділена на області:"));
@@ -578,7 +578,7 @@ final class Chapters16to23 {
         return new Lesson("19.1", "Області пам'яті", "Memory areas", uk, en);
     }
 
-    private static Lesson lessonGc() {
+    private static Lesson materialGc() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Garbage Collector"));
         uk.add(LessonBlock.paragraph(
@@ -606,7 +606,7 @@ final class Chapters16to23 {
         return new Lesson("19.2", "Garbage Collector", "Garbage Collector", uk, en);
     }
 
-    private static Lesson lessonLeaks() {
+    private static Lesson materialLeaks() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Витоки пам'яті"));
         uk.add(LessonBlock.paragraph(
@@ -642,17 +642,17 @@ final class Chapters16to23 {
 
     // ── Глава 20. RDBMS & SQL ────────────────────────────────────────────────
 
-    private static void addChapter20(Course c) {
+    private static void addChapter20(Course s) {
         Chapter ch = new Chapter(
                 "Глава 20. RDBMS та SQL Essentials",
                 "Chapter 20. RDBMS and SQL Essentials");
-        ch.add(lessonSql());
-        ch.add(lessonJoins());
-        ch.add(lessonIndex());
-        c.add(ch);
+        ch.add(materialSql());
+        ch.add(materialJoins());
+        ch.add(materialIndex());
+        s.add(ch);
     }
 
-    private static Lesson lessonSql() {
+    private static Lesson materialSql() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Основи SQL: DDL та DML"));
         uk.add(LessonBlock.paragraph(
@@ -702,7 +702,7 @@ final class Chapters16to23 {
         return new Lesson("20.1", "SQL основи", "SQL basics", uk, en);
     }
 
-    private static Lesson lessonJoins() {
+    private static Lesson materialJoins() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("JOIN — з'єднання таблиць"));
         uk.add(LessonBlock.paragraph(
@@ -756,7 +756,7 @@ final class Chapters16to23 {
         return new Lesson("20.2", "JOIN", "JOIN", uk, en);
     }
 
-    private static Lesson lessonIndex() {
+    private static Lesson materialIndex() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Індекси та планування"));
         uk.add(LessonBlock.paragraph(
@@ -792,17 +792,17 @@ final class Chapters16to23 {
 
     // ── Глава 21. JDBC / DAO ─────────────────────────────────────────────────
 
-    private static void addChapter21(Course c) {
+    private static void addChapter21(Course s) {
         Chapter ch = new Chapter(
                 "Глава 21. JDBC та патерн DAO",
                 "Chapter 21. JDBC Essentials and the DAO Pattern");
-        ch.add(lessonJdbc());
-        ch.add(lessonPrepared());
-        ch.add(lessonDao());
-        c.add(ch);
+        ch.add(materialJdbc());
+        ch.add(materialPrepared());
+        ch.add(materialDao());
+        s.add(ch);
     }
 
-    private static Lesson lessonJdbc() {
+    private static Lesson materialJdbc() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Підключення через JDBC"));
         uk.add(LessonBlock.paragraph(
@@ -848,7 +848,7 @@ final class Chapters16to23 {
         return new Lesson("21.1", "JDBC основи", "JDBC basics", uk, en);
     }
 
-    private static Lesson lessonPrepared() {
+    private static Lesson materialPrepared() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("PreparedStatement — безпечно та швидко"));
         uk.add(LessonBlock.paragraph(
@@ -888,7 +888,7 @@ final class Chapters16to23 {
         return new Lesson("21.2", "PreparedStatement", "PreparedStatement", uk, en);
     }
 
-    private static Lesson lessonDao() {
+    private static Lesson materialDao() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Патерн DAO (Data Access Object)"));
         uk.add(LessonBlock.paragraph(
@@ -967,16 +967,16 @@ final class Chapters16to23 {
 
     // ── Глава 22. Web Basics ─────────────────────────────────────────────────
 
-    private static void addChapter22(Course c) {
+    private static void addChapter22(Course s) {
         Chapter ch = new Chapter(
                 "Глава 22. Web Basics",
                 "Chapter 22. Web Basics");
-        ch.add(lessonHttp());
-        ch.add(lessonUrl());
-        c.add(ch);
+        ch.add(materialHttp());
+        ch.add(materialUrl());
+        s.add(ch);
     }
 
-    private static Lesson lessonHttp() {
+    private static Lesson materialHttp() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Основи HTTP"));
         uk.add(LessonBlock.paragraph(
@@ -1032,7 +1032,7 @@ final class Chapters16to23 {
         return new Lesson("22.1", "HTTP", "HTTP", uk, en);
     }
 
-    private static Lesson lessonUrl() {
+    private static Lesson materialUrl() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("URL та URI"));
         uk.add(LessonBlock.paragraph(
@@ -1122,16 +1122,16 @@ final class Chapters16to23 {
 
     // ── Глава 23. Servlet/JSP ────────────────────────────────────────────────
 
-    private static void addChapter23(Course c) {
+    private static void addChapter23(Course s) {
         Chapter ch = new Chapter(
                 "Глава 23. Servlet API та JSP",
                 "Chapter 23. Servlet API and JSP");
-        ch.add(lessonServlet());
-        ch.add(lessonJsp());
-        c.add(ch);
+        ch.add(materialServlet());
+        ch.add(materialJsp());
+        s.add(ch);
     }
 
-    private static Lesson lessonServlet() {
+    private static Lesson materialServlet() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Servlet"));
         uk.add(LessonBlock.paragraph(
@@ -1181,7 +1181,7 @@ final class Chapters16to23 {
         return new Lesson("23.1", "Servlet", "Servlet", uk, en);
     }
 
-    private static Lesson lessonJsp() {
+    private static Lesson materialJsp() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("JSP"));
         uk.add(LessonBlock.paragraph(

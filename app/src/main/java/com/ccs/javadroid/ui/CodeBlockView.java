@@ -1,5 +1,7 @@
 package com.ccs.javadroid.ui;
 
+import com.ccs.javadroid.util.AppPreferences;
+
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -54,7 +56,7 @@ public class CodeBlockView extends LinearLayout {
         tvLang.setText(lang != null && !lang.isEmpty() ? lang.toUpperCase() : "CODE");
         tvLang.setTextColor(0xFF808080);
         tvLang.setTextSize(10);
-        tvLang.setTypeface(Typeface.MONOSPACE);
+        tvLang.setTypeface(new AppPreferences(tvLang.getContext()).resolveTypeface());
         LinearLayout.LayoutParams langLp = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
         tvLang.setLayoutParams(langLp);
         header.addView(tvLang);
@@ -87,7 +89,7 @@ public class CodeBlockView extends LinearLayout {
         tvCode.setText(code);
         tvCode.setTextColor(0xFFBBBBBB);
         tvCode.setTextSize(12);
-        tvCode.setTypeface(Typeface.MONOSPACE);
+        tvCode.setTypeface(new AppPreferences(tvCode.getContext()).resolveTypeface());
         tvCode.setLineSpacing(0, 1.3f);
         tvCode.setTextIsSelectable(false);
         tvCode.setFocusable(false);

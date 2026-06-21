@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:background="#1E1E20">
 
-    <!-- Toolbar: course spinner + language toggle -->
+    <!-- Toolbar: section spinner + language toggle -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/learnToolbar"
         android:layout_width="match_parent"
@@ -45,7 +45,7 @@
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
 
-    <!-- Course description -->
+    <!-- Section description -->
     <TextView
         android:id="@+id/tvCourseDescription"
         android:layout_width="match_parent"

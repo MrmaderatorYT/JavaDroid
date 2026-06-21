@@ -259,4 +259,116 @@
     <string name="kotlin_run_warning_message">Das direkte Ausführen und Kompilieren von Kotlin-Dateien (.kt) auf dem Gerät wird nicht unterstützt. 
 
 Bitte verwenden Sie Syntaxhervorhebung zum Bearbeiten und kompilieren Sie auf einem externen Server oder PC.</string>
+    <string name="settings_section_power_saving">Energiesparmodus</string>
+    <string name="settings_power_saving_mode">Energiesparmodus</string>
+    <string name="settings_power_saving_auto">Automatisch (Akku &lt; 30%%)</string>
+    <string name="settings_power_saving_disabled">Deaktiviert</string>
+    <string name="settings_power_saving_performance">Immer Leistung</string>
+    <string name="settings_power_saving_desc">Automatisch: reduziert Funktionen bei niedrigem Akku. Leistung: aktiviert immer alle Funktionen.</string>
+    <string name="sa_empty_file">Leere Datei</string>
+    <string name="sa_long_line">Zeile länger als %1$d Zeichen (%2$d)</string>
+    <string name="sa_todo">TODO im Code</string>
+    <string name="sa_fixme">FIXME im Code — muss behoben werden</string>
+    <string name="sa_hack">HACK im Code — temporäre Lösung</string>
+    <string name="sa_xxx">XXX-Marker im Code</string>
+    <string name="sa_trailing_space">Leerzeichen am Zeilenende</string>
+    <string name="sa_mixed_tabs">Gemischte Tabs und Leerzeichen</string>
+    <string name="sa_commented_code">Auskommentierter Code</string>
+    <string name="sa_deprecated_api">Verwendung von @Deprecated</string>
+    <string name="sa_system_exit">System.exit() im Code</string>
+    <string name="sa_thread_sleep">Thread.sleep ohne InterruptedException</string>
+    <string name="sa_raw_type">Raw type — parametrisierten Typ verwenden</string>
+    <string name="sa_hardcoded_path">Hardcodierter Dateipfad</string>
+    <string name="sa_hardcoded_ip">Hardcodierte IP-Adresse</string>
+    <string name="sa_password_in_code">Mögliches Passwort/Schlüssel im Code!</string>
+    <string name="sa_multiple_statements">Mehrere Operationen in einer Zeile</string>
+    <string name="sa_wildcard_import">Wildcard-Import — spezifische Imports verwenden</string>
+    <string name="sa_empty_string_concat">Leerer String in Konkatenation</string>
+    <string name="sa_resource_leak">Möglicher Ressourcen-Leck — try-with-resources</string>
+    <string name="sa_unused_import">Unbenutzter Import: %1$s</string>
+    <string name="sa_duplicate_import">Doppelter Import: %1$s</string>
+    <string name="sa_long_method">Methode zu lang (%1$d Zeilen)</string>
+    <string name="sa_high_complexity">Hohe zyklomatische Komplexität (%1$d)</string>
+    <string name="sa_many_params">Zu viele Parameter (%1$d)</string>
+    <string name="sa_deep_nesting">Tiefe Verschachtelung (%1$d Ebenen)</string>
+    <string name="sa_empty_method">Leere Methode</string>
+    <string name="sa_method_name_uppercase">Methodenname mit Großbuchstaben: %1$s</string>
+    <string name="sa_many_returns">Viele return-Anweisungen (%1$d)</string>
+    <string name="sa_missing_javadoc_method">Öffentliche Methode ohne JavaDoc</string>
+    <string name="sa_many_local_vars">Zu viele lokale Variablen (%1$d)</string>
+    <string name="sa_no_return">Methode gibt keinen Wert zurück (Typ: %1$s)</string>
+    <string name="sa_class_too_long">Klasse zu lang (%1$d Zeilen)</string>
+    <string name="sa_too_many_fields">Zu viele Klassenfelder (%1$d)</string>
+    <string name="sa_god_class">God class — zu viel Verantwortung</string>
+    <string name="sa_serial_version_uid">Serializable ohne serialVersionUID</string>
+    <string name="sa_missing_override">Fehlender @Override für %1$s</string>
+    <string name="sa_unused_field">Unbenutztes Feld: %1$s</string>
+    <string name="sa_empty_catch">Leerer catch-Block</string>
+    <string name="sa_catch_no_log">Catch ohne Behandlung</string>
+    <string name="sa_string_equals">String-Vergleich mit == (besser .equals())</string>
+    <string name="sa_system_out">System.out — Logger verwenden</string>
+    <string name="sa_system_err">System.err — Logger verwenden</string>
+    <string name="sa_print_stacktrace">printStackTrace() — Logger mit cause</string>
+    <string name="sa_redundant_tostring">Überflüssiges .toString()</string>
+    <string name="sa_concat_in_loop">String-Konkatenation in Schleife — StringBuilder</string>
+    <string name="sa_autoboxing">Autoboxing — Literale verwenden</string>
+    <string name="sa_collections_sort">Collections.sort() — Java 8+ list.sort()</string>
+    <string name="sa_redundant_null_instanceof">Überflüssiger null vor instanceof</string>
+    <string name="sa_indexof_contains">indexOf() == -1 — besser .contains()</string>
+    <string name="sa_length_zero">.length() == 0 — besser .isEmpty()</string>
+    <string name="sa_size_zero">.size() == 0 — besser .isEmpty()</string>
+    <string name="sa_one_line_block">Einzeiliger Block ohne Klammern</string>
+    <string name="sa_long_ternary">Langer ternärer Operator</string>
+    <string name="sa_unnecessary_semicolon">Überflüssiges Semikolon</string>
+    <string name="sa_redundant_this">Überflüssiges this.</string>
+    <string name="sa_bool_true_false">== true / == false — überflüssig</string>
+    <string name="sa_redundant_boxing">Überflüssiges Boxing/Unboxing</string>
+    <string name="sa_catch_throwable">Fängt Throwable/Exception — spezifische Ausnahmen</string>
+    <string name="sa_finalize">finalize() veraltet — try-with-resources</string>
+    <string name="sa_double_float_eq">double/float Vergleich mit ==</string>
+    <string name="sa_java_util_date">java.util.Date — besser java.time</string>
+    <string name="sa_simple_date_format">SimpleDateFormat nicht threadsicher</string>
+    <string name="sa_sql_injection">SQL durch String-Konkatenation — SQL-Injektion!</string>
+    <string name="sa_math_random">Math.random() — SecureRandom verwenden</string>
+    <string name="sa_runtime_exec">Externen Prozess ausführen — Eingabe prüfen</string>
+    <string name="sa_mutable_static">Veränderliches static Feld</string>
+    <string name="sa_long_chain">Langer Methodenaufruf (%1$d Aufrufe)</string>
+    <string name="sa_connection_leak">Connection ohne try-with-resources</string>
+    <string name="sa_socket_leak">Socket ohne try-with-resources</string>
+    <string name="sa_executor_no_shutdown">ExecutorService ohne shutdown</string>
+    <string name="sa_temp_no_delete">Temp-Datei ohne deleteOnExit</string>
+    <string name="sa_npe_after_null_check">Dereferenzierung nach null check</string>
+    <string name="sa_return_null">Null zurückgegeben — Optional oder Collections.empty*</string>
+    <string name="sa_null_in_collection">null in Sammlung — NPE möglich</string>
+    <string name="sa_optional_get">Optional.get() ohne Prüfung</string>
+    <string name="sa_optional_field">Optional als Feld — Anti-Pattern</string>
+    <string name="sa_optional_or_null">Optional.orElse(null) — verliert Optional-Zweck</string>
+    <string name="sa_override_missing">Fehlender @Override für %1$s</string>
+    <string name="sa_lambda_long">Lambda &gt; 5 Zeilen — Methode extrahieren</string>
+    <string name="sa_lambda_method_ref">Lambda kann Methodenverweis sein</string>
+    <string name="sa_test_no_assert">Test ohne assert — Prüfung macht nichts</string>
+    <string name="sa_test_sysout">System.out in Test — assert verwenden</string>
+    <string name="sa_test_empty">Leerer Test</string>
+    <string name="sa_missing_class_javadoc">Klasse ohne JavaDoc</string>
+    <string name="sa_hashtable_vector">Veraltete Klasse — HashMap/ArrayList</string>
+    <string name="sa_date_new">new Date() — Instant.now()</string>
+    <string name="sa_calendar">Calendar.getInstance() — LocalDateTime</string>
+    <string name="sa_stream_no_terminal">Stream ohne Terminal-Operation</string>
+    <string name="sa_collect_tolist">collect(toList()) — Java 16+ .toList()</string>
+    <string name="sa_findfirst_get">findFirst().get() — .findFirst().orElseThrow()</string>
+    <string name="sa_pattern_compile_loop">Pattern.compile() in Schleife</string>
+    <string name="sa_string_matches">String.matches() — Pattern.compile verwenden</string>
+    <string name="sa_fallthrough">Fall-through in switch — break vergessen?</string>
+    <string name="sa_switch_no_default">switch ohne default</string>
+    <string name="sa_final_local">Lokale Variable \'%1$s\' — final für Lesbarkeit</string>
+
+
+    <!-- Storage Permission -->
+    <string name="permission_storage_title">Dateizugriff</string>
+    <string name="permission_storage_message">Für die Arbeit mit Projektdateien benötigt die App Zugriff auf das Dateisystem.\n\nBitte aktivieren Sie \"Zugriff auf alle Dateien\" auf dem nächsten Bildschirm.</string>
+    <string name="permission_storage_open_settings">Einstellungen öffnen</string>
+    <string name="permission_storage_exit">Beenden</string>
+    <string name="permission_storage_denied_title">Zugriff nicht erteilt</string>
+    <string name="permission_storage_denied_message">Ohne Dateizugriff kann die App nicht mit Projekten arbeiten.</string>
+    <string name="permission_storage_try_again">Erneut versuchen</string>
 </resources>

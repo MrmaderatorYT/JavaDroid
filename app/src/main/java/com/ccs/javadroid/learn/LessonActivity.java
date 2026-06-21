@@ -9,15 +9,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.ccs.javadroid.AppPreferences;
-import com.ccs.javadroid.AppTheme;
+import com.ccs.javadroid.util.AppPreferences;
+import com.ccs.javadroid.util.AppTheme;
 import com.ccs.javadroid.R;
 
 import java.util.List;
 
 /**
- * Показує один урок обраного курсу нативно (без WebView): заголовок + навігація
- * далі/назад + список блоків через {@link LessonBlockAdapter}.
+ * Показує один матеріал обраного розділу нативно (без WebView): заголовок +
+ * навігація далі/назад + список блоків через {@link LessonBlockAdapter}.
  */
 public class LessonActivity extends AppCompatActivity {
 
@@ -30,7 +30,7 @@ public class LessonActivity extends AppCompatActivity {
     private LessonBlockAdapter adapter;
     private String courseId;
     private String lessonId;
-    private List<Lesson> lessons;
+    private List<Lesson> materials;
     private int currentIndex = 0;
 
     @Override
@@ -40,57 +40,61 @@ public class LessonActivity extends AppCompatActivity {
         setTheme(theme.dark ? R.style.Theme_JavaDroid : R.style.Theme_JavaDroid_Light);
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_lesson);
+        setContentView(R.layout.activity_material);
 
         courseId = getIntent().getStringExtra(EXTRA_COURSE);
         lessonId = getIntent().getStringExtra(EXTRA_LESSON);
 
-        TextView tvTitle = findViewById(R.id.tvLessonTitle);
-        RecyclerView rv = findViewById(R.id.rvLessonBlocks);
-        View btnBack = findViewById(R.id.btnLessonBack);
-        View btnPrev = findViewById(R.id.btnLessonPrev);
-        View btnNext = findViewById(R.id.btnLessonNext);
+        TextView tvTitle = findViewById(R.id.tvMaterialTitle);
+        RecyclerView rv = findViewById(R.id.rvMaterialBlocks);
+        View btnBack = findViewById(R.id.btnMaterialBack);
+        View btnPrev = findViewById(R.id.btnMaterialPrev);
+        View btnNext = findViewById(R.id.btnMaterialNext);
 
         rv.setBackgroundColor(theme.bg);
         findViewById(android.R.id.content).setBackgroundColor(theme.bg);
 
-        Course course = CourseRegistry.getInstance().getCourse(courseId);
-        if (course == null) { Toast.makeText(this, "Course not found", Toast.LENGTH_SHORT).show(); finish(); return; }
-        lessons = course.allLessons();
-
-        // знайти поточний урок
-        for (int i = 0; i < lessons.size(); i++) {
-            if (lessons.get(i).id.equals(lessonId)) { currentIndex = i; break; }
+        Course section = CourseRegistry.getInstance().getCourse(courseId);
+        if (section == null) {
+            Toast.makeText(this, "Section not found", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
         }
-        if (currentIndex >= lessons.size()) currentIndex = 0;
+        materials = section.allMaterials();
+
+        // знайти поточний матеріал
+        for (int i = 0; i < materials.size(); i++) {
+            if (materials.get(i).id.equals(lessonId)) { currentIndex = i; break; }
+        }
+        if (currentIndex >= materials.size()) currentIndex = 0;
 
         int lang = CourseRegistry.getInstance().getLanguage();
-        Lesson lesson = lessons.get(currentIndex);
-        tvTitle.setText(lesson.title(lang));
+        Lesson material = materials.get(currentIndex);
+        tvTitle.setText(material.title(lang));
         tvTitle.setTextColor(theme.text);
 
-        adapter = new LessonBlockAdapter(lesson.content(lang), theme);
+        adapter = new LessonBlockAdapter(material.content(lang), theme);
         rv.setLayoutManager(new LinearLayoutManager(this));
         rv.setAdapter(adapter);
 
         btnBack.setOnClickListener(v -> finish());
         btnPrev.setVisibility(currentIndex > 0 ? View.VISIBLE : View.INVISIBLE);
-        btnNext.setVisibility(currentIndex < lessons.size() - 1 ? View.VISIBLE : View.INVISIBLE);
+        btnNext.setVisibility(currentIndex < materials.size() - 1 ? View.VISIBLE : View.INVISIBLE);
         btnPrev.setOnClickListener(v -> navigate(-1));
         btnNext.setOnClickListener(v -> navigate(1));
     }
 
     private void navigate(int delta) {
         int idx = currentIndex + delta;
-        if (idx < 0 || idx >= lessons.size()) return;
+        if (idx < 0 || idx >= materials.size()) return;
         currentIndex = idx;
         int lang = CourseRegistry.getInstance().getLanguage();
-        Lesson lesson = lessons.get(currentIndex);
-        ((TextView) findViewById(R.id.tvLessonTitle)).setText(lesson.title(lang));
-        adapter.setBlocks(lesson.content(lang));
-        RecyclerView rv = findViewById(R.id.rvLessonBlocks);
+        Lesson material = materials.get(currentIndex);
+        ((TextView) findViewById(R.id.tvMaterialTitle)).setText(material.title(lang));
+        adapter.setBlocks(material.content(lang));
+        RecyclerView rv = findViewById(R.id.rvMaterialBlocks);
         if (rv.getLayoutManager() != null) rv.getLayoutManager().scrollToPosition(0);
-        findViewById(R.id.btnLessonPrev).setVisibility(idx > 0 ? View.VISIBLE : View.INVISIBLE);
-        findViewById(R.id.btnLessonNext).setVisibility(idx < lessons.size() - 1 ? View.VISIBLE : View.INVISIBLE);
+        findViewById(R.id.btnMaterialPrev).setVisibility(idx > 0 ? View.VISIBLE : View.INVISIBLE);
+        findViewById(R.id.btnMaterialNext).setVisibility(idx < materials.size() - 1 ? View.VISIBLE : View.INVISIBLE);
     }
 }

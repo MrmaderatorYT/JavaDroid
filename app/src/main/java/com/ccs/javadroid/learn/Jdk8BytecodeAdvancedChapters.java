@@ -13,22 +13,22 @@ final class Jdk8BytecodeAdvancedChapters {
     private Jdk8BytecodeAdvancedChapters() {
     }
 
-    static void add(Course c) {
+    static void add(Course s) {
         Chapter ch = new Chapter(
                 "JVM bytecode advanced: loading, verifier, compiler patterns",
                 "JVM bytecode advanced: loading, verifier, compiler patterns");
-        ch.add(lessonClassLoadingLinkingInitialization());
-        ch.add(lessonConstructorsClinitAndFlags());
-        ch.add(lessonBridgeSyntheticAndErasure());
-        ch.add(lessonStackMapTableDeep());
-        ch.add(lessonTryFinallySynchronizedBytecode());
-        ch.add(lessonInvokedynamicDeep());
-        ch.add(lessonBytecodeDebugAttributes());
-        ch.add(lessonBytecodeCapstoneCompiler());
-        c.add(ch);
+        ch.add(materialClassLoadingLinkingInitialization());
+        ch.add(materialConstructorsClinitAndFlags());
+        ch.add(materialBridgeSyntheticAndErasure());
+        ch.add(materialStackMapTableDeep());
+        ch.add(materialTryFinallySynchronizedBytecode());
+        ch.add(materialInvokedynamicDeep());
+        ch.add(materialBytecodeDebugAttributes());
+        ch.add(materialBytecodeCapstoneCompiler());
+        s.add(ch);
     }
 
-    private static Lesson lessonClassLoadingLinkingInitialization() {
+    private static Lesson materialClassLoadingLinkingInitialization() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Class loading: loading, linking, initialization"));
         uk.add(LessonBlock.paragraph(
@@ -121,7 +121,7 @@ final class Jdk8BytecodeAdvancedChapters {
         return new Lesson("jdk8.bytecode.advanced.1", "Class loading/linking/init", "Class loading/linking/init", uk, en);
     }
 
-    private static Lesson lessonConstructorsClinitAndFlags() {
+    private static Lesson materialConstructorsClinitAndFlags() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("<init>, <clinit>, access flags"));
         uk.add(LessonBlock.paragraph(
@@ -231,7 +231,7 @@ final class Jdk8BytecodeAdvancedChapters {
         return new Lesson("jdk8.bytecode.advanced.2", "<init>, <clinit>, flags", "<init>, <clinit>, flags", uk, en);
     }
 
-    private static Lesson lessonBridgeSyntheticAndErasure() {
+    private static Lesson materialBridgeSyntheticAndErasure() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Bridge і synthetic methods"));
         uk.add(LessonBlock.paragraph(
@@ -320,7 +320,7 @@ final class Jdk8BytecodeAdvancedChapters {
         return new Lesson("jdk8.bytecode.advanced.3", "Bridge і synthetic", "Bridge and synthetic", uk, en);
     }
 
-    private static Lesson lessonStackMapTableDeep() {
+    private static Lesson materialStackMapTableDeep() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("StackMapTable: карта типів для verifier"));
         uk.add(LessonBlock.paragraph(
@@ -406,7 +406,7 @@ final class Jdk8BytecodeAdvancedChapters {
         return new Lesson("jdk8.bytecode.advanced.4", "StackMapTable глибоко", "StackMapTable deep dive", uk, en);
     }
 
-    private static Lesson lessonTryFinallySynchronizedBytecode() {
+    private static Lesson materialTryFinallySynchronizedBytecode() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("try/finally і synchronized у bytecode"));
         uk.add(LessonBlock.paragraph(
@@ -522,7 +522,7 @@ final class Jdk8BytecodeAdvancedChapters {
         return new Lesson("jdk8.bytecode.advanced.5", "try/finally і synchronized", "try/finally and synchronized", uk, en);
     }
 
-    private static Lesson lessonInvokedynamicDeep() {
+    private static Lesson materialInvokedynamicDeep() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("invokedynamic і LambdaMetafactory"));
         uk.add(LessonBlock.paragraph(
@@ -603,7 +603,7 @@ final class Jdk8BytecodeAdvancedChapters {
         return new Lesson("jdk8.bytecode.advanced.6", "invokedynamic глибоко", "invokedynamic deep dive", uk, en);
     }
 
-    private static Lesson lessonBytecodeDebugAttributes() {
+    private static Lesson materialBytecodeDebugAttributes() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Debug attributes: LineNumberTable, LocalVariableTable"));
         uk.add(LessonBlock.paragraph(
@@ -683,7 +683,7 @@ final class Jdk8BytecodeAdvancedChapters {
         return new Lesson("jdk8.bytecode.advanced.7", "Debug attributes", "Debug attributes", uk, en);
     }
 
-    private static Lesson lessonBytecodeCapstoneCompiler() {
+    private static Lesson materialBytecodeCapstoneCompiler() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Capstone: маленький compiler у bytecode"));
         uk.add(LessonBlock.paragraph(

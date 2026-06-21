@@ -8,18 +8,18 @@ import java.util.List;
  */
 final class DevOpsChapters {
 
-    static void add(Course c) {
+    static void add(Course s) {
         Chapter ch1 = new Chapter("Інструменти збірки", "Build Tools");
-        ch1.add(lessonMaven());
-        ch1.add(lessonGradle());
-        c.add(ch1);
+        ch1.add(materialMaven());
+        ch1.add(materialGradle());
+        s.add(ch1);
 
         Chapter ch2 = new Chapter("Контейнеризація", "Containerization");
-        ch2.add(lessonDocker());
-        c.add(ch2);
+        ch2.add(materialDocker());
+        s.add(ch2);
     }
 
-    private static Lesson lessonMaven() {
+    private static Lesson materialMaven() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Apache Maven"));
         uk.add(LessonBlock.paragraph(
@@ -80,7 +80,7 @@ final class DevOpsChapters {
         return new Lesson("dev.1", "Maven", "Maven", uk, en);
     }
 
-    private static Lesson lessonGradle() {
+    private static Lesson materialGradle() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Gradle"));
         uk.add(LessonBlock.paragraph(
@@ -144,7 +144,7 @@ final class DevOpsChapters {
         return new Lesson("dev.2", "Gradle", "Gradle", uk, en);
     }
 
-    private static Lesson lessonDocker() {
+    private static Lesson materialDocker() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Контейнеризація з Docker"));
         uk.add(LessonBlock.paragraph(

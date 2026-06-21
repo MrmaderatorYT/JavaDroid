@@ -164,7 +164,7 @@ public class CallGraphActivity extends AppCompatActivity {
         methodLabel.setBackgroundColor(theme.toolbar);
         methodLabel.setTextColor(theme.accent);
         methodLabel.setTextSize(12);
-        methodLabel.setTypeface(Typeface.MONOSPACE);
+        methodLabel.setTypeface(new AppPreferences(this).resolveTypeface());
         methodLabel.setPadding(dp(12), dp(8), dp(12), dp(8));
         methodLabel.setText("Select a method to see its call graph");
         root.addView(methodLabel);
@@ -255,7 +255,7 @@ public class CallGraphActivity extends AppCompatActivity {
         TextView item = new TextView(this);
         item.setTextColor(theme.accent);
         item.setTextSize(12);
-        item.setTypeface(Typeface.MONOSPACE);
+        item.setTypeface(new AppPreferences(this).resolveTypeface());
         item.setPadding(dp(8), dp(6), dp(8), dp(6));
 
         SpannableStringBuilder sb = new SpannableStringBuilder();
@@ -344,7 +344,7 @@ public class CallGraphActivity extends AppCompatActivity {
     private TextView createIndentedItem(String arrow, CallGraphModel.MethodNode m) {
         TextView item = new TextView(this);
         item.setTextSize(12);
-        item.setTypeface(Typeface.MONOSPACE);
+        item.setTypeface(new AppPreferences(this).resolveTypeface());
         item.setPadding(dp(24), dp(4), dp(8), dp(4));
 
         SpannableStringBuilder sb = new SpannableStringBuilder();

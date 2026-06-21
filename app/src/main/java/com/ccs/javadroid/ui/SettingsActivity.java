@@ -348,7 +348,7 @@ public class SettingsActivity extends AppCompatActivity {
         hex.setText(toHex(currentColor));
         hex.setTextColor(theme.textDim);
         hex.setTextSize(11);
-        hex.setTypeface(android.graphics.Typeface.MONOSPACE);
+        hex.setTypeface(new AppPreferences(this).resolveTypeface());
 
         row.addView(t);
         row.addView(swatch);
@@ -390,7 +390,7 @@ public class SettingsActivity extends AppCompatActivity {
         EditText hexInput = new EditText(this);
         hexInput.setHint("#RRGGBB");
         hexInput.setText(toHex(initial));
-        hexInput.setTypeface(android.graphics.Typeface.MONOSPACE);
+        hexInput.setTypeface(new AppPreferences(this).resolveTypeface());
         hexInput.setTextColor(theme.text);
         hexInput.setHintTextColor(theme.textDim);
         hexInput.setFilters(new InputFilter[] { new InputFilter.LengthFilter(7) });

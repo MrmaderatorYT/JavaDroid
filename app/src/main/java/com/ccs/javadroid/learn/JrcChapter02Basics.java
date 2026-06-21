@@ -6,20 +6,18 @@ import java.util.List;
 /** Глава 2. Основи програмування. */
 final class JrcChapter02Basics {
 
-    static void populateJava() {
+    static void add(Course s) {
         Chapter ch = new Chapter(
                 "Глава 2. Основи програмування",
                 "Chapter 2. Programming basics");
-
         ch.add(buildOperators());
         ch.add(buildControlFlow());
         ch.add(buildArrays());
         ch.add(buildForLoop());
-
-        MaterialStore.addJava(ch);
+        s.add(ch);
     }
 
-    private static TopicContent buildOperators() {
+    private static Lesson buildOperators() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Оператори"));
         uk.add(LessonBlock.paragraph(
@@ -66,10 +64,10 @@ final class JrcChapter02Basics {
                 "Bitwise AND: &", "Bitwise XOR: ^", "Bitwise OR: |", "Logical AND: &&",
                 "Logical OR: ||", "Ternary: ? :", "Lowest: = += -= ..."));
 
-        return new TopicContent(concat(uk, en));
+        return new Lesson("2.1", "Оператори", "Operators", uk, en);
     }
 
-    private static TopicContent buildControlFlow() {
+    private static Lesson buildControlFlow() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Керування потоком: if / switch"));
         uk.add(LessonBlock.paragraph("Умовна конструкція if-else:"));
@@ -128,10 +126,10 @@ final class JrcChapter02Basics {
         en.add(LessonBlock.warning(
                 "Forgetting break in classic switch leads to fall-through."));
 
-        return new TopicContent(concat(uk, en));
+        return new Lesson("2.2", "Керування потоком", "Control flow", uk, en);
     }
 
-    private static TopicContent buildArrays() {
+    private static Lesson buildArrays() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Масиви"));
         uk.add(LessonBlock.paragraph(
@@ -164,10 +162,10 @@ final class JrcChapter02Basics {
         en.add(LessonBlock.note(
                 "java.util.Arrays provides utilities: Arrays.sort(nums), Arrays.toString(nums)."));
 
-        return new TopicContent(concat(uk, en));
+        return new Lesson("2.3", "Масиви", "Arrays", uk, en);
     }
 
-    private static TopicContent buildForLoop() {
+    private static Lesson buildForLoop() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Цикли"));
         uk.add(LessonBlock.paragraph("Java підтримує for, while, do-while:"));
@@ -198,12 +196,6 @@ final class JrcChapter02Basics {
                 "break — immediate exit from the loop.", "continue — jumps to the next iteration.",
                 "break with a label — exits a nested loop: outer: for(...) for(...) break outer;"));
 
-        return new TopicContent(concat(uk, en));
+        return new Lesson("2.4", "Цикли", "Loops", uk, en);
     }
-
-    // ── Допоміжний метод для об'єднання двох списків ──
-    // Оскільки TopicContent очікує один список, потрібно вирішити, як кодувати дві мови.
-    // У цій реалізації ми залишаємо одну мову (наприклад, українську) – але це незручно.
-    // Краще зробити TopicContent двомовним. Але для простоти я зроблю TopicContent двомовним, з двома полями.
-    // Тому нижче я наведу нову версію TopicContent, яка має два списки.
 }

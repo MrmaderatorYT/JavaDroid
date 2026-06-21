@@ -224,4 +224,117 @@
     <string name="bytecode_select_method">Selectează o metodă în stânga</string>
     <string name="kotlin_run_warning_title">Rulează Kotlin</string>
     <string name="kotlin_run_warning_message">Rularea și compilarea fișierelor Kotlin (.kt) direct pe dispozitiv nu este acceptată din cauza constrângerilor de resurse. \n\nVă rugăm să utilizați evidențierea sintaxei pentru editarea codului și să efectuați compilarea pe un server extern sau pe un PC.</string>
+    <string name="settings_section_power_saving">Economisire energie</string>
+    <string name="settings_power_saving_mode">Mod economisire energie</string>
+    <string name="settings_power_saving_auto">Automat (baterie &lt; 30%%)</string>
+    <string name="settings_power_saving_disabled">Dezactivat</string>
+    <string name="settings_power_saving_performance">Întotdeauna performanță</string>
+    <string name="settings_power_saving_desc">Automat: reduce funcțiile când bateria este scăzută. Performanță: activează întotdeauna toate funcțiile.</string>
+    <string name="sa_empty_file">Fișier gol</string>
+    <string name="sa_long_line">Linie mai lungă de %1$d caractere (%2$d)</string>
+    <string name="sa_todo">TODO în cod</string>
+    <string name="sa_fixme">FIXME în cod — necesită corecție</string>
+    <string name="sa_hack">HACK în cod — soluție temporară</string>
+    <string name="sa_xxx">Marker XXX în cod</string>
+    <string name="sa_trailing_space">Spațiu la sfârșit de linie</string>
+    <string name="sa_mixed_tabs">Taburi și spații amestecate</string>
+    <string name="sa_commented_code">Cod comentat</string>
+    <string name="sa_deprecated_api">Utilizare @Deprecated</string>
+    <string name="sa_system_exit">System.exit() în cod</string>
+    <string name="sa_thread_sleep">Thread.sleep fără gestionarea InterruptedException</string>
+    <string name="sa_raw_type">Raw type — tip parametrizat</string>
+    <string name="sa_hardcoded_path">Cale fișier hardcodată</string>
+    <string name="sa_hardcoded_ip">Adresă IP hardcodată</string>
+    <string name="sa_password_in_code">Parolă/cheie posibilă în cod!</string>
+    <string name="sa_multiple_statements">Operații multiple pe o linie</string>
+    <string name="sa_wildcard_import">Import wildcard — importuri specifice</string>
+    <string name="sa_empty_string_concat">Șir gol în concatenare</string>
+    <string name="sa_resource_leak">Scurgere de resursă — try-with-resources</string>
+    <string name="sa_unused_import">Import neutilizat: %1$s</string>
+    <string name="sa_duplicate_import">Import duplicat: %1$s</string>
+    <string name="sa_long_method">Metodă prea lungă (%1$d linii)</string>
+    <string name="sa_high_complexity">Complexitate ciclomatică ridicată (%1$d)</string>
+    <string name="sa_many_params">Prea mulți parametri (%1$d)</string>
+    <string name="sa_deep_nesting">Înglobare adâncă (%1$d niveluri)</string>
+    <string name="sa_empty_method">Metodă goală</string>
+    <string name="sa_method_name_uppercase">Nume metodă cu majusculă: %1$s</string>
+    <string name="sa_many_returns">Multe return (%1$d)</string>
+    <string name="sa_missing_javadoc_method">Metodă publică fără JavaDoc</string>
+    <string name="sa_many_local_vars">Prea multe variabile locale (%1$d)</string>
+    <string name="sa_no_return">Metoda nu returnează valoare (tip: %1$s)</string>
+    <string name="sa_class_too_long">Clasă prea lungă (%1$d linii)</string>
+    <string name="sa_too_many_fields">Prea multe câmpuri (%1$d)</string>
+    <string name="sa_god_class">God class — prea multă responsabilitate</string>
+    <string name="sa_serial_version_uid">Serializable fără serialVersionUID</string>
+    <string name="sa_missing_override">@Override lipsă pentru %1$s</string>
+    <string name="sa_unused_field">Câmp neutilizat: %1$s</string>
+    <string name="sa_empty_catch">Bloc catch gol</string>
+    <string name="sa_catch_no_log">Catch fără gestionare</string>
+    <string name="sa_string_equals">Comparare cu == (mai bine .equals())</string>
+    <string name="sa_system_out">System.out — logger</string>
+    <string name="sa_system_err">System.err — logger</string>
+    <string name="sa_print_stacktrace">printStackTrace() — logger cu cause</string>
+    <string name="sa_redundant_tostring">.toString() redundant</string>
+    <string name="sa_concat_in_loop">Concatenare în buclă — StringBuilder</string>
+    <string name="sa_autoboxing">Autoboxing — literali</string>
+    <string name="sa_collections_sort">Collections.sort() — Java 8+ list.sort()</string>
+    <string name="sa_redundant_null_instanceof">Null redundant înainte de instanceof</string>
+    <string name="sa_indexof_contains">indexOf() == -1 — mai bine .contains()</string>
+    <string name="sa_length_zero">.length() == 0 — mai bine .isEmpty()</string>
+    <string name="sa_size_zero">.size() == 0 — mai bine .isEmpty()</string>
+    <string name="sa_one_line_block">Bloc pe o linie fără acolade</string>
+    <string name="sa_long_ternary">Operator ternar lung</string>
+    <string name="sa_unnecessary_semicolon">Punct și virgulă inutil</string>
+    <string name="sa_redundant_this">this. redundant</string>
+    <string name="sa_bool_true_false">== true / == false — redundant</string>
+    <string name="sa_redundant_boxing">Boxing/Unboxing redundant</string>
+    <string name="sa_catch_throwable">Prindere Throwable/Exception</string>
+    <string name="sa_finalize">finalize() depășit — try-with-resources</string>
+    <string name="sa_double_float_eq">Comparare double/float cu ==</string>
+    <string name="sa_java_util_date">java.util.Date — mai bine java.time</string>
+    <string name="sa_simple_date_format">SimpleDateFormat nu este thread-safe</string>
+    <string name="sa_sql_injection">SQL prin concatenare — injecție SQL!</string>
+    <string name="sa_math_random">Math.random() — SecureRandom</string>
+    <string name="sa_runtime_exec">Rulare proces extern</string>
+    <string name="sa_mutable_static">Câmp static mutabil</string>
+    <string name="sa_long_chain">Lanț de apeluri lung (%1$d apeluri)</string>
+    <string name="sa_connection_leak">Connection fără try-with-resources</string>
+    <string name="sa_socket_leak">Socket fără try-with-resources</string>
+    <string name="sa_executor_no_shutdown">ExecutorService fără shutdown</string>
+    <string name="sa_temp_no_delete">Fișier temp fără deleteOnExit</string>
+    <string name="sa_npe_after_null_check">Dereferință după null check</string>
+    <string name="sa_return_null">Returnare null — Optional sau Collections.empty*</string>
+    <string name="sa_null_in_collection">null în colecție</string>
+    <string name="sa_optional_get">Optional.get() fără verificare</string>
+    <string name="sa_optional_field">Optional ca câmp — anti-pattern</string>
+    <string name="sa_optional_or_null">Optional.orElse(null)</string>
+    <string name="sa_override_missing">@Override lipsă pentru %1$s</string>
+    <string name="sa_lambda_long">Lambda &gt; 5 linii — extrage în metodă</string>
+    <string name="sa_lambda_method_ref">Lambda poate fi referință de metodă</string>
+    <string name="sa_test_no_assert">Test fără assert</string>
+    <string name="sa_test_sysout">System.out în test — utilizează assert</string>
+    <string name="sa_test_empty">Test gol</string>
+    <string name="sa_missing_class_javadoc">Clasă fără JavaDoc</string>
+    <string name="sa_hashtable_vector">Clasă depășită — HashMap/ArrayList</string>
+    <string name="sa_date_new">new Date() — Instant.now()</string>
+    <string name="sa_calendar">Calendar.getInstance() — LocalDateTime</string>
+    <string name="sa_stream_no_terminal">Stream fără operație terminală</string>
+    <string name="sa_collect_tolist">collect(toList()) — Java 16+ .toList()</string>
+    <string name="sa_findfirst_get">findFirst().get() — .findFirst().orElseThrow()</string>
+    <string name="sa_pattern_compile_loop">Pattern.compile() în buclă</string>
+    <string name="sa_string_matches">String.matches() — Pattern.compile</string>
+    <string name="sa_fallthrough">Fall-through în switch — ai uitat break?</string>
+    <string name="sa_switch_no_default">switch fără default</string>
+    <string name="sa_final_local">Variabilă locală \'%1$s\' — final pentru lizibilitate</string>
+
+
+
+    <!-- Storage Permission -->
+    <string name="permission_storage_title">Acces la fișiere</string>
+    <string name="permission_storage_message">Pentru a lucra cu fișierele proiectului, aplicația are nevoie de acces la sistemul de fișiere.\n\nVă rugăm să activați \"Acces la toate fișierele\" pe următoarea ecrană.</string>
+    <string name="permission_storage_open_settings">Deschide setările</string>
+    <string name="permission_storage_exit">Ieșire</string>
+    <string name="permission_storage_denied_title">Acces negat</string>
+    <string name="permission_storage_denied_message">Fără acces la fișiere, aplicația nu poate lucra cu proiectele.</string>
+    <string name="permission_storage_try_again">Încearcă din nou</string>
 </resources>

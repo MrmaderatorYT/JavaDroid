@@ -199,9 +199,14 @@ import android.graphics.Typeface;
         }
     }
 
+    private static final java.util.Map<String, Typeface> fontCache = new java.util.HashMap<>();
+
     private Typeface loadAssetFont(String path) {
+        if (fontCache.containsKey(path)) return fontCache.get(path);
         try {
-            return Typeface.createFromAsset(context.getAssets(), path);
+            Typeface tf = Typeface.createFromAsset(context.getAssets(), path);
+            fontCache.put(path, tf);
+            return tf;
         } catch (Exception e) {
             return Typeface.MONOSPACE;
         }

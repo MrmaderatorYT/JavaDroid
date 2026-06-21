@@ -13,25 +13,25 @@ final class Jdk8DeepDiveChapters {
     private Jdk8DeepDiveChapters() {
     }
 
-    static void add(Course c) {
-        addOrientation(c);
-        addCollectionsCore(c);
-        addSetsAndMaps(c);
-        addAlgorithmsAndStreams(c);
-        addPracticeMarathon(c);
+    static void add(Course s) {
+        addOrientation(s);
+        addCollectionsCore(s);
+        addSetsAndMaps(s);
+        addAlgorithmsAndStreams(s);
+        addPracticeMarathon(s);
     }
 
     // ── Orientation ────────────────────────────────────────────────────────
 
-    private static void addOrientation(Course c) {
+    private static void addOrientation(Course s) {
         Chapter ch = new Chapter(
                 "JDK 8: як вчитися глибоко",
                 "JDK 8: how to study deeply");
-        ch.add(lessonJdk8ContractMindset());
-        c.add(ch);
+        ch.add(materialJdk8ContractMindset());
+        s.add(ch);
     }
 
-    private static Lesson lessonJdk8ContractMindset() {
+    private static Lesson materialJdk8ContractMindset() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("JDK 8 як набір контрактів"));
         uk.add(LessonBlock.paragraph(
@@ -101,19 +101,19 @@ final class Jdk8DeepDiveChapters {
 
     // ── Collections Core ───────────────────────────────────────────────────
 
-    private static void addCollectionsCore(Course c) {
+    private static void addCollectionsCore(Course s) {
         Chapter ch = new Chapter(
                 "Collections Framework: List, Iterator, Enumeration",
                 "Collections Framework: List, Iterator, Enumeration");
-        ch.add(lessonCollectionHierarchy());
-        ch.add(lessonListContract());
-        ch.add(lessonArrayListDeep());
-        ch.add(lessonLinkedListVectorStack());
-        ch.add(lessonEnumerationIteratorListIterator());
-        c.add(ch);
+        ch.add(materialCollectionHierarchy());
+        ch.add(materialListContract());
+        ch.add(materialArrayListDeep());
+        ch.add(materialLinkedListVectorStack());
+        ch.add(materialEnumerationIteratorListIterator());
+        s.add(ch);
     }
 
-    private static Lesson lessonCollectionHierarchy() {
+    private static Lesson materialCollectionHierarchy() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Ієрархія Collections Framework"));
         uk.add(LessonBlock.paragraph(
@@ -191,7 +191,7 @@ final class Jdk8DeepDiveChapters {
         return new Lesson("jdk8.collections.1", "Ієрархія колекцій", "Collections hierarchy", uk, en);
     }
 
-    private static Lesson lessonListContract() {
+    private static Lesson materialListContract() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("List: контракт, індекси, дублікати"));
         uk.add(LessonBlock.paragraph(
@@ -277,7 +277,7 @@ final class Jdk8DeepDiveChapters {
         return new Lesson("jdk8.collections.2", "List глибоко", "List deep dive", uk, en);
     }
 
-    private static Lesson lessonArrayListDeep() {
+    private static Lesson materialArrayListDeep() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("ArrayList: масив всередині"));
         uk.add(LessonBlock.paragraph(
@@ -363,7 +363,7 @@ final class Jdk8DeepDiveChapters {
         return new Lesson("jdk8.collections.3", "ArrayList детально", "ArrayList in detail", uk, en);
     }
 
-    private static Lesson lessonLinkedListVectorStack() {
+    private static Lesson materialLinkedListVectorStack() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("LinkedList, Vector, Stack"));
         uk.add(LessonBlock.paragraph(
@@ -431,7 +431,7 @@ final class Jdk8DeepDiveChapters {
         return new Lesson("jdk8.collections.4", "LinkedList, Vector, Stack", "LinkedList, Vector, Stack", uk, en);
     }
 
-    private static Lesson lessonEnumerationIteratorListIterator() {
+    private static Lesson materialEnumerationIteratorListIterator() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Enumeration, Iterator, ListIterator"));
         uk.add(LessonBlock.paragraph(
@@ -560,17 +560,17 @@ final class Jdk8DeepDiveChapters {
 
     // ── Sets and Maps ──────────────────────────────────────────────────────
 
-    private static void addSetsAndMaps(Course c) {
+    private static void addSetsAndMaps(Course s) {
         Chapter ch = new Chapter(
                 "Set і Map у JDK 8: equals, hashCode, порядок",
                 "Set and Map in JDK 8: equals, hashCode, order");
-        ch.add(lessonSetDeepDive());
-        ch.add(lessonMapHashMapDeep());
-        ch.add(lessonLinkedTreeHashtableProperties());
-        c.add(ch);
+        ch.add(materialSetDeepDive());
+        ch.add(materialMapHashMapDeep());
+        ch.add(materialLinkedTreeHashtableProperties());
+        s.add(ch);
     }
 
-    private static Lesson lessonSetDeepDive() {
+    private static Lesson materialSetDeepDive() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Set: унікальність через equals/hashCode"));
         uk.add(LessonBlock.paragraph(
@@ -643,7 +643,7 @@ final class Jdk8DeepDiveChapters {
         return new Lesson("jdk8.setmap.1", "Set детально", "Set deep dive", uk, en);
     }
 
-    private static Lesson lessonMapHashMapDeep() {
+    private static Lesson materialMapHashMapDeep() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("HashMap: ключі, buckets, hash"));
         uk.add(LessonBlock.paragraph(
@@ -743,7 +743,7 @@ final class Jdk8DeepDiveChapters {
         return new Lesson("jdk8.setmap.2", "HashMap детально", "HashMap deep dive", uk, en);
     }
 
-    private static Lesson lessonLinkedTreeHashtableProperties() {
+    private static Lesson materialLinkedTreeHashtableProperties() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("LinkedHashMap, TreeMap, Hashtable, Properties"));
         uk.add(LessonBlock.paragraph(
@@ -834,17 +834,17 @@ final class Jdk8DeepDiveChapters {
 
     // ── Algorithms and Streams ─────────────────────────────────────────────
 
-    private static void addAlgorithmsAndStreams(Course c) {
+    private static void addAlgorithmsAndStreams(Course s) {
         Chapter ch = new Chapter(
                 "Алгоритми Collections і Stream API у JDK 8",
                 "Collections algorithms and Stream API in JDK 8");
-        ch.add(lessonComparatorCollectionsAlgorithms());
-        ch.add(lessonStreamsFromCollections());
-        ch.add(lessonConcurrentCollections());
-        c.add(ch);
+        ch.add(materialComparatorCollectionsAlgorithms());
+        ch.add(materialStreamsFromCollections());
+        ch.add(materialConcurrentCollections());
+        s.add(ch);
     }
 
-    private static Lesson lessonComparatorCollectionsAlgorithms() {
+    private static Lesson materialComparatorCollectionsAlgorithms() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Collections algorithms"));
         uk.add(LessonBlock.paragraph(
@@ -944,7 +944,7 @@ final class Jdk8DeepDiveChapters {
         return new Lesson("jdk8.algorithms.1", "Collections algorithms", "Collections algorithms", uk, en);
     }
 
-    private static Lesson lessonStreamsFromCollections() {
+    private static Lesson materialStreamsFromCollections() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Stream API: pipeline над колекцією"));
         uk.add(LessonBlock.paragraph(
@@ -1025,7 +1025,7 @@ final class Jdk8DeepDiveChapters {
         return new Lesson("jdk8.algorithms.2", "Stream API у JDK 8", "Stream API in JDK 8", uk, en);
     }
 
-    private static Lesson lessonConcurrentCollections() {
+    private static Lesson materialConcurrentCollections() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Fail-fast і concurrent collections"));
         uk.add(LessonBlock.paragraph(
@@ -1115,15 +1115,15 @@ final class Jdk8DeepDiveChapters {
 
     // ── Practice Marathon ──────────────────────────────────────────────────
 
-    private static void addPracticeMarathon(Course c) {
+    private static void addPracticeMarathon(Course s) {
         Chapter ch = new Chapter(
                 "Практичний марафон JDK 8",
                 "JDK 8 practice marathon");
-        ch.add(lessonCollectionsMarathon());
-        c.add(ch);
+        ch.add(materialCollectionsMarathon());
+        s.add(ch);
     }
 
-    private static Lesson lessonCollectionsMarathon() {
+    private static Lesson materialCollectionsMarathon() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Марафон: 30 вправ на колекції"));
         uk.add(LessonBlock.paragraph(

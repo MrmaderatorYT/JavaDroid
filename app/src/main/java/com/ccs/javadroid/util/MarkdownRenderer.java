@@ -50,12 +50,12 @@ public final class MarkdownRenderer {
     private MarkdownRenderer() {}
 
     @NonNull
-    public static SpannableStringBuilder render(@NonNull String markdown, boolean dark) {
-        return render(markdown, dark, 16);
+    public static SpannableStringBuilder render(@NonNull String markdown, boolean dark, Typeface tf) {
+        return render(markdown, dark, 16, tf);
     }
 
     @NonNull
-    public static SpannableStringBuilder render(@NonNull String markdown, boolean dark, int baseFontSize) {
+    public static SpannableStringBuilder render(@NonNull String markdown, boolean dark, int baseFontSize, Typeface tf) {
         SpannableStringBuilder sb = new SpannableStringBuilder();
         String[] lines = markdown.split("\n", -1);
 
@@ -71,7 +71,7 @@ public final class MarkdownRenderer {
                     // End code block
                     String code = codeBlock.toString();
                     if (code.endsWith("\n")) code = code.substring(0, code.length() - 1);
-                    appendCodeBlock(sb, code, dark, baseFontSize);
+                    appendCodeBlock(sb, code, dark, baseFontSize, tf);
                     codeBlock.setLength(0);
                     inCodeBlock = false;
                 } else {
@@ -102,7 +102,7 @@ public final class MarkdownRenderer {
             // Heading
             int headingLevel = getHeadingLevel(line);
             if (headingLevel > 0) {
-                appendHeading(sb, line.substring(headingLevel).trim(), headingLevel, dark, baseFontSize);
+                appendHeading(sb, line.substring(headingLevel).trim(), headingLevel, dark, baseFontSize, tf);
                 sb.append("\n");
                 continue;
             }
@@ -110,7 +110,7 @@ public final class MarkdownRenderer {
             // Blockquote
             if (trimStart(line).startsWith("> ")) {
                 String content = trimStart(line).substring(2);
-                appendBlockquote(sb, content, dark, baseFontSize);
+                appendBlockquote(sb, content, dark, baseFontSize, tf);
                 sb.append("\n");
                 continue;
             }
@@ -118,7 +118,7 @@ public final class MarkdownRenderer {
             // Unordered list
             if (isUnorderedListItem(line)) {
                 String content = getUnorderedListContent(line);
-                appendListItem(sb, content, dark, baseFontSize, false, getIndentLevel(line));
+                appendListItem(sb, content, dark, baseFontSize, false, getIndentLevel(line), tf);
                 sb.append("\n");
                 continue;
             }
@@ -126,7 +126,7 @@ public final class MarkdownRenderer {
             // Ordered list
             if (isOrderedListItem(line)) {
                 String content = getOrderedListContent(line);
-                appendListItem(sb, content, dark, baseFontSize, true, getIndentLevel(line));
+                appendListItem(sb, content, dark, baseFontSize, true, getIndentLevel(line), tf);
                 sb.append("\n");
                 continue;
             }
@@ -140,7 +140,7 @@ public final class MarkdownRenderer {
                     i++;
                 }
                 i--; // will be incremented by for loop
-                appendTable(sb, tableRows, dark, baseFontSize);
+                appendTable(sb, tableRows, dark, baseFontSize, tf);
                 sb.append("\n");
                 continue;
             }
@@ -149,13 +149,13 @@ public final class MarkdownRenderer {
             if (isTaskListItem(line)) {
                 String content = getTaskListContent(line);
                 boolean checked = line.contains("[x]") || line.contains("[X]");
-                appendTaskListItem(sb, content, dark, baseFontSize, checked, getIndentLevel(line));
+                appendTaskListItem(sb, content, dark, baseFontSize, checked, getIndentLevel(line), tf);
                 sb.append("\n");
                 continue;
             }
 
             // Regular paragraph
-            appendParagraph(sb, line, dark, baseFontSize);
+            appendParagraph(sb, line, dark, baseFontSize, tf);
             sb.append("\n");
         }
 
@@ -163,7 +163,7 @@ public final class MarkdownRenderer {
         if (inCodeBlock && codeBlock.length() > 0) {
             String code = codeBlock.toString();
             if (code.endsWith("\n")) code = code.substring(0, code.length() - 1);
-            appendCodeBlock(sb, code, dark, baseFontSize);
+            appendCodeBlock(sb, code, dark, baseFontSize, tf);
         }
 
         // Remove trailing newlines
@@ -177,9 +177,9 @@ public final class MarkdownRenderer {
     // ── Heading ──────────────────────────────────────────────
 
     private static void appendHeading(SpannableStringBuilder sb, String text, int level,
-                                       boolean dark, int baseFontSize) {
+                                       boolean dark, int baseFontSize, Typeface tf) {
         int start = sb.length();
-        appendInlineFormatted(sb, text, dark);
+        appendInlineFormatted(sb, text, dark, tf);
         int end = sb.length();
 
         float scale;
@@ -198,12 +198,12 @@ public final class MarkdownRenderer {
 
     // ── Code block ───────────────────────────────────────────
 
-    private static void appendCodeBlock(SpannableStringBuilder sb, String code, boolean dark, int baseFontSize) {
+    private static void appendCodeBlock(SpannableStringBuilder sb, String code, boolean dark, int baseFontSize, Typeface tf) {
         int start = sb.length();
         sb.append(code);
         int end = sb.length();
 
-        sb.setSpan(new TypefaceSpan("monospace"), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        sb.setSpan(new CustomTypefaceSpan(tf), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         sb.setSpan(new ForegroundColorSpan(dark ? COLOR_CODE_TEXT : COLOR_CODE_TEXT_LIGHT),
                 start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         sb.setSpan(new AbsoluteSizeSpan(baseFontSize - 2), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -211,7 +211,7 @@ public final class MarkdownRenderer {
 
     // ── Blockquote ───────────────────────────────────────────
 
-    private static void appendBlockquote(SpannableStringBuilder sb, String text, boolean dark, int baseFontSize) {
+    private static void appendBlockquote(SpannableStringBuilder sb, String text, boolean dark, int baseFontSize, Typeface tf) {
         int start = sb.length();
         sb.append(text);
         int end = sb.length();
@@ -225,7 +225,7 @@ public final class MarkdownRenderer {
     // ── List item ────────────────────────────────────────────
 
     private static void appendListItem(SpannableStringBuilder sb, String text, boolean dark,
-                                        int baseFontSize, boolean ordered, int indent) {
+                                        int baseFontSize, boolean ordered, int indent, Typeface tf) {
         String bullet = ordered ? "  " : (indent > 0 ? "    " : "•  ");
         int start = sb.length();
         sb.append(bullet);
@@ -233,7 +233,7 @@ public final class MarkdownRenderer {
                 start, sb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         start = sb.length();
-        appendInlineFormatted(sb, text, dark);
+        appendInlineFormatted(sb, text, dark, tf);
     }
 
     // ── HR ───────────────────────────────────────────────────
@@ -248,13 +248,13 @@ public final class MarkdownRenderer {
 
     // ── Paragraph with inline formatting ─────────────────────
 
-    private static void appendParagraph(SpannableStringBuilder sb, String text, boolean dark, int baseFontSize) {
-        appendInlineFormatted(sb, text, dark);
+    private static void appendParagraph(SpannableStringBuilder sb, String text, boolean dark, int baseFontSize, Typeface tf) {
+        appendInlineFormatted(sb, text, dark, tf);
     }
 
     // ── Inline formatting (bold, italic, code, links) ────────
 
-    private static void appendInlineFormatted(SpannableStringBuilder sb, String text, boolean dark) {
+    private static void appendInlineFormatted(SpannableStringBuilder sb, String text, boolean dark, Typeface tf) {
         int i = 0;
         int len = text.length();
 
@@ -267,7 +267,7 @@ public final class MarkdownRenderer {
                 if (end < 0) end = len;
                 int start = sb.length();
                 sb.append(text, i + 1, end);
-                sb.setSpan(new TypefaceSpan("monospace"), start, sb.length(),
+                sb.setSpan(new CustomTypefaceSpan(tf), start, sb.length(),
                         Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 sb.setSpan(new ForegroundColorSpan(dark ? COLOR_CODE_TEXT : COLOR_CODE_TEXT_LIGHT),
                         start, sb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -377,7 +377,7 @@ public final class MarkdownRenderer {
                 if (end > 0 && end < len && (end + 1 >= len || text.charAt(end + 1) != '$')) {
                     String math = text.substring(i + 1, end);
                     int start = sb.length();
-                    renderLatex(sb, math, dark);
+                    renderLatex(sb, math, dark, tf);
                     i = end + 1;
                     continue;
                 }
@@ -391,7 +391,7 @@ public final class MarkdownRenderer {
                     String math = text.substring(i + 2, end);
                     int start = sb.length();
                     sb.append("\n");
-                    renderLatex(sb, math, dark);
+                    renderLatex(sb, math, dark, tf);
                     sb.append("\n");
                     i = end + 2;
                     continue;
@@ -425,7 +425,7 @@ public final class MarkdownRenderer {
 
     // ── LaTeX renderer ───────────────────────────────────────
 
-    private static void renderLatex(SpannableStringBuilder sb, String math, boolean dark) {
+    private static void renderLatex(SpannableStringBuilder sb, String math, boolean dark, Typeface tf) {
         int start = sb.length();
         int i = 0;
         int len = math.length();
@@ -539,7 +539,7 @@ public final class MarkdownRenderer {
 
         int end = sb.length();
         if (end > start) {
-            sb.setSpan(new TypefaceSpan("monospace"), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            sb.setSpan(new CustomTypefaceSpan(tf), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             sb.setSpan(new ForegroundColorSpan(dark ? 0xFF6897BB : 0xFF2972C7),
                     start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
@@ -763,7 +763,7 @@ public final class MarkdownRenderer {
     }
 
     private static void appendTaskListItem(SpannableStringBuilder sb, String text, boolean dark,
-                                           int baseFontSize, boolean checked, int indent) {
+                                           int baseFontSize, boolean checked, int indent, Typeface tf) {
         int pad = indent * 2;
         for (int p = 0; p < pad; p++) sb.append("  ");
 
@@ -773,7 +773,7 @@ public final class MarkdownRenderer {
                 start, sb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         start = sb.length();
-        appendInlineFormatted(sb, text, dark);
+        appendInlineFormatted(sb, text, dark, tf);
         if (checked) {
             sb.setSpan(new StrikethroughSpan(), start, sb.length(),
                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -783,7 +783,7 @@ public final class MarkdownRenderer {
     // ── Table ────────────────────────────────────────────────
 
     private static void appendTable(SpannableStringBuilder sb, List<String> rows, boolean dark,
-                                    int baseFontSize) {
+                                    int baseFontSize, Typeface tf) {
         if (rows.isEmpty()) return;
 
         // Parse header

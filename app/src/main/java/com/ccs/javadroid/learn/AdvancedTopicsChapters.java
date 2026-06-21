@@ -10,32 +10,32 @@ import java.util.List;
  */
 final class AdvancedTopicsChapters {
 
-    static void add(Course c) {
-        addGenericsAndCollections(c);
-        addStreamsAndLambdas(c);
-        addDesignPatterns(c);
-        addAdvancedDesignPatterns(c);
-        addModernJavaFeatures(c);
+    static void add(Course s) {
+        addGenericsAndCollections(s);
+        addStreamsAndLambdas(s);
+        addDesignPatterns(s);
+        addAdvancedDesignPatterns(s);
+        addModernJavaFeatures(s);
     }
 
     // ═══════════════════════════════════════════════════════════════
     //  Глава: Generics та Collections
     // ═══════════════════════════════════════════════════════════════
 
-    private static void addGenericsAndCollections(Course c) {
+    private static void addGenericsAndCollections(Course s) {
         Chapter ch = new Chapter(
                 "Generics та Collections (детально)",
                 "Generics & Collections (in depth)");
-        ch.add(lessonGenericBasics());
-        ch.add(lessonBoundedWildcards());
-        ch.add(lessonCollectionsOverview());
-        ch.add(lessonMapDeep());
-        ch.add(lessonSetAndSorted());
-        ch.add(lessonComparableComparator());
-        c.add(ch);
+        ch.add(materialGenericBasics());
+        ch.add(materialBoundedWildcards());
+        ch.add(materialCollectionsOverview());
+        ch.add(materialMapDeep());
+        ch.add(materialSetAndSorted());
+        ch.add(materialComparableComparator());
+        s.add(ch);
     }
 
-    private static Lesson lessonGenericBasics() {
+    private static Lesson materialGenericBasics() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Generics: основи та типобезпечність"));
         uk.add(LessonBlock.paragraph(
@@ -125,7 +125,7 @@ final class AdvancedTopicsChapters {
         return new Lesson("adv.1", "Generics основи", "Generics basics", uk, en);
     }
 
-    private static Lesson lessonBoundedWildcards() {
+    private static Lesson materialBoundedWildcards() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Wildcards: ? extends та ? super"));
         uk.add(LessonBlock.paragraph(
@@ -196,7 +196,7 @@ final class AdvancedTopicsChapters {
         return new Lesson("adv.2", "Wildcards та PECS", "Wildcards & PECS", uk, en);
     }
 
-    private static Lesson lessonCollectionsOverview() {
+    private static Lesson materialCollectionsOverview() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Ієрархія Collections Framework"));
         uk.add(LessonBlock.table(
@@ -238,7 +238,7 @@ final class AdvancedTopicsChapters {
         return new Lesson("adv.3", "Collections Framework", "Collections Framework", uk, en);
     }
 
-    private static Lesson lessonMapDeep() {
+    private static Lesson materialMapDeep() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Map: глибоке вивчення"));
         uk.add(LessonBlock.code(
@@ -308,7 +308,7 @@ final class AdvancedTopicsChapters {
         return new Lesson("adv.4", "Map глибоко", "Map deep dive", uk, en);
     }
 
-    private static Lesson lessonSetAndSorted() {
+    private static Lesson materialSetAndSorted() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Set: HashSet, TreeSet, LinkedHashSet"));
         uk.add(LessonBlock.code(
@@ -352,7 +352,7 @@ final class AdvancedTopicsChapters {
         return new Lesson("adv.5", "Set: HashSet, TreeSet", "Set: HashSet, TreeSet", uk, en);
     }
 
-    private static Lesson lessonComparableComparator() {
+    private static Lesson materialComparableComparator() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Comparable vs Comparator"));
         uk.add(LessonBlock.paragraph(
@@ -406,19 +406,19 @@ final class AdvancedTopicsChapters {
     //  Глава: Streams & Lambdas
     // ═══════════════════════════════════════════════════════════════
 
-    private static void addStreamsAndLambdas(Course c) {
+    private static void addStreamsAndLambdas(Course s) {
         Chapter ch = new Chapter(
                 "Stream API та Lambda-вирази",
                 "Stream API and Lambda expressions");
-        ch.add(lessonLambdaBasics());
-        ch.add(lessonFunctionalInterfaces());
-        ch.add(lessonStreamCreation());
-        ch.add(lessonStreamOperations());
-        ch.add(lessonCollectors());
-        c.add(ch);
+        ch.add(materialLambdaBasics());
+        ch.add(materialFunctionalInterfaces());
+        ch.add(materialStreamCreation());
+        ch.add(materialStreamOperations());
+        ch.add(materialCollectors());
+        s.add(ch);
     }
 
-    private static Lesson lessonLambdaBasics() {
+    private static Lesson materialLambdaBasics() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Lambda-вирази: синтаксис"));
         uk.add(LessonBlock.paragraph(
@@ -484,7 +484,7 @@ final class AdvancedTopicsChapters {
         return new Lesson("adv.7", "Lambda основи", "Lambda basics", uk, en);
     }
 
-    private static Lesson lessonFunctionalInterfaces() {
+    private static Lesson materialFunctionalInterfaces() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Функціональні інтерфейси (java.util.function)"));
         uk.add(LessonBlock.table(
@@ -538,7 +538,7 @@ final class AdvancedTopicsChapters {
         return new Lesson("adv.8", "Functional interfaces", "Functional interfaces", uk, en);
     }
 
-    private static Lesson lessonStreamCreation() {
+    private static Lesson materialStreamCreation() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Створення Stream"));
         uk.add(LessonBlock.code(
@@ -582,7 +582,7 @@ final class AdvancedTopicsChapters {
         return new Lesson("adv.9", "Створення Stream", "Creating Streams", uk, en);
     }
 
-    private static Lesson lessonStreamOperations() {
+    private static Lesson materialStreamOperations() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Операції Stream: проміжні та термінальні"));
         uk.add(LessonBlock.code(
@@ -646,7 +646,7 @@ final class AdvancedTopicsChapters {
         return new Lesson("adv.10", "Stream операції", "Stream operations", uk, en);
     }
 
-    private static Lesson lessonCollectors() {
+    private static Lesson materialCollectors() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Collectors: збирання результатів"));
         uk.add(LessonBlock.code(
@@ -708,19 +708,19 @@ final class AdvancedTopicsChapters {
     //  Глава: Design Patterns
     // ═══════════════════════════════════════════════════════════════
 
-    private static void addDesignPatterns(Course c) {
+    private static void addDesignPatterns(Course s) {
         Chapter ch = new Chapter(
                 "Design Patterns (найважливіші)",
                 "Design Patterns (most important)");
-        ch.add(lessonSingleton());
-        ch.add(lessonBuilder());
-        ch.add(lessonObserver());
-        ch.add(lessonStrategy());
-        ch.add(lessonFactory());
-        c.add(ch);
+        ch.add(materialSingleton());
+        ch.add(materialBuilder());
+        ch.add(materialObserver());
+        ch.add(materialStrategy());
+        ch.add(materialFactory());
+        s.add(ch);
     }
 
-    private static Lesson lessonSingleton() {
+    private static Lesson materialSingleton() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Singleton — єдиний екземпляр"));
         uk.add(LessonBlock.paragraph(
@@ -784,7 +784,7 @@ final class AdvancedTopicsChapters {
         return new Lesson("dp.1", "Singleton", "Singleton", uk, en);
     }
 
-    private static Lesson lessonBuilder() {
+    private static Lesson materialBuilder() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Builder — поетапне створення складних об'єктів"));
         uk.add(LessonBlock.paragraph(
@@ -862,7 +862,7 @@ final class AdvancedTopicsChapters {
         return new Lesson("dp.2", "Builder", "Builder", uk, en);
     }
 
-    private static Lesson lessonObserver() {
+    private static Lesson materialObserver() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Observer — підписка на події"));
         uk.add(LessonBlock.paragraph(
@@ -925,7 +925,7 @@ final class AdvancedTopicsChapters {
         return new Lesson("dp.3", "Observer", "Observer", uk, en);
     }
 
-    private static Lesson lessonStrategy() {
+    private static Lesson materialStrategy() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Strategy — алгоритми як об'єкти"));
         uk.add(LessonBlock.paragraph(
@@ -989,7 +989,7 @@ final class AdvancedTopicsChapters {
         return new Lesson("dp.4", "Strategy", "Strategy", uk, en);
     }
 
-    private static Lesson lessonFactory() {
+    private static Lesson materialFactory() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Factory Method — створення об'єктів через фабрику"));
         uk.add(LessonBlock.paragraph(
@@ -1063,17 +1063,17 @@ final class AdvancedTopicsChapters {
     //  Глава: Розширені Design Patterns
     // ═══════════════════════════════════════════════════════════════
 
-    private static void addAdvancedDesignPatterns(Course c) {
+    private static void addAdvancedDesignPatterns(Course s) {
         Chapter ch = new Chapter(
                 "Розширені Design Patterns",
                 "Advanced Design Patterns");
-        ch.add(lessonDecorator());
-        ch.add(lessonProxy());
-        ch.add(lessonCommand());
-        c.add(ch);
+        ch.add(materialDecorator());
+        ch.add(materialProxy());
+        ch.add(materialCommand());
+        s.add(ch);
     }
 
-    private static Lesson lessonDecorator() {
+    private static Lesson materialDecorator() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Decorator — динамічне додавання поведінки"));
         uk.add(LessonBlock.paragraph(
@@ -1143,7 +1143,7 @@ final class AdvancedTopicsChapters {
         return new Lesson("dp.6", "Decorator", "Decorator", uk, en);
     }
 
-    private static Lesson lessonProxy() {
+    private static Lesson materialProxy() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Proxy — сурогат для іншого об'єкта"));
         uk.add(LessonBlock.paragraph(
@@ -1206,7 +1206,7 @@ final class AdvancedTopicsChapters {
         return new Lesson("dp.7", "Proxy", "Proxy", uk, en);
     }
 
-    private static Lesson lessonCommand() {
+    private static Lesson materialCommand() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Command — інкапсуляція запиту"));
         uk.add(LessonBlock.paragraph(
@@ -1238,7 +1238,7 @@ final class AdvancedTopicsChapters {
                 + "    private List<Command> history = new ArrayList<>();\n"
                 + "    void executeCommand(Command c) {\n"
                 + "        c.execute();\n"
-                + "        history.add(c);\n"
+                + "        history.add(s);\n"
                 + "    }\n"
                 + "}"));
         List<LessonBlock> en = new ArrayList<>();
@@ -1272,7 +1272,7 @@ final class AdvancedTopicsChapters {
                 + "    private List<Command> history = new ArrayList<>();\n"
                 + "    void executeCommand(Command c) {\n"
                 + "        c.execute();\n"
-                + "        history.add(c);\n"
+                + "        history.add(s);\n"
                 + "    }\n"
                 + "}"));
         return new Lesson("dp.8", "Command", "Command", uk, en);
@@ -1282,18 +1282,18 @@ final class AdvancedTopicsChapters {
     //  Глава: Java 8-альтернативи новішим фічам
     // ═══════════════════════════════════════════════════════════════
 
-    private static void addModernJavaFeatures(Course c) {
+    private static void addModernJavaFeatures(Course s) {
         Chapter ch = new Chapter(
                 "Java 8-альтернативи новішим можливостям",
                 "Java 8 alternatives to newer features");
-        ch.add(lessonRecords());
-        ch.add(lessonSealedClasses());
-        ch.add(lessonPatternMatching());
-        ch.add(lessonSwitchExpressions());
-        c.add(ch);
+        ch.add(materialRecords());
+        ch.add(materialSealedClasses());
+        ch.add(materialPatternMatching());
+        ch.add(materialSwitchExpressions());
+        s.add(ch);
     }
 
-    private static Lesson lessonRecords() {
+    private static Lesson materialRecords() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Record-подібні класи у Java 8"));
         uk.add(LessonBlock.paragraph(
@@ -1383,7 +1383,7 @@ final class AdvancedTopicsChapters {
         return new Lesson("mod.1", "Immutable-класи замість records", "Immutable classes instead of records", uk, en);
     }
 
-    private static Lesson lessonSealedClasses() {
+    private static Lesson materialSealedClasses() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Контроль ієрархії у Java 8"));
         uk.add(LessonBlock.paragraph(
@@ -1463,7 +1463,7 @@ final class AdvancedTopicsChapters {
         return new Lesson("mod.2", "Ієрархії без sealed", "Hierarchies without sealed", uk, en);
     }
 
-    private static Lesson lessonPatternMatching() {
+    private static Lesson materialPatternMatching() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("instanceof та безпечний cast у Java 8"));
         uk.add(LessonBlock.paragraph(
@@ -1509,7 +1509,7 @@ final class AdvancedTopicsChapters {
         return new Lesson("mod.3", "instanceof у Java 8", "instanceof in Java 8", uk, en);
     }
 
-    private static Lesson lessonSwitchExpressions() {
+    private static Lesson materialSwitchExpressions() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Класичний switch у Java 8"));
         uk.add(LessonBlock.paragraph(

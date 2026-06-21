@@ -13,26 +13,26 @@ final class Jdk8DeepDiveAdvancedChapters {
     private Jdk8DeepDiveAdvancedChapters() {
     }
 
-    static void add(Course c) {
-        addFunctionalJava8(c);
-        addRuntimeIntrospection(c);
-        addPlatformAndDiagnostics(c);
+    static void add(Course s) {
+        addFunctionalJava8(s);
+        addRuntimeIntrospection(s);
+        addPlatformAndDiagnostics(s);
     }
 
     // ── Functional Java 8 ─────────────────────────────────────────────────
 
-    private static void addFunctionalJava8(Course c) {
+    private static void addFunctionalJava8(Course s) {
         Chapter ch = new Chapter(
                 "Java 8 functional style: lambdas, Optional, regex",
                 "Java 8 functional style: lambdas, Optional, regex");
-        ch.add(lessonFunctionalInterfacesDeep());
-        ch.add(lessonMethodReferencesDefaultMethods());
-        ch.add(lessonOptionalDeep());
-        ch.add(lessonRegexDeep());
-        c.add(ch);
+        ch.add(materialFunctionalInterfacesDeep());
+        ch.add(materialMethodReferencesDefaultMethods());
+        ch.add(materialOptionalDeep());
+        ch.add(materialRegexDeep());
+        s.add(ch);
     }
 
-    private static Lesson lessonFunctionalInterfacesDeep() {
+    private static Lesson materialFunctionalInterfacesDeep() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Functional interface: один абстрактний метод"));
         uk.add(LessonBlock.paragraph(
@@ -125,7 +125,7 @@ final class Jdk8DeepDiveAdvancedChapters {
         return new Lesson("jdk8.functional.1", "Functional interfaces", "Functional interfaces", uk, en);
     }
 
-    private static Lesson lessonMethodReferencesDefaultMethods() {
+    private static Lesson materialMethodReferencesDefaultMethods() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Method references і default methods"));
         uk.add(LessonBlock.paragraph(
@@ -217,7 +217,7 @@ final class Jdk8DeepDiveAdvancedChapters {
         return new Lesson("jdk8.functional.2", "Method references і default", "Method references and default", uk, en);
     }
 
-    private static Lesson lessonOptionalDeep() {
+    private static Lesson materialOptionalDeep() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Optional: явна відсутність значення"));
         uk.add(LessonBlock.paragraph(
@@ -293,7 +293,7 @@ final class Jdk8DeepDiveAdvancedChapters {
         return new Lesson("jdk8.functional.3", "Optional глибоко", "Optional deep dive", uk, en);
     }
 
-    private static Lesson lessonRegexDeep() {
+    private static Lesson materialRegexDeep() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Regex у JDK 8: Pattern і Matcher"));
         uk.add(LessonBlock.paragraph(
@@ -381,16 +381,16 @@ final class Jdk8DeepDiveAdvancedChapters {
 
     // ── Runtime Introspection ──────────────────────────────────────────────
 
-    private static void addRuntimeIntrospection(Course c) {
+    private static void addRuntimeIntrospection(Course s) {
         Chapter ch = new Chapter(
                 "Runtime: annotations, reflection, serialization",
                 "Runtime: annotations, reflection, serialization");
-        ch.add(lessonAnnotationsReflectionDeep());
-        ch.add(lessonSerializationDeep());
-        c.add(ch);
+        ch.add(materialAnnotationsReflectionDeep());
+        ch.add(materialSerializationDeep());
+        s.add(ch);
     }
 
-    private static Lesson lessonAnnotationsReflectionDeep() {
+    private static Lesson materialAnnotationsReflectionDeep() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Annotations + Reflection"));
         uk.add(LessonBlock.paragraph(
@@ -480,7 +480,7 @@ final class Jdk8DeepDiveAdvancedChapters {
         return new Lesson("jdk8.runtime.1", "Annotations і Reflection", "Annotations and Reflection", uk, en);
     }
 
-    private static Lesson lessonSerializationDeep() {
+    private static Lesson materialSerializationDeep() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Serialization у JDK 8"));
         uk.add(LessonBlock.paragraph(
@@ -584,16 +584,16 @@ final class Jdk8DeepDiveAdvancedChapters {
 
     // ── Platform and Diagnostics ───────────────────────────────────────────
 
-    private static void addPlatformAndDiagnostics(Course c) {
+    private static void addPlatformAndDiagnostics(Course s) {
         Chapter ch = new Chapter(
                 "JDK 8 platform: classpath, JAR, JVM diagnostics",
                 "JDK 8 platform: classpath, JAR, JVM diagnostics");
-        ch.add(lessonClasspathJarDeep());
-        ch.add(lessonStackTracesDiagnostics());
-        c.add(ch);
+        ch.add(materialClasspathJarDeep());
+        ch.add(materialStackTracesDiagnostics());
+        s.add(ch);
     }
 
-    private static Lesson lessonClasspathJarDeep() {
+    private static Lesson materialClasspathJarDeep() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Classpath і JAR"));
         uk.add(LessonBlock.paragraph(
@@ -673,7 +673,7 @@ final class Jdk8DeepDiveAdvancedChapters {
         return new Lesson("jdk8.platform.1", "Classpath і JAR", "Classpath and JAR", uk, en);
     }
 
-    private static Lesson lessonStackTracesDiagnostics() {
+    private static Lesson materialStackTracesDiagnostics() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Stack trace: читати зверху чи знизу?"));
         uk.add(LessonBlock.paragraph(

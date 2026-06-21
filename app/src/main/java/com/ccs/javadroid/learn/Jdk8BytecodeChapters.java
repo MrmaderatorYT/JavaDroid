@@ -12,23 +12,23 @@ final class Jdk8BytecodeChapters {
     private Jdk8BytecodeChapters() {
     }
 
-    static void add(Course c) {
+    static void add(Course s) {
         Chapter ch = new Chapter(
                 "Розробка на чистому JVM bytecode",
                 "Pure JVM bytecode development");
-        ch.add(lessonBytecodeMindset());
-        ch.add(lessonClassFileAndConstantPool());
-        ch.add(lessonDescriptorsAndSignatures());
-        ch.add(lessonOperandStackAndLocals());
-        ch.add(lessonInstructionsArithmeticAndFlow());
-        ch.add(lessonObjectsFieldsAndInvoke());
-        ch.add(lessonArraysExceptionsVerifier());
-        ch.add(lessonJasminStylePractice());
-        ch.add(lessonJava8BytecodePatterns());
-        c.add(ch);
+        ch.add(materialBytecodeMindset());
+        ch.add(materialClassFileAndConstantPool());
+        ch.add(materialDescriptorsAndSignatures());
+        ch.add(materialOperandStackAndLocals());
+        ch.add(materialInstructionsArithmeticAndFlow());
+        ch.add(materialObjectsFieldsAndInvoke());
+        ch.add(materialArraysExceptionsVerifier());
+        ch.add(materialJasminStylePractice());
+        ch.add(materialJava8BytecodePatterns());
+        s.add(ch);
     }
 
-    private static Lesson lessonBytecodeMindset() {
+    private static Lesson materialBytecodeMindset() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Що означає \"писати bytecode\""));
         uk.add(LessonBlock.paragraph(
@@ -124,7 +124,7 @@ final class Jdk8BytecodeChapters {
         return new Lesson("jdk8.bytecode.1", "Bytecode mindset", "Bytecode mindset", uk, en);
     }
 
-    private static Lesson lessonClassFileAndConstantPool() {
+    private static Lesson materialClassFileAndConstantPool() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading(".class файл і constant pool"));
         uk.add(LessonBlock.paragraph(
@@ -222,7 +222,7 @@ final class Jdk8BytecodeChapters {
         return new Lesson("jdk8.bytecode.2", "Class file і constant pool", "Class file and constant pool", uk, en);
     }
 
-    private static Lesson lessonDescriptorsAndSignatures() {
+    private static Lesson materialDescriptorsAndSignatures() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Descriptors: мова типів bytecode"));
         uk.add(LessonBlock.paragraph(
@@ -326,7 +326,7 @@ final class Jdk8BytecodeChapters {
         return new Lesson("jdk8.bytecode.3", "Descriptors і signatures", "Descriptors and signatures", uk, en);
     }
 
-    private static Lesson lessonOperandStackAndLocals() {
+    private static Lesson materialOperandStackAndLocals() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Operand stack і local variables"));
         uk.add(LessonBlock.paragraph(
@@ -417,7 +417,7 @@ final class Jdk8BytecodeChapters {
         return new Lesson("jdk8.bytecode.4", "Operand stack і locals", "Operand stack and locals", uk, en);
     }
 
-    private static Lesson lessonInstructionsArithmeticAndFlow() {
+    private static Lesson materialInstructionsArithmeticAndFlow() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Інструкції: arithmetic і control flow"));
         uk.add(LessonBlock.paragraph(
@@ -517,7 +517,7 @@ final class Jdk8BytecodeChapters {
         return new Lesson("jdk8.bytecode.5", "Instructions і control flow", "Instructions and control flow", uk, en);
     }
 
-    private static Lesson lessonObjectsFieldsAndInvoke() {
+    private static Lesson materialObjectsFieldsAndInvoke() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Objects, fields, invoke*"));
         uk.add(LessonBlock.paragraph(
@@ -617,7 +617,7 @@ final class Jdk8BytecodeChapters {
         return new Lesson("jdk8.bytecode.6", "Objects і invoke*", "Objects and invoke*", uk, en);
     }
 
-    private static Lesson lessonArraysExceptionsVerifier() {
+    private static Lesson materialArraysExceptionsVerifier() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Arrays, exceptions, verifier"));
         uk.add(LessonBlock.paragraph(
@@ -702,7 +702,7 @@ final class Jdk8BytecodeChapters {
         return new Lesson("jdk8.bytecode.7", "Arrays, exceptions, verifier", "Arrays, exceptions, verifier", uk, en);
     }
 
-    private static Lesson lessonJasminStylePractice() {
+    private static Lesson materialJasminStylePractice() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Jasmin-style bytecode: навчальна assembly-форма"));
         uk.add(LessonBlock.paragraph(
@@ -814,7 +814,7 @@ final class Jdk8BytecodeChapters {
         return new Lesson("jdk8.bytecode.8", "Jasmin-style практика", "Jasmin-style practice", uk, en);
     }
 
-    private static Lesson lessonJava8BytecodePatterns() {
+    private static Lesson materialJava8BytecodePatterns() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Java 8 patterns у bytecode"));
         uk.add(LessonBlock.paragraph(

@@ -10,36 +10,36 @@ import java.util.List;
  */
 final class JrcChapters03to15 {
 
-    static void add(Course c) {
-        addChapter03(c);
-        addChapter04(c);
-        addChapter05(c);
-        addChapter06(c);
-        addChapter07(c);
-        addChapter08(c);
-        addChapter09(c);
-        addChapter10(c);
-        addChapter11(c);
-        addChapter12(c);
-        addChapter13(c);
-        addChapter14(c);
-        addChapter15(c);
+    static void add(Course s) {
+        addChapter03(s);
+        addChapter04(s);
+        addChapter05(s);
+        addChapter06(s);
+        addChapter07(s);
+        addChapter08(s);
+        addChapter09(s);
+        addChapter10(s);
+        addChapter11(s);
+        addChapter12(s);
+        addChapter13(s);
+        addChapter14(s);
+        addChapter15(s);
     }
 
     // ═══════════════════════════════════════════════════════════════
     //  Глава 3. Класи та об'єкти
     // ═══════════════════════════════════════════════════════════════
 
-    private static void addChapter03(Course c) {
+    private static void addChapter03(Course s) {
         Chapter ch = new Chapter("Глава 3. Класи та об'єкти", "Chapter 3. Classes and objects");
-        ch.add(lessonClasses());
-        ch.add(lessonMethods());
-        ch.add(lessonConstructors());
-        ch.add(lessonThisAndStatic());
-        c.add(ch);
+        ch.add(materialClasses());
+        ch.add(materialMethods());
+        ch.add(materialConstructors());
+        ch.add(materialThisAndStatic());
+        s.add(ch);
     }
 
-    private static Lesson lessonClasses() {
+    private static Lesson materialClasses() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Класи та об'єкти"));
         uk.add(LessonBlock.paragraph(
@@ -139,7 +139,7 @@ final class JrcChapters03to15 {
         return new Lesson("3.1", "Класи та об'єкти", "Classes and objects", uk, en);
     }
 
-    private static Lesson lessonMethods() {
+    private static Lesson materialMethods() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Методи: як класи \"діють\""));
         uk.add(LessonBlock.paragraph(
@@ -167,8 +167,8 @@ final class JrcChapters03to15 {
                 + "}\n"
                 + "\n"
                 + "Calc c = new Calc();\n"
-                + "System.out.println(c.add(2, 3));       // 5\n"
-                + "System.out.println(c.add(2.5, 3.5));   // 6.0\n"
+                + "System.out.println(s.add(2, 3));       // 5\n"
+                + "System.out.println(s.add(2.5, 3.5));   // 6.0\n"
                 + "System.out.println(Calc.square(4));    // 16"));
         uk.add(LessonBlock.heading("Передавання параметрів"));
         uk.add(LessonBlock.paragraph(
@@ -225,8 +225,8 @@ final class JrcChapters03to15 {
                 + "}\n"
                 + "\n"
                 + "Calc c = new Calc();\n"
-                + "System.out.println(c.add(2, 3));       // 5\n"
-                + "System.out.println(c.add(2.5, 3.5));   // 6.0\n"
+                + "System.out.println(s.add(2, 3));       // 5\n"
+                + "System.out.println(s.add(2.5, 3.5));   // 6.0\n"
                 + "System.out.println(Calc.square(4));    // 16"));
         en.add(LessonBlock.heading("Passing parameters"));
         en.add(LessonBlock.paragraph(
@@ -259,7 +259,7 @@ final class JrcChapters03to15 {
         return new Lesson("3.2", "Методи", "Methods", uk, en);
     }
 
-    private static Lesson lessonConstructors() {
+    private static Lesson materialConstructors() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Конструктори: створення об'єктів"));
         uk.add(LessonBlock.paragraph(
@@ -423,7 +423,7 @@ final class JrcChapters03to15 {
         return new Lesson("3.3", "Конструктори та інкапсуляція", "Constructors & encapsulation", uk, en);
     }
 
-    private static Lesson lessonThisAndStatic() {
+    private static Lesson materialThisAndStatic() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("this та static"));
         uk.add(LessonBlock.code(
@@ -503,17 +503,17 @@ final class JrcChapters03to15 {
     //  Глава 4. Успадкування та поліморфізм
     // ═══════════════════════════════════════════════════════════════
 
-    private static void addChapter04(Course c) {
+    private static void addChapter04(Course s) {
         Chapter ch = new Chapter("Глава 4. Успадкування та поліморфізм",
                 "Chapter 4. Inheritance and polymorphism");
-        ch.add(lessonInheritance());
-        ch.add(lessonPolymorphism());
-        ch.add(lessonAbstractClasses());
-        ch.add(lessonObjectMethods());
-        c.add(ch);
+        ch.add(materialInheritance());
+        ch.add(materialPolymorphism());
+        ch.add(materialAbstractClasses());
+        ch.add(materialObjectMethods());
+        s.add(ch);
     }
 
-    private static Lesson lessonInheritance() {
+    private static Lesson materialInheritance() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Успадкування: extends"));
         uk.add(LessonBlock.paragraph(
@@ -637,7 +637,7 @@ final class JrcChapters03to15 {
         return new Lesson("4.1", "Успадкування", "Inheritance", uk, en);
     }
 
-    private static Lesson lessonPolymorphism() {
+    private static Lesson materialPolymorphism() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Поліморфізм: один тип — багато форм"));
         uk.add(LessonBlock.paragraph(
@@ -708,7 +708,7 @@ final class JrcChapters03to15 {
         return new Lesson("4.2", "Поліморфізм", "Polymorphism", uk, en);
     }
 
-    private static Lesson lessonAbstractClasses() {
+    private static Lesson materialAbstractClasses() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Абстрактні класи та інтерфейси"));
         uk.add(LessonBlock.paragraph(
@@ -812,7 +812,7 @@ final class JrcChapters03to15 {
         return new Lesson("4.3", "Абстрактні класи", "Abstract classes", uk, en);
     }
 
-    private static Lesson lessonObjectMethods() {
+    private static Lesson materialObjectMethods() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Методи Object: toString, equals, hashCode"));
         uk.add(LessonBlock.paragraph(
@@ -906,15 +906,15 @@ final class JrcChapters03to15 {
     //  Глава 5. Інтерфейси
     // ═══════════════════════════════════════════════════════════════
 
-    private static void addChapter05(Course c) {
+    private static void addChapter05(Course s) {
         Chapter ch = new Chapter("Глава 5. Інтерфейси", "Chapter 5. Interfaces");
-        ch.add(lessonInterfaces());
-        ch.add(lessonDefaultStaticMethods());
-        ch.add(lessonFunctionalInterfaces());
-        c.add(ch);
+        ch.add(materialInterfaces());
+        ch.add(materialDefaultStaticMethods());
+        ch.add(materialFunctionalInterfaces());
+        s.add(ch);
     }
 
-    private static Lesson lessonInterfaces() {
+    private static Lesson materialInterfaces() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Інтерфейси: контракт для класів"));
         uk.add(LessonBlock.paragraph(
@@ -1008,7 +1008,7 @@ final class JrcChapters03to15 {
         return new Lesson("5.1", "Інтерфейси", "Interfaces", uk, en);
     }
 
-    private static Lesson lessonDefaultStaticMethods() {
+    private static Lesson materialDefaultStaticMethods() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Default та static методи (Java 8+)"));
         uk.add(LessonBlock.paragraph(
@@ -1108,7 +1108,7 @@ final class JrcChapters03to15 {
         return new Lesson("5.2", "Default та static методи", "Default & static methods", uk, en);
     }
 
-    private static Lesson lessonFunctionalInterfaces() {
+    private static Lesson materialFunctionalInterfaces() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Функціональні інтерфейси та lambda"));
         uk.add(LessonBlock.paragraph(
@@ -1178,14 +1178,14 @@ final class JrcChapters03to15 {
     //  Глава 6. Пакети та модифікатори доступу
     // ═══════════════════════════════════════════════════════════════
 
-    private static void addChapter06(Course c) {
+    private static void addChapter06(Course s) {
         Chapter ch = new Chapter("Глава 6. Пакети", "Chapter 6. Packages");
-        ch.add(lessonAccessModifiers());
-        ch.add(lessonPackagesAndImports());
-        c.add(ch);
+        ch.add(materialAccessModifiers());
+        ch.add(materialPackagesAndImports());
+        s.add(ch);
     }
 
-    private static Lesson lessonAccessModifiers() {
+    private static Lesson materialAccessModifiers() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Модифікатори доступу"));
         uk.add(LessonBlock.paragraph(
@@ -1250,7 +1250,7 @@ final class JrcChapters03to15 {
         return new Lesson("6.1", "Модифікатори доступу", "Access modifiers", uk, en);
     }
 
-    private static Lesson lessonPackagesAndImports() {
+    private static Lesson materialPackagesAndImports() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Пакети та імпорти"));
         uk.add(LessonBlock.paragraph(
@@ -1315,17 +1315,17 @@ final class JrcChapters03to15 {
     //  Глава 7. Обробка винятків
     // ═══════════════════════════════════════════════════════════════
 
-    private static void addChapter07(Course c) {
+    private static void addChapter07(Course s) {
         Chapter ch = new Chapter("Глава 7. Обробка винятків",
                 "Chapter 7. Exception handling");
-        ch.add(lessonExceptionHierarchy());
-        ch.add(lessonTryCatchFinally());
-        ch.add(lessonTryWithResources());
-        ch.add(lessonCustomExceptions());
-        c.add(ch);
+        ch.add(materialExceptionHierarchy());
+        ch.add(materialTryCatchFinally());
+        ch.add(materialTryWithResources());
+        ch.add(materialCustomExceptions());
+        s.add(ch);
     }
 
-    private static Lesson lessonExceptionHierarchy() {
+    private static Lesson materialExceptionHierarchy() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Ієрархія винятків"));
         uk.add(LessonBlock.paragraph(
@@ -1381,7 +1381,7 @@ final class JrcChapters03to15 {
         return new Lesson("7.1", "Ієрархія винятків", "Exception hierarchy", uk, en);
     }
 
-    private static Lesson lessonTryCatchFinally() {
+    private static Lesson materialTryCatchFinally() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("try / catch / finally"));
         uk.add(LessonBlock.code(
@@ -1447,7 +1447,7 @@ final class JrcChapters03to15 {
         return new Lesson("7.2", "try / catch / finally", "try / catch / finally", uk, en);
     }
 
-    private static Lesson lessonTryWithResources() {
+    private static Lesson materialTryWithResources() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("try-with-resources (AutoCloseable)"));
         uk.add(LessonBlock.paragraph(
@@ -1515,7 +1515,7 @@ final class JrcChapters03to15 {
         return new Lesson("7.3", "try-with-resources", "try-with-resources", uk, en);
     }
 
-    private static Lesson lessonCustomExceptions() {
+    private static Lesson materialCustomExceptions() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Власні винятки"));
         uk.add(LessonBlock.code(
@@ -1585,15 +1585,15 @@ final class JrcChapters03to15 {
     //  Глава 8. Рядки
     // ═══════════════════════════════════════════════════════════════
 
-    private static void addChapter08(Course c) {
+    private static void addChapter08(Course s) {
         Chapter ch = new Chapter("Глава 8. Рядки", "Chapter 8. Strings");
-        ch.add(lessonStringImmutable());
-        ch.add(lessonStringMethods());
-        ch.add(lessonStringBuilder());
-        c.add(ch);
+        ch.add(materialStringImmutable());
+        ch.add(materialStringMethods());
+        ch.add(materialStringBuilder());
+        s.add(ch);
     }
 
-    private static Lesson lessonStringImmutable() {
+    private static Lesson materialStringImmutable() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("String: незмінність (immutability)"));
         uk.add(LessonBlock.paragraph(
@@ -1613,7 +1613,7 @@ final class JrcChapters03to15 {
                 + "\n"
                 + "String c = new String(\"hello\");\n"
                 + "System.out.println(a == c);   // false — new завжди створює новий об'єкт\n"
-                + "System.out.println(a.equals(c));  // true — порівнює зміст"));
+                + "System.out.println(a.equals(s));  // true — порівнює зміст"));
         uk.add(LessonBlock.warning(
                 "Порівнюйте рядки через equals(), а НЕ через ==. "
                 + "== перевіряє чи це той самий об'єкт у пам'яті, а equals — "
@@ -1637,7 +1637,7 @@ final class JrcChapters03to15 {
                 + "\n"
                 + "String c = new String(\"hello\");\n"
                 + "System.out.println(a == c);   // false — new always creates a new object\n"
-                + "System.out.println(a.equals(c));  // true — compares content"));
+                + "System.out.println(a.equals(s));  // true — compares content"));
         en.add(LessonBlock.warning(
                 "Compare strings with equals(), NOT with ==. "
                 + "== checks if it's the same object in memory, equals checks if the "
@@ -1645,7 +1645,7 @@ final class JrcChapters03to15 {
         return new Lesson("8.1", "String та незмінність", "String & immutability", uk, en);
     }
 
-    private static Lesson lessonStringMethods() {
+    private static Lesson materialStringMethods() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Корисні методи String"));
         uk.add(LessonBlock.code(
@@ -1709,7 +1709,7 @@ final class JrcChapters03to15 {
         return new Lesson("8.2", "Методи String", "String methods", uk, en);
     }
 
-    private static Lesson lessonStringBuilder() {
+    private static Lesson materialStringBuilder() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("StringBuilder та StringBuffer"));
         uk.add(LessonBlock.paragraph(
@@ -1783,16 +1783,16 @@ final class JrcChapters03to15 {
     //  Глава 9. Колекції
     // ═══════════════════════════════════════════════════════════════
 
-    private static void addChapter09(Course c) {
+    private static void addChapter09(Course s) {
         Chapter ch = new Chapter("Глава 9. Колекції", "Chapter 9. Collections");
-        ch.add(lessonList());
-        ch.add(lessonSet());
-        ch.add(lessonMap());
-        ch.add(lessonIterator());
-        c.add(ch);
+        ch.add(materialList());
+        ch.add(materialSet());
+        ch.add(materialMap());
+        ch.add(materialIterator());
+        s.add(ch);
     }
 
-    private static Lesson lessonList() {
+    private static Lesson materialList() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("List: ArrayList та LinkedList"));
         uk.add(LessonBlock.paragraph(
@@ -1861,7 +1861,7 @@ final class JrcChapters03to15 {
         return new Lesson("9.1", "List: ArrayList та LinkedList", "List: ArrayList & LinkedList", uk, en);
     }
 
-    private static Lesson lessonSet() {
+    private static Lesson materialSet() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Set: унікальні елементи"));
         uk.add(LessonBlock.code(
@@ -1907,7 +1907,7 @@ final class JrcChapters03to15 {
         return new Lesson("9.2", "Set: HashSet, TreeSet", "Set: HashSet, TreeSet", uk, en);
     }
 
-    private static Lesson lessonMap() {
+    private static Lesson materialMap() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Map: ключ-значення"));
         uk.add(LessonBlock.code(
@@ -1982,7 +1982,7 @@ final class JrcChapters03to15 {
         return new Lesson("9.3", "Map: HashMap, TreeMap", "Map: HashMap, TreeMap", uk, en);
     }
 
-    private static Lesson lessonIterator() {
+    private static Lesson materialIterator() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Iterator та for-each"));
         uk.add(LessonBlock.code(
@@ -2055,15 +2055,15 @@ final class JrcChapters03to15 {
     //  Глава 10. Потоки введення-виведення
     // ═══════════════════════════════════════════════════════════════
 
-    private static void addChapter10(Course c) {
+    private static void addChapter10(Course s) {
         Chapter ch = new Chapter("Глава 10. Потоки введення-виведення",
                 "Chapter 10. I/O streams");
-        ch.add(lessonFileNio());
-        ch.add(lessonByteAndCharStreams());
-        c.add(ch);
+        ch.add(materialFileNio());
+        ch.add(materialByteAndCharStreams());
+        s.add(ch);
     }
 
-    private static Lesson lessonFileNio() {
+    private static Lesson materialFileNio() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Робота з файлами (NIO.2)"));
         uk.add(LessonBlock.paragraph(
@@ -2169,7 +2169,7 @@ final class JrcChapters03to15 {
         return new Lesson("10.1", "Робота з файлами (NIO.2)", "File I/O (NIO.2)", uk, en);
     }
 
-    private static Lesson lessonByteAndCharStreams() {
+    private static Lesson materialByteAndCharStreams() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Потоки: байтові та символьні"));
         uk.add(LessonBlock.paragraph(
@@ -2249,16 +2249,16 @@ final class JrcChapters03to15 {
     //  Глава 11. Багатопоточність
     // ═══════════════════════════════════════════════════════════════
 
-    private static void addChapter11(Course c) {
+    private static void addChapter11(Course s) {
         Chapter ch = new Chapter("Глава 11. Багатопоточність",
                 "Chapter 11. Multithreading");
-        ch.add(lessonThreadsCreation());
-        ch.add(lessonSynchronization());
-        ch.add(lessonExecutorService());
-        c.add(ch);
+        ch.add(materialThreadsCreation());
+        ch.add(materialSynchronization());
+        ch.add(materialExecutorService());
+        s.add(ch);
     }
 
-    private static Lesson lessonThreadsCreation() {
+    private static Lesson materialThreadsCreation() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Створення потоків"));
         uk.add(LessonBlock.paragraph(
@@ -2324,7 +2324,7 @@ final class JrcChapters03to15 {
         return new Lesson("11.1", "Створення потоків", "Creating threads", uk, en);
     }
 
-    private static Lesson lessonSynchronization() {
+    private static Lesson materialSynchronization() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Синхронізація та race condition"));
         uk.add(LessonBlock.paragraph(
@@ -2408,7 +2408,7 @@ final class JrcChapters03to15 {
         return new Lesson("11.2", "Синхронізація", "Synchronization", uk, en);
     }
 
-    private static Lesson lessonExecutorService() {
+    private static Lesson materialExecutorService() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("ExecutorService: пул потоків"));
         uk.add(LessonBlock.paragraph(
@@ -2492,16 +2492,16 @@ final class JrcChapters03to15 {
     //  Глава 12. Лямбда-вирази та Stream API
     // ═══════════════════════════════════════════════════════════════
 
-    private static void addChapter12(Course c) {
+    private static void addChapter12(Course s) {
         Chapter ch = new Chapter("Глава 12. Лямбда-вирази та Stream API",
                 "Chapter 12. Lambda and Stream API");
-        ch.add(lessonLambdaBasics());
-        ch.add(lessonStreamPipeline());
-        ch.add(lessonCollectors());
-        c.add(ch);
+        ch.add(materialLambdaBasics());
+        ch.add(materialStreamPipeline());
+        ch.add(materialCollectors());
+        s.add(ch);
     }
 
-    private static Lesson lessonLambdaBasics() {
+    private static Lesson materialLambdaBasics() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Лямбда-вирази: анонімні функції"));
         uk.add(LessonBlock.paragraph(
@@ -2569,7 +2569,7 @@ final class JrcChapters03to15 {
         return new Lesson("12.1", "Лямбда-вирази", "Lambda expressions", uk, en);
     }
 
-    private static Lesson lessonStreamPipeline() {
+    private static Lesson materialStreamPipeline() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Stream API: конвеєр обробки даних"));
         uk.add(LessonBlock.paragraph(
@@ -2641,7 +2641,7 @@ final class JrcChapters03to15 {
         return new Lesson("12.2", "Stream API", "Stream API", uk, en);
     }
 
-    private static Lesson lessonCollectors() {
+    private static Lesson materialCollectors() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Collectors: збирання результатів"));
         uk.add(LessonBlock.code(
@@ -2702,16 +2702,16 @@ final class JrcChapters03to15 {
     //  Глава 13. Generics
     // ═══════════════════════════════════════════════════════════════
 
-    private static void addChapter13(Course c) {
+    private static void addChapter13(Course s) {
         Chapter ch = new Chapter("Глава 13. Узагальнення (Generics)",
                 "Chapter 13. Generics");
-        ch.add(lessonGenericBasics());
-        ch.add(lessonBoundedTypes());
-        ch.add(lessonWildcards());
-        c.add(ch);
+        ch.add(materialGenericBasics());
+        ch.add(materialBoundedTypes());
+        ch.add(materialWildcards());
+        s.add(ch);
     }
 
-    private static Lesson lessonGenericBasics() {
+    private static Lesson materialGenericBasics() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Generics: типобезпечність"));
         uk.add(LessonBlock.paragraph(
@@ -2781,7 +2781,7 @@ final class JrcChapters03to15 {
         return new Lesson("13.1", "Generics основи", "Generics basics", uk, en);
     }
 
-    private static Lesson lessonBoundedTypes() {
+    private static Lesson materialBoundedTypes() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Обмеження типів (bounds)"));
         uk.add(LessonBlock.code(
@@ -2823,7 +2823,7 @@ final class JrcChapters03to15 {
         return new Lesson("13.2", "Обмеження типів", "Type bounds", uk, en);
     }
 
-    private static Lesson lessonWildcards() {
+    private static Lesson materialWildcards() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Wildcards: ? extends та ? super"));
         uk.add(LessonBlock.code(
@@ -2884,15 +2884,15 @@ final class JrcChapters03to15 {
     //  Глава 14. Перерахування (enum)
     // ═══════════════════════════════════════════════════════════════
 
-    private static void addChapter14(Course c) {
+    private static void addChapter14(Course s) {
         Chapter ch = new Chapter("Глава 14. Перерахування enum",
                 "Chapter 14. Enumerations");
-        ch.add(lessonEnumBasics());
-        ch.add(lessonEnumWithFields());
-        c.add(ch);
+        ch.add(materialEnumBasics());
+        ch.add(materialEnumWithFields());
+        s.add(ch);
     }
 
-    private static Lesson lessonEnumBasics() {
+    private static Lesson materialEnumBasics() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("enum: обмежений набір значень"));
         uk.add(LessonBlock.paragraph(
@@ -2957,7 +2957,7 @@ final class JrcChapters03to15 {
         return new Lesson("14.1", "enum основи", "enum basics", uk, en);
     }
 
-    private static Lesson lessonEnumWithFields() {
+    private static Lesson materialEnumWithFields() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("enum з полями та методами"));
         uk.add(LessonBlock.code(
@@ -3035,14 +3035,14 @@ final class JrcChapters03to15 {
     //  Глава 15. Анотації
     // ═══════════════════════════════════════════════════════════════
 
-    private static void addChapter15(Course c) {
+    private static void addChapter15(Course s) {
         Chapter ch = new Chapter("Глава 15. Анотації", "Chapter 15. Annotations");
-        ch.add(lessonStandardAnnotations());
-        ch.add(lessonCustomAnnotations());
-        c.add(ch);
+        ch.add(materialStandardAnnotations());
+        ch.add(materialCustomAnnotations());
+        s.add(ch);
     }
 
-    private static Lesson lessonStandardAnnotations() {
+    private static Lesson materialStandardAnnotations() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Стандартні анотації"));
         uk.add(LessonBlock.paragraph(
@@ -3097,7 +3097,7 @@ final class JrcChapters03to15 {
         return new Lesson("15.1", "Стандартні анотації", "Standard annotations", uk, en);
     }
 
-    private static Lesson lessonCustomAnnotations() {
+    private static Lesson materialCustomAnnotations() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Власні анотації та рефлексія"));
         uk.add(LessonBlock.code(

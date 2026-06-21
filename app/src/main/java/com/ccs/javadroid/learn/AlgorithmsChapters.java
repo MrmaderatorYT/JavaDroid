@@ -8,23 +8,23 @@ import java.util.List;
  */
 final class AlgorithmsChapters {
 
-    static void add(Course c) {
+    static void add(Course s) {
         Chapter ch1 = new Chapter("Основи алгоритмів", "Algorithm Basics");
-        ch1.add(lessonBigO());
-        c.add(ch1);
+        ch1.add(materialBigO());
+        s.add(ch1);
 
         Chapter ch2 = new Chapter("Сортування та Пошук", "Sorting and Searching");
-        ch2.add(lessonSorting());
-        ch2.add(lessonBinarySearch());
-        c.add(ch2);
+        ch2.add(materialSorting());
+        ch2.add(materialBinarySearch());
+        s.add(ch2);
 
         Chapter ch3 = new Chapter("Структури даних", "Data Structures");
-        ch3.add(lessonTrees());
-        ch3.add(lessonGraphs());
-        c.add(ch3);
+        ch3.add(materialTrees());
+        ch3.add(materialGraphs());
+        s.add(ch3);
     }
 
-    private static Lesson lessonBigO() {
+    private static Lesson materialBigO() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Оцінка складності (Big-O)"));
         uk.add(LessonBlock.paragraph(
@@ -60,7 +60,7 @@ final class AlgorithmsChapters {
         return new Lesson("alg.1", "Складність (Big-O)", "Complexity (Big-O)", uk, en);
     }
 
-    private static Lesson lessonSorting() {
+    private static Lesson materialSorting() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Алгоритми сортування"));
         uk.add(LessonBlock.paragraph(
@@ -110,7 +110,7 @@ final class AlgorithmsChapters {
         return new Lesson("alg.2", "Сортування", "Sorting", uk, en);
     }
 
-    private static Lesson lessonBinarySearch() {
+    private static Lesson materialBinarySearch() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Бінарний пошук"));
         uk.add(LessonBlock.paragraph(
@@ -154,7 +154,7 @@ final class AlgorithmsChapters {
         return new Lesson("alg.3", "Бінарний пошук", "Binary Search", uk, en);
     }
 
-    private static Lesson lessonTrees() {
+    private static Lesson materialTrees() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Дерева (Trees)"));
         uk.add(LessonBlock.paragraph(
@@ -202,7 +202,7 @@ final class AlgorithmsChapters {
         return new Lesson("alg.4", "Дерева (Trees)", "Trees", uk, en);
     }
 
-    private static Lesson lessonGraphs() {
+    private static Lesson materialGraphs() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Графи (Graphs): BFS та DFS"));
         uk.add(LessonBlock.paragraph(

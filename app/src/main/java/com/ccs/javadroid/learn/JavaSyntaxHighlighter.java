@@ -4,7 +4,7 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 
-import com.ccs.javadroid.AppTheme;
+import com.ccs.javadroid.util.AppTheme;
 
 import java.util.HashSet;
 import java.util.Set;

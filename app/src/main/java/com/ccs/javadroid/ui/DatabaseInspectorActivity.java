@@ -136,7 +136,7 @@ public class DatabaseInspectorActivity extends AppCompatActivity {
         tablesLabel.setText("TABLES");
         tablesLabel.setTextColor(theme.textDim);
         tablesLabel.setTextSize(11);
-        tablesLabel.setTypeface(Typeface.MONOSPACE);
+        tablesLabel.setTypeface(new AppPreferences(this).resolveTypeface());
         tablesLabel.setPadding(dp(8), dp(6), dp(8), dp(6));
         leftPanel.addView(tablesLabel);
 
@@ -166,7 +166,7 @@ public class DatabaseInspectorActivity extends AppCompatActivity {
         sqlInput.setHintTextColor(theme.textDim);
         sqlInput.setTextColor(theme.text);
         sqlInput.setBackgroundColor(theme.consoleBg);
-        sqlInput.setTypeface(Typeface.MONOSPACE);
+        sqlInput.setTypeface(new AppPreferences(this).resolveTypeface());
         sqlInput.setTextSize(12);
         sqlInput.setMinLines(2);
         sqlInput.setMaxLines(4);
@@ -191,7 +191,7 @@ public class DatabaseInspectorActivity extends AppCompatActivity {
         tableNameHeader = new TextView(this);
         tableNameHeader.setTextColor(theme.accent);
         tableNameHeader.setTextSize(12);
-        tableNameHeader.setTypeface(Typeface.MONOSPACE);
+        tableNameHeader.setTypeface(new AppPreferences(this).resolveTypeface());
         tableNameHeader.setPadding(dp(8), dp(4), dp(8), dp(4));
         rightPanel.addView(tableNameHeader);
 
@@ -268,7 +268,7 @@ public class DatabaseInspectorActivity extends AppCompatActivity {
                     item.setText(table);
                     item.setTextColor(theme.accent);
                     item.setTextSize(12);
-                    item.setTypeface(Typeface.MONOSPACE);
+                    item.setTypeface(new AppPreferences(this).resolveTypeface());
                     item.setPadding(dp(8), dp(6), dp(8), dp(6));
                     item.setBackgroundResource(android.R.drawable.list_selector_background);
                     item.setOnClickListener(v -> browseTable(table));
@@ -336,7 +336,7 @@ public class DatabaseInspectorActivity extends AppCompatActivity {
                                 col.setText(name);
                                 col.setTextColor(theme.accent);
                                 col.setTextSize(11);
-                                col.setTypeface(Typeface.MONOSPACE, Typeface.BOLD);
+                                col.setTypeface(new AppPreferences(this).resolveTypeface(), Typeface.BOLD);
                                 col.setPadding(dp(6), dp(2), dp(6), dp(2));
                                 col.setMaxLines(1);
                                 headerRow.addView(col);
@@ -363,7 +363,7 @@ public class DatabaseInspectorActivity extends AppCompatActivity {
                                         cell.setTextColor(theme.text);
                                     }
                                     cell.setTextSize(11);
-                                    cell.setTypeface(Typeface.MONOSPACE);
+                                    cell.setTypeface(new AppPreferences(this).resolveTypeface());
                                     cell.setPadding(dp(6), dp(1), dp(6), dp(1));
                                     cell.setMaxLines(1);
                                     cell.setHorizontallyScrolling(true);
@@ -401,7 +401,7 @@ public class DatabaseInspectorActivity extends AppCompatActivity {
                     err.setText("Error: " + e.getMessage());
                     err.setTextColor(theme.errorText);
                     err.setTextSize(12);
-                    err.setTypeface(Typeface.MONOSPACE);
+                    err.setTypeface(new AppPreferences(this).resolveTypeface());
                     err.setPadding(dp(8), dp(8), dp(8), dp(8));
                     resultContainer.addView(err);
                     statusText.setText("Error — " + elapsed + " ms");
@@ -415,7 +415,7 @@ public class DatabaseInspectorActivity extends AppCompatActivity {
         btn.setText(text);
         btn.setTextColor(color);
         btn.setTextSize(12);
-        btn.setTypeface(Typeface.MONOSPACE, Typeface.BOLD);
+        btn.setTypeface(new AppPreferences(this).resolveTypeface(), Typeface.BOLD);
         btn.setPadding(dp(12), dp(8), dp(12), dp(8));
         btn.setBackgroundResource(android.R.drawable.list_selector_background);
         return btn;

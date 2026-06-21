@@ -316,10 +316,10 @@ public class GlobalSearchActivity extends AppCompatActivity {
 
         @Override
         public VH onCreateViewHolder(ViewGroup parent, int viewType) {
-            TextView tv = new TextView(parent.getContext());
+            TextView tv = new TextView(GlobalSearchActivity.this);
             tv.setTextColor(textColor);
             tv.setTextSize(12);
-            tv.setTypeface(Typeface.MONOSPACE);
+            tv.setTypeface(new AppPreferences(GlobalSearchActivity.this).resolveTypeface());
             tv.setPadding(dp(12), dp(8), dp(12), dp(8));
             tv.setLayoutParams(new RecyclerView.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));

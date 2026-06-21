@@ -14,8 +14,22 @@ public final class MavenPaths {
     private MavenPaths() {}
 
     public static File getJavaDroidBase(Context context) {
-        File doc = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
-        return new File(doc, "JavaDroid");
+        // Try external storage first, fallback to internal
+        try {
+            File doc = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
+            if (doc.exists() || doc.mkdirs()) {
+                // Test write access
+                File test = new File(doc, ".javdroid_test");
+                if (test.createNewFile()) {
+                    test.delete();
+                    return new File(doc, "JavaDroid");
+                }
+            }
+        } catch (Exception ignored) {}
+        // Fallback to internal storage
+        File internal = new File(context.getFilesDir(), "JavaDroid");
+        internal.mkdirs();
+        return internal;
     }
 
     public static File projectDir(Context context, String projectName) {

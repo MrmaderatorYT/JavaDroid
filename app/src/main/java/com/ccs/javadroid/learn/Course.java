@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Курс: збірка розділів. Ідентифікатор унікальний у {@link CourseRegistry}.
+ * Розділ матеріалів: Java або Bytecode.
+ * Збірка глав ({@link Chapter}), кожна з яких містить матеріали ({@link Lesson}).
  */
 public final class Course {
 
@@ -16,7 +17,7 @@ public final class Course {
     public final List<Chapter> chapters = new ArrayList<>();
 
     public Course(String id, String titleUk, String titleEn,
-                  String descUk, String descEn) {
+                           String descUk, String descEn) {
         this.id = id;
         this.title[0] = titleUk;
         this.title[1] = titleEn;
@@ -37,10 +38,10 @@ public final class Course {
         return description[lang];
     }
 
-    /** Плоский список усіх уроків курсу (для навігації далі/назад). */
-    public List<Lesson> allLessons() {
+    /** Плоский список усіх матеріалів розділу (для навігації далі/назад). */
+    public List<Lesson> allMaterials() {
         List<Lesson> out = new ArrayList<>();
-        for (Chapter c : chapters) out.addAll(c.lessons);
+        for (Chapter c : chapters) out.addAll(c.materials);
         return out;
     }
 }

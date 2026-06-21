@@ -48,7 +48,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="1.5.0"
+                    android:text="1.6.0"
                     android:textColor="#808080"
                     android:textSize="10sp" />
             </LinearLayout>
@@ -99,12 +99,12 @@
             android:layout_marginBottom="4dp" />
 
         <TextView
-            android:id="@+id/sidebarLearn"
+            android:id="@+id/sidebarMaterials"
             android:layout_width="match_parent"
             android:layout_height="36dp"
             android:gravity="center_vertical"
             android:paddingStart="12dp"
-            android:text="Learn"
+            android:text="Матеріали"
             android:textColor="#DFE1E5"
             android:textSize="12sp"
             android:background="?attr/selectableItemBackground"

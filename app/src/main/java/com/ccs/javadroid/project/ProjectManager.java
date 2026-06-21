@@ -83,20 +83,23 @@ public class ProjectManager {
         return file.delete();
     }
 
+    /**
+     * Checks whether the given file resides on external/shared storage.
+     * Internal app storage (getFilesDir, getCacheDir) does NOT require
+     * MANAGE_EXTERNAL_STORAGE, so the check should be skipped for those paths.
+     */
+    private boolean isExternalFile(File file) {
+        try {
+            String path = file.getCanonicalPath();
+            String internal = context.getFilesDir().getCanonicalPath();
+            String cache = context.getCacheDir().getCanonicalPath();
+            return !path.startsWith(internal) && !path.startsWith(cache);
+        } catch (Exception e) {
+            return true; // assume external if we can't determine
+        }
+    }
+
     public String readFile(File file) throws IOException {
-        // Check for storage permission on Android 11+
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
-            if (!android.os.Environment.isExternalStorageManager()) {
-                throw new IOException("Storage permission not granted. Please grant access in Settings.");
-            }
-        }
-        // Test actual file access
-        if (!file.exists()) {
-            throw new IOException("File does not exist: " + file.getAbsolutePath());
-        }
-        if (!file.canRead()) {
-            throw new IOException("Cannot read file (permission denied): " + file.getName());
-        }
         StringBuilder sb = new StringBuilder();
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(new FileInputStream(file), getEncoding()))) {

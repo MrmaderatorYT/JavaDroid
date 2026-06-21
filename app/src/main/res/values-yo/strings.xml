@@ -232,4 +232,117 @@
     <string name="toast_project_path_copied">Ọ̀nà ètò ti kọpí</string>
     <string name="toast_rename_failed">Ìyí orúkọ kùnà</string>
     <string name="toolbar_project_a11y">Orúkọ ètò. Pín lẹ́wàgbẹ́ láti kọpí ọ̀nà fọ́ldà ètò.</string>
+    <string name="settings_section_power_saving">Iparun agbara</string>
+    <string name="settings_power_saving_mode">Ipo iparun agbara</string>
+    <string name="settings_power_saving_auto">Lọwọlọwọ (bọtìnì &lt; 30%%)</string>
+    <string name="settings_power_saving_disabled">Ti pọn</string>
+    <string name="settings_power_saving_performance">Latiigbaogbogbo iṣẹ</string>
+    <string name="settings_power_saving_desc">Lọwọlọwọ: din iṣẹ nipasẹ ti bọtìnì below. Iṣẹ: n ṣiṣẹ gboogbo iṣẹ ni gbogbo igba.</string>
+    <string name="sa_empty_file">Fáìlì Ṣín</string>
+    <string name="sa_long_line">Àwọn Ìlànà ga ju ohun èlò púpọ̀ ju (%2$d)</string>
+    <string name="sa_todo">TODO nínú kọ̀dẹ́</string>
+    <string name="sa_fixme">FIXME nínú kọ̀dẹ́ — nílò ìtọ́nisọ́nà</string>
+    <string name="sa_hack">HACK nínú kọ̀dẹ́ ìṣètò ìgbà</string>
+    <string name="sa_xxx">Àmì XXX nínú kọ̀dẹ́</string>
+    <string name="sa_trailing_space">Àfihàn ní ìparí ìlànà</string>
+    <string name="sa_mixed_tabs">Tab àti àfihàn ìṣòro</string>
+    <string name="sa_commented_code">Kọ̀dẹ́ tí a kọ sílẹ̀</string>
+    <string name="sa_deprecated_api">Lílo @Deprecated</string>
+    <string name="sa_system_exit">System.exit() nínú kọ̀dẹ́</string>
+    <string name="sa_thread_sleep">Thread.sleep láìsí SQLException</string>
+    <string name="sa_raw_type">Raw type — lo àpèjúde pàtàkì</string>
+    <string name="sa_hardcoded_path">Ọ̀nà fáìlì tí a ṣe láìsí ìyọ̀rì</string>
+    <string name="sa_hardcoded_ip">Àdísì IP tí a ṣe láìsí ìyọ̀rì</string>
+    <string name="sa_password_in_code">Ẹ̀rọ àbò/pààsì lè wà nínú kọ̀dẹ́!</string>
+    <string name="sa_multiple_statements">Púpọ̀ ìṣètò nínú ìlànà kan</string>
+    <string name="sa_wildcard_import">Wildcard import — lo àwọn import pàtàkì</string>
+    <string name="sa_empty_string_concat">Ọ̀rọ̀ Ṣín nínú ìṣòpọ̀</string>
+    <string name="sa_resource_leak">Ìṣòro rọ́ǹdì — try-with-resources</string>
+    <string name="sa_unused_import">Import tí kò ní ìlò: %1$s</string>
+    <string name="sa_duplicate_import">Import méjì: %1$s</string>
+    <string name="sa_long_method">Ìṣètò tí ó pẹ́ (%1$d ìlànà)</string>
+    <string name="sa_high_complexity">Ìṣòro ìdàárúkò (%1$d)</string>
+    <string name="sa_many_params">Púpọ̀ àwọn paramita (%1$d)</string>
+    <string name="sa_deep_nesting">Ìṣòro ìdènà (%1$d ìpe)</string>
+    <string name="sa_empty_method">Ìṣètò Ṣín</string>
+    <string name="sa_method_name_uppercase">Orúkọ ìṣètò pẹ̀lú akọsílẹ̀ àkọ́kọ́: %1$s</string>
+    <string name="sa_many_returns">Púpọ̀ ìpadàbọ̀sí (%1$d)</string>
+    <string name="sa_missing_javadoc_method">Ìṣètò àjọṣe kékèrọ́ JavaDoc</string>
+    <string name="sa_many_local_vars">Púpọ̀ àwọn ìyìpọ̀ ìgbàgbọ́ (%1$d)</string>
+    <string name="sa_no_return">Ìṣètò kò tíì padàbọ̀sí ohun (%1$s)</string>
+    <string name="sa_class_too_long">Ẹ̀kọ́ tí ó pẹ́ (%1$d ìlànà)</string>
+    <string name="sa_too_many_fields">Púpọ̀ àwọn ẹ̀kọ́ (%1$d)</string>
+    <string name="sa_god_class">God class — púpọ̀ iṣẹ́</string>
+    <string name="sa_serial_version_uid">Serializable láìsí serialVersionUID</string>
+    <string name="sa_missing_override">@Override kò sí fún %1$s</string>
+    <string name="sa_unused_field">Ẹ̀kọ́ tí kò ní ìlò: %1$s</string>
+    <string name="sa_empty_catch">Catch block Ṣín</string>
+    <string name="sa_catch_no_log">Catch láìsí ìṣàkóso</string>
+    <string name="sa_string_equals">Ìṣòro pẹ̀lú == (óra .equals())</string>
+    <string name="sa_system_out">System.out — lo ọ̀rọ̀ àbòsísẹ́</string>
+    <string name="sa_system_err">System.err — lo ọ̀rọ̀ àbòsísẹ́</string>
+    <string name="sa_print_stacktrace">printStackTrace() — ọ̀rọ̀ àbòsísẹ́ pẹ̀lú cause</string>
+    <string name="sa_redundant_tostring">.toString tí kò ní ìlò</string>
+    <string name="sa_concat_in_loop">Ìṣòpọ̀ nínú loop — StringBuilder</string>
+    <string name="sa_autoboxing">Autoboxing — lo àkọsílẹ̀</string>
+    <string name="sa_collections_sort">Collections.sort() — Java 8+ list.sort()</string>
+    <string name="sa_redundant_null_instanceof">Null tí kò ní ìlò nígbà àkọ́kọ́ instanceof</string>
+    <string name="sa_indexof_contains">indexOf() == -1 — óra .contains()</string>
+    <string name="sa_length_zero">.length() == 0 — óra .isEmpty()</string>
+    <string name="sa_size_zero">.size() == 0 — óra .isEmpty()</string>
+    <string name="sa_one_line_block">Block ìlànà kan láìsí curly braces</string>
+    <string name="sa_long_ternary">Ternary tí ó pẹ́</string>
+    <string name="sa_unnecessary_semicolon">Semicolon tí kò ní ìlò</string>
+    <string name="sa_redundant_this">this. tí kò ní ìlò</string>
+    <string name="sa_bool_true_false">== true / == false — tí kò ní ìlò</string>
+    <string name="sa_redundant_boxing">Boxing/Unboxing tí kò ní ìlò</string>
+    <string name="sa_catch_throwable">Ìjípọ̀ Throwable/Exception</string>
+    <string name="sa_finalize">finalize() àtọwọ́dá — try-with-resources</string>
+    <string name="sa_double_float_eq">Ìṣòro double/float pẹ̀lú ==</string>
+    <string name="sa_java_util_date">java.util.Date — óra java.time</string>
+    <string name="sa_simple_date_format">SimpleDateFormat kò tíì thread-safe</string>
+    <string name="sa_sql_injection">SQL pẹ̀lú ìṣòpọ̀ — SQL injection!</string>
+    <string name="sa_math_random">Math.random() — SecureRandom</string>
+    <string name="sa_runtime_exec">Ìṣíjò àtẹ̀jáde àjọṣe</string>
+    <string name="sa_mutable_static">Ẹ̀kọ́ static tí ó ṣe àtúnṣe</string>
+    <string name="sa_long_chain">Ìṣòpọ̀ tí ó pẹ́ (%1$d ìpè)</string>
+    <string name="sa_connection_leak">Connection láìsí try-with-resources</string>
+    <string name="sa_socket_leak">Socket láìsí try-with-resources</string>
+    <string name="sa_executor_no_shutdown">ExecutorService láìsí shutdown</string>
+    <string name="sa_temp_no_delete">Fáìlì temp láìsí deleteOnExit</string>
+    <string name="sa_npe_after_null_check">Dereference lẹ́yìn null check</string>
+    <string name="sa_return_null">Ìpadàbọ̀sí null — Optional tàbí Collections.empty*</string>
+    <string name="sa_null_in_collection">null nínú àkójọ</string>
+    <string name="sa_optional_get">Optional.get() láìsí ìdánimọ̀</string>
+    <string name="sa_optional_field">Optional nínú ẹ̀kọ́ — anti-pattern</string>
+    <string name="sa_optional_or_null">Optional.orElse(null)</string>
+    <string name="sa_override_missing">@Override kò sí fún %1$s</string>
+    <string name="sa_lambda_long">Lambda &gt; 5 ìlànà — yọ kúrò sí ìṣètò</string>
+    <string name="sa_lambda_method_ref">Lambda lè jẹ́ àtúnṣe ìṣètò</string>
+    <string name="sa_test_no_assert">Ìdánimọ̀ láìsí assert</string>
+    <string name="sa_test_sysout">System.out nínú ìdánimọ̀ — lo assert</string>
+    <string name="sa_test_empty">Ìdánimọ̀ Ṣín</string>
+    <string name="sa_missing_class_javadoc">Ẹ̀kọ́ láìsí JavaDoc</string>
+    <string name="sa_hashtable_vector">Ẹ̀kọ́ àtọwọ́dá — HashMap/ArrayList</string>
+    <string name="sa_date_new">new Date() — Instant.now()</string>
+    <string name="sa_calendar">Calendar.getInstance() — LocalDateTime</string>
+    <string name="sa_stream_no_terminal">Stream láìsí ìṣètò ìkẹyìn</string>
+    <string name="sa_collect_tolist">collect(toList()) — Java 16+ .toList()</string>
+    <string name="sa_findfirst_get">findFirst().get() — .findFirst().orElseThrow()</string>
+    <string name="sa_pattern_compile_loop">Pattern.compile() nínú loop</string>
+    <string name="sa_string_matches">String.matches() — Pattern.compile</string>
+    <string name="sa_fallthrough">Fall-through nínú switch — ìgbàgbọ́ break?</string>
+    <string name="sa_switch_no_default">Switch láìsí default</string>
+    <string name="sa_final_local">Ìyípọ̀ ìgbàgbọ́ \'%1$s\' — final fún ìkànsí</string>
+
+
+
+    <!-- Storage Permission -->
+    <string name="permission_storage_title">Wíò Àwọn Fáìlì</string>
+    <string name="permission_storage_message">Láti ṣiṣẹ́ pẹ̀lú àwọn fáìlì ètò, app náà nílò wíò sí apẹẹrẹ fáìlì.\n\nJọ̀wọ́ ṣí \"Wíò gbogbo àwọn fáìlì\" ní apótí tókàn.</string>
+    <string name="permission_storage_open_settings">Ṣí Àṣà</string>
+    <string name="permission_storage_exit">Jáde</string>
+    <string name="permission_storage_denied_title">Kò fún ní wíò</string>
+    <string name="permission_storage_denied_message">Láìsí wíò fáìlì, app kò lè ṣiṣẹ́ pẹ̀lú àwọn ètò.</string>
+    <string name="permission_storage_try_again">Gbìyànjú lẹ́ẹ̀kan sí i</string>
 </resources>

@@ -243,4 +243,117 @@
     <string name="debug_watch_hint">अभिव्यक्ति दर्ज करें (जैसे x, obj.name, list.size())</string>
     <string name="debug_evaluate">अभिव्यक्ति मूल्यांकन</string>
     <string name="debug_evaluate_hint">अभिव्यक्ति</string>
+    <string name="settings_section_power_saving">बिजली बचत</string>
+    <string name="settings_power_saving_mode">बिजली बचत मोड</string>
+    <string name="settings_power_saving_auto">ऑटो (बैटरी &lt; 30%%)</string>
+    <string name="settings_power_saving_disabled">बंद</string>
+    <string name="settings_power_saving_performance">हमेशा परफॉर्मेंस</string>
+    <string name="settings_power_saving_desc">ऑटो: कम बैटरी पर सुविधाएं कम करता है। परफॉर्मेंस: हमेशा सभी सुविधाएं चालू रखता है।</string>
+    <string name="sa_empty_file">खाली फ़ाइल</string>
+    <string name="sa_long_line">पंक्ति %1$d वर्णों से अधिक लंबी (%2$d)</string>
+    <string name="sa_todo">कोड में TODO</string>
+    <string name="sa_fixme">कोड में FIXME — सुधार आवश्यक</string>
+    <string name="sa_hack">कोड में HACK — अस्थायी समाधान</string>
+    <string name="sa_xxx">कोड में XXX मार्कर</string>
+    <string name="sa_trailing_space">पंक्ति के अंत में रिक्त स्थान</string>
+    <string name="sa_mixed_tabs">मिश्रित टैब और रिक्त स्थान</string>
+    <string name="sa_commented_code">टिप्पणी किया गया कोड</string>
+    <string name="sa_deprecated_api">@Deprecated का उपयोग</string>
+    <string name="sa_system_exit">कोड में System.exit()</string>
+    <string name="sa_thread_sleep">Thread.sleep बिना InterruptedException</string>
+    <string name="sa_raw_type">Raw type — पैरामीटरीकृत प्रकार का उपयोग करें</string>
+    <string name="sa_hardcoded_path">हार्डकोडेड फ़ाइल पथ</string>
+    <string name="sa_hardcoded_ip">हार्डकोडेड IP पता</string>
+    <string name="sa_password_in_code">कोड में संभावित पासवर्ड/कुंजी!</string>
+    <string name="sa_multiple_statements">एक पंक्ति में कई ऑपरेशन</string>
+    <string name="sa_wildcard_import">Wildcard import — विशिष्ट imports का उपयोग करें</string>
+    <string name="sa_empty_string_concat">एकीकरण में खाली स्ट्रिंग</string>
+    <string name="sa_resource_leak">संभावित संसाधन रिसाव — try-with-resources</string>
+    <string name="sa_unused_import">अप्रयुक्त import: %1$s</string>
+    <string name="sa_duplicate_import">डुप्लिकेट import: %1$s</string>
+    <string name="sa_long_method">विधि बहुत लंबी (%1$d पंक्तियाँ)</string>
+    <string name="sa_high_complexity">उच्च चक्रीय जटिलता (%1$d)</string>
+    <string name="sa_many_params">बहुत अधिक पैरामीटर (%1$d)</string>
+    <string name="sa_deep_nesting">गहरी नेस्टिंग (%1$d स्तर)</string>
+    <string name="sa_empty_method">खाली विधि</string>
+    <string name="sa_method_name_uppercase">विधि का नाम बड़े अक्षर से शुरू: %1$s</string>
+    <string name="sa_many_returns">कई return वाक्य (%1$d)</string>
+    <string name="sa_missing_javadoc_method">सार्वजनिक विधि बिना JavaDoc</string>
+    <string name="sa_many_local_vars">बहुत अधिक स्थानीय चर (%1$d)</string>
+    <string name="sa_no_return">विधि मान नहीं लौटाती (प्रकार: %1$s)</string>
+    <string name="sa_class_too_long">क्लास बहुत लंबी (%1$d पंक्तियाँ)</string>
+    <string name="sa_too_many_fields">बहुत अधिक क्लास फ़ील्ड (%1$d)</string>
+    <string name="sa_god_class">God class — बहुत अधिक जिम्मेदारी</string>
+    <string name="sa_serial_version_uid">Serializable बिना serialVersionUID</string>
+    <string name="sa_missing_override">%1$s के लिए @Override गायब</string>
+    <string name="sa_unused_field">अप्रयुक्त फ़ील्ड: %1$s</string>
+    <string name="sa_empty_catch">खाली catch ब्लॉक</string>
+    <string name="sa_catch_no_log">Catch बिना हैंडलिंग</string>
+    <string name="sa_string_equals">== से तुलना (बेहतर .equals())</string>
+    <string name="sa_system_out">System.out — लॉगर का उपयोग करें</string>
+    <string name="sa_system_err">System.err — लॉगर का उपयोग करें</string>
+    <string name="sa_print_stacktrace">printStackTrace() — cause के साथ लॉगर</string>
+    <string name="sa_redundant_tostring">अनावश्यक .toString()</string>
+    <string name="sa_concat_in_loop">लूप में स्ट्रिंग एकीकरण — StringBuilder</string>
+    <string name="sa_autoboxing">Autoboxing — लिटरल का उपयोग करें</string>
+    <string name="sa_collections_sort">Collections.sort() — Java 8+ list.sort()</string>
+    <string name="sa_redundant_null_instanceof">instanceof से पहले अनावश्यक null</string>
+    <string name="sa_indexof_contains">indexOf() == -1 — बेहतर .contains()</string>
+    <string name="sa_length_zero">.length() == 0 — बेहतर .isEmpty()</string>
+    <string name="sa_size_zero">.size() == 0 — बेहतर .isEmpty()</string>
+    <string name="sa_one_line_block">बिना कर्ली ब्रेसेस के एक पंक्ति ब्लॉक</string>
+    <string name="sa_long_ternary">लंबा टर्नरी ऑपरेटर</string>
+    <string name="sa_unnecessary_semicolon">अनावश्यक सेमीकोलन</string>
+    <string name="sa_redundant_this">अनावश्यक this.</string>
+    <string name="sa_bool_true_false">== true / == false — अनावश्यक</string>
+    <string name="sa_redundant_boxing">अनावश्यक boxing/unboxing</string>
+    <string name="sa_catch_throwable">Throwable/Exception को पकड़ना</string>
+    <string name="sa_finalize">finalize() पुराना — try-with-resources</string>
+    <string name="sa_double_float_eq">double/float की == से तुलना</string>
+    <string name="sa_java_util_date">java.util.Date — बेहतर java.time</string>
+    <string name="sa_simple_date_format">SimpleDateFormat thread-safe नहीं</string>
+    <string name="sa_sql_injection">SQL एकीकरण से — SQL इंजेक्शन!</string>
+    <string name="sa_math_random">Math.random() — SecureRandom</string>
+    <string name="sa_runtime_exec">बाहरी प्रक्रिया चलाना</string>
+    <string name="sa_mutable_static">Mutable static फ़ील्ड</string>
+    <string name="sa_long_chain">लंबी विधि श्रृंखला (%1$d कॉल)</string>
+    <string name="sa_connection_leak">Connection बिना try-with-resources</string>
+    <string name="sa_socket_leak">Socket बिना try-with-resources</string>
+    <string name="sa_executor_no_shutdown">ExecutorService बिना shutdown</string>
+    <string name="sa_temp_no_delete">Temp फ़ाइल बिना deleteOnExit</string>
+    <string name="sa_npe_after_null_check">null check के बाद dereference</string>
+    <string name="sa_return_null">null लौटाना — Optional या Collections.empty*</string>
+    <string name="sa_null_in_collection">संग्रह में null</string>
+    <string name="sa_optional_get">Optional.get() बिना जाँच</string>
+    <string name="sa_optional_field">Optional फ़ील्ड के रूप में — anti-pattern</string>
+    <string name="sa_optional_or_null">Optional.orElse(null)</string>
+    <string name="sa_override_missing">%1$s के लिए @Override गायब</string>
+    <string name="sa_lambda_long">Lambda &gt; 5 पंक्तियाँ — विधि में निकालें</string>
+    <string name="sa_lambda_method_ref">Lambda विधि संदर्भ हो सकता है</string>
+    <string name="sa_test_no_assert">Assert के बिना टेस्ट</string>
+    <string name="sa_test_sysout">टेस्ट में System.out — assert का उपयोग करें</string>
+    <string name="sa_test_empty">खाली टेस्ट</string>
+    <string name="sa_missing_class_javadoc">JavaDoc के बिना क्लास</string>
+    <string name="sa_hashtable_vector">पुरानी क्लास — HashMap/ArrayList</string>
+    <string name="sa_date_new">new Date() — Instant.now()</string>
+    <string name="sa_calendar">Calendar.getInstance() — LocalDateTime</string>
+    <string name="sa_stream_no_terminal">टर्मिनल ऑपरेशन के बिना Stream</string>
+    <string name="sa_collect_tolist">collect(toList()) — Java 16+ .toList()</string>
+    <string name="sa_findfirst_get">findFirst().get() — .findFirst().orElseThrow()</string>
+    <string name="sa_pattern_compile_loop">लूप में Pattern.compile()</string>
+    <string name="sa_string_matches">String.matches() — Pattern.compile</string>
+    <string name="sa_fallthrough">switch में fall-through — break भूल गए?</string>
+    <string name="sa_switch_no_default">बिना default के switch</string>
+    <string name="sa_final_local">स्थानीय चर \'%1$s\' — पठनीयता के लिए final</string>
+
+
+
+    <!-- Storage Permission -->
+    <string name="permission_storage_title">फ़ाइल एक्सेस</string>
+    <string name="permission_storage_message">प्रोजेक्ट फ़ाइलों के साथ काम करने के लिए, ऐप को फ़ाइल सिस्टम तक पहुँच चाहिए।\n\nकृपया अगली स्क्रीन पर \"सभी फ़ाइलों तक पहुँच\" सक्षम करें।</string>
+    <string name="permission_storage_open_settings">सेटिंग्स खोलें</string>
+    <string name="permission_storage_exit">बाहर निकलें</string>
+    <string name="permission_storage_denied_title">एक्सेस नहीं दिया गया</string>
+    <string name="permission_storage_denied_message">फ़ाइल एक्सेस के बिना, ऐप प्रोजेक्ट्स के साथ काम नहीं कर सकता।</string>
+    <string name="permission_storage_try_again">फिर से कोशिश करें</string>
 </resources>

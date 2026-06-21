@@ -8,24 +8,23 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.ccs.javadroid.AppTheme;
+import com.ccs.javadroid.util.AppTheme;
 import com.ccs.javadroid.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Список глав/уроків курсу. Глава — розгортуваний заголовок; урок — пункт.
- * Логіка розкриття аналогічна старому LearnAdapter, але під нові моделі.
+ * Список розділів/матеріалів. Розділ — розгорнутий заголовок; матеріал — пункт.
  */
 public class CourseOutlineAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    public interface OnLessonClickListener {
-        void onLessonClick(Lesson lesson);
+    public interface OnMaterialClickListener {
+        void onMaterialClick(Lesson material);
     }
 
     private static final int TYPE_CHAPTER = 0;
-    private static final int TYPE_LESSON = 1;
+    private static final int TYPE_MATERIAL = 1;
 
     private static final class ChapterItem {
         final Chapter chapter;
@@ -36,11 +35,11 @@ public class CourseOutlineAdapter extends RecyclerView.Adapter<RecyclerView.View
     private final List<Object> flat = new ArrayList<>();
     private final List<ChapterItem> chapters = new ArrayList<>();
     private final AppTheme theme;
-    private final OnLessonClickListener listener;
+    private final OnMaterialClickListener listener;
     private final int lang;
 
     public CourseOutlineAdapter(List<Chapter> chapterList, AppTheme theme, int lang,
-                                OnLessonClickListener listener) {
+                                  OnMaterialClickListener listener) {
         this.theme = theme;
         this.lang = lang;
         this.listener = listener;
@@ -52,13 +51,13 @@ public class CourseOutlineAdapter extends RecyclerView.Adapter<RecyclerView.View
         flat.clear();
         for (ChapterItem ci : chapters) {
             flat.add(ci);
-            if (ci.expanded) flat.addAll(ci.chapter.lessons);
+            if (ci.expanded) flat.addAll(ci.chapter.materials);
         }
     }
 
     @Override
     public int getItemViewType(int position) {
-        return flat.get(position) instanceof ChapterItem ? TYPE_CHAPTER : TYPE_LESSON;
+        return flat.get(position) instanceof ChapterItem ? TYPE_CHAPTER : TYPE_MATERIAL;
     }
 
     @Override
@@ -72,7 +71,7 @@ public class CourseOutlineAdapter extends RecyclerView.Adapter<RecyclerView.View
         LayoutInflater inf = LayoutInflater.from(parent.getContext());
         View v = viewType == TYPE_CHAPTER
                 ? inf.inflate(R.layout.item_chapter, parent, false)
-                : inf.inflate(R.layout.item_lesson, parent, false);
+                : inf.inflate(R.layout.item_material, parent, false);
         return new VH(v, viewType == TYPE_CHAPTER);
     }
 
@@ -96,12 +95,12 @@ public class CourseOutlineAdapter extends RecyclerView.Adapter<RecyclerView.View
                 notifyDataSetChanged();
             });
         } else {
-            Lesson l = (Lesson) item;
-            vh.title.setText("   " + l.title(lang));
+            Lesson m = (Lesson) item;
+            vh.title.setText("   " + m.title(lang));
             vh.title.setTextColor(theme.textDim);
             vh.itemView.setBackgroundColor(theme.bg);
             vh.itemView.setOnClickListener(v -> {
-                if (listener != null) listener.onLessonClick(l);
+                if (listener != null) listener.onMaterialClick(m);
             });
         }
     }
@@ -111,7 +110,7 @@ public class CourseOutlineAdapter extends RecyclerView.Adapter<RecyclerView.View
         final TextView arrow;
         VH(View v, boolean isChapter) {
             super(v);
-            title = v.findViewById(isChapter ? R.id.tvChapterTitle : R.id.tvLessonTitle);
+            title = v.findViewById(isChapter ? R.id.tvChapterTitle : R.id.tvMaterialTitle);
             arrow = isChapter ? (TextView) v.findViewById(R.id.tvChapterArrow) : null;
         }
     }

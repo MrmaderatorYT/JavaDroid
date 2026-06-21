@@ -13,27 +13,27 @@ final class Jdk8DeepDiveMoreChapters {
     private Jdk8DeepDiveMoreChapters() {
     }
 
-    static void add(Course c) {
-        addGenericsDeep(c);
-        addObjectOrientedContracts(c);
-        addExceptionsAndIo(c);
-        addDateTimeAndConcurrency(c);
-        addCapstonePractice(c);
+    static void add(Course s) {
+        addGenericsDeep(s);
+        addObjectOrientedContracts(s);
+        addExceptionsAndIo(s);
+        addDateTimeAndConcurrency(s);
+        addCapstonePractice(s);
     }
 
     // ── Generics Deep Dive ────────────────────────────────────────────────
 
-    private static void addGenericsDeep(Course c) {
+    private static void addGenericsDeep(Course s) {
         Chapter ch = new Chapter(
                 "Generics у JDK 8: type erasure, bounds, wildcards",
                 "Generics in JDK 8: type erasure, bounds, wildcards");
-        ch.add(lessonGenericsMentalModel());
-        ch.add(lessonTypeErasureHeapPollution());
-        ch.add(lessonWildcardsPecsDeep());
-        c.add(ch);
+        ch.add(materialGenericsMentalModel());
+        ch.add(materialTypeErasureHeapPollution());
+        ch.add(materialWildcardsPecsDeep());
+        s.add(ch);
     }
 
-    private static Lesson lessonGenericsMentalModel() {
+    private static Lesson materialGenericsMentalModel() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Generics: не магія, а перевірка типів"));
         uk.add(LessonBlock.paragraph(
@@ -149,7 +149,7 @@ final class Jdk8DeepDiveMoreChapters {
         return new Lesson("jdk8.generics.1", "Generics mental model", "Generics mental model", uk, en);
     }
 
-    private static Lesson lessonTypeErasureHeapPollution() {
+    private static Lesson materialTypeErasureHeapPollution() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Type erasure: що лишається після компіляції"));
         uk.add(LessonBlock.paragraph(
@@ -245,7 +245,7 @@ final class Jdk8DeepDiveMoreChapters {
         return new Lesson("jdk8.generics.2", "Type erasure і heap pollution", "Type erasure and heap pollution", uk, en);
     }
 
-    private static Lesson lessonWildcardsPecsDeep() {
+    private static Lesson materialWildcardsPecsDeep() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Wildcards: ? extends, ? super, PECS"));
         uk.add(LessonBlock.paragraph(
@@ -330,16 +330,16 @@ final class Jdk8DeepDiveMoreChapters {
 
     // ── OOP Contracts ─────────────────────────────────────────────────────
 
-    private static void addObjectOrientedContracts(Course c) {
+    private static void addObjectOrientedContracts(Course s) {
         Chapter ch = new Chapter(
                 "ООП у JDK 8: Object, equals/hashCode, наслідування",
                 "OOP in JDK 8: Object, equals/hashCode, inheritance");
-        ch.add(lessonObjectMethodsContract());
-        ch.add(lessonInheritanceCompositionInterfaces());
-        c.add(ch);
+        ch.add(materialObjectMethodsContract());
+        ch.add(materialInheritanceCompositionInterfaces());
+        s.add(ch);
     }
 
-    private static Lesson lessonObjectMethodsContract() {
+    private static Lesson materialObjectMethodsContract() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Object: корінь усіх класів"));
         uk.add(LessonBlock.paragraph(
@@ -440,7 +440,7 @@ final class Jdk8DeepDiveMoreChapters {
         return new Lesson("jdk8.oop.1", "Object methods contract", "Object methods contract", uk, en);
     }
 
-    private static Lesson lessonInheritanceCompositionInterfaces() {
+    private static Lesson materialInheritanceCompositionInterfaces() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Наслідування, композиція, інтерфейси"));
         uk.add(LessonBlock.paragraph(
@@ -542,17 +542,17 @@ final class Jdk8DeepDiveMoreChapters {
 
     // ── Exceptions and IO ──────────────────────────────────────────────────
 
-    private static void addExceptionsAndIo(Course c) {
+    private static void addExceptionsAndIo(Course s) {
         Chapter ch = new Chapter(
                 "Exceptions та IO/NIO у JDK 8",
                 "Exceptions and IO/NIO in JDK 8");
-        ch.add(lessonExceptionsDeep());
-        ch.add(lessonTryWithResourcesDeep());
-        ch.add(lessonIoNioDeep());
-        c.add(ch);
+        ch.add(materialExceptionsDeep());
+        ch.add(materialTryWithResourcesDeep());
+        ch.add(materialIoNioDeep());
+        s.add(ch);
     }
 
-    private static Lesson lessonExceptionsDeep() {
+    private static Lesson materialExceptionsDeep() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Exception hierarchy"));
         uk.add(LessonBlock.paragraph(
@@ -624,7 +624,7 @@ final class Jdk8DeepDiveMoreChapters {
         return new Lesson("jdk8.exceptions.1", "Exceptions глибоко", "Exceptions deep dive", uk, en);
     }
 
-    private static Lesson lessonTryWithResourcesDeep() {
+    private static Lesson materialTryWithResourcesDeep() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("try-with-resources і AutoCloseable"));
         uk.add(LessonBlock.paragraph(
@@ -696,7 +696,7 @@ final class Jdk8DeepDiveMoreChapters {
         return new Lesson("jdk8.exceptions.2", "try-with-resources", "try-with-resources", uk, en);
     }
 
-    private static Lesson lessonIoNioDeep() {
+    private static Lesson materialIoNioDeep() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("IO/NIO: байти, символи, Path, Files"));
         uk.add(LessonBlock.paragraph(
@@ -774,17 +774,17 @@ final class Jdk8DeepDiveMoreChapters {
 
     // ── Date Time and Concurrency ──────────────────────────────────────────
 
-    private static void addDateTimeAndConcurrency(Course c) {
+    private static void addDateTimeAndConcurrency(Course s) {
         Chapter ch = new Chapter(
                 "Date/Time та Concurrency у JDK 8",
                 "Date/Time and Concurrency in JDK 8");
-        ch.add(lessonDateTimeDeep());
-        ch.add(lessonThreadsMemoryDeep());
-        ch.add(lessonExecutorFutureDeep());
-        c.add(ch);
+        ch.add(materialDateTimeDeep());
+        ch.add(materialThreadsMemoryDeep());
+        ch.add(materialExecutorFutureDeep());
+        s.add(ch);
     }
 
-    private static Lesson lessonDateTimeDeep() {
+    private static Lesson materialDateTimeDeep() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("java.time: людський час і machine time"));
         uk.add(LessonBlock.paragraph(
@@ -862,7 +862,7 @@ final class Jdk8DeepDiveMoreChapters {
         return new Lesson("jdk8.datetime.1", "java.time глибоко", "java.time deep dive", uk, en);
     }
 
-    private static Lesson lessonThreadsMemoryDeep() {
+    private static Lesson materialThreadsMemoryDeep() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Threads, race condition, visibility"));
         uk.add(LessonBlock.paragraph(
@@ -936,7 +936,7 @@ final class Jdk8DeepDiveMoreChapters {
         return new Lesson("jdk8.concurrent.1", "Threads і memory basics", "Threads and memory basics", uk, en);
     }
 
-    private static Lesson lessonExecutorFutureDeep() {
+    private static Lesson materialExecutorFutureDeep() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("ExecutorService, Callable, Future"));
         uk.add(LessonBlock.paragraph(
@@ -1024,15 +1024,15 @@ final class Jdk8DeepDiveMoreChapters {
 
     // ── Capstone Practice ──────────────────────────────────────────────────
 
-    private static void addCapstonePractice(Course c) {
+    private static void addCapstonePractice(Course s) {
         Chapter ch = new Chapter(
                 "Капстоун: маленькі JDK 8 проєкти",
                 "Capstone: small JDK 8 projects");
-        ch.add(lessonJdk8CapstoneProjects());
-        c.add(ch);
+        ch.add(materialJdk8CapstoneProjects());
+        s.add(ch);
     }
 
-    private static Lesson lessonJdk8CapstoneProjects() {
+    private static Lesson materialJdk8CapstoneProjects() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Проєкти для закріплення"));
         uk.add(LessonBlock.paragraph(
