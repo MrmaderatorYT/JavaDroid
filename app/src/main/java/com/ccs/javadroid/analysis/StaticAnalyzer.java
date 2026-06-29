@@ -158,13 +158,14 @@ public final class StaticAnalyzer {
             }
 
             // TODO / FIXME / HACK / XXX
-            if (line.contains("TODO")) out.add(new ProblemItem(ProblemItem.Severity.INFO,
+            String lower = line.toLowerCase();
+            if (lower.contains("todo")) out.add(new ProblemItem(ProblemItem.Severity.INFO,
                     str(ctx, R.string.sa_todo), f, i + 1));
-            if (line.contains("FIXME")) out.add(new ProblemItem(ProblemItem.Severity.WARNING,
+            if (lower.contains("fixme")) out.add(new ProblemItem(ProblemItem.Severity.WARNING,
                     str(ctx, R.string.sa_fixme), f, i + 1));
-            if (line.contains("HACK")) out.add(new ProblemItem(ProblemItem.Severity.WARNING,
+            if (lower.contains("hack")) out.add(new ProblemItem(ProblemItem.Severity.WARNING,
                     str(ctx, R.string.sa_hack), f, i + 1));
-            if (line.contains("XXX")) out.add(new ProblemItem(ProblemItem.Severity.WARNING,
+            if (lower.contains("xxx")) out.add(new ProblemItem(ProblemItem.Severity.WARNING,
                     str(ctx, R.string.sa_xxx), f, i + 1));
             if (line.contains("NOSONAR")) out.add(new ProblemItem(ProblemItem.Severity.INFO,
                     "NOSONAR — приховує попередження SonarQube", f, i + 1));
@@ -229,7 +230,6 @@ public final class StaticAnalyzer {
             }
 
             // Password/key in code
-            String lower = line.toLowerCase();
             if ((lower.contains("password") || lower.contains("secret") || lower.contains("api_key"))
                     && (lower.contains("=") || lower.contains(":"))) {
                 out.add(new ProblemItem(ProblemItem.Severity.ERROR,

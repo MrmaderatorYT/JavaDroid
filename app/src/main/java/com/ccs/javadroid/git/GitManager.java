@@ -8,17 +8,25 @@ import org.eclipse.jgit.api.PullCommand;
 import org.eclipse.jgit.api.PullResult;
 import org.eclipse.jgit.api.PushCommand;
 import org.eclipse.jgit.api.Status;
+import org.eclipse.jgit.diff.DiffEntry;
+import org.eclipse.jgit.diff.DiffFormatter;
+import org.eclipse.jgit.dircache.DirCacheIterator;
 import org.eclipse.jgit.lib.ConfigConstants;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevWalk;
+import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 import org.eclipse.jgit.transport.PushResult;
 import org.eclipse.jgit.transport.RemoteRefUpdate;
 import org.eclipse.jgit.transport.URIish;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
+import org.eclipse.jgit.treewalk.FileTreeIterator;
+import org.eclipse.jgit.util.io.DisabledOutputStream;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -373,6 +381,165 @@ public final class GitManager {
             return g.getRepository().resolve(Constants.HEAD) != null;
         } catch (Exception e) {
             return false;
+        }
+    }
+
+    // ── Diff ────────────────────────────────────────────────
+
+    private static CanonicalTreeParser treeIterator(Repository repo, RevWalk walk, RevCommit commit) throws Exception {
+        CanonicalTreeParser parser = new CanonicalTreeParser();
+        parser.reset(walk.getObjectReader(), commit.getTree());
+        return parser;
+    }
+
+    private static RevCommit resolveHead(Repository repo, RevWalk walk) throws Exception {
+        org.eclipse.jgit.lib.ObjectId headId = repo.resolve(Constants.HEAD);
+        if (headId == null) return null;
+        return walk.parseCommit(headId);
+    }
+
+    /** Повертає unified diff поточних змін (HEAD vs working tree). */
+    public static String diffWorkingTree(File dir) throws Exception {
+        try (Git g = Git.open(dir)) {
+            Repository repo = g.getRepository();
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            try (DiffFormatter fmt = new DiffFormatter(out)) {
+                fmt.setRepository(repo);
+                fmt.setOldPrefix("a/");
+                fmt.setNewPrefix("b/");
+                try (RevWalk walk = new RevWalk(repo)) {
+                    RevCommit head = resolveHead(repo, walk);
+                    if (head == null) return "";
+                    CanonicalTreeParser headTree = treeIterator(repo, walk, head);
+                    List<DiffEntry> entries = fmt.scan(headTree, new FileTreeIterator(repo));
+                    for (DiffEntry entry : entries) fmt.format(entry);
+                }
+            }
+            return out.toString("UTF-8");
+        }
+    }
+
+    /** Повертає unified diff staged змін (HEAD vs index). */
+    public static String diffStaged(File dir) throws Exception {
+        try (Git g = Git.open(dir)) {
+            Repository repo = g.getRepository();
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            try (DiffFormatter fmt = new DiffFormatter(out)) {
+                fmt.setRepository(repo);
+                fmt.setOldPrefix("a/");
+                fmt.setNewPrefix("b/");
+                DirCacheIterator index = new DirCacheIterator(repo.readDirCache());
+                try (RevWalk walk = new RevWalk(repo)) {
+                    RevCommit head = resolveHead(repo, walk);
+                    if (head == null) {
+                        List<DiffEntry> entries = fmt.scan(new FileTreeIterator(repo), index);
+                        for (DiffEntry entry : entries) fmt.format(entry);
+                    } else {
+                        CanonicalTreeParser headTree = treeIterator(repo, walk, head);
+                        List<DiffEntry> entries = fmt.scan(headTree, index);
+                        for (DiffEntry entry : entries) fmt.format(entry);
+                    }
+                }
+            }
+            return out.toString("UTF-8");
+        }
+    }
+
+    /** Повертає unified diff для конкретного файлу (HEAD vs working tree). */
+    public static String diffFile(File dir, String path) throws Exception {
+        try (Git g = Git.open(dir)) {
+            Repository repo = g.getRepository();
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            try (DiffFormatter fmt = new DiffFormatter(out)) {
+                fmt.setRepository(repo);
+                fmt.setOldPrefix("a/");
+                fmt.setNewPrefix("b/");
+                try (RevWalk walk = new RevWalk(repo)) {
+                    RevCommit head = resolveHead(repo, walk);
+                    if (head == null) return "";
+                    CanonicalTreeParser headTree = treeIterator(repo, walk, head);
+                    List<DiffEntry> entries = fmt.scan(headTree, new FileTreeIterator(repo));
+                    for (DiffEntry entry : entries) {
+                        if (entry.getOldPath().equals(path) || entry.getNewPath().equals(path)) {
+                            fmt.format(entry);
+                        }
+                    }
+                }
+            }
+            return out.toString("UTF-8");
+        }
+    }
+
+    /** Повертає diff між двома комітами (commitA..commitB). */
+    public static String diffCommits(File dir, String commitA, String commitB) throws Exception {
+        try (Git g = Git.open(dir)) {
+            Repository repo = g.getRepository();
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            try (DiffFormatter fmt = new DiffFormatter(out)) {
+                fmt.setRepository(repo);
+                fmt.setOldPrefix("a/");
+                fmt.setNewPrefix("b/");
+                try (RevWalk walk = new RevWalk(repo)) {
+                    RevCommit cA = walk.parseCommit(repo.resolve(commitA));
+                    RevCommit cB = walk.parseCommit(repo.resolve(commitB));
+                    CanonicalTreeParser treeA = treeIterator(repo, walk, cA);
+                    CanonicalTreeParser treeB = treeIterator(repo, walk, cB);
+                    List<DiffEntry> entries = fmt.scan(treeA, treeB);
+                    for (DiffEntry entry : entries) fmt.format(entry);
+                }
+            }
+            return out.toString("UTF-8");
+        }
+    }
+
+    /** Повертає список змінених файлів (HEAD vs working tree). */
+    public static List<String> changedFiles(File dir) throws Exception {
+        try (Git g = Git.open(dir)) {
+            Repository repo = g.getRepository();
+            List<String> files = new ArrayList<>();
+            try (DiffFormatter fmt = new DiffFormatter(DisabledOutputStream.INSTANCE)) {
+                fmt.setRepository(repo);
+                try (RevWalk walk = new RevWalk(repo)) {
+                    RevCommit head = resolveHead(repo, walk);
+                    if (head == null) return files;
+                    CanonicalTreeParser headTree = treeIterator(repo, walk, head);
+                    List<DiffEntry> entries = fmt.scan(headTree, new FileTreeIterator(repo));
+                    for (DiffEntry entry : entries) files.add(entry.getNewPath());
+                }
+            }
+            return files;
+        }
+    }
+
+    /** Повертає кількість доданих/видалених/змінених рядків для файлу. */
+    public static int[] diffStats(File dir, String path) throws Exception {
+        try (Git g = Git.open(dir)) {
+            Repository repo = g.getRepository();
+            int added = 0, removed = 0;
+            ByteArrayOutputStream buf = new ByteArrayOutputStream();
+            try (DiffFormatter fmt = new DiffFormatter(buf)) {
+                fmt.setRepository(repo);
+                fmt.setOldPrefix("a/");
+                fmt.setNewPrefix("b/");
+                try (RevWalk walk = new RevWalk(repo)) {
+                    RevCommit head = resolveHead(repo, walk);
+                    if (head == null) return new int[]{0, 0};
+                    CanonicalTreeParser headTree = treeIterator(repo, walk, head);
+                    List<DiffEntry> entries = fmt.scan(headTree, new FileTreeIterator(repo));
+                    for (DiffEntry entry : entries) {
+                        if (entry.getNewPath().equals(path)) {
+                            buf.reset();
+                            fmt.format(entry);
+                            String diff = buf.toString("UTF-8");
+                            for (String line : diff.split("\n")) {
+                                if (line.startsWith("+") && !line.startsWith("+++")) added++;
+                                else if (line.startsWith("-") && !line.startsWith("---")) removed++;
+                            }
+                        }
+                    }
+                }
+            }
+            return new int[]{added, removed};
         }
     }
 }

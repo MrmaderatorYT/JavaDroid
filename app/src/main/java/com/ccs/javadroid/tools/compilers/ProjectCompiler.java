@@ -395,6 +395,7 @@ public final class ProjectCompiler {
             while ((n = fis.read(buf)) != -1) fos.write(buf, 0, n);
             fis.close();
             fos.close();
+            secureDex.setReadOnly();
 
             File optDir = new File(secureDexDir, "opt");
             if (optDir.exists()) deleteRecursive(optDir);
@@ -1287,6 +1288,7 @@ public final class ProjectCompiler {
             while ((n = fis.read(buf)) != -1) fos.write(buf, 0, n);
             fis.close();
             fos.close();
+            secureDex.setReadOnly();
 
             // Expose the cache directory containing dynamically compiled JNI .so libraries to DexClassLoader
             File nativeLibDir = jniLibsDir != null ? jniLibsDir : new File(context.getCacheDir(), "jni_libs");
@@ -2025,6 +2027,33 @@ public final class ProjectCompiler {
             }
         }
         return null;
+    }
+
+    // ── Public API for Profiler ─────────────────────────────
+
+    public static String extractClassNamePublic(String source) {
+        return extractClassName(source);
+    }
+
+    public static File ensureAndroidJarPublic(Context context, File cacheDir) throws Exception {
+        return ensureAndroidJar(context, cacheDir);
+    }
+
+    public static void writeUtf8Public(File f, String s) throws Exception {
+        writeUtf8(f, s);
+    }
+
+    public static String compileEcjPublic(File androidJar, String classpath, File outDir,
+                                           String javaTarget, File... srcFiles) {
+        return compileEcj(androidJar, classpath, outDir, javaTarget, srcFiles);
+    }
+
+    public static File findClassFilePublic(File dir, String className) {
+        return findClassFile(dir, className);
+    }
+
+    public static void runD8DexPublic(File androidJar, File dexDir, File classFile) throws Exception {
+        runD8Dex(androidJar, dexDir, classFile);
     }
 
 }

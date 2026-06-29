@@ -171,6 +171,7 @@ public class DatabaseInspectorActivity extends AppCompatActivity {
         sqlInput.setMinLines(2);
         sqlInput.setMaxLines(4);
         sqlInput.setPadding(dp(8), dp(6), dp(8), dp(6));
+        sqlInput.setContentDescription(getString(R.string.a11y_db_sql_input));
 
         LinearLayout sqlRow = new LinearLayout(this);
         sqlRow.setOrientation(LinearLayout.HORIZONTAL);
@@ -178,10 +179,12 @@ public class DatabaseInspectorActivity extends AppCompatActivity {
         sqlRow.addView(sqlInput, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
 
         TextView runBtn = createButton("▶ Run", theme.successText);
+        runBtn.setContentDescription(getString(R.string.a11y_db_run));
         runBtn.setOnClickListener(v -> executeQuery());
         sqlRow.addView(runBtn);
 
         TextView clearBtn = createButton("Clear", theme.textDim);
+        clearBtn.setContentDescription(getString(R.string.a11y_db_clear));
         clearBtn.setOnClickListener(v -> sqlInput.setText(""));
         sqlRow.addView(clearBtn);
 
@@ -271,6 +274,7 @@ public class DatabaseInspectorActivity extends AppCompatActivity {
                     item.setTypeface(new AppPreferences(this).resolveTypeface());
                     item.setPadding(dp(8), dp(6), dp(8), dp(6));
                     item.setBackgroundResource(android.R.drawable.list_selector_background);
+                    item.setContentDescription(getString(R.string.a11y_db_table_item, table));
                     item.setOnClickListener(v -> browseTable(table));
                     tablesList.addView(item);
                 }

@@ -6,46 +6,54 @@
         android:id="@+id/action_undo"
         android:title="@string/menu_undo"
         android:icon="@drawable/ic_undo"
+        android:contentDescription="@string/a11y_menu_undo"
         app:showAsAction="always" />
 
     <item
         android:id="@+id/action_redo"
         android:title="@string/menu_redo"
         android:icon="@drawable/ic_redo"
+        android:contentDescription="@string/a11y_menu_redo"
         app:showAsAction="always" />
 
     <item
         android:id="@+id/action_save"
         android:title="@string/menu_save"
         android:icon="@drawable/ic_save"
+        android:contentDescription="@string/a11y_menu_save"
         app:showAsAction="always" />
 
     <item
         android:id="@+id/action_run"
         android:title="@string/menu_run"
         android:icon="@drawable/ic_run"
+        android:contentDescription="@string/a11y_menu_run"
         app:showAsAction="always" />
 
     <item
         android:id="@+id/action_debug"
         android:title="@string/menu_debug"
         android:icon="@drawable/ic_debug"
+        android:contentDescription="@string/a11y_menu_debug"
         app:showAsAction="always" />
 
     <item
         android:id="@+id/action_find"
         android:title="@string/menu_find_replace"
         android:icon="@drawable/ic_search"
+        android:contentDescription="@string/a11y_menu_find_replace"
         app:showAsAction="always" />
 
     <item
         android:id="@+id/action_bytecode"
         android:title="@string/menu_bytecode"
+        android:contentDescription="@string/a11y_menu_bytecode"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/action_new_file"
         android:title="@string/menu_new_java_file"
+        android:contentDescription="@string/a11y_menu_new_file"
         app:showAsAction="never" />
 
     <item
@@ -61,6 +69,7 @@
     <item
         android:id="@+id/action_library_manager"
         android:title="@string/menu_library_manager"
+        android:contentDescription="@string/a11y_menu_library_manager"
         app:showAsAction="never" />
 
     <item
@@ -92,11 +101,13 @@
         android:id="@+id/action_settings"
         android:title="@string/menu_settings"
         android:icon="@drawable/ic_settings"
+        android:contentDescription="@string/a11y_menu_settings"
         app:showAsAction="always" />
 
     <item
         android:id="@+id/action_clear_console"
         android:title="@string/menu_clear_console"
+        android:contentDescription="@string/a11y_clear_console"
         app:showAsAction="never" />
 
     <item
@@ -107,6 +118,7 @@
     <item
         android:id="@+id/action_share_file"
         android:title="@string/menu_share_file"
+        android:contentDescription="@string/a11y_menu_share"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_pastebin"
@@ -116,10 +128,12 @@
     <item
         android:id="@+id/action_open_file"
         android:title="@string/menu_open_file"
+        android:contentDescription="@string/a11y_menu_open_file"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_import_files"
         android:title="@string/menu_import_files"
+        android:contentDescription="@string/a11y_menu_import"
         app:showAsAction="never" />
 
     <item
@@ -130,29 +144,35 @@
     <item
         android:id="@+id/action_format"
         android:title="@string/menu_format_code"
+        android:contentDescription="@string/a11y_menu_format"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_auto_import"
         android:title="@string/menu_auto_import"
+        android:contentDescription="@string/a11y_menu_auto_import"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_view_formatted"
         android:title="@string/menu_view_formatted"
+        android:contentDescription="@string/a11y_menu_view_formatted"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_md_preview"
         android:title="@string/menu_md_preview"
+        android:contentDescription="@string/a11y_menu_md_preview"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/action_export_project"
         android:title="@string/menu_export_project"
+        android:contentDescription="@string/a11y_menu_export"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/action_git"
         android:title="@string/menu_git"
         android:icon="@drawable/ic_git"
+        android:contentDescription="@string/a11y_menu_git"
         app:showAsAction="always" />
     <item
         android:id="@+id/action_create_cpp_module"
@@ -161,14 +181,17 @@
     <item
         android:id="@+id/action_split_screen"
         android:title="@string/menu_split_screen"
+        android:contentDescription="@string/a11y_menu_split_screen"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_play_media"
         android:title="@string/menu_play_media"
+        android:contentDescription="@string/a11y_menu_play_media"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_class_browser"
         android:title="@string/menu_class_browser"
+        android:contentDescription="@string/a11y_menu_class_browser"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_load_mapping"
@@ -177,5 +200,6 @@
     <item
         android:id="@+id/action_ai_chat"
         android:title="@string/menu_ai_chat"
+        android:contentDescription="@string/a11y_menu_ai_chat"
         app:showAsAction="always" />
 </menu>

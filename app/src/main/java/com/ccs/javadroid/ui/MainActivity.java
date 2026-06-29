@@ -14,6 +14,7 @@ import com.ccs.javadroid.analysis.ProblemsAdapter;
 import com.ccs.javadroid.analysis.LiveProblemsScheduler;
 import com.ccs.javadroid.project.ProjectScanner;
 import com.ccs.javadroid.ai.AiChatActivity;
+import com.ccs.javadroid.ai.PendingEdits;
 import com.ccs.javadroid.tools.bytecode.BytecodeEditorActivity;
 import com.ccs.javadroid.tools.bytecode.BytecodeEditor;
 import com.ccs.javadroid.analysis.ProblemItem;
@@ -137,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean       isSplitActive = false;
     private RecyclerView  tabsRecycler;
     private RecyclerView  fileTreeRecycler;
+    private com.ccs.javadroid.util.VoiceToTextManager voiceToText;
     private LinearLayout  findBar;
     private EditText      etFind;
     private EditText      etReplace;
@@ -198,6 +200,9 @@ public class MainActivity extends AppCompatActivity {
     private static final int PANEL_DEBUG_CONSOLE = 4;
     private static final int PANEL_CALL_GRAPH    = 5;
     private static final int PANEL_BOOKMARKS     = 6;
+    private static final int PANEL_DEPS          = 7;
+    private static final int PANEL_PROFILER      = 8;
+    private static final int PANEL_TODO          = 9;
 
     private int bottomPanelMode = PANEL_RUN;
     private volatile boolean bytecodeRefreshRunning;
@@ -227,6 +232,55 @@ public class MainActivity extends AppCompatActivity {
     private final java.util.List<WatchExpression> watchExpressions = new java.util.ArrayList<>();
     private DebuggerController.DebugListener debugListener;
     private com.ccs.javadroid.debug.DebugEditorDecorator activeEditorDecorator;
+
+    // ── Minimap ─────────────────────────────────────────────
+    private MinimapView minimapView1;
+    private MinimapView minimapView2;
+
+    // ── Dependency Viewer ───────────────────────────────────
+    private View          depsPanel;
+    private TextView      tabDeps;
+    private DependencyGraphView depsGraphView;
+    private TextView      depsStatus;
+    private com.ccs.javadroid.tools.bytecode.DependencyModel dependencyModel;
+
+    // ── Profiler ─────────────────────────────────────────────
+    private View          profilerPanel;
+    private TextView      tabProfiler;
+    private FlameChartView flameChartView;
+    private TextView      profilerStatus;
+    private ScrollView    profilerDetailScroll;
+    private TextView      profilerDetail;
+    private boolean       profilingEnabled = false;
+    private boolean       profilerLiveMode = true;
+    private final Handler profilerRefreshHandler = new Handler(Looper.getMainLooper());
+
+    // ── TODO/FIXME Tracker ──────────────────────────────────
+    private View          todoPanel;
+    private TextView      tabTodo;
+    private RecyclerView  todoRecycler;
+    private EditText      todoSearch;
+    private TextView      todoStatus;
+    private com.ccs.javadroid.analysis.TodoAdapter todoAdapter;
+    private boolean       todoAutoRefreshPending = false;
+    private final Handler todoAutoRefreshHandler = new Handler(Looper.getMainLooper());
+    private final Runnable todoAutoRefreshRunnable = () -> {
+        if (todoAutoRefreshPending) {
+            todoAutoRefreshPending = false;
+            refreshTodoPanel();
+        }
+    };
+    private final Runnable profilerRefreshRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (profilingEnabled && profilerLiveMode) {
+                refreshProfilerResults();
+                // Slower refresh in power saving mode (2s vs 500ms)
+                long interval = powerSaving.isPowerSavingActive() ? 2000 : 500;
+                profilerRefreshHandler.postDelayed(this, interval);
+            }
+        }
+    };
 
     // ── Adapters & Managers ────────────────────────────────
     private TabsAdapter      tabsAdapter;
@@ -342,6 +396,72 @@ public class MainActivity extends AppCompatActivity {
         if (projectManager != null && projectManager.getProjectDir() != null) {
             refreshProblemsMergedAsync();
         }
+        // Застосувати відкладені вставки коду від AI-чату (кнопка "Insert" / інструмент insertCode).
+        applyPendingAiEdits();
+    }
+
+    /**
+     * Витягує всі відкладені вставки коду з PendingEdits і застосовує їх до activeEditor
+     * у порядку черги. Викликається з onResume після повернення з AI-чату.
+     */
+    private void applyPendingAiEdits() {
+        if (!PendingEdits.hasPending()) return;
+        if (activeEditor == null) {
+            android.widget.Toast.makeText(this,
+                    "No editor open — AI code insertions discarded",
+                    android.widget.Toast.LENGTH_LONG).show();
+            PendingEdits.clear();
+            return;
+        }
+
+        java.util.List<PendingEdits.Edit> edits = PendingEdits.drain();
+        if (edits.isEmpty()) return;
+
+        isProgrammaticChange = true;
+        try {
+            int applied = 0;
+            for (PendingEdits.Edit e : edits) {
+                try {
+                    if (PendingEdits.LOCATION_REPLACE.equals(e.location)) {
+                        activeEditor.setText(e.code);
+                    } else if (PendingEdits.LOCATION_APPEND.equals(e.location)) {
+                        // Перейти в кінець документу й вставити
+                        int lastLine = activeEditor.getText().getLineCount() - 1;
+                        if (lastLine < 0) lastLine = 0;
+                        int lastCol = activeEditor.getText().getColumnCount(lastLine);
+                        activeEditor.setSelection(lastLine, lastCol);
+                        String sep = needLeadingNewline() ? "\n" : "";
+                        activeEditor.insertText(sep + e.code, 0);
+                    } else {
+                        // cursor (за замовч.)
+                        activeEditor.insertText(e.code, 0);
+                    }
+                    applied++;
+                } catch (Exception ex) {
+                    android.util.Log.w("MainActivity", "AI insert failed: " + ex.getMessage());
+                }
+            }
+            if (applied > 0) {
+                android.widget.Toast.makeText(this,
+                        "Inserted " + applied + " AI code block(s)",
+                        android.widget.Toast.LENGTH_SHORT).show();
+            }
+        } finally {
+            isProgrammaticChange = false;
+        }
+    }
+
+    /** Чи потрібен порожній рядок перед вставлянням append (файл не закінчується \n)? */
+    private boolean needLeadingNewline() {
+        try {
+            var txt = activeEditor.getText();
+            int lc = txt.getLineCount();
+            if (lc == 0) return false;
+            String last = txt.getLine(lc - 1).toString();
+            return !last.isEmpty();
+        } catch (Throwable t) {
+            return true;
+        }
     }
 
     @Override
@@ -352,6 +472,7 @@ public class MainActivity extends AppCompatActivity {
         if (isDebugging) {
             stopDebug();
         }
+        stopProfilerLiveRefresh();
         super.onPause();
         saveCurrentToActiveTab();
         saveSessionState();
@@ -466,6 +587,56 @@ public class MainActivity extends AppCompatActivity {
         callGraphStatus   = findViewById(R.id.callGraphStatus);
         callGraphSearch   = findViewById(R.id.callGraphSearch);
 
+        // Minimap
+        minimapView1 = findViewById(R.id.minimapView1);
+        minimapView2 = findViewById(R.id.minimapView2);
+
+        // Dependency Viewer
+        depsPanel    = findViewById(R.id.depsPanel);
+        tabDeps      = findViewById(R.id.tabDeps);
+        depsGraphView = findViewById(R.id.depsGraphView);
+        depsStatus   = findViewById(R.id.depsStatus);
+
+        // Profiler
+        profilerPanel = findViewById(R.id.profilerPanel);
+        tabProfiler  = findViewById(R.id.tabProfiler);
+        flameChartView = findViewById(R.id.flameChartView);
+        profilerStatus = findViewById(R.id.profilerStatus);
+        profilerDetailScroll = findViewById(R.id.profilerDetailScroll);
+        profilerDetail = findViewById(R.id.profilerDetail);
+
+        // TODO/FIXME
+        todoPanel    = findViewById(R.id.todoPanel);
+        tabTodo      = findViewById(R.id.tabTodo);
+        todoRecycler = findViewById(R.id.todoRecycler);
+        todoSearch   = findViewById(R.id.todoSearch);
+        todoStatus   = findViewById(R.id.todoStatus);
+        todoAdapter  = new com.ccs.javadroid.analysis.TodoAdapter();
+        todoAdapter.setTheme(theme);
+        todoAdapter.setListener(item -> {
+            if (item.file != null && item.file.exists()) {
+                openFile(item.file);
+                if (item.line > 0 && activeEditor != null) {
+                    activeEditor.setSelection(Math.max(0, item.line - 1), 0);
+                }
+            }
+        });
+        if (todoRecycler != null) {
+            todoRecycler.setLayoutManager(new LinearLayoutManager(this));
+            todoRecycler.setAdapter(todoAdapter);
+        }
+        if (todoSearch != null) {
+            todoSearch.addTextChangedListener(new android.text.TextWatcher() {
+                @Override public void beforeTextChanged(CharSequence s, int a, int b, int c) {}
+                @Override public void onTextChanged(CharSequence s, int a, int b, int c) {}
+                @Override public void afterTextChanged(android.text.Editable s) {
+                    todoAdapter.filter(s != null ? s.toString() : "");
+                }
+            });
+        }
+        View todoRefresh = findViewById(R.id.todoRefresh);
+        if (todoRefresh != null) todoRefresh.setOnClickListener(v -> refreshTodoPanel());
+
         setupDebugToolbar();
         setupDebugController();
         setupDebugAdapters();
@@ -493,6 +664,15 @@ public class MainActivity extends AppCompatActivity {
         // Update editor color scheme
         if (editor != null) EditorSettingsApplier.apply(editor, appPrefs, theme);
         if (editor2 != null) EditorSettingsApplier.apply(editor2, appPrefs, theme);
+
+        // Minimap theming
+        if (minimapView1 != null) minimapView1.setThemeColors(
+                theme.consoleBg, theme.text, theme.editorKeyword, theme.editorString,
+                theme.editorComment, 0xFFB5CEA8, theme.accent, 0x28FFFFFF, 0x50FFFFFF);
+        if (minimapView2 != null) minimapView2.setThemeColors(
+                theme.consoleBg, theme.text, theme.editorKeyword, theme.editorString,
+                theme.editorComment, 0xFFB5CEA8, theme.accent, 0x28FFFFFF, 0x50FFFFFF);
+
         refreshBreakpointMarkers();
         refreshBookmarkMarkers();
         if (bottomTabsBar != null) bottomTabsBar.setBackgroundColor(theme.toolbar);
@@ -562,6 +742,31 @@ public class MainActivity extends AppCompatActivity {
             callGraphStatus.setBackgroundColor(theme.consoleBg);
             callGraphStatus.setTextColor(theme.textDim);
         }
+
+        // Dependency Viewer theming
+        if (depsPanel != null) depsPanel.setBackgroundColor(theme.consoleBg);
+        View depsToolbar = findViewById(R.id.depsToolbar);
+        if (depsToolbar != null) depsToolbar.setBackgroundColor(theme.toolbar);
+        if (depsStatus != null) depsStatus.setTextColor(theme.textDim);
+        if (depsGraphView != null) {
+            depsGraphView.setColors(theme.accent, 0xFFFFA500, 0xFF4CAF50, 0xFF666666, theme.text, theme.consoleBg);
+        }
+
+        // Profiler theming
+        if (profilerPanel != null) profilerPanel.setBackgroundColor(theme.consoleBg);
+
+        // TODO panel theming
+        if (todoPanel != null) todoPanel.setBackgroundColor(theme.consoleBg);
+        if (todoRecycler != null) todoRecycler.setBackgroundColor(theme.consoleBg);
+        if (todoSearch != null) {
+            todoSearch.setTextColor(theme.consoleText);
+            todoSearch.setHintTextColor(theme.textDim);
+        }
+        if (todoStatus != null) todoStatus.setTextColor(theme.textDim);
+        if (todoAdapter != null) todoAdapter.setTheme(theme);
+        View profilerToolbarView = findViewById(R.id.profilerToolbar);
+        if (profilerToolbarView != null) profilerToolbarView.setBackgroundColor(theme.toolbar);
+        if (profilerStatus != null) profilerStatus.setTextColor(theme.textDim);
 
         // Drawer elements theming
         TextView tvDrawerProjectLabel = findViewById(R.id.tvDrawerProjectLabel);
@@ -834,6 +1039,11 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
                     }
+            if (!powerSaving.isPowerSavingActive() && bottomPanelMode == PANEL_TODO) {
+                todoAutoRefreshPending = true;
+                todoAutoRefreshHandler.removeCallbacks(todoAutoRefreshRunnable);
+                todoAutoRefreshHandler.postDelayed(todoAutoRefreshRunnable, 1500);
+            }
         });
 
         // Focus changes
@@ -948,6 +1158,34 @@ public class MainActivity extends AppCompatActivity {
         configureEditor(editor);
         configureEditor(editor2);
         updateActiveEditorBorders();
+
+        // Setup minimaps
+        if (minimapView1 != null) minimapView1.setEditor(editor);
+        if (minimapView2 != null) minimapView2.setEditor(editor2);
+
+        // Initialize Voice-to-Text
+        voiceToText = new com.ccs.javadroid.util.VoiceToTextManager(this);
+        voiceToText.setCallback(new com.ccs.javadroid.util.VoiceToTextManager.Callback() {
+            @Override
+            public void onResult(String text) {
+                if (activeEditor != null && text != null) {
+                    activeEditor.insertText(text, 1);
+                }
+            }
+
+            @Override
+            public void onError(String error) {
+                Toast.makeText(MainActivity.this, "🎤 " + error, Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onPartialResult(String partial) {
+                // Show partial result in status bar
+                if (statusLineCol != null && partial != null) {
+                    statusLineCol.setText("🎤 " + partial);
+                }
+            }
+        });
     }
 
     private void setupFindBar() {
@@ -1002,6 +1240,10 @@ public class MainActivity extends AppCompatActivity {
         if (tabDebugConsole != null) tabDebugConsole.setOnClickListener(v -> switchBottomPanel(PANEL_DEBUG_CONSOLE));
         if (tabCallGraph != null) tabCallGraph.setOnClickListener(v -> switchBottomPanel(PANEL_CALL_GRAPH));
         if (tabBookmarks != null) tabBookmarks.setOnClickListener(v -> switchBottomPanel(PANEL_BOOKMARKS));
+        if (tabDeps != null) tabDeps.setOnClickListener(v -> switchBottomPanel(PANEL_DEPS));
+        if (tabProfiler != null) tabProfiler.setOnClickListener(v -> switchBottomPanel(PANEL_PROFILER));
+        if (tabTodo != null) tabTodo.setOnClickListener(v -> switchBottomPanel(PANEL_TODO));
+        setupProfilerToolbar();
         switchBottomPanel(PANEL_RUN);
     }
 
@@ -1056,6 +1298,9 @@ public class MainActivity extends AppCompatActivity {
         if (tabDebug != null) tabDebug.setBackgroundColor(bottomPanelMode == PANEL_DEBUG ? activeBg : inactiveBg);
         if (tabDebugConsole != null) tabDebugConsole.setBackgroundColor(bottomPanelMode == PANEL_DEBUG_CONSOLE ? activeBg : inactiveBg);
         if (tabCallGraph != null) tabCallGraph.setBackgroundColor(bottomPanelMode == PANEL_CALL_GRAPH ? activeBg : inactiveBg);
+        if (tabDeps != null) tabDeps.setBackgroundColor(bottomPanelMode == PANEL_DEPS ? activeBg : inactiveBg);
+        if (tabProfiler != null) tabProfiler.setBackgroundColor(bottomPanelMode == PANEL_PROFILER ? activeBg : inactiveBg);
+        if (tabTodo != null) tabTodo.setBackgroundColor(bottomPanelMode == PANEL_TODO ? activeBg : inactiveBg);
 
         tabRun.setTextColor(bottomPanelMode == PANEL_RUN ? theme.successText : theme.textDim);
         tabProblems.setTextColor(bottomPanelMode == PANEL_PROBLEMS ? theme.text : theme.textDim);
@@ -1063,6 +1308,9 @@ public class MainActivity extends AppCompatActivity {
         if (tabDebug != null) tabDebug.setTextColor(bottomPanelMode == PANEL_DEBUG ? theme.accent : theme.textDim);
         if (tabDebugConsole != null) tabDebugConsole.setTextColor(bottomPanelMode == PANEL_DEBUG_CONSOLE ? theme.accent : theme.textDim);
         if (tabCallGraph != null) tabCallGraph.setTextColor(bottomPanelMode == PANEL_CALL_GRAPH ? theme.accent : theme.textDim);
+        if (tabDeps != null) tabDeps.setTextColor(bottomPanelMode == PANEL_DEPS ? theme.accent : theme.textDim);
+        if (tabProfiler != null) tabProfiler.setTextColor(bottomPanelMode == PANEL_PROFILER ? theme.accent : theme.textDim);
+        if (tabTodo != null) tabTodo.setTextColor(bottomPanelMode == PANEL_TODO ? theme.accent : theme.textDim);
     }
 
     private void switchBottomPanel(int mode) {
@@ -1079,6 +1327,12 @@ public class MainActivity extends AppCompatActivity {
             callGraphRoot.setVisibility(mode == PANEL_CALL_GRAPH ? View.VISIBLE : View.GONE);
         if (bookmarksRecycler != null)
             bookmarksRecycler.setVisibility(mode == PANEL_BOOKMARKS ? View.VISIBLE : View.GONE);
+        if (depsPanel != null)
+            depsPanel.setVisibility(mode == PANEL_DEPS ? View.VISIBLE : View.GONE);
+        if (profilerPanel != null)
+            profilerPanel.setVisibility(mode == PANEL_PROFILER ? View.VISIBLE : View.GONE);
+        if (todoPanel != null)
+            todoPanel.setVisibility(mode == PANEL_TODO ? View.VISIBLE : View.GONE);
 
         int activeBg   = blend(theme.toolbar, theme.bg, 0.4f);
         int inactiveBg = theme.toolbar;
@@ -1089,6 +1343,9 @@ public class MainActivity extends AppCompatActivity {
         if (tabDebugConsole != null) tabDebugConsole.setBackgroundColor(mode == PANEL_DEBUG_CONSOLE ? activeBg : inactiveBg);
         if (tabCallGraph != null) tabCallGraph.setBackgroundColor(mode == PANEL_CALL_GRAPH ? activeBg : inactiveBg);
         if (tabBookmarks != null) tabBookmarks.setBackgroundColor(mode == PANEL_BOOKMARKS ? activeBg : inactiveBg);
+        if (tabDeps != null) tabDeps.setBackgroundColor(mode == PANEL_DEPS ? activeBg : inactiveBg);
+        if (tabProfiler != null) tabProfiler.setBackgroundColor(mode == PANEL_PROFILER ? activeBg : inactiveBg);
+        if (tabTodo != null) tabTodo.setBackgroundColor(mode == PANEL_TODO ? activeBg : inactiveBg);
 
         tabRun.setTextColor(mode == PANEL_RUN ? theme.successText : theme.textDim);
         tabProblems.setTextColor(mode == PANEL_PROBLEMS ? theme.text : theme.textDim);
@@ -1096,6 +1353,9 @@ public class MainActivity extends AppCompatActivity {
         if (tabDebug != null) tabDebug.setTextColor(mode == PANEL_DEBUG ? theme.accent : theme.textDim);
         if (tabDebugConsole != null) tabDebugConsole.setTextColor(mode == PANEL_DEBUG_CONSOLE ? theme.accent : theme.textDim);
         if (tabBookmarks != null) tabBookmarks.setTextColor(mode == PANEL_BOOKMARKS ? 0xFFFFD700 : theme.textDim);
+        if (tabDeps != null) tabDeps.setTextColor(mode == PANEL_DEPS ? theme.accent : theme.textDim);
+        if (tabProfiler != null) tabProfiler.setTextColor(mode == PANEL_PROFILER ? theme.accent : theme.textDim);
+        if (tabTodo != null) tabTodo.setTextColor(mode == PANEL_TODO ? theme.accent : theme.textDim);
 
         if (btnClearConsole != null) {
             btnClearConsole.setVisibility(mode == PANEL_RUN ? View.VISIBLE : View.GONE);
@@ -1109,6 +1369,12 @@ public class MainActivity extends AppCompatActivity {
         }
         if (mode == PANEL_BOOKMARKS) {
             refreshBookmarksList();
+        }
+        if (mode == PANEL_DEPS) {
+            refreshDependencyGraph();
+        }
+        if (mode == PANEL_TODO) {
+            refreshTodoPanel();
         }
     }
 
@@ -1360,6 +1626,33 @@ public class MainActivity extends AppCompatActivity {
     // ══════════════════════════════════════════════════════════
     //  Bookmarks
     // ══════════════════════════════════════════════════════════
+
+    private void toggleVoiceInput() {
+        if (voiceToText == null) {
+            Toast.makeText(this, "Voice input not initialized", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Check RECORD_AUDIO permission
+        if (checkSelfPermission(android.Manifest.permission.RECORD_AUDIO)
+                != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{android.Manifest.permission.RECORD_AUDIO}, 1001);
+            return;
+        }
+
+        if (voiceToText.isListening()) {
+            voiceToText.stopListening();
+            Toast.makeText(this, "🎤 Stopped", Toast.LENGTH_SHORT).show();
+            if (statusLineCol != null) {
+                int ln = activeEditor != null ? activeEditor.getCursor().getLeftLine() + 1 : 1;
+                int col = activeEditor != null ? activeEditor.getCursor().getLeftColumn() + 1 : 1;
+                statusLineCol.setText(getString(R.string.status_line, ln, col));
+            }
+        } else {
+            voiceToText.startListening();
+            Toast.makeText(this, "🎤 Listening... Speak now", Toast.LENGTH_SHORT).show();
+        }
+    }
 
     private void toggleBookmarkAtCursor() {
         if (activeEditor == null) return;
@@ -2696,6 +2989,9 @@ public class MainActivity extends AppCompatActivity {
             {"Call Graph",       "call_graph"},
             {"Toggle Bookmark",  "toggle_bookmark"},
             {"Show Bookmarks",   "show_bookmarks"},
+            {"🎤 Voice Input",   "voice_input"},
+            {"Refactor...",      "refactor"},
+            {"Dependencies",     "dependencies"},
         };
 
         final List<String> filteredTitles = new ArrayList<>();
@@ -2717,6 +3013,7 @@ public class MainActivity extends AppCompatActivity {
         searchField.setBackgroundColor(theme.consoleBg);
         searchField.setPadding(dp(12), dp(10), dp(12), dp(10));
         searchField.setTextSize(14);
+        searchField.setContentDescription(getString(R.string.actions_search_hint));
         dialogRoot.addView(searchField);
 
         LinearLayout listContainer = new LinearLayout(this);
@@ -2821,6 +3118,9 @@ public class MainActivity extends AppCompatActivity {
             case "call_graph":    openCallGraph(); break;
             case "toggle_bookmark": toggleBookmarkAtCursor(); break;
             case "show_bookmarks":  showBookmarksDialog(); break;
+            case "voice_input":     toggleVoiceInput(); break;
+            case "refactor":        showRefactorDialog(); break;
+            case "dependencies":    switchBottomPanel(PANEL_DEPS); break;
         }
     }
 
@@ -3096,6 +3396,7 @@ public class MainActivity extends AppCompatActivity {
             editorDivider.setVisibility(View.VISIBLE);
             wrapperEditor2.setVisibility(View.VISIBLE);
             editor2.setVisibility(View.VISIBLE);
+            if (minimapView2 != null) minimapView2.setVisibility(View.VISIBLE);
 
             FileTab activeTab = tabsAdapter.getActiveTab();
             FileTab secTab = null;
@@ -3140,6 +3441,7 @@ public class MainActivity extends AppCompatActivity {
             editorDivider.setVisibility(View.GONE);
             wrapperEditor2.setVisibility(View.GONE);
             editor2.setVisibility(View.GONE);
+            if (minimapView2 != null) minimapView2.setVisibility(View.GONE);
 
             leftTab = tabsAdapter.getActiveTab();
             rightTab = null;
@@ -5551,6 +5853,647 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(this, "Cannot open settings. Please grant storage permission manually.", Toast.LENGTH_LONG).show();
                 }
             }
+        }
+    }
+
+    // ══════════════════════════════════════════════════════════
+    //  CPU Profiler
+    // ══════════════════════════════════════════════════════════
+
+    private void setupProfilerToolbar() {
+        if (flameChartView == null) return;
+
+        // Respect power saving mode for initial state
+        profilerLiveMode = !powerSaving.isPowerSavingActive();
+
+        View profilerRefresh = findViewById(R.id.profilerRefresh);
+        View profilerZoomIn = findViewById(R.id.profilerZoomIn);
+        View profilerZoomOut = findViewById(R.id.profilerZoomOut);
+        View profilerFit = findViewById(R.id.profilerFit);
+        TextView profilerLiveToggle = findViewById(R.id.profilerLiveToggle);
+
+        if (profilerRefresh != null) profilerRefresh.setOnClickListener(v -> refreshProfilerResults());
+        if (profilerZoomIn != null) profilerZoomIn.setOnClickListener(v -> flameChartView.zoomIn());
+        if (profilerZoomOut != null) profilerZoomOut.setOnClickListener(v -> flameChartView.zoomOut());
+        if (profilerFit != null) profilerFit.setOnClickListener(v -> flameChartView.fitToScreen());
+
+        View profilerRunBtn = findViewById(R.id.profilerRunBtn);
+        if (profilerRunBtn != null) profilerRunBtn.setOnClickListener(v -> runWithProfiler());
+
+        if (profilerLiveToggle != null) {
+            updateLiveToggleUI(profilerLiveToggle);
+            profilerLiveToggle.setOnClickListener(v -> {
+                profilerLiveMode = !profilerLiveMode;
+                updateLiveToggleUI(profilerLiveToggle);
+                if (profilerLiveMode && profilingEnabled) {
+                    profilerRefreshHandler.removeCallbacks(profilerRefreshRunnable);
+                    profilerRefreshHandler.post(profilerRefreshRunnable);
+                    if (powerSaving.isPowerSavingActive()) {
+                        Toast.makeText(this, "⚠ Live mode active — higher battery usage", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    profilerRefreshHandler.removeCallbacks(profilerRefreshRunnable);
+                }
+            });
+        }
+
+        flameChartView.setOnNodeSelectedListener(profile -> {
+            if (profilerDetailScroll != null && profilerDetail != null) {
+                profilerDetailScroll.setVisibility(View.VISIBLE);
+                StringBuilder sb = new StringBuilder();
+                sb.append("Method: ").append(profile.fullSignature()).append("\n");
+                sb.append("Class:  ").append(profile.className).append("\n");
+                sb.append("─────────────────────────────\n");
+                sb.append(String.format(java.util.Locale.US, "Total time:  %.3f ms\n", profile.getTotalTimeMs()));
+                sb.append(String.format(java.util.Locale.US, "Avg time:    %.3f ms\n", profile.getAvgTimeMs()));
+                sb.append(String.format(java.util.Locale.US, "Max time:    %.3f ms\n", profile.getMaxTimeMs()));
+                sb.append(String.format(java.util.Locale.US, "Invocations: %d\n", profile.invocationCount.get()));
+                sb.append("─────────────────────────────\n");
+
+                long total = com.ccs.javadroid.profiler.ProfilerBridge.getTotalTime();
+                double pct = total > 0 ? (profile.totalTime.get() * 100.0 / total) : 0;
+                sb.append(String.format(java.util.Locale.US, "Share: %.1f%% of total\n", pct));
+
+                profilerDetail.setText(sb.toString());
+            }
+        });
+    }
+
+    private void updateLiveToggleUI(TextView toggle) {
+        if (profilerLiveMode) {
+            toggle.setText("● Live");
+            toggle.setTextColor(0xFF499C54);
+        } else {
+            toggle.setText("○ Paused");
+            toggle.setTextColor(0xFF888888);
+        }
+    }
+
+    private void startProfilerLiveRefresh() {
+        profilerRefreshHandler.removeCallbacks(profilerRefreshRunnable);
+        if (profilerLiveMode) {
+            profilerRefreshHandler.post(profilerRefreshRunnable);
+        }
+    }
+
+    private void stopProfilerLiveRefresh() {
+        profilerRefreshHandler.removeCallbacks(profilerRefreshRunnable);
+    }
+
+    // ══════════════════════════════════════════════════════════
+    //  TODO/FIXME Tracker
+    // ══════════════════════════════════════════════════════════
+
+    private void refreshTodoPanel() {
+        if (todoAdapter == null || todoStatus == null) return;
+        if (projectManager == null) return;
+
+        new Thread(() -> {
+            File root = projectManager.getProjectDir();
+            if (root == null) {
+                runOnUiThread(() -> {
+                    todoAdapter.setItems(new ArrayList<>());
+                    todoStatus.setText("No project");
+                });
+                return;
+            }
+
+            java.util.List<File> sources = ProjectScanner.listJavaSources(root);
+            java.util.List<ProblemItem> allProblems = com.ccs.javadroid.analysis.StaticAnalyzer.analyze(
+                    MainActivity.this, root, sources);
+
+            int todoCount = 0;
+            int fixmeCount = 0;
+            for (ProblemItem p : allProblems) {
+                if (p.message != null && p.message.contains("TODO")) todoCount++;
+                if (p.message != null && p.message.contains("FIXME")) fixmeCount++;
+            }
+            final int finalTodoCount = todoCount;
+            final int finalFixmeCount = fixmeCount;
+
+            runOnUiThread(() -> {
+                todoAdapter.setItems(allProblems);
+                todoStatus.setText(finalTodoCount + " TODO, " + finalFixmeCount + " FIXME");
+                if (todoSearch != null && !todoSearch.getText().toString().isEmpty()) {
+                    todoAdapter.filter(todoSearch.getText().toString());
+                }
+            });
+        }).start();
+    }
+
+    private void refreshProfilerResults() {
+        if (flameChartView == null || profilerStatus == null) return;
+
+        java.util.List<com.ccs.javadroid.profiler.ProfilerBridge.MethodProfile> results =
+                com.ccs.javadroid.profiler.ProfilerBridge.getResults();
+
+        if (results.isEmpty()) {
+            profilerStatus.setText(profilingEnabled ? "Collecting data..." : "No data — run code with profiler");
+            if (!profilingEnabled) flameChartView.clear();
+            if (profilerDetailScroll != null && !profilingEnabled) profilerDetailScroll.setVisibility(View.GONE);
+            return;
+        }
+
+        // Sort by total time descending
+        results.sort((a, b) -> Long.compare(b.totalTime.get(), a.totalTime.get()));
+
+        flameChartView.setProfiles(results);
+
+        long totalNs = com.ccs.javadroid.profiler.ProfilerBridge.getTotalTime();
+        double totalMs = totalNs / 1_000_000.0;
+        String liveIndicator = (profilingEnabled && profilerLiveMode) ? " ●LIVE" : "";
+        profilerStatus.setText(String.format(java.util.Locale.US,
+                "%d methods, %.1f ms total%s", results.size(), totalMs, liveIndicator));
+    }
+
+    private void runWithProfiler() {
+        if (isRunning) return;
+        FileTab activeTab = tabsAdapter.getActiveTab();
+        if (activeTab == null) {
+            Toast.makeText(this, R.string.toast_no_file_open, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (!activeTab.file.getName().endsWith(".java")) {
+            Toast.makeText(this, "Profiler only supports Java files", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        saveCurrentToActiveTab();
+
+        // Respect power saving: disable live refresh when battery is low
+        profilerLiveMode = !powerSaving.isPowerSavingActive();
+
+        isRunning = true;
+        profilingEnabled = true;
+        consoleOutput.setText("");
+        switchBottomPanel(PANEL_RUN);
+        appendConsole("Profiling: " + activeTab.file.getName(), theme.textDim);
+
+        String source = activeEditor.getText().toString();
+
+        // We need to compile, instrument, and run with profiling
+        new Thread(() -> {
+            try {
+                String className = com.ccs.javadroid.tools.compilers.ProjectCompiler.extractClassNamePublic(source);
+                File cacheDir = new File(getCacheDir(), "profile_compile_cache");
+                if (cacheDir.exists()) {
+                    File[] oldFiles = cacheDir.listFiles();
+                    if (oldFiles != null) {
+                        for (File f : oldFiles) {
+                            if (f.getName().equals("android.jar")) continue;
+                            f.delete();
+                        }
+                    }
+                }
+                if (!cacheDir.exists()) cacheDir.mkdirs();
+
+                File androidJar = com.ccs.javadroid.tools.compilers.ProjectCompiler.ensureAndroidJarPublic(this, cacheDir);
+                File srcFile = new File(cacheDir, className + ".java");
+                com.ccs.javadroid.tools.compilers.ProjectCompiler.writeUtf8Public(srcFile, source);
+
+                runOnUiThread(() -> appendConsole("   Compiling...", theme.textDim));
+                String ecjErr = com.ccs.javadroid.tools.compilers.ProjectCompiler.compileEcjPublic(
+                        androidJar, null, cacheDir,
+                        new com.ccs.javadroid.util.AppPreferences(this).getJavaTarget(), srcFile);
+                if (ecjErr != null) {
+                    isRunning = false;
+                    profilingEnabled = false;
+                    runOnUiThread(() -> {
+                        stopProfilerLiveRefresh();
+                        appendConsole("Compilation Error:\n" + ecjErr, theme.errorText);
+                    });
+                    return;
+                }
+
+                File classFile = com.ccs.javadroid.tools.compilers.ProjectCompiler.findClassFilePublic(cacheDir, className);
+                if (classFile == null) {
+                    isRunning = false;
+                    profilingEnabled = false;
+                    runOnUiThread(() -> {
+                        stopProfilerLiveRefresh();
+                        appendConsole("Error: class file not found", theme.errorText);
+                    });
+                    return;
+                }
+
+                runOnUiThread(() -> appendConsole("   Instrumenting for profiling...", theme.textDim));
+                com.ccs.javadroid.profiler.ProfilerBridge.reset();
+                com.ccs.javadroid.profiler.ProfilerBridge.start();
+                com.ccs.javadroid.profiler.ProfilerInstrumenter.instrumentFile(classFile);
+
+                File dexDir = new File(cacheDir, "profile_dex");
+                if (!dexDir.exists()) dexDir.mkdirs();
+                else {
+                    File[] oldFiles = dexDir.listFiles();
+                    if (oldFiles != null) {
+                        for (File f : oldFiles) f.delete();
+                    }
+                }
+
+                runOnUiThread(() -> appendConsole("   Converting to DEX...", theme.textDim));
+                com.ccs.javadroid.tools.compilers.ProjectCompiler.runD8DexPublic(androidJar, dexDir, classFile);
+
+                String fqClassName = classFile.getAbsolutePath()
+                        .substring(cacheDir.getAbsolutePath().length() + 1)
+                        .replace(".class", "")
+                        .replace('/', '.');
+
+                runOnUiThread(() -> appendConsole("   Running with profiler...", theme.textDim));
+
+                // Start live refresh
+                runOnUiThread(() -> startProfilerLiveRefresh());
+
+                // Run the dex
+                com.ccs.javadroid.tools.compilers.ProjectCompiler.debugRunDex(
+                        this, fqClassName, dexDir, cacheDir, null,
+                        new com.ccs.javadroid.tools.compilers.ProjectCompiler.Callback() {
+                            @Override
+                            public void onProgress(String msg) {}
+
+                            @Override
+                            public void onResult(String output) {
+                                com.ccs.javadroid.profiler.ProfilerBridge.stop();
+                                isRunning = false;
+                                profilingEnabled = false;
+                                runOnUiThread(() -> stopProfilerLiveRefresh());
+
+                                runOnUiThread(() -> {
+                                    appendConsole("", theme.accent);
+                                    appendConsole("══════════════════════════════", theme.accent);
+                                    if (output != null && !output.trim().isEmpty()) {
+                                        boolean err = output.startsWith("Compilation Error")
+                                                || output.startsWith("Execution Exception")
+                                                || output.startsWith("System Error")
+                                                || output.startsWith("Error:");
+                                        appendConsole(output.trim(), err ? theme.errorText : theme.consoleText);
+                                    }
+                                    appendConsole("\nProfiling complete. Results on Profile tab.", theme.successText);
+                                    refreshProfilerResults();
+                                });
+                            }
+
+                            @Override
+                            public void onProblems(List<ProblemItem> problems) {}
+                        });
+            } catch (Exception e) {
+                isRunning = false;
+                profilingEnabled = false;
+                runOnUiThread(() -> {
+                    stopProfilerLiveRefresh();
+                    appendConsole("Profiler error: " + e.getMessage(), theme.errorText);
+                });
+            }
+        }, "ProfilerRunner").start();
+    }
+
+    // ══════════════════════════════════════════════════════════
+    //  Dependency Graph
+    // ══════════════════════════════════════════════════════════
+
+    private void refreshDependencyGraph() {
+        if (depsGraphView == null || projectManager == null) return;
+
+        // Setup toolbar listeners once
+        if (depsGraphView.getTag() == null) {
+            depsGraphView.setTag("init");
+
+            View depsRefresh = findViewById(R.id.depsRefresh);
+            View depsZoomIn = findViewById(R.id.depsZoomIn);
+            View depsZoomOut = findViewById(R.id.depsZoomOut);
+            View depsFit = findViewById(R.id.depsFitToScreen);
+
+            if (depsRefresh != null) depsRefresh.setOnClickListener(v -> refreshDependencyGraph());
+            if (depsZoomIn != null) depsZoomIn.setOnClickListener(v -> depsGraphView.zoomIn());
+            if (depsZoomOut != null) depsZoomOut.setOnClickListener(v -> depsGraphView.zoomOut());
+            if (depsFit != null) depsFit.setOnClickListener(v -> depsGraphView.fitToScreen());
+        }
+
+        if (depsStatus != null) depsStatus.setText("Analyzing...");
+
+        new Thread(() -> {
+            try {
+                com.ccs.javadroid.tools.bytecode.DependencyModel model =
+                        new com.ccs.javadroid.tools.bytecode.DependencyModel();
+
+                File projectDir = projectManager.getProjectDir();
+                if (projectDir == null) {
+                    runOnUiThread(() -> { if (depsStatus != null) depsStatus.setText("No project"); });
+                    return;
+                }
+
+                File outDir = new File(projectDir, "out");
+                File targetDir = new File(projectDir, "target");
+                File buildDir = new File(projectDir, "build");
+
+                int count = 0;
+                if (outDir.isDirectory()) count += model.analyzeDirectory(outDir);
+                if (targetDir.isDirectory()) count += model.analyzeDirectory(targetDir);
+                if (buildDir.isDirectory()) count += model.analyzeDirectory(buildDir);
+
+                int finalCount = count;
+                dependencyModel = model;
+                runOnUiThread(() -> {
+                    if (depsGraphView != null) {
+                        depsGraphView.setModel(model);
+                        depsGraphView.fitToScreen();
+                    }
+                    if (depsStatus != null) {
+                        depsStatus.setText(finalCount + " classes, "
+                                + model.getClasses().size() + " nodes, "
+                                + model.getEdges().size() + " edges");
+                    }
+                });
+            } catch (Exception e) {
+                runOnUiThread(() -> {
+                    if (depsStatus != null) depsStatus.setText("Error: " + e.getMessage());
+                });
+            }
+        }).start();
+    }
+
+    // ══════════════════════════════════════════════════════════
+    //  Refactoring
+    // ══════════════════════════════════════════════════════════
+
+    private void showRefactorDialog() {
+        if (activeEditor == null) return;
+
+        io.github.rosemoe.sora.text.Cursor cursor = activeEditor.getCursor();
+        int line = cursor.getLeftLine();
+        int col = cursor.getLeftColumn();
+
+        String lineText = "";
+        try {
+            lineText = activeEditor.getText().getLine(line).toString();
+        } catch (Exception ignored) {}
+
+        String selectedText = "";
+        try {
+            io.github.rosemoe.sora.text.Content content = activeEditor.getText();
+            int leftLine = cursor.getLeftLine();
+            int leftCol = cursor.getLeftColumn();
+            int rightLine = cursor.getRightLine();
+            int rightCol = cursor.getRightColumn();
+            if (leftLine == rightLine) {
+                selectedText = content.getLine(leftLine).subSequence(leftCol, rightCol).toString().trim();
+            } else {
+                StringBuilder sb = new StringBuilder();
+                sb.append(content.getLine(leftLine).subSequence(leftCol, content.getLine(leftLine).length()));
+                for (int i = leftLine + 1; i < rightLine; i++) {
+                    sb.append("\n").append(content.getLine(i));
+                }
+                if (rightLine < content.getLineCount()) {
+                    sb.append("\n").append(content.getLine(rightLine).subSequence(0, rightCol));
+                }
+                selectedText = sb.toString().trim();
+            }
+        } catch (Exception ignored) {}
+
+        if (selectedText.isEmpty()) {
+            selectedText = extractWordAtCursor(lineText, col);
+        }
+
+        String finalSelectedText = selectedText;
+        String[] items = {
+                "Rename '" + selectedText + "'",
+                "Extract Method",
+                "Extract Variable",
+                "Inline Method",
+                "Find Usages of '" + selectedText + "'"
+        };
+
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.refactor_rename_title)
+                .setItems(items, (dialog, which) -> {
+                    switch (which) {
+                        case 0: showRenameDialog(finalSelectedText); break;
+                        case 1: showExtractMethodDialog(); break;
+                        case 2: showExtractVariableDialog(); break;
+                        case 3: showInlineDialog(finalSelectedText); break;
+                        case 4: showFindUsagesDialog(finalSelectedText); break;
+                    }
+                })
+                .show();
+    }
+
+    private String extractWordAtCursor(String lineText, int col) {
+        if (lineText.isEmpty() || col > lineText.length()) return "";
+        int start = col;
+        while (start > 0 && Character.isJavaIdentifierPart(lineText.charAt(start - 1))) start--;
+        int end = col;
+        while (end < lineText.length() && Character.isJavaIdentifierPart(lineText.charAt(end))) end++;
+        return lineText.substring(start, end);
+    }
+
+    private void showRenameDialog(String currentName) {
+        EditText input = new EditText(this);
+        input.setText(currentName);
+        input.setHint(R.string.refactor_rename_hint);
+        input.setTextColor(theme.text);
+        input.setHintTextColor(theme.textDim);
+        input.setSelection(currentName.length());
+        int pad = dp(16);
+        input.setPadding(pad, pad, pad, pad);
+
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.refactor_rename_title)
+                .setView(input)
+                .setPositiveButton("Rename", (d, w) -> {
+                    String newName = input.getText().toString().trim();
+                    if (newName.isEmpty() || newName.equals(currentName)) return;
+                    if (!com.ccs.javadroid.tools.refactor.RefactoringHelper.isValidIdentifier(newName)) {
+                        Toast.makeText(this, "Invalid identifier", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    File projectRoot = projectManager != null ? projectManager.getProjectDir() : null;
+                    com.ccs.javadroid.tools.refactor.RefactoringHelper.renameSymbolAsync(
+                            this, projectRoot, currentName, newName, result -> {
+                                Toast.makeText(this, result.summary, Toast.LENGTH_LONG).show();
+                                if (result.filesChanged > 0) {
+                                    refreshProblemsMergedAsync();
+                                    FileTab tab = (activeEditor == editor) ? leftTab : rightTab;
+                                    if (tab != null) reloadTab(tab);
+                                }
+                            });
+                })
+                .setNegativeButton(R.string.dialog_cancel, null)
+                .show();
+    }
+
+    private void showExtractMethodDialog() {
+        if (activeEditor == null) return;
+
+        io.github.rosemoe.sora.text.Cursor cursor = activeEditor.getCursor();
+        int selStartLine = cursor.getLeftLine();
+        int selEndLine = cursor.getRightLine();
+
+        if (selStartLine == selEndLine && selStartLine == cursor.getRightLine()) {
+            Toast.makeText(this, "Select code block to extract", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        EditText input = new EditText(this);
+        input.setHint(R.string.refactor_extract_method_hint);
+        input.setTextColor(theme.text);
+        input.setHintTextColor(theme.textDim);
+        int pad = dp(16);
+        input.setPadding(pad, pad, pad, pad);
+
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.refactor_extract_method_title)
+                .setView(input)
+                .setPositiveButton("Extract", (d, w) -> {
+                    String methodName = input.getText().toString().trim();
+                    if (methodName.isEmpty()) return;
+                    if (!com.ccs.javadroid.tools.refactor.RefactoringHelper.isValidIdentifier(methodName)) {
+                        Toast.makeText(this, "Invalid identifier", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    String source = activeEditor.getText().toString();
+                    com.ccs.javadroid.tools.refactor.RefactoringHelper.extractMethodAsync(
+                            this, source, selStartLine, selEndLine, methodName, result -> {
+                                Toast.makeText(this, result.summary, Toast.LENGTH_SHORT).show();
+                            });
+                })
+                .setNegativeButton(R.string.dialog_cancel, null)
+                .show();
+    }
+
+    private void showExtractVariableDialog() {
+        if (activeEditor == null) return;
+
+        io.github.rosemoe.sora.text.Cursor cursor = activeEditor.getCursor();
+        String lineText = "";
+        try {
+            lineText = activeEditor.getText().getLine(cursor.getLeftLine()).toString();
+        } catch (Exception ignored) {}
+
+        String selectedText = "";
+        try {
+            io.github.rosemoe.sora.text.Content content = activeEditor.getText();
+            int leftLine = cursor.getLeftLine();
+            int leftCol = cursor.getLeftColumn();
+            int rightLine = cursor.getRightLine();
+            int rightCol = cursor.getRightColumn();
+            if (leftLine == rightLine) {
+                selectedText = content.getLine(leftLine).subSequence(leftCol, rightCol).toString().trim();
+            } else {
+                StringBuilder sb = new StringBuilder();
+                sb.append(content.getLine(leftLine).subSequence(leftCol, content.getLine(leftLine).length()));
+                for (int i = leftLine + 1; i < rightLine; i++) {
+                    sb.append("\n").append(content.getLine(i));
+                }
+                if (rightLine < content.getLineCount()) {
+                    sb.append("\n").append(content.getLine(rightLine).subSequence(0, rightCol));
+                }
+                selectedText = sb.toString().trim();
+            }
+        } catch (Exception ignored) {}
+
+        if (selectedText.isEmpty()) {
+            Toast.makeText(this, "Select an expression to extract", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        EditText input = new EditText(this);
+        input.setHint(R.string.refactor_extract_variable_hint);
+        input.setTextColor(theme.text);
+        input.setHintTextColor(theme.textDim);
+        int pad = dp(16);
+        input.setPadding(pad, pad, pad, pad);
+
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.refactor_extract_variable_title)
+                .setView(input)
+                .setPositiveButton("Extract", (d, w) -> {
+                    String varName = input.getText().toString().trim();
+                    if (varName.isEmpty()) return;
+                    if (!com.ccs.javadroid.tools.refactor.RefactoringHelper.isValidIdentifier(varName)) {
+                        Toast.makeText(this, "Invalid identifier", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    String source = activeEditor.getText().toString();
+                    com.ccs.javadroid.tools.refactor.RefactoringHelper.extractVariableAsync(
+                            source, cursor.getLeftLine(),
+                            cursor.getLeftColumn(), cursor.getRightColumn(),
+                            varName, result -> {
+                                Toast.makeText(this, result.summary, Toast.LENGTH_SHORT).show();
+                            });
+                })
+                .setNegativeButton(R.string.dialog_cancel, null)
+                .show();
+    }
+
+    private void showInlineDialog(String methodName) {
+        if (activeEditor == null || methodName.isEmpty()) return;
+
+        String source = activeEditor.getText().toString();
+
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.refactor_inline_title)
+                .setMessage("Inline method '" + methodName + "'?")
+                .setPositiveButton("Inline", (d, w) -> {
+                    com.ccs.javadroid.tools.refactor.RefactoringHelper.inlineMethodAsync(
+                            this, source, methodName, result -> {
+                                Toast.makeText(this, result.summary, Toast.LENGTH_SHORT).show();
+                            });
+                })
+                .setNegativeButton(R.string.dialog_cancel, null)
+                .show();
+    }
+
+    private void showFindUsagesDialog(String symbolName) {
+        if (symbolName.isEmpty() || projectManager == null) return;
+
+        File projectRoot = projectManager.getProjectDir();
+        new Thread(() -> {
+            java.util.List<com.ccs.javadroid.tools.refactor.RefactoringHelper.UsageLocation> usages =
+                    com.ccs.javadroid.tools.refactor.RefactoringHelper.findUsages(projectRoot, symbolName);
+            runOnUiThread(() -> {
+                if (usages.isEmpty()) {
+                    Toast.makeText(this, "No usages found for '" + symbolName + "'", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                StringBuilder sb = new StringBuilder();
+                sb.append(usages.size()).append(" usages of '").append(symbolName).append("':\n\n");
+                for (int i = 0; i < Math.min(usages.size(), 20); i++) {
+                    com.ccs.javadroid.tools.refactor.RefactoringHelper.UsageLocation u = usages.get(i);
+                    sb.append(u.file.getName()).append(":").append(u.line).append("  ");
+                    sb.append(u.lineContent.trim()).append("\n");
+                }
+                if (usages.size() > 20) {
+                    sb.append("... and ").append(usages.size() - 20).append(" more");
+                }
+
+                new AlertDialog.Builder(this)
+                        .setTitle("Usages of '" + symbolName + "'")
+                        .setMessage(sb.toString())
+                        .setPositiveButton("OK", null)
+                        .show();
+            });
+        }).start();
+    }
+
+    private void reloadTab(FileTab tab) {
+        if (tab == null || tab.file == null || !tab.file.exists()) return;
+        try {
+            byte[] bytes = java.nio.file.Files.readAllBytes(tab.file.toPath());
+            String content = new String(bytes, java.nio.charset.StandardCharsets.UTF_8);
+
+            isProgrammaticChange = true;
+            try {
+                CodeEditor ed = (tab == leftTab) ? editor : editor2;
+                if (ed != null) {
+                    ed.setText(content);
+                }
+            } finally {
+                isProgrammaticChange = false;
+            }
+        } catch (Exception ignored) {
         }
     }
 }

@@ -209,6 +209,7 @@ public class SettingsActivity extends AppCompatActivity {
         name.setGravity(Gravity.CENTER);
         card.addView(name);
 
+        card.setContentDescription(getString(R.string.a11y_settings_theme_card, AppTheme.displayName(preset.id)));
         card.setOnClickListener(v -> {
             prefs.setThemeId(preset.id);
             theme = AppTheme.byId(preset.id, prefs);
@@ -251,6 +252,7 @@ public class SettingsActivity extends AppCompatActivity {
         name.setLayoutParams(nlp);
         card.addView(name);
 
+        card.setContentDescription(getString(R.string.a11y_settings_custom_theme_card));
         card.setOnClickListener(v -> {
             prefs.setThemeId(AppTheme.ID_CUSTOM);
             theme = AppTheme.byId(AppTheme.ID_CUSTOM, prefs);
@@ -354,6 +356,7 @@ public class SettingsActivity extends AppCompatActivity {
         row.addView(swatch);
         row.addView(hex);
 
+        row.setContentDescription(getString(R.string.a11y_settings_color_picker, label));
         row.setOnClickListener(v -> showColorDialog(label, currentColor, c -> {
             d.setColor(c);
             hex.setText(toHex(c));
@@ -395,11 +398,15 @@ public class SettingsActivity extends AppCompatActivity {
         hexInput.setHintTextColor(theme.textDim);
         hexInput.setFilters(new InputFilter[] { new InputFilter.LengthFilter(7) });
         hexInput.setInputType(InputType.TYPE_CLASS_TEXT);
+        hexInput.setContentDescription(getString(R.string.a11y_settings_hex_input));
         box.addView(hexInput);
 
         SeekBar rs = newColorSeek(rgb[0]);
+        rs.setContentDescription(getString(R.string.a11y_settings_color_r));
         SeekBar gs = newColorSeek(rgb[1]);
+        gs.setContentDescription(getString(R.string.a11y_settings_color_g));
         SeekBar bs = newColorSeek(rgb[2]);
+        bs.setContentDescription(getString(R.string.a11y_settings_color_b));
         TextView rl = colorSeekLabel("R", rgb[0]);
         TextView gl = colorSeekLabel("G", rgb[1]);
         TextView bl = colorSeekLabel("B", rgb[2]);
@@ -523,6 +530,7 @@ public class SettingsActivity extends AppCompatActivity {
                 getString(R.string.font_dejavu_mono),
                 getString(R.string.font_roboto_mono)
         });
+        fontSpinner.setContentDescription(getString(R.string.a11y_settings_font_family));
         fontSpinner.setSelection(prefs.getFontFamily());
         fontSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -536,6 +544,7 @@ public class SettingsActivity extends AppCompatActivity {
         TextView sizeLabel = label(getString(R.string.settings_font_size_n, prefs.getFontSize()));
         section.addView(sizeLabel);
         SeekBar sizeBar = new SeekBar(this);
+        sizeBar.setContentDescription(getString(R.string.a11y_settings_font_size));
         sizeBar.setMax(24); // 8..32
         sizeBar.setProgress(prefs.getFontSize() - 8);
         sizeBar.setOnSeekBarChangeListener(simpleSeek(progress -> {
@@ -549,6 +558,7 @@ public class SettingsActivity extends AppCompatActivity {
         TextView tabLabel = label(getString(R.string.settings_tab_size_n, prefs.getTabSize()));
         section.addView(tabLabel);
         SeekBar tabBar = new SeekBar(this);
+        tabBar.setContentDescription(getString(R.string.a11y_settings_tab_size));
         tabBar.setMax(7); // 1..8
         tabBar.setProgress(prefs.getTabSize() - 1);
         tabBar.setOnSeekBarChangeListener(simpleSeek(progress -> {
@@ -563,6 +573,7 @@ public class SettingsActivity extends AppCompatActivity {
                 String.format(Locale.US, "%.1f", prefs.getLineSpacing())));
         section.addView(lsLabel);
         SeekBar lsBar = new SeekBar(this);
+        lsBar.setContentDescription(getString(R.string.a11y_settings_line_spacing));
         lsBar.setMax(20); // 1.0..3.0 step 0.1
         lsBar.setProgress((int) ((prefs.getLineSpacing() - 1f) * 10));
         lsBar.setOnSeekBarChangeListener(simpleSeek(progress -> {
@@ -596,6 +607,7 @@ public class SettingsActivity extends AppCompatActivity {
                 "Java 8"
         };
         Spinner sp = newSpinner(labels);
+        sp.setContentDescription(getString(R.string.a11y_settings_java_target));
         int sel = 0;
         for (int i = 0; i < codes.length; i++) {
             if (codes[i].equals(prefs.getJavaTarget())) { sel = i; break; }
@@ -626,6 +638,7 @@ public class SettingsActivity extends AppCompatActivity {
         ndkBtn.setTextColor(ndkInstalled ? theme.errorText : theme.accent);
         ndkBtn.setTextSize(14);
         ndkBtn.setPadding(dp(8), dp(16), dp(8), dp(8));
+        ndkBtn.setContentDescription(getString(R.string.a11y_settings_ndk));
         ndkBtn.setOnClickListener(v -> {
             if (NdkManager.isNdkInstalled(this)) {
                 new AlertDialog.Builder(this)
@@ -709,6 +722,7 @@ public class SettingsActivity extends AppCompatActivity {
                 getString(R.string.settings_power_saving_performance)
         };
         Spinner sp = newSpinner(modes);
+        sp.setContentDescription(getString(R.string.a11y_settings_power_saving));
         sp.setSelection(prefs.getPowerSavingMode());
         sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -728,6 +742,7 @@ public class SettingsActivity extends AppCompatActivity {
         btn.setTextSize(13);
         btn.setGravity(Gravity.CENTER);
         btn.setPadding(dp(16), dp(14), dp(16), dp(14));
+        btn.setContentDescription(getString(R.string.a11y_settings_reset));
         GradientDrawable d = new GradientDrawable();
         d.setColor(0x00000000);
         d.setStroke(dp(1), theme.errorText);
@@ -859,6 +874,7 @@ public class SettingsActivity extends AppCompatActivity {
         t.setLayoutParams(tlp);
 
         Switch sw = new Switch(this);
+        sw.setContentDescription(title);
         sw.setChecked(initial);
         sw.setOnCheckedChangeListener((CompoundButton b, boolean v) -> setter.set(v));
 

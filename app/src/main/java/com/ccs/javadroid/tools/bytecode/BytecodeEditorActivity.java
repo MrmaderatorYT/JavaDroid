@@ -91,6 +91,7 @@ public class BytecodeEditorActivity extends AppCompatActivity {
         btnBack.setTextColor(0xFFBBBBBB);
         btnBack.setTextSize(18);
         btnBack.setPadding(dp(8), dp(4), dp(8), dp(4));
+        btnBack.setContentDescription(getString(R.string.a11y_bc_back));
         btnBack.setOnClickListener(v -> {
             if (isModified) {
                 new AlertDialog.Builder(this)
@@ -116,14 +117,17 @@ public class BytecodeEditorActivity extends AppCompatActivity {
         toolbar.addView(tvTitle);
 
         TextView btnUndo = createToolButton("\u21A9");
+        btnUndo.setContentDescription(getString(R.string.a11y_bc_undo));
         btnUndo.setOnClickListener(v -> undo());
         toolbar.addView(btnUndo);
 
         TextView btnRedo = createToolButton("\u21AA");
+        btnRedo.setContentDescription(getString(R.string.a11y_bc_redo));
         btnRedo.setOnClickListener(v -> redo());
         toolbar.addView(btnRedo);
 
         TextView btnCopy = createToolButton("Copy");
+        btnCopy.setContentDescription(getString(R.string.a11y_bc_copy));
         btnCopy.setOnClickListener(v -> {
             ClipboardManager cm = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
             if (cm != null) {
@@ -135,11 +139,13 @@ public class BytecodeEditorActivity extends AppCompatActivity {
 
         TextView btnValidate = createToolButton("Check");
         btnValidate.setTextColor(0xFF499C54);
+        btnValidate.setContentDescription(getString(R.string.a11y_bc_validate));
         btnValidate.setOnClickListener(v -> validate());
         toolbar.addView(btnValidate);
 
         TextView btnSave = createToolButton("Save");
         btnSave.setTextColor(0xFF4A86C8);
+        btnSave.setContentDescription(getString(R.string.a11y_bc_save));
         btnSave.setOnClickListener(v -> saveFile());
         toolbar.addView(btnSave);
 
@@ -180,6 +186,7 @@ public class BytecodeEditorActivity extends AppCompatActivity {
         codeEditor.setMinLines(20);
         codeEditor.setImeOptions(0);
         codeEditor.setRawInputType(0x00020001); // TYPE_CLASS_TEXT | TYPE_TEXT_FLAG_MULTI_LINE
+        codeEditor.setContentDescription(getString(R.string.a11y_bc_code_editor));
 
         scrollEditor.addView(codeEditor);
         editorRow.addView(scrollEditor);

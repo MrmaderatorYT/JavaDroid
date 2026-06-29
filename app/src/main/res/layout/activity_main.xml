@@ -33,6 +33,8 @@
                 android:textSize="13sp"
                 android:fontFamily="sans-serif" />
 
+            <!-- Undo / Redo handled by menu -->
+
             <View
                 android:layout_width="0dp"
                 android:layout_height="0dp"
@@ -48,7 +50,8 @@
                 android:textSize="18sp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:layout_marginEnd="4dp"
-                android:visibility="gone" />
+                android:visibility="gone"
+                android:contentDescription="@string/a11y_back" />
 
             <TextView
                 android:id="@+id/toolbarOverflow"
@@ -60,7 +63,8 @@
                 android:textColor="@color/idea_text"
                 android:textSize="20sp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:layout_marginEnd="4dp" />
+                android:layout_marginEnd="4dp"
+                android:contentDescription="@string/a11y_overflow_menu" />
 
         </androidx.appcompat.widget.Toolbar>
 
@@ -89,7 +93,8 @@
                 android:textColor="@color/idea_text_dim"
                 android:textSize="18sp"
                 android:gravity="center"
-                android:background="?attr/selectableItemBackground" />
+                android:background="?attr/selectableItemBackground"
+                android:contentDescription="@string/a11y_new_tab" />
 
         </LinearLayout>
 
@@ -124,6 +129,7 @@
                     android:layout_height="28dp"
                     android:layout_weight="1"
                     android:hint="@string/find_hint"
+                    android:contentDescription="@string/a11y_find_input"
                     android:textColorHint="#555555"
                     android:textColor="@color/idea_text"
                     android:textSize="12sp"
@@ -143,7 +149,8 @@
                     android:textSize="14sp"
                     android:gravity="center"
                     android:layout_marginStart="4dp"
-                    android:background="?attr/selectableItemBackground" />
+                    android:background="?attr/selectableItemBackground"
+                    android:contentDescription="@string/a11y_find_previous" />
 
                 <TextView
                     android:id="@+id/btnFindNext"
@@ -153,7 +160,8 @@
                     android:textColor="@color/idea_text"
                     android:textSize="14sp"
                     android:gravity="center"
-                    android:background="?attr/selectableItemBackground" />
+                    android:background="?attr/selectableItemBackground"
+                    android:contentDescription="@string/a11y_find_next" />
 
                 <TextView
                     android:id="@+id/btnFindClose"
@@ -164,7 +172,8 @@
                     android:textSize="12sp"
                     android:gravity="center"
                     android:layout_marginStart="4dp"
-                    android:background="?attr/selectableItemBackground" />
+                    android:background="?attr/selectableItemBackground"
+                    android:contentDescription="@string/a11y_find_close" />
 
                 <Switch
                     android:id="@+id/switchFindScope"
@@ -177,7 +186,8 @@
                     android:paddingEnd="6dp"
                     android:layout_marginStart="4dp"
                     android:thumbTint="@color/idea_accent"
-                    android:trackTint="@color/idea_toolbar" />
+                    android:trackTint="@color/idea_toolbar"
+                    android:contentDescription="@string/a11y_find_scope" />
 
             </LinearLayout>
 
@@ -196,6 +206,7 @@
                     android:layout_height="28dp"
                     android:layout_weight="1"
                     android:hint="@string/replace_hint"
+                    android:contentDescription="@string/a11y_replace_input"
                     android:textColorHint="#555555"
                     android:textColor="@color/idea_text"
                     android:textSize="12sp"
@@ -216,7 +227,8 @@
                     android:paddingStart="8dp"
                     android:paddingEnd="8dp"
                     android:layout_marginStart="4dp"
-                    android:background="?attr/selectableItemBackground" />
+                    android:background="?attr/selectableItemBackground"
+                    android:contentDescription="@string/a11y_replace" />
 
                 <TextView
                     android:id="@+id/btnReplaceAll"
@@ -228,7 +240,8 @@
                     android:gravity="center"
                     android:paddingStart="8dp"
                     android:paddingEnd="8dp"
-                    android:background="?attr/selectableItemBackground" />
+                    android:background="?attr/selectableItemBackground"
+                    android:contentDescription="@string/a11y_replace_all" />
 
             </LinearLayout>
 
@@ -275,17 +288,28 @@
                 <io.github.rosemoe.sora.widget.CodeEditor
                     android:id="@+id/editor"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/a11y_editor" />
 
                 <com.ccs.javadroid.debug.BreakpointOverlay
                     android:id="@+id/breakpointOverlay1"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/a11y_breakpoint_overlay" />
 
                 <com.ccs.javadroid.debug.BookmarkOverlay
                     android:id="@+id/bookmarkOverlay1"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/a11y_bookmark_overlay" />
+
+                <com.ccs.javadroid.ui.MinimapView
+                    android:id="@+id/minimapView1"
+                    android:layout_width="48dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="end"
+                    android:alpha="0.85"
+                    android:contentDescription="@string/a11y_minimap" />
             </FrameLayout>
 
             <View
@@ -306,17 +330,29 @@
                 <io.github.rosemoe.sora.widget.CodeEditor
                     android:id="@+id/editor2"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/a11y_editor2" />
 
                 <com.ccs.javadroid.debug.BreakpointOverlay
                     android:id="@+id/breakpointOverlay2"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/a11y_breakpoint_overlay" />
 
                 <com.ccs.javadroid.debug.BookmarkOverlay
                     android:id="@+id/bookmarkOverlay2"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/a11y_bookmark_overlay" />
+
+                <com.ccs.javadroid.ui.MinimapView
+                    android:id="@+id/minimapView2"
+                    android:layout_width="48dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="end"
+                    android:alpha="0.85"
+                    android:visibility="gone"
+                    android:contentDescription="@string/a11y_minimap" />
             </FrameLayout>
         </LinearLayout>
 
@@ -361,7 +397,8 @@
                 android:text="Step Over"
                 android:textColor="@color/idea_text_dim"
                 android:textSize="10sp"
-                android:background="?attr/selectableItemBackground" />
+                android:background="?attr/selectableItemBackground"
+                android:contentDescription="@string/a11y_debug_step_over" />
 
             <TextView
                 android:id="@+id/btnDebugStepInto"
@@ -373,7 +410,8 @@
                 android:text="Step Into"
                 android:textColor="@color/idea_text_dim"
                 android:textSize="10sp"
-                android:background="?attr/selectableItemBackground" />
+                android:background="?attr/selectableItemBackground"
+                android:contentDescription="@string/a11y_debug_step_into" />
 
             <TextView
                 android:id="@+id/btnDebugStepOut"
@@ -385,7 +423,8 @@
                 android:text="Step Out"
                 android:textColor="@color/idea_text_dim"
                 android:textSize="10sp"
-                android:background="?attr/selectableItemBackground" />
+                android:background="?attr/selectableItemBackground"
+                android:contentDescription="@string/a11y_debug_step_out" />
 
             <TextView
                 android:id="@+id/btnDebugResume"
@@ -399,7 +438,8 @@
                 android:drawablePadding="4dp"
                 android:textColor="@color/idea_run_green"
                 android:textSize="10sp"
-                android:background="?attr/selectableItemBackground" />
+                android:background="?attr/selectableItemBackground"
+                android:contentDescription="@string/a11y_debug_resume" />
 
             <TextView
                 android:id="@+id/btnDebugStop"
@@ -413,7 +453,8 @@
                 android:drawablePadding="4dp"
                 android:textColor="@color/idea_error_text"
                 android:textSize="10sp"
-                android:background="?attr/selectableItemBackground" />
+                android:background="?attr/selectableItemBackground"
+                android:contentDescription="@string/a11y_debug_stop" />
 
             <TextView
                 android:id="@+id/btnDebugEvaluate"
@@ -425,7 +466,8 @@
                 android:text="Eval"
                 android:textColor="@color/idea_text_dim"
                 android:textSize="10sp"
-                android:background="?attr/selectableItemBackground" />
+                android:background="?attr/selectableItemBackground"
+                android:contentDescription="@string/a11y_debug_evaluate" />
 
             <TextView
                 android:id="@+id/btnToggleBreakpoint"
@@ -439,7 +481,8 @@
                 android:drawablePadding="4dp"
                 android:textColor="@color/idea_error_text"
                 android:textSize="10sp"
-                android:background="?attr/selectableItemBackground" />
+                android:background="?attr/selectableItemBackground"
+                android:contentDescription="@string/a11y_toggle_breakpoint" />
 
         </LinearLayout>
 
@@ -475,7 +518,8 @@
                         android:text="@string/tab_run"
                         android:textSize="11sp"
                         android:clickable="true"
-                        android:focusable="true" />
+                        android:focusable="true"
+                        android:contentDescription="@string/a11y_tab_run" />
 
                     <TextView
                         android:id="@+id/tabProblems"
@@ -487,7 +531,8 @@
                         android:text="@string/tab_problems"
                         android:textSize="11sp"
                         android:clickable="true"
-                        android:focusable="true" />
+                        android:focusable="true"
+                        android:contentDescription="@string/a11y_tab_problems" />
 
                     <TextView
                         android:id="@+id/tabBytecode"
@@ -499,7 +544,8 @@
                         android:text="@string/tab_bytecode"
                         android:textSize="11sp"
                         android:clickable="true"
-                        android:focusable="true" />
+                        android:focusable="true"
+                        android:contentDescription="@string/a11y_tab_bytecode" />
 
                     <TextView
                         android:id="@+id/tabDebug"
@@ -512,7 +558,8 @@
                         android:textSize="11sp"
                         android:clickable="true"
                         android:focusable="true"
-                        android:visibility="gone" />
+                        android:visibility="gone"
+                        android:contentDescription="@string/a11y_tab_debug" />
 
                     <TextView
                         android:id="@+id/tabDebugConsole"
@@ -525,7 +572,8 @@
                         android:textSize="11sp"
                         android:clickable="true"
                         android:focusable="true"
-                        android:visibility="gone" />
+                        android:visibility="gone"
+                        android:contentDescription="@string/a11y_tab_debug_console" />
 
                     <TextView
                         android:id="@+id/tabCallGraph"
@@ -538,7 +586,8 @@
                         android:textColor="@color/idea_accent"
                         android:textSize="11sp"
                         android:clickable="true"
-                        android:focusable="true" />
+                        android:focusable="true"
+                        android:contentDescription="@string/a11y_tab_call_graph" />
 
                     <TextView
                         android:id="@+id/tabBookmarks"
@@ -550,7 +599,47 @@
                         android:text="★"
                         android:textSize="14sp"
                         android:clickable="true"
-                        android:focusable="true" />
+                        android:focusable="true"
+                        android:contentDescription="@string/a11y_tab_bookmarks" />
+
+                    <TextView
+                        android:id="@+id/tabDeps"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:gravity="center_vertical"
+                        android:text="Deps"
+                        android:textSize="11sp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:contentDescription="@string/a11y_tab_deps" />
+
+                    <TextView
+                        android:id="@+id/tabProfiler"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:gravity="center_vertical"
+                        android:text="Profile"
+                        android:textSize="11sp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:contentDescription="@string/a11y_tab_profiler" />
+
+                    <TextView
+                        android:id="@+id/tabTodo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:gravity="center_vertical"
+                        android:text="TODO"
+                        android:textSize="11sp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:contentDescription="@string/a11y_tab_todo" />
                 </LinearLayout>
             </HorizontalScrollView>
 
@@ -562,7 +651,8 @@
                 android:textColor="@color/idea_text_dim"
                 android:textSize="14sp"
                 android:gravity="center"
-                android:background="?attr/selectableItemBackground" />
+                android:background="?attr/selectableItemBackground"
+                android:contentDescription="@string/a11y_clear_console" />
 
         </LinearLayout>
 
@@ -636,6 +726,7 @@
                         android:layout_height="26dp"
                         android:layout_weight="1"
                         android:hint="@string/bytecode_search_hint"
+                        android:contentDescription="@string/a11y_bytecode_search"
                         android:textColorHint="@color/idea_text_dim"
                         android:textColor="@color/idea_console_text"
                         android:textSize="11sp"
@@ -657,7 +748,8 @@
                         android:textColor="@color/idea_text_dim"
                         android:textSize="11sp"
                         android:fontFamily="monospace"
-                        android:background="?attr/selectableItemBackground" />
+                        android:background="?attr/selectableItemBackground"
+                        android:contentDescription="@string/a11y_bytecode_toggle_hex" />
 
                     <TextView
                         android:id="@+id/bytecodeToggleLines"
@@ -670,7 +762,8 @@
                         android:textColor="@color/idea_console_text"
                         android:textSize="11sp"
                         android:fontFamily="monospace"
-                        android:background="?attr/selectableItemBackground" />
+                        android:background="?attr/selectableItemBackground"
+                        android:contentDescription="@string/a11y_bytecode_toggle_lines" />
 
                     <TextView
                         android:id="@+id/bytecodeToggleComments"
@@ -683,7 +776,8 @@
                         android:textColor="@color/idea_console_text"
                         android:textSize="11sp"
                         android:fontFamily="monospace"
-                        android:background="?attr/selectableItemBackground" />
+                        android:background="?attr/selectableItemBackground"
+                        android:contentDescription="@string/a11y_bytecode_toggle_comments" />
 
                     <View
                         android:layout_width="1dp"
@@ -703,7 +797,8 @@
                         android:textColor="@color/idea_accent"
                         android:textSize="11sp"
                         android:fontFamily="monospace"
-                        android:background="?attr/selectableItemBackground" />
+                        android:background="?attr/selectableItemBackground"
+                        android:contentDescription="@string/a11y_bytecode_edit" />
 
                     <TextView
                         android:id="@+id/bytecodeSave"
@@ -716,7 +811,8 @@
                         android:textColor="@color/idea_run_green"
                         android:textSize="11sp"
                         android:fontFamily="monospace"
-                        android:background="?attr/selectableItemBackground" />
+                        android:background="?attr/selectableItemBackground"
+                        android:contentDescription="@string/a11y_bytecode_save" />
 
                     <TextView
                         android:id="@+id/bytecodeRun"
@@ -729,7 +825,8 @@
                         android:textColor="@color/idea_run_green"
                         android:textSize="11sp"
                         android:fontFamily="monospace"
-                        android:background="?attr/selectableItemBackground" />
+                        android:background="?attr/selectableItemBackground"
+                        android:contentDescription="@string/a11y_bytecode_run" />
 
                     <TextView
                         android:id="@+id/bytecodeOpenEditor"
@@ -742,7 +839,8 @@
                         android:textColor="@color/idea_accent"
                         android:textSize="11sp"
                         android:fontFamily="monospace"
-                        android:background="?attr/selectableItemBackground" />
+                        android:background="?attr/selectableItemBackground"
+                        android:contentDescription="@string/a11y_bytecode_open_editor" />
 
                     <TextView
                         android:id="@+id/bytecodeCallGraph"
@@ -755,7 +853,8 @@
                         android:textColor="@color/idea_accent"
                         android:textSize="11sp"
                         android:fontFamily="monospace"
-                        android:background="?attr/selectableItemBackground" />
+                        android:background="?attr/selectableItemBackground"
+                        android:contentDescription="@string/a11y_bytecode_call_graph" />
                 </LinearLayout>
 
                 <!-- status line (class name / method count) -->
@@ -942,7 +1041,8 @@
                                 android:text="+ Add Watch"
                                 android:textColor="#499C54"
                                 android:textSize="11sp"
-                                android:background="?attr/selectableItemBackground" />
+                                android:background="?attr/selectableItemBackground"
+                                android:contentDescription="@string/a11y_add_watch" />
                         </LinearLayout>
 
                         <ScrollView
@@ -991,6 +1091,7 @@
                         android:layout_height="26dp"
                         android:layout_weight="1"
                         android:hint="Search method..."
+                        android:contentDescription="@string/a11y_callgraph_search"
                         android:textColorHint="@color/idea_text_dim"
                         android:textColor="@color/idea_console_text"
                         android:textSize="11sp"
@@ -1011,7 +1112,8 @@
                         android:text="↻"
                         android:textColor="@color/idea_accent"
                         android:textSize="14sp"
-                        android:background="?attr/selectableItemBackground" />
+                        android:background="?attr/selectableItemBackground"
+                        android:contentDescription="@string/a11y_call_graph_refresh" />
 
                 </LinearLayout>
 
@@ -1044,9 +1146,311 @@
 
             </LinearLayout>
 
-        </FrameLayout>
+            <!-- ── Dependency Graph panel ── -->
+            <LinearLayout
+                android:id="@+id/depsPanel"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:background="@color/idea_console_bg"
+                android:visibility="gone">
 
-        <!-- ── STATUS BAR ── -->
+                <LinearLayout
+                    android:id="@+id/depsToolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="32dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@color/idea_toolbar"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="6dp">
+
+                    <TextView
+                        android:id="@+id/depsRefresh"
+                        android:layout_width="wrap_content"
+                        android:layout_height="26dp"
+                        android:gravity="center"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text="↻"
+                        android:textColor="@color/idea_accent"
+                        android:textSize="14sp"
+                        android:background="?attr/selectableItemBackground"
+                        android:contentDescription="@string/a11y_deps_refresh" />
+
+                    <TextView
+                        android:id="@+id/depsZoomIn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="26dp"
+                        android:gravity="center"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text="+"
+                        android:textColor="@color/idea_text"
+                        android:textSize="14sp"
+                        android:background="?attr/selectableItemBackground" />
+
+                    <TextView
+                        android:id="@+id/depsZoomOut"
+                        android:layout_width="wrap_content"
+                        android:layout_height="26dp"
+                        android:gravity="center"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text="−"
+                        android:textColor="@color/idea_text"
+                        android:textSize="14sp"
+                        android:background="?attr/selectableItemBackground" />
+
+                    <TextView
+                        android:id="@+id/depsFitToScreen"
+                        android:layout_width="wrap_content"
+                        android:layout_height="26dp"
+                        android:gravity="center"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text="Fit"
+                        android:textColor="@color/idea_text"
+                        android:textSize="11sp"
+                        android:background="?attr/selectableItemBackground" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:id="@+id/depsStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="26dp"
+                        android:gravity="center_vertical"
+                        android:text=""
+                        android:textColor="@color/idea_text_dim"
+                        android:textSize="10sp"
+                        android:fontFamily="monospace" />
+                </LinearLayout>
+
+                <com.ccs.javadroid.ui.DependencyGraphView
+                    android:id="@+id/depsGraphView"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+            </LinearLayout>
+
+            <!-- ── Profiler panel ── -->
+            <LinearLayout
+                android:id="@+id/profilerPanel"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:background="@color/idea_console_bg"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:id="@+id/profilerToolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="32dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@color/idea_toolbar"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="6dp">
+
+                    <TextView
+                        android:id="@+id/profilerRefresh"
+                        android:layout_width="wrap_content"
+                        android:layout_height="26dp"
+                        android:gravity="center"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text="↻"
+                        android:textColor="@color/idea_accent"
+                        android:textSize="14sp"
+                        android:background="?attr/selectableItemBackground" />
+
+                    <TextView
+                        android:id="@+id/profilerZoomIn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="26dp"
+                        android:gravity="center"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text="+"
+                        android:textColor="@color/idea_text"
+                        android:textSize="14sp"
+                        android:background="?attr/selectableItemBackground" />
+
+                    <TextView
+                        android:id="@+id/profilerZoomOut"
+                        android:layout_width="wrap_content"
+                        android:layout_height="26dp"
+                        android:gravity="center"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text="−"
+                        android:textColor="@color/idea_text"
+                        android:textSize="14sp"
+                        android:background="?attr/selectableItemBackground" />
+
+                    <TextView
+                        android:id="@+id/profilerFit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="26dp"
+                        android:gravity="center"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text="Fit"
+                        android:textColor="@color/idea_text"
+                        android:textSize="11sp"
+                        android:background="?attr/selectableItemBackground" />
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="16dp"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginEnd="4dp"
+                        android:background="@color/idea_separator" />
+
+                    <TextView
+                        android:id="@+id/profilerRunBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="26dp"
+                        android:gravity="center"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text="▶ Run"
+                        android:textColor="@color/idea_accent"
+                        android:textSize="11sp"
+                        android:background="?attr/selectableItemBackground" />
+
+                    <TextView
+                        android:id="@+id/profilerLiveToggle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="26dp"
+                        android:gravity="center"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text="● Live"
+                        android:textColor="#499C54"
+                        android:textSize="11sp"
+                        android:background="?attr/selectableItemBackground" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:id="@+id/profilerStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="26dp"
+                        android:gravity="center_vertical"
+                        android:text=""
+                        android:textColor="@color/idea_text_dim"
+                        android:textSize="10sp"
+                        android:fontFamily="monospace" />
+                </LinearLayout>
+
+                <com.ccs.javadroid.ui.FlameChartView
+                    android:id="@+id/flameChartView"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <ScrollView
+                    android:id="@+id/profilerDetailScroll"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:background="@color/idea_console_bg"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/profilerDetail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="8dp"
+                        android:textColor="@color/idea_console_text"
+                        android:fontFamily="monospace"
+                        android:textSize="11sp"
+                        android:lineSpacingMultiplier="1.2"
+                        android:textIsSelectable="true" />
+                </ScrollView>
+
+            </LinearLayout>
+
+            <!-- ── TODO/FIXME panel ── -->
+            <LinearLayout
+                android:id="@+id/todoPanel"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:background="@color/idea_console_bg"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="32dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@color/idea_toolbar"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="6dp">
+
+                    <EditText
+                        android:id="@+id/todoSearch"
+                        android:layout_width="0dp"
+                        android:layout_height="26dp"
+                        android:layout_weight="1"
+                        android:hint="Search TODO/FIXME..."
+                        android:textColorHint="@color/idea_text_dim"
+                        android:textColor="@color/idea_console_text"
+                        android:textSize="11sp"
+                        android:singleLine="true"
+                        android:imeOptions="actionSearch"
+                        android:inputType="text"
+                        android:background="@android:color/transparent"
+                        android:paddingStart="4dp"
+                        android:paddingEnd="4dp" />
+
+                    <TextView
+                        android:id="@+id/todoRefresh"
+                        android:layout_width="wrap_content"
+                        android:layout_height="26dp"
+                        android:gravity="center"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text="↻"
+                        android:textColor="@color/idea_accent"
+                        android:textSize="14sp"
+                        android:background="?attr/selectableItemBackground" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/todoStatus"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    android:textSize="10sp"
+                    android:textColor="@color/idea_text_dim"
+                    android:fontFamily="monospace"
+                    android:background="@color/idea_console_bg" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/todoRecycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:background="@color/idea_console_bg"
+                    android:scrollbars="vertical" />
+
+            </LinearLayout>
+
+        </FrameLayout>
         <LinearLayout
             android:id="@+id/statusBar"
             android:layout_width="match_parent"
@@ -1098,7 +1502,8 @@
                 android:paddingEnd="8dp"
                 android:clickable="true"
                 android:focusable="true"
-                android:background="?attr/selectableItemBackground" />
+                android:background="?attr/selectableItemBackground"
+                android:contentDescription="@string/a11y_status_encoding" />
 
             <TextView
                 android:layout_width="wrap_content"

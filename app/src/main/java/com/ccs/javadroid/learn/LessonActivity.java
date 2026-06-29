@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ccs.javadroid.util.AppPreferences;
 import com.ccs.javadroid.util.AppTheme;
+import com.ccs.javadroid.util.FullScreenHelper;
 import com.ccs.javadroid.R;
 
 import java.util.List;
@@ -41,6 +42,7 @@ public class LessonActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_material);
+        FullScreenHelper.enable(this);
 
         courseId = getIntent().getStringExtra(EXTRA_COURSE);
         lessonId = getIntent().getStringExtra(EXTRA_LESSON);

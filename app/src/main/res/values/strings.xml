@@ -213,6 +213,12 @@
     <string name="git_tab_log">Log</string>
     <string name="git_tab_branches">Branches</string>
     <string name="git_tab_remote">Remote</string>
+    <string name="git_tab_diff">Diff</string>
+    <string name="git_diff_loading">Loading diff…</string>
+    <string name="git_diff_no_changes">No changes</string>
+    <string name="git_diff_open_full">Open full diff viewer</string>
+    <string name="git_diff_error">Failed to load diff</string>
+    <string name="git_diff_activity_title">Diff</string>
 
     <string name="git_no_repo">This project is not a git repository yet.\n%1$s</string>
     <string name="git_no_repo_short">no .git</string>
@@ -722,4 +728,244 @@
     <string name="permission_storage_denied_title">Access not granted</string>
     <string name="permission_storage_denied_message">Without file access, the app cannot work with projects.</string>
     <string name="permission_storage_try_again">Try again</string>
+
+    <!-- Accessibility -->
+    <string name="a11y_back">Go back</string>
+    <string name="a11y_overflow_menu">More options</string>
+    <string name="a11y_new_tab">New tab</string>
+    <string name="a11y_find_input">Find text</string>
+    <string name="a11y_find_previous">Find previous</string>
+    <string name="a11y_find_next">Find next</string>
+    <string name="a11y_find_close">Close find bar</string>
+    <string name="a11y_find_scope">Toggle search scope</string>
+    <string name="a11y_replace_input">Replace text</string>
+    <string name="a11y_replace">Replace current</string>
+    <string name="a11y_replace_all">Replace all</string>
+    <string name="a11y_editor">Code editor</string>
+    <string name="a11y_editor2">Code editor, second pane</string>
+    <string name="a11y_breakpoint_overlay">Breakpoint markers</string>
+    <string name="a11y_bookmark_overlay">Bookmark markers</string>
+    <string name="a11y_tab_run">Run tab</string>
+    <string name="a11y_tab_problems">Problems tab</string>
+    <string name="a11y_tab_bytecode">Bytecode tab</string>
+    <string name="a11y_tab_debug">Debug tab</string>
+    <string name="a11y_tab_debug_console">Debug console tab</string>
+    <string name="a11y_tab_call_graph">Call graph tab</string>
+    <string name="a11y_tab_bookmarks">Bookmarks tab</string>
+    <string name="a11y_clear_console">Clear console</string>
+    <string name="a11y_debug_step_over">Step over</string>
+    <string name="a11y_debug_step_into">Step into</string>
+    <string name="a11y_debug_step_out">Step out</string>
+    <string name="a11y_debug_resume">Resume execution</string>
+    <string name="a11y_debug_stop">Stop debugging</string>
+    <string name="a11y_debug_evaluate">Evaluate expression</string>
+    <string name="a11y_toggle_breakpoint">Toggle breakpoint</string>
+    <string name="a11y_bytecode_toggle_hex">Toggle hex view</string>
+    <string name="a11y_bytecode_toggle_lines">Toggle line numbers</string>
+    <string name="a11y_bytecode_toggle_comments">Toggle comments</string>
+    <string name="a11y_bytecode_edit">Edit instruction</string>
+    <string name="a11y_bytecode_save">Save bytecode</string>
+    <string name="a11y_bytecode_run">Run bytecode</string>
+    <string name="a11y_bytecode_open_editor">Open in editor</string>
+    <string name="a11y_bytecode_call_graph">View call graph</string>
+    <string name="a11y_call_graph_refresh">Refresh call graph</string>
+    <string name="a11y_add_watch">Add watch expression</string>
+    <string name="a11y_status_encoding">File encoding</string>
+
+    <!-- Welcome Activity -->
+    <string name="a11y_welcome_logo">JavaDroid logo</string>
+    <string name="a11y_welcome_projects_tab">Projects</string>
+    <string name="a11y_welcome_customize_tab">Customize</string>
+    <string name="a11y_welcome_plugins_tab">Plugins</string>
+    <string name="a11y_welcome_materials_tab">Materials</string>
+    <string name="a11y_welcome_settings">Settings</string>
+    <string name="a11y_welcome_search">Search projects</string>
+    <string name="a11y_welcome_new_project">Create new project</string>
+    <string name="a11y_welcome_open_project">Open project</string>
+    <string name="a11y_welcome_get_from_vcs">Get project from version control</string>
+
+    <!-- Settings -->
+    <string name="a11y_settings_theme_card">Select theme %1$s</string>
+    <string name="a11y_settings_custom_theme_card">Select custom theme</string>
+    <string name="a11y_settings_color_picker">Change %1$s color</string>
+    <string name="a11y_settings_font_family">Font family</string>
+    <string name="a11y_settings_font_size">Font size</string>
+    <string name="a11y_settings_tab_size">Tab size</string>
+    <string name="a11y_settings_line_spacing">Line spacing</string>
+    <string name="a11y_settings_java_target">Java target version</string>
+    <string name="a11y_settings_power_saving">Power saving mode</string>
+    <string name="a11y_settings_ndk">Install or manage C++ NDK</string>
+    <string name="a11y_settings_reset">Reset all settings to defaults</string>
+    <string name="a11y_settings_color_r">Red color component</string>
+    <string name="a11y_settings_color_g">Green color component</string>
+    <string name="a11y_settings_color_b">Blue color component</string>
+    <string name="a11y_settings_hex_input">Hex color input</string>
+
+    <!-- Global Search -->
+    <string name="a11y_global_search_field">Search in all project files</string>
+    <string name="a11y_global_search_button">Search</string>
+    <string name="a11y_global_search_result">Search result: %1$s</string>
+
+    <!-- HTTP Client -->
+    <string name="a11y_http_method">HTTP method</string>
+    <string name="a11y_http_url">Request URL</string>
+    <string name="a11y_http_send">Send request</string>
+    <string name="a11y_http_headers">Request headers</string>
+    <string name="a11y_http_body">Request body</string>
+
+    <!-- Database Inspector -->
+    <string name="a11y_db_sql_input">SQL query input</string>
+    <string name="a11y_db_run">Run query</string>
+    <string name="a11y_db_clear">Clear query</string>
+    <string name="a11y_db_table_item">Browse table %1$s</string>
+
+    <!-- Image Viewer -->
+    <string name="a11y_image_viewer">Image preview</string>
+
+    <!-- Media Player -->
+    <string name="a11y_media_play_pause">Play or pause</string>
+    <string name="a11y_media_stop">Stop playback</string>
+    <string name="a11y_media_rewind">Rewind 10 seconds</string>
+    <string name="a11y_media_forward">Forward 10 seconds</string>
+    <string name="a11y_media_seek">Seek position</string>
+    <string name="a11y_media_volume">Volume</string>
+    <string name="a11y_media_brightness">Brightness</string>
+    <string name="a11y_media_landscape">Toggle landscape</string>
+
+    <!-- AI Chat -->
+    <string name="a11y_ai_back">Go back to editor</string>
+    <string name="a11y_ai_model">Change AI model</string>
+    <string name="a11y_ai_api_key">Set API key</string>
+    <string name="a11y_ai_send">Send message</string>
+    <string name="a11y_ai_input">Message input</string>
+    <string name="a11y_ai_action_explain">Explain code</string>
+    <string name="a11y_ai_action_find_bugs">Find bugs</string>
+    <string name="a11y_ai_action_refactor">Refactor code</string>
+    <string name="a11y_ai_action_optimize">Optimize code</string>
+    <string name="a11y_ai_action_document">Document code</string>
+    <string name="a11y_ai_action_test">Generate test</string>
+
+    <!-- WebView -->
+    <string name="a11y_webview_url">URL or file path</string>
+    <string name="a11y_webview_go">Navigate to URL</string>
+    <string name="a11y_webview_reload">Reload page</string>
+    <string name="a11y_webview_live">Toggle live reload</string>
+
+    <!-- Class Browser -->
+    <string name="a11y_class_browser_search">Search classes</string>
+    <string name="a11y_class_browser_clear">Clear search</string>
+    <string name="a11y_class_item">Class: %1$s</string>
+
+    <!-- Bytecode Editor -->
+    <string name="a11y_bc_back">Go back</string>
+    <string name="a11y_bc_undo">Undo</string>
+    <string name="a11y_bc_redo">Redo</string>
+    <string name="a11y_bc_copy">Copy to clipboard</string>
+    <string name="a11y_bc_validate">Validate bytecode</string>
+    <string name="a11y_bc_save">Save file</string>
+    <string name="a11y_bc_code_editor">Bytecode editor</string>
+
+    <!-- Call Graph -->
+    <string name="a11y_call_graph_search">Search methods</string>
+    <string name="a11y_call_graph_method">Method: %1$s</string>
+
+    <!-- SVG Viewer -->
+    <string name="a11y_svg_viewer">SVG image preview</string>
+
+    <!-- MainActivity menu a11y -->
+    <string name="a11y_menu_search">Search in project</string>
+    <string name="a11y_menu_save">Save file</string>
+    <string name="a11y_menu_undo">Undo</string>
+    <string name="a11y_menu_redo">Redo</string>
+    <string name="a11y_menu_run">Run code</string>
+    <string name="a11y_menu_format">Format code</string>
+    <string name="a11y_menu_find_replace">Find and replace</string>
+    <string name="a11y_menu_git">Open Git</string>
+    <string name="a11y_menu_settings">Open settings</string>
+    <string name="a11y_menu_bytecode">View bytecode</string>
+    <string name="a11y_menu_debug">Start debugging</string>
+    <string name="a11y_menu_split_screen">Toggle split screen</string>
+    <string name="a11y_menu_ai_chat">Open AI assistant</string>
+    <string name="a11y_menu_new_file">Create new file</string>
+    <string name="a11y_menu_open_file">Open file</string>
+    <string name="a11y_menu_class_browser">Browse classes</string>
+    <string name="a11y_menu_library_manager">Open library manager</string>
+    <string name="a11y_menu_http_client">Open HTTP client</string>
+    <string name="a11y_menu_webview">Preview in WebView</string>
+    <string name="a11y_menu_md_preview">Preview Markdown</string>
+    <string name="a11y_menu_export">Export project</string>
+    <string name="a11y_menu_import">Import files</string>
+    <string name="a11y_menu_auto_import">Auto-import dependencies</string>
+    <string name="a11y_menu_view_formatted">View formatted output</string>
+    <string name="a11y_menu_call_graph">View call graph</string>
+    <string name="a11y_menu_play_media">Play media file</string>
+    <string name="a11y_menu_share">Share file</string>
+    <string name="a11y_menu_global_search">Search in project files</string>
+    <string name="a11y_menu_maven_package">Run Maven package</string>
+    <string name="a11y_menu_maven_test">Run Maven test compile</string>
+    <string name="a11y_menu_maven_test_run">Run Maven test</string>
+    <string name="a11y_menu_maven_clean">Run Maven clean</string>
+    <string name="a11y_menu_maven_install">Run Maven install</string>
+    <string name="a11y_menu_sync_deps">Sync dependencies</string>
+    <string name="a11y_menu_new_maven_project">Create new Maven project</string>
+    <string name="a11y_menu_copy_console">Copy console output</string>
+    <string name="a11y_menu_pastebin">Share to Pastebin</string>
+    <string name="a11y_menu_save_as">Save file as</string>
+    <string name="a11y_menu_cpp_module">Create C++ module</string>
+    <string name="a11y_menu_load_mapping">Load ProGuard mapping</string>
+    <string name="a11y_menu_toggle_bookmark">Toggle bookmark</string>
+    <string name="a11y_menu_show_bookmarks">Show bookmarks</string>
+
+    <!-- Learn Activity -->
+    <string name="a11y_learn_course_selector">Select course</string>
+    <string name="a11y_learn_language_toggle">Switch language</string>
+
+    <!-- Tutorial Activity -->
+    <string name="a11y_tutorial_theory_tab">Theory tab</string>
+    <string name="a11y_tutorial_practice_tab">Practice tab</string>
+    <string name="a11y_tutorial_reset_code">Reset code</string>
+    <string name="a11y_tutorial_run_playground">Run playground code</string>
+    <string name="a11y_tutorial_playground_editor">Playground code editor</string>
+    <string name="a11y_bytecode_search">Search bytecode opcode</string>
+    <string name="a11y_callgraph_search">Search method in call graph</string>
+    <string name="a11y_search_projects">Search projects</string>
+
+    <!-- Minimap -->
+    <string name="a11y_minimap">Code minimap preview</string>
+
+    <!-- Dependencies -->
+    <string name="a11y_tab_deps">Dependencies tab</string>
+    <string name="a11y_deps_refresh">Refresh dependency graph</string>
+
+    <!-- TODO/FIXME Tracker -->
+    <string name="a11y_tab_todo">TODO/FIXME tab</string>
+    <string name="a11y_toolbar_run">Run</string>
+    <string name="a11y_toolbar_debug">Debug</string>
+    <string name="a11y_toolbar_save">Save</string>
+    <string name="a11y_toolbar_find">Find</string>
+    <string name="a11y_toolbar_git">Git</string>
+    <string name="a11y_toolbar_ai">AI Assistant</string>
+
+    <!-- Profiler -->
+    <string name="a11y_tab_profiler">Profiler tab</string>
+    <string name="profiler_start">Profile Run</string>
+    <string name="profiler_running">Profiling…</string>
+    <string name="profiler_done">Profiling complete</string>
+    <string name="profiler_no_data">No profiling data. Run code with profiler enabled.</string>
+    <string name="refactor_rename_title">Rename Symbol</string>
+    <string name="refactor_rename_hint">New name</string>
+    <string name="refactor_extract_method">Extract Method</string>
+    <string name="refactor_extract_method_title">Extract Method</string>
+    <string name="refactor_extract_method_hint">Method name</string>
+    <string name="refactor_extract_variable">Extract Variable</string>
+    <string name="refactor_extract_variable_title">Extract Variable</string>
+    <string name="refactor_extract_variable_hint">Variable name</string>
+    <string name="refactor_inline">Inline</string>
+    <string name="refactor_inline_title">Inline Method</string>
+    <string name="refactor_find_usages">Find Usages</string>
+    <string name="refactor_result">Refactoring result</string>
+
+    <!-- Settings -->
+    <string name="settings_inclusive_mode">Inclusive Mode</string>
+    <string name="settings_inclusive_mode_desc">AI agent can edit files without confirmation</string>
 </resources>

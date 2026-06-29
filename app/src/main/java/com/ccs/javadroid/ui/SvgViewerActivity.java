@@ -98,6 +98,7 @@ public class SvgViewerActivity extends AppCompatActivity {
         imageView = new ImageView(this);
         imageView.setAdjustViewBounds(true);
         imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        imageView.setContentDescription(getString(R.string.a11y_svg_viewer));
         container.addView(imageView, new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT,

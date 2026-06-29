@@ -42,6 +42,8 @@ import android.graphics.Typeface;
     private static final String K_VERBOSE_LOGGING  = "verbose_logging";
     // ── Power Saving ─────────────────────────────────────────
     private static final String K_POWER_SAVING_MODE = "power_saving_mode";
+    // ── AI Agent ─────────────────────────────────────────────
+    private static final String K_INCLUSIVE_MODE = "inclusive_mode";
 
     // Family constants
     public static final int FONT_MONOSPACE     = 0;
@@ -147,6 +149,9 @@ import android.graphics.Typeface;
 
     public int getPowerSavingMode()          { return prefs.getInt(K_POWER_SAVING_MODE, 0); }
     public void setPowerSavingMode(int v)    { prefs.edit().putInt(K_POWER_SAVING_MODE, v).apply(); }
+
+    public boolean isInclusiveMode()         { return prefs.getBoolean(K_INCLUSIVE_MODE, false); }
+    public void setInclusiveMode(boolean v)  { prefs.edit().putBoolean(K_INCLUSIVE_MODE, v).apply(); }
 
     public java.util.List<String> getRecentProjects() {
         String data = prefs.getString("recent_projects", "");

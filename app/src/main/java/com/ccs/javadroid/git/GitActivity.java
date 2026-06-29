@@ -3,7 +3,6 @@ import com.ccs.javadroid.R;
 import com.ccs.javadroid.util.AppPreferences;
 import com.ccs.javadroid.util.AppTheme;
 import com.ccs.javadroid.util.FullScreenHelper;
-import com.ccs.javadroid.util.FullScreenHelper;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -49,6 +48,7 @@ public class GitActivity extends AppCompatActivity {
     private static final int TAB_LOG      = 2;
     private static final int TAB_BRANCHES = 3;
     private static final int TAB_REMOTE   = 4;
+    private static final int TAB_DIFF     = 5;
 
     private AppPreferences prefs;
     private AppTheme theme;
@@ -62,7 +62,7 @@ public class GitActivity extends AppCompatActivity {
     private TextView headerStats;
 
     // Tab bar
-    private TextView tStatus, tCommit, tLog, tBranches, tRemote;
+    private TextView tStatus, tCommit, tLog, tBranches, tRemote, tDiff;
     private FrameLayout panel;
 
     private final ExecutorService io = Executors.newSingleThreadExecutor();
@@ -149,11 +149,13 @@ public class GitActivity extends AppCompatActivity {
         tLog      = makeTab(getString(R.string.git_tab_log),      TAB_LOG);
         tBranches = makeTab(getString(R.string.git_tab_branches), TAB_BRANCHES);
         tRemote   = makeTab(getString(R.string.git_tab_remote),   TAB_REMOTE);
+        tDiff     = makeTab(getString(R.string.git_tab_diff),     TAB_DIFF);
         tabs.addView(tStatus);
         tabs.addView(tCommit);
         tabs.addView(tLog);
         tabs.addView(tBranches);
         tabs.addView(tRemote);
+        tabs.addView(tDiff);
         hs.addView(tabs);
         root.addView(hs);
 
@@ -191,12 +193,14 @@ public class GitActivity extends AppCompatActivity {
         tLog.setBackgroundColor(id == TAB_LOG ? active : inactive);
         tBranches.setBackgroundColor(id == TAB_BRANCHES ? active : inactive);
         tRemote.setBackgroundColor(id == TAB_REMOTE ? active : inactive);
+        tDiff.setBackgroundColor(id == TAB_DIFF ? active : inactive);
 
         tStatus.setTextColor(id == TAB_STATUS ? theme.accent : theme.textDim);
         tCommit.setTextColor(id == TAB_COMMIT ? theme.accent : theme.textDim);
         tLog.setTextColor(id == TAB_LOG ? theme.accent : theme.textDim);
         tBranches.setTextColor(id == TAB_BRANCHES ? theme.accent : theme.textDim);
         tRemote.setTextColor(id == TAB_REMOTE ? theme.accent : theme.textDim);
+        tDiff.setTextColor(id == TAB_DIFF ? theme.accent : theme.textDim);
 
         panel.removeAllViews();
         switch (id) {
@@ -205,6 +209,7 @@ public class GitActivity extends AppCompatActivity {
             case TAB_LOG:      panel.addView(buildLogPanel());      break;
             case TAB_BRANCHES: panel.addView(buildBranchesPanel()); break;
             case TAB_REMOTE:   panel.addView(buildRemotePanel());   break;
+            case TAB_DIFF:     panel.addView(buildDiffPanel());     break;
         }
     }
 
@@ -903,6 +908,107 @@ public class GitActivity extends AppCompatActivity {
 
         ScrollView sv = new ScrollView(this);
         sv.addView(box);
+        return sv;
+    }
+
+    // ══════════════════════════════════════════════════════════
+    //  Diff panel
+    // ══════════════════════════════════════════════════════════
+
+    private View buildDiffPanel() {
+        LinearLayout box = new LinearLayout(this);
+        box.setOrientation(LinearLayout.VERTICAL);
+        box.setPadding(dp(12), dp(8), dp(12), dp(8));
+
+        TextView loading = new TextView(this);
+        loading.setText(getString(R.string.git_diff_loading));
+        loading.setTextColor(theme.textDim);
+        loading.setTextSize(12);
+        box.addView(loading);
+
+        ScrollView sv = new ScrollView(this);
+        sv.addView(box);
+
+        doBackground(() -> {
+            List<String> files = GitManager.changedFiles(projectDir);
+            String diff = GitManager.diffWorkingTree(projectDir);
+            return new Object[]{files, diff};
+        }, result -> {
+            @SuppressWarnings("unchecked")
+            List<String> files = (List<String>) ((Object[]) result)[0];
+            String diff = (String) ((Object[]) result)[1];
+            box.removeAllViews();
+
+            if (files.isEmpty()) {
+                TextView ok = new TextView(this);
+                ok.setText(getString(R.string.git_diff_no_changes));
+                ok.setTextColor(theme.successText);
+                ok.setTextSize(13);
+                ok.setGravity(Gravity.CENTER);
+                ok.setPadding(0, dp(16), 0, 0);
+                box.addView(ok);
+                return;
+            }
+
+            // Button to open full diff viewer
+            TextView btnFullDiff = primaryButton(getString(R.string.git_diff_open_full));
+            btnFullDiff.setOnClickListener(v ->
+                    GitDiffActivity.launch(this, projectDir));
+            box.addView(btnFullDiff);
+            box.addView(spacer(dp(8)));
+
+            // Show file list with +/- stats
+            for (String f : files) {
+                LinearLayout row = new LinearLayout(this);
+                row.setOrientation(LinearLayout.HORIZONTAL);
+                row.setGravity(Gravity.CENTER_VERTICAL);
+                row.setPadding(dp(4), dp(6), dp(4), dp(6));
+
+                TextView name = new TextView(this);
+                name.setText(f);
+                name.setTextColor(theme.text);
+                name.setTextSize(12);
+                name.setTypeface(new AppPreferences(this).resolveTypeface());
+                LinearLayout.LayoutParams nlp = new LinearLayout.LayoutParams(0,
+                        ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
+                name.setLayoutParams(nlp);
+                row.addView(name);
+
+                // Inline stats
+                TextView stats = new TextView(this);
+                stats.setTypeface(new AppPreferences(this).resolveTypeface());
+                stats.setTextSize(10);
+                stats.setPadding(dp(8), 0, dp(8), 0);
+                row.addView(stats);
+
+                // View diff button
+                TextView viewBtn = new TextView(this);
+                viewBtn.setText("→");
+                viewBtn.setTextColor(theme.accent);
+                viewBtn.setTextSize(14);
+                viewBtn.setPadding(dp(4), 0, dp(4), 0);
+                viewBtn.setOnClickListener(v ->
+                        GitDiffActivity.launchFile(this, projectDir, f));
+                row.addView(viewBtn);
+
+                box.addView(row);
+
+                View sep = new View(this);
+                sep.setBackgroundColor(theme.separator);
+                sep.setLayoutParams(new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT, dp(1)));
+                box.addView(sep);
+
+                // Load stats in background
+                doBackground(() -> GitManager.diffStats(projectDir, f), s -> {
+                    stats.setText("+" + s[0] + " -" + s[1]);
+                    if (s[0] > 0 && s[1] == 0) stats.setTextColor(theme.successText);
+                    else if (s[1] > 0 && s[0] == 0) stats.setTextColor(theme.errorText);
+                    else stats.setTextColor(theme.accent);
+                }, e -> stats.setText(""));
+            }
+        }, this::showError);
+
         return sv;
     }
 

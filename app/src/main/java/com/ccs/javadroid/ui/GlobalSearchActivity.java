@@ -1,5 +1,6 @@
 package com.ccs.javadroid.ui;
 
+import com.ccs.javadroid.R;
 import com.ccs.javadroid.util.FullScreenHelper;
 import com.ccs.javadroid.util.AppPreferences;
 import com.ccs.javadroid.util.AppTheme;
@@ -102,6 +103,7 @@ public class GlobalSearchActivity extends AppCompatActivity {
         etSearch.setTextSize(14);
         etSearch.setSingleLine(true);
         etSearch.setPadding(dp(12), dp(8), dp(12), dp(8));
+        etSearch.setContentDescription(getString(R.string.a11y_global_search_field));
         LinearLayout.LayoutParams searchLp = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
         etSearch.setLayoutParams(searchLp);
 
@@ -111,6 +113,7 @@ public class GlobalSearchActivity extends AppCompatActivity {
         btnSearch.setTextSize(14);
         btnSearch.setPadding(dp(16), dp(8), dp(16), dp(8));
         btnSearch.setGravity(Gravity.CENTER);
+        btnSearch.setContentDescription(getString(R.string.a11y_global_search_button));
 
         searchRow.addView(etSearch);
         searchRow.addView(btnSearch);
@@ -355,6 +358,8 @@ public class GlobalSearchActivity extends AppCompatActivity {
             }
 
             h.tv.setText(ssb);
+            h.tv.setContentDescription(getString(R.string.a11y_global_search_result,
+                    relPath + ":" + r.lineNumber));
 
             h.tv.setOnClickListener(v -> {
                 Intent data = new Intent();

@@ -23,7 +23,7 @@
             android:src="@drawable/ic_undo"
             android:rotation="180"
             android:padding="8dp"
-            android:contentDescription="Back"
+            android:contentDescription="@string/a11y_back"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true" />
@@ -59,7 +59,8 @@
                 android:gravity="center"
                 android:background="#3574F0"
                 android:clickable="true"
-                android:focusable="true" />
+                android:focusable="true"
+                android:contentDescription="@string/a11y_tutorial_theory_tab" />
 
             <TextView
                 android:id="@+id/tabPractice"
@@ -70,7 +71,8 @@
                 android:textSize="11sp"
                 android:gravity="center"
                 android:clickable="true"
-                android:focusable="true" />
+                android:focusable="true"
+                android:contentDescription="@string/a11y_tutorial_practice_tab" />
         </LinearLayout>
     </LinearLayout>
 
@@ -116,7 +118,8 @@
                     android:paddingEnd="10dp"
                     android:background="#3E4246"
                     android:clickable="true"
-                    android:focusable="true" />
+                    android:focusable="true"
+                    android:contentDescription="@string/a11y_tutorial_reset_code" />
 
                 <View
                     android:layout_width="0dp"
@@ -136,7 +139,8 @@
                     android:paddingEnd="12dp"
                     android:background="#499C54"
                     android:clickable="true"
-                    android:focusable="true" />
+                    android:focusable="true"
+                    android:contentDescription="@string/a11y_tutorial_run_playground" />
             </LinearLayout>
 
             <!-- Code Editor -->
@@ -144,7 +148,8 @@
                 android:id="@+id/playgroundEditor"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="3" />
+                android:layout_weight="3"
+                android:contentDescription="@string/a11y_tutorial_playground_editor" />
 
             <View
                 android:layout_width="match_parent"

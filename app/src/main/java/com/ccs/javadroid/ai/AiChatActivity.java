@@ -1,5 +1,6 @@
 package com.ccs.javadroid.ai;
 
+import com.ccs.javadroid.R;
 import com.ccs.javadroid.util.FullScreenHelper;
 import com.ccs.javadroid.util.AppPreferences;
 import com.ccs.javadroid.util.AppTheme;
@@ -27,11 +28,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.ccs.javadroid.ui.CodeBlockView;
-import com.ccs.javadroid.util.AppPreferences;
-import com.ccs.javadroid.util.AppTheme;
-import com.ccs.javadroid.util.FullScreenHelper;
-
 import java.io.File;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -50,6 +46,9 @@ public class AiChatActivity extends AppCompatActivity {
     private TextView tvModelLabel;
     private String codeContext = "";
     private String fileName = "";
+    private String projectRoot = "";
+    private boolean agentMode = false;
+    private GeminiAgent agent;
 
     private int accentColor = 0xFF4A86C8;
     private int bgColor = 0xFF1E1E1E;
@@ -80,6 +79,8 @@ public class AiChatActivity extends AppCompatActivity {
         if (codeContext == null) codeContext = "";
         fileName = getIntent().getStringExtra(EXTRA_FILE_NAME);
         if (fileName == null) fileName = "";
+        projectRoot = getIntent().getStringExtra(EXTRA_PROJECT_ROOT);
+        if (projectRoot == null) projectRoot = "";
 
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
@@ -97,6 +98,7 @@ public class AiChatActivity extends AppCompatActivity {
         btnBack.setTextColor(textColor);
         btnBack.setTextSize(18);
         btnBack.setPadding(dp(8), dp(4), dp(8), dp(4));
+        btnBack.setContentDescription(getString(R.string.a11y_ai_back));
         btnBack.setOnClickListener(v -> finish());
         toolbar.addView(btnBack);
 
@@ -113,6 +115,7 @@ public class AiChatActivity extends AppCompatActivity {
         tvModelLabel.setTextColor(dimColor);
         tvModelLabel.setTextSize(11);
         tvModelLabel.setPadding(dp(8), dp(4), dp(8), dp(4));
+        tvModelLabel.setContentDescription(getString(R.string.a11y_ai_model));
         tvModelLabel.setOnClickListener(v -> showModelDialog());
         toolbar.addView(tvModelLabel);
 
@@ -121,6 +124,7 @@ public class AiChatActivity extends AppCompatActivity {
         btnApiKey.setTextColor(accentColor);
         btnApiKey.setTextSize(11);
         btnApiKey.setPadding(dp(8), dp(4), dp(8), dp(4));
+        btnApiKey.setContentDescription(getString(R.string.a11y_ai_api_key));
         btnApiKey.setOnClickListener(v -> showApiKeyDialog());
         toolbar.addView(btnApiKey);
 
@@ -141,6 +145,7 @@ public class AiChatActivity extends AppCompatActivity {
             chip.setPadding(dp(10), dp(4), dp(10), dp(4));
             chip.setClickable(true);
             chip.setFocusable(true);
+            chip.setContentDescription(getAiActionDescription(action));
             LinearLayout.LayoutParams chipLp = new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             chipLp.setMarginEnd(dp(4));
@@ -148,6 +153,29 @@ public class AiChatActivity extends AppCompatActivity {
             chip.setOnClickListener(v -> performQuickAction(action));
             quickRow.addView(chip);
         }
+
+        // Agent mode toggle
+        TextView agentToggle = new TextView(this);
+        agentToggle.setText("🤖 Agent");
+        agentToggle.setTextColor(accentColor);
+        agentToggle.setTextSize(11);
+        agentToggle.setPadding(dp(10), dp(4), dp(10), dp(4));
+        agentToggle.setClickable(true);
+        agentToggle.setFocusable(true);
+        agentToggle.setContentDescription("Toggle AI agent mode");
+        LinearLayout.LayoutParams agentLp = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        agentLp.setMarginEnd(dp(4));
+        agentToggle.setLayoutParams(agentLp);
+        agentToggle.setOnClickListener(v -> {
+            agentMode = !agentMode;
+            agentToggle.setBackgroundColor(agentMode ? 0xFF4A86C8 : 0x00000000);
+            agentToggle.setTextColor(agentMode ? 0xFFFFFFFF : accentColor);
+            Toast.makeText(this, agentMode ? "Agent mode ON — AI can edit files" : "Agent mode OFF",
+                    Toast.LENGTH_SHORT).show();
+        });
+        quickRow.addView(agentToggle);
+
         root.addView(quickRow);
 
         // ── Chat area ──
@@ -179,14 +207,17 @@ public class AiChatActivity extends AppCompatActivity {
         etInput.setTextSize(14);
         etInput.setMaxLines(5);
         etInput.setPadding(dp(12), dp(8), dp(12), dp(8));
+        etInput.setContentDescription(getString(R.string.a11y_ai_input));
         etInput.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
 
         TextView btnSend = new TextView(this);
-        btnSend.setText(" Send ");
+        btnSend.setText("➤");
         btnSend.setTextColor(accentColor);
-        btnSend.setTextSize(14);
+        btnSend.setTextSize(18);
         btnSend.setPadding(dp(12), dp(8), dp(12), dp(8));
         btnSend.setGravity(Gravity.CENTER);
+        btnSend.setContentDescription(getString(R.string.a11y_ai_send));
+        btnSend.setBackgroundResource(android.R.drawable.list_selector_background);
 
         inputRow.addView(etInput);
         inputRow.addView(btnSend);
@@ -210,6 +241,12 @@ public class AiChatActivity extends AppCompatActivity {
         }
 
         Log.d(TAG, "onCreate DONE, container children=" + messagesContainer.getChildCount());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        FullScreenHelper.enable(this);
     }
 
     // ── Text ──────────────────────────────────────────────────
@@ -248,9 +285,55 @@ public class AiChatActivity extends AppCompatActivity {
             bodyLp.bottomMargin = dp(4);
             tvBody.setLayoutParams(bodyLp);
             messagesContainer.addView(tvBody);
+
+            // Кнопка вставки для текстової відповіді AI (весь текст → на курсор)
+            if (isAI && !text.trim().isEmpty()) {
+                addInsertButton(text, PendingEdits.LOCATION_CURSOR);
+            }
         }
 
         scrollChat.post(() -> scrollChat.fullScroll(View.FOCUS_DOWN));
+    }
+
+    /**
+     * Додає рядок із кнопкою «Вставити в редактор» під кодом.
+     * При натисканні планує вставку через PendingEdits і показує toast.
+     * Location: "cursor" | "append" | "replace" (за замовч. cursor).
+     */
+    private void addInsertButton(String code, String location) {
+        String finalCode = code == null ? "" : code;
+        if (finalCode.trim().isEmpty()) return;
+
+        LinearLayout row = new LinearLayout(this);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setGravity(Gravity.END | Gravity.CENTER_VERTICAL);
+        row.setPadding(dp(8), dp(2), dp(8), dp(8));
+
+        TextView btn = new TextView(this);
+        btn.setText("↧ Insert into editor");
+        btn.setTextColor(accentColor);
+        btn.setTextSize(12);
+        btn.setTypeface(btn.getTypeface(), Typeface.BOLD);
+        btn.setPadding(dp(12), dp(6), dp(12), dp(6));
+        btn.setClickable(true);
+        btn.setFocusable(true);
+        btn.setContentDescription("Insert this code into the open editor");
+
+        LinearLayout.LayoutParams btnLp = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        btn.setLayoutParams(btnLp);
+
+        btn.setOnClickListener(v -> {
+            String loc = location == null ? PendingEdits.LOCATION_CURSOR : location;
+            PendingEdits.add(finalCode, loc);
+            String label = PendingEdits.LOCATION_REPLACE.equals(loc) ? "Replace"
+                    : PendingEdits.LOCATION_APPEND.equals(loc) ? "Append" : "Cursor";
+            Toast.makeText(this, "Queued (" + label + ") — return to editor to apply",
+                    Toast.LENGTH_SHORT).show();
+        });
+
+        row.addView(btn);
+        messagesContainer.addView(row);
     }
 
     private void removeLastLine() {
@@ -259,6 +342,48 @@ public class AiChatActivity extends AppCompatActivity {
             messagesContainer.removeViewAt(count - 1); // body
             messagesContainer.removeViewAt(count - 2); // header
         }
+    }
+
+    /**
+     * Рендер виклику інструменту агентом.
+     * Для insertCode — витягує код з args, показує його як markdown-блок (з підсвіткою
+     * і кнопкою Insert), а сирий JSON не виводить (інакше код виглядає як
+     * "code":"public...\n" без форматування).
+     * Для решти інструментів — як і раніше, короткий рядок toolName(args).
+     */
+    private void renderToolCall(String toolName, String args) {
+        if ("insertCode".equals(toolName) && args != null && !args.isEmpty()) {
+            try {
+                org.json.JSONObject obj = new org.json.JSONObject(args);
+                String code = obj.optString("code", "");
+                String location = obj.optString("location", PendingEdits.LOCATION_CURSOR);
+
+                // Лейбл з типом вставки
+                String locLabel;
+                if (PendingEdits.LOCATION_APPEND.equals(location)
+                        || "end".equalsIgnoreCase(location)) {
+                    locLabel = " (append)";
+                } else if (PendingEdits.LOCATION_REPLACE.equals(location)
+                        || "overwrite".equalsIgnoreCase(location)
+                        || "full".equalsIgnoreCase(location)) {
+                    locLabel = " (replace)";
+                } else {
+                    locLabel = " (at cursor)";
+                }
+                addText("🔧 Tool", "insertCode" + locLabel);
+
+                // Сам код — як markdown-блок з підсвіткою і кнопкою Insert
+                String lang = fileName.toLowerCase(Locale.ROOT).endsWith(".java") ? "java" : "";
+                String mdBlock = "```" + lang + "\n" + code + "\n```";
+                parseAndAddMarkdown(mdBlock);
+            } catch (org.json.JSONException e) {
+                // Не вдалося розібрати — показуємо як було
+                addText("🔧 Tool", toolName + "(" + args + ")");
+            }
+            return;
+        }
+
+        addText("🔧 Tool", toolName + "(" + args + ")");
     }
 
     // ── Markdown parser з CodeBlockView ───────────────────────
@@ -294,6 +419,11 @@ public class AiChatActivity extends AppCompatActivity {
             codeLp.setMargins(dp(8), dp(4), dp(8), dp(4));
             codeView.setLayoutParams(codeLp);
             messagesContainer.addView(codeView);
+
+            // Кнопка вставки під кожен кодовий блок (на курсор)
+            if (code != null && !code.trim().isEmpty()) {
+                addInsertButton(code, PendingEdits.LOCATION_CURSOR);
+            }
 
             lastEnd = m.end();
         }
@@ -358,8 +488,13 @@ public class AiChatActivity extends AppCompatActivity {
 
     private void sendMessage() {
         String input = etInput.getText().toString().trim();
-        if (input.isEmpty()) return;
+        Log.d(TAG, "sendMessage: input='" + input + "' length=" + input.length());
+        if (input.isEmpty()) {
+            Log.d(TAG, "sendMessage: EMPTY, returning");
+            return;
+        }
         if (!GeminiService.hasApiKey(this)) {
+            Log.d(TAG, "sendMessage: NO API KEY");
             addText("System", "Set your API key first (tap 'Key').");
             showApiKeyDialog();
             return;
@@ -369,24 +504,68 @@ public class AiChatActivity extends AppCompatActivity {
         addText("You", input);
         addText("AI", "Thinking...");
 
-        StringBuilder prompt = new StringBuilder();
-        if (!codeContext.isEmpty()) {
-            prompt.append("File: ").append(fileName).append("\n```java\n")
-                    .append(codeContext).append("\n```\n\n");
-        }
-        prompt.append(input);
-
-        GeminiService.chat(this, buildSystemPrompt(), prompt.toString(), null,
-                new GeminiService.ResponseCallback() {
-                    @Override public void onSuccess(String response) {
-                        removeLastLine();
-                        addText("AI", response);
+        if (agentMode) {
+            // Agent mode - AI can execute tools
+            if (agent == null) {
+                agent = new GeminiAgent(this, new GeminiAgent.AgentCallback() {
+                    @Override
+                    public void onToolCall(String toolName, String args) {
+                        renderToolCall(toolName, args);
                     }
-                    @Override public void onError(String error) {
+
+                    @Override
+                    public void onToolResult(String toolName, String result) {
+                        addText("✅ Result", result);
+                    }
+
+                    @Override
+                    public void onTextResponse(String text) {
+                        removeLastLine();
+                        addText("AI", text);
+                    }
+
+                    @Override
+                    public void onError(String error) {
                         removeLastLine();
                         addText("AI", "Error: " + error);
                     }
+
+                    @Override
+                    public void onDone() {
+                        // Agent finished
+                    }
                 });
+            }
+
+            StringBuilder prompt = new StringBuilder();
+            if (!codeContext.isEmpty()) {
+                prompt.append("File: ").append(fileName).append("\n```java\n")
+                        .append(codeContext).append("\n```\n\n");
+            }
+            prompt.append(input);
+
+            agent.send(prompt.toString(), codeContext, fileName, null);
+        } else {
+            // Normal chat mode
+            StringBuilder prompt = new StringBuilder();
+            if (!codeContext.isEmpty()) {
+                prompt.append("File: ").append(fileName).append("\n```java\n")
+                        .append(codeContext).append("\n```\n\n");
+            }
+            prompt.append(input);
+
+            GeminiService.chat(this, buildSystemPrompt(), prompt.toString(), null,
+                    new GeminiService.ResponseCallback() {
+                        @Override public void onSuccess(String response) {
+                            removeLastLine();
+                            addText("AI", response);
+                        }
+                        @Override public void onError(String error) {
+                            removeLastLine();
+                            addText("AI", "Error: " + error);
+                        }
+                    });
+        }
     }
 
     // ── Quick actions ─────────────────────────────────────────
@@ -498,6 +677,11 @@ public class AiChatActivity extends AppCompatActivity {
                         Toast.makeText(this, "Key saved", Toast.LENGTH_SHORT).show();
                     }
                 })
+                .setNeutralButton("Get Key", (d, w) -> {
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW,
+                            android.net.Uri.parse("https://aistudio.google.com/apikey"));
+                    startActivity(browserIntent);
+                })
                 .setNegativeButton("Cancel", null)
                 .show();
     }
@@ -528,5 +712,28 @@ public class AiChatActivity extends AppCompatActivity {
 
     private int dp(int v) {
         return (int) (v * getResources().getDisplayMetrics().density);
+    }
+
+    private String getAiActionDescription(String action) {
+        switch (action.toLowerCase(Locale.ROOT)) {
+            case "explain": return getString(R.string.a11y_ai_action_explain);
+            case "find bugs": return getString(R.string.a11y_ai_action_find_bugs);
+            case "refactor": return getString(R.string.a11y_ai_action_refactor);
+            case "optimize": return getString(R.string.a11y_ai_action_optimize);
+            case "document": return getString(R.string.a11y_ai_action_document);
+            case "test": return getString(R.string.a11y_ai_action_test);
+            default: return action;
+        }
+    }
+
+    // ══════════════════════════════════════════════════════════
+    //  Voice Dictation (🎤 mic button)
+    // ══════════════════════════════════════════════════════════
+
+    // ── Lifecycle ─────────────────────────────────────────────
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }

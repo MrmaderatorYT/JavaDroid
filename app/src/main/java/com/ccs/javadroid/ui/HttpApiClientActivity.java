@@ -153,6 +153,7 @@ public class HttpApiClientActivity extends AppCompatActivity {
         methodSpinner.setPadding(dp(8), dp(8), dp(8), dp(8));
         methodSpinner.setSingleLine(true);
         methodSpinner.setSelectAllOnFocus(true);
+        methodSpinner.setContentDescription(getString(R.string.a11y_http_method));
         LinearLayout.LayoutParams methodLp = new LinearLayout.LayoutParams(dp(90), ViewGroup.LayoutParams.WRAP_CONTENT);
         methodSpinner.setLayoutParams(methodLp);
         urlRow.addView(methodSpinner);
@@ -166,10 +167,12 @@ public class HttpApiClientActivity extends AppCompatActivity {
         urlInput.setBackgroundColor(theme.consoleBg);
         urlInput.setPadding(dp(8), dp(8), dp(8), dp(8));
         urlInput.setSingleLine(true);
+        urlInput.setContentDescription(getString(R.string.a11y_http_url));
         urlInput.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
         urlRow.addView(urlInput);
 
         TextView sendBtn = createBtn("▶ Send", theme.successText);
+        sendBtn.setContentDescription(getString(R.string.a11y_http_send));
         sendBtn.setOnClickListener(v -> sendRequest());
         urlRow.addView(sendBtn);
 
@@ -189,6 +192,7 @@ public class HttpApiClientActivity extends AppCompatActivity {
         headersInput.setPadding(dp(8), dp(6), dp(8), dp(6));
         headersInput.setMinLines(2);
         headersInput.setMaxLines(4);
+        headersInput.setContentDescription(getString(R.string.a11y_http_headers));
         content.addView(headersInput);
 
         // Body
@@ -205,6 +209,7 @@ public class HttpApiClientActivity extends AppCompatActivity {
         bodyInput.setPadding(dp(8), dp(6), dp(8), dp(6));
         bodyInput.setMinLines(3);
         bodyInput.setMaxLines(8);
+        bodyInput.setContentDescription(getString(R.string.a11y_http_body));
         content.addView(bodyInput);
 
         // Response section

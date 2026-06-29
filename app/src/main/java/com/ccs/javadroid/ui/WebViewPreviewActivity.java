@@ -152,14 +152,17 @@ public class WebViewPreviewActivity extends AppCompatActivity {
         urlBar.setBackgroundColor(Color.TRANSPARENT);
         urlBar.setSingleLine(true);
         urlBar.setSelectAllOnFocus(true);
+        urlBar.setContentDescription(getString(R.string.a11y_webview_url));
         urlBar.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
         urlRow.addView(urlBar);
 
         TextView goBtn = createBtn("Go", theme.accent);
+        goBtn.setContentDescription(getString(R.string.a11y_webview_go));
         goBtn.setOnClickListener(v -> navigateToUrl());
         urlRow.addView(goBtn);
 
         TextView reloadBtn = createBtn("↻", theme.accent);
+        reloadBtn.setContentDescription(getString(R.string.a11y_webview_reload));
         reloadBtn.setOnClickListener(v -> {
             if (currentFile != null) {
                 loadHtmlFile(currentFile);
@@ -170,6 +173,7 @@ public class WebViewPreviewActivity extends AppCompatActivity {
         urlRow.addView(reloadBtn);
 
         TextView liveBtn = createBtn("Live", liveReload ? theme.successText : theme.textDim);
+        liveBtn.setContentDescription(getString(R.string.a11y_webview_live));
         liveBtn.setOnClickListener(v -> {
             liveReload = !liveReload;
             liveBtn.setTextColor(liveReload ? theme.successText : theme.textDim);

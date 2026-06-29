@@ -115,7 +115,7 @@ public final class GeminiService {
                 conn.setRequestProperty("Content-Type", "application/json");
                 conn.setDoOutput(true);
                 conn.setConnectTimeout(30000);
-                conn.setReadTimeout(60000);
+                conn.setReadTimeout(30000);
 
                 byte[] bodyBytes = body.toString().getBytes(StandardCharsets.UTF_8);
                 OutputStream os = conn.getOutputStream();
@@ -147,7 +147,11 @@ public final class GeminiService {
                 android.util.Log.d("GeminiService", "Parsed text preview: " + (text != null ? text.substring(0, Math.min(200, text.length())) : "null"));
                 mainHandler.post(() -> {
                     android.util.Log.d("GeminiService", "Delivering to callback, text=" + (text != null ? text.length() : "null"));
-                    callback.onSuccess(text);
+                    if (text == null) {
+                        callback.onError("Empty response from AI — output budget was likely spent on internal reasoning. Please retry or rephrase your request.");
+                    } else {
+                        callback.onSuccess(text);
+                    }
                 });
 
             } catch (Exception e) {
@@ -207,6 +211,15 @@ public final class GeminiService {
         JSONObject genConfig = new JSONObject();
         genConfig.put("temperature", 0.7);
         genConfig.put("maxOutputTokens", 8192);
+
+        // Disable Gemini 2.5+/3.x "thinking" mode. Without this the model burns its
+        // entire output-token budget on internal reasoning and returns an EMPTY
+        // visible answer (only an opaque thoughtSignature), which stalls the agent
+        // loop and leaves the UI waiting indefinitely. thinkingBudget:0 = off.
+        JSONObject thinkingConfig = new JSONObject();
+        thinkingConfig.put("thinkingBudget", 0);
+        genConfig.put("thinkingConfig", thinkingConfig);
+
         body.put("generationConfig", genConfig);
 
         return body;
@@ -227,12 +240,22 @@ public final class GeminiService {
 
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < parts.length(); i++) {
-            String text = parts.getJSONObject(i).optString("text", "");
+            JSONObject part = parts.getJSONObject(i);
+            String text = part.optString("text", "");
             if (!text.isEmpty()) {
                 if (sb.length() > 0) sb.append("\n");
                 sb.append(text);
             }
         }
+
+        // If text is empty but there are parts, it's likely a thinking-only
+        // response (all tokens spent on internal reasoning). Return null so the
+        // caller can distinguish "no real answer" from an actual text reply and
+        // avoid treating a stub message as a final response.
+        if (sb.length() == 0 && parts.length() > 0) {
+            return null;
+        }
+
         return sb.toString();
     }
 

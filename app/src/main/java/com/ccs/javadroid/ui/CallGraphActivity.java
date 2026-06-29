@@ -150,6 +150,7 @@ public class CallGraphActivity extends AppCompatActivity {
         searchInput.setTextColor(theme.text);
         searchInput.setBackgroundColor(Color.TRANSPARENT);
         searchInput.setSingleLine(true);
+        searchInput.setContentDescription(getString(R.string.a11y_call_graph_search));
         searchInput.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
         searchInput.setOnEditorActionListener((v, actionId, event) -> {
             filterMethods(searchInput.getText().toString());
@@ -273,6 +274,7 @@ public class CallGraphActivity extends AppCompatActivity {
         }
 
         item.setText(sb);
+        item.setContentDescription(getString(R.string.a11y_call_graph_method, m.shortSignature()));
         item.setOnClickListener(v -> showMethodCallGraph(m));
         return item;
     }

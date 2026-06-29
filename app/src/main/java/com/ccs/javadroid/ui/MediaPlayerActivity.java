@@ -194,6 +194,7 @@ public class MediaPlayerActivity extends AppCompatActivity {
         videoTimeRow.addView(tvDuration);
 
         seekBar = new SeekBar(this);
+        seekBar.setContentDescription(getString(R.string.a11y_media_seek));
         seekBar.setMax(1000);
         seekBar.getProgressDrawable().setColorFilter(accentColor, android.graphics.PorterDuff.Mode.SRC_IN);
         seekBar.getThumb().setColorFilter(accentColor, android.graphics.PorterDuff.Mode.SRC_IN);
@@ -205,9 +206,13 @@ public class MediaPlayerActivity extends AppCompatActivity {
         videoBtnRow.setPadding(0, dp(4), 0, 0);
 
         btnRew = createVideoButton("⏪");
+        btnRew.setContentDescription(getString(R.string.a11y_media_rewind));
         btnPlayPause = createVideoButton("▶");
+        btnPlayPause.setContentDescription(getString(R.string.a11y_media_play_pause));
         btnFwd = createVideoButton("⏩");
+        btnFwd.setContentDescription(getString(R.string.a11y_media_forward));
         btnLandscape = createVideoButton("⛶");
+        btnLandscape.setContentDescription(getString(R.string.a11y_media_landscape));
 
         videoBtnRow.addView(btnRew);
         videoBtnRow.addView(btnPlayPause);
@@ -252,6 +257,7 @@ public class MediaPlayerActivity extends AppCompatActivity {
         audioTimeRow.addView(tvDuration);
 
         seekBar = new SeekBar(this);
+        seekBar.setContentDescription(getString(R.string.a11y_media_seek));
         seekBar.setMax(1000);
 
         // Кнопки аудіо
@@ -264,8 +270,11 @@ public class MediaPlayerActivity extends AppCompatActivity {
         audioBtnRow.setLayoutParams(abrLp);
 
         btnRew = createButton("⏪ 10s");
+        btnRew.setContentDescription(getString(R.string.a11y_media_rewind));
         btnPlayPause = createButton("▶  Play");
+        btnPlayPause.setContentDescription(getString(R.string.a11y_media_play_pause));
         btnFwd = createButton("10s  ⏩");
+        btnFwd.setContentDescription(getString(R.string.a11y_media_forward));
 
         audioBtnRow.addView(btnRew);
         audioBtnRow.addView(btnPlayPause);
@@ -283,6 +292,7 @@ public class MediaPlayerActivity extends AppCompatActivity {
 
         volumeBar = new SeekBar(this);
         volumeBar.setMax(100);
+        volumeBar.setContentDescription(getString(R.string.a11y_media_volume));
         volumeBar.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
         int maxVol = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
         int curVol = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
@@ -313,6 +323,7 @@ public class MediaPlayerActivity extends AppCompatActivity {
 
         brightnessBar = new SeekBar(this);
         brightnessBar.setMax(100);
+        brightnessBar.setContentDescription(getString(R.string.a11y_media_brightness));
         brightnessBar.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
         try {
             int brightness = Settings.System.getInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS);

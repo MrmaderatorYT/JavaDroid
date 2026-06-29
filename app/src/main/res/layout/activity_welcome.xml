@@ -29,7 +29,7 @@
                 android:layout_width="28dp"
                 android:layout_height="28dp"
                 android:src="@mipmap/ic_launcher"
-                android:contentDescription="JavaDroid Logo" />
+                android:contentDescription="@string/a11y_welcome_logo" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -48,7 +48,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="1.6.0"
+                    android:text="1.7.0"
                     android:textColor="#808080"
                     android:textSize="10sp" />
             </LinearLayout>
@@ -68,6 +68,7 @@
             android:background="#3574F0"
             android:clickable="true"
             android:focusable="true"
+            android:contentDescription="@string/a11y_welcome_projects_tab"
             android:layout_marginBottom="4dp" />
 
         <TextView
@@ -82,6 +83,7 @@
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
+            android:contentDescription="@string/a11y_welcome_customize_tab"
             android:layout_marginBottom="4dp" />
 
         <TextView
@@ -96,6 +98,7 @@
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
+            android:contentDescription="@string/a11y_welcome_plugins_tab"
             android:layout_marginBottom="4dp" />
 
         <TextView
@@ -110,6 +113,7 @@
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
+            android:contentDescription="@string/a11y_welcome_materials_tab"
             android:layout_marginBottom="4dp" />
 
         <View
@@ -125,7 +129,7 @@
             android:layout_gravity="start"
             android:layout_marginStart="8dp"
             android:src="@drawable/ic_settings"
-            android:contentDescription="Settings"
+            android:contentDescription="@string/a11y_welcome_settings"
             android:tint="#DFE1E5"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
@@ -156,6 +160,7 @@
                 android:layout_weight="1"
                 android:background="#2B2D30"
                 android:hint="Search projects"
+                android:contentDescription="@string/a11y_welcome_search"
                 android:textColorHint="#6F737A"
                 android:textColor="#FFFFFF"
                 android:textSize="12sp"
@@ -176,6 +181,7 @@
                 android:backgroundTint="#3574F0"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"
+                android:contentDescription="@string/a11y_welcome_new_project"
                 android:layout_marginEnd="8dp" />
 
             <Button
@@ -189,6 +195,7 @@
                 android:backgroundTint="#393B40"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"
+                android:contentDescription="@string/a11y_welcome_open_project"
                 android:layout_marginEnd="8dp" />
 
             <Button
@@ -201,7 +208,8 @@
                 android:textColor="#808080"
                 android:backgroundTint="#2B2D30"
                 android:paddingStart="12dp"
-                android:paddingEnd="12dp" />
+                android:paddingEnd="12dp"
+                android:contentDescription="@string/a11y_welcome_get_from_vcs" />
 
         </LinearLayout>
 

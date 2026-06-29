@@ -139,6 +139,7 @@ public class ClassBrowserActivity extends AppCompatActivity {
         etSearch.setTextSize(14);
         etSearch.setPadding(dp(12), dp(10), dp(12), dp(10));
         etSearch.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
+        etSearch.setContentDescription(getString(R.string.a11y_class_browser_search));
 
         try {
             Drawable searchIcon = getResources().getDrawable(R.drawable.ic_search).mutate();
@@ -165,6 +166,7 @@ public class ClassBrowserActivity extends AppCompatActivity {
         btnClear.setTypeface(Typeface.DEFAULT_BOLD);
         btnClear.setGravity(Gravity.CENTER);
         btnClear.setPadding(dp(16), dp(10), dp(16), dp(10));
+        btnClear.setContentDescription(getString(R.string.a11y_class_browser_clear));
 
         GradientDrawable clearBg = new GradientDrawable();
         clearBg.setColor(theme.toolbar);
@@ -596,6 +598,7 @@ public class ClassBrowserActivity extends AppCompatActivity {
 
             holder.tvClassName.setText(span);
             holder.tvSource.setText(item.source);
+            holder.itemView.setContentDescription(getString(R.string.a11y_class_item, item.fqn));
             holder.itemView.setOnClickListener(v -> showClassDetail(item));
         }
 

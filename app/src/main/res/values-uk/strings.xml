@@ -165,6 +165,12 @@
     <string name="git_tab_log">Історія</string>
     <string name="git_tab_branches">Гілки</string>
     <string name="git_tab_remote">Remote</string>
+    <string name="git_tab_diff">Різниця</string>
+    <string name="git_diff_loading">Завантаження diff…</string>
+    <string name="git_diff_no_changes">Немає змін</string>
+    <string name="git_diff_open_full">Відкрити повний перегляд</string>
+    <string name="git_diff_error">Помилка завантаження diff</string>
+    <string name="git_diff_activity_title">Різниця</string>
 
     <string name="git_no_repo">Це не Git-репозиторій.\n%1$s</string>
     <string name="git_no_repo_short">немає .git</string>
@@ -709,4 +715,238 @@
     <string name="permission_storage_denied_title">Доступ не надано</string>
     <string name="permission_storage_denied_message">Без доступу до файлів додаток не зможе працювати з проєктами.</string>
     <string name="permission_storage_try_again">Спробувати ще</string>
+
+    <!-- Доступність -->
+    <string name="a11y_back">Назад</string>
+    <string name="a11y_overflow_menu">Більше опцій</string>
+    <string name="a11y_new_tab">Нова вкладка</string>
+    <string name="a11y_find_input">Пошук тексту</string>
+    <string name="a11y_find_previous">Попередній результат</string>
+    <string name="a11y_find_next">Наступний результат</string>
+    <string name="a11y_find_close">Закрити панель пошуку</string>
+    <string name="a11y_find_scope">Переключити обсяг пошуку</string>
+    <string name="a11y_replace_input">Текст заміни</string>
+    <string name="a11y_replace">Замінити поточний</string>
+    <string name="a11y_replace_all">Замінити всі</string>
+    <string name="a11y_editor">Редактор коду</string>
+    <string name="a11y_editor2">Редактор коду, друга панель</string>
+    <string name="a11y_breakpoint_overlay">Позначки брейкпоінтів</string>
+    <string name="a11y_bookmark_overlay">Позначки закладок</string>
+    <string name="a11y_tab_run">Вкладка запуску</string>
+    <string name="a11y_tab_problems">Вкладка проблем</string>
+    <string name="a11y_tab_bytecode">Вкладка байткоду</string>
+    <string name="a11y_tab_debug">Вкладка зневадження</string>
+    <string name="a11y_tab_debug_console">Вкладка консолі зневадження</string>
+    <string name="a11y_tab_call_graph">Вкладка графа викликів</string>
+    <string name="a11y_tab_bookmarks">Вкладка закладок</string>
+    <string name="a11y_clear_console">Очистити консоль</string>
+    <string name="a11y_debug_step_over">Крок (Step Over)</string>
+    <string name="a11y_debug_step_into">Вхід у метод (Step Into)</string>
+    <string name="a11y_debug_step_out">Вихід з методу (Step Out)</string>
+    <string name="a11y_debug_resume">Продовжити виконання</string>
+    <string name="a11y_debug_stop">Зупинити зневадження</string>
+    <string name="a11y_debug_evaluate">Обчислити вираз</string>
+    <string name="a11y_toggle_breakpoint">Переключити брейкпоінт</string>
+    <string name="a11y_bytecode_toggle_hex">Переключити шістнадцятковий вигляд</string>
+    <string name="a11y_bytecode_toggle_lines">Переключити номери рядків</string>
+    <string name="a11y_bytecode_toggle_comments">Переключити коментарі</string>
+    <string name="a11y_bytecode_edit">Редагувати інструкцію</string>
+    <string name="a11y_bytecode_save">Зберегти байткод</string>
+    <string name="a11y_bytecode_run">Запустити байткод</string>
+    <string name="a11y_bytecode_open_editor">Відкрити в редакторі</string>
+    <string name="a11y_bytecode_call_graph">Переглянути граф викликів</string>
+    <string name="a11y_call_graph_refresh">Оновити граф викликів</string>
+    <string name="a11y_add_watch">Додати вираз спостереження</string>
+    <string name="a11y_status_encoding">Кодування файлу</string>
+
+    <!-- Welcome Activity -->
+    <string name="a11y_welcome_logo">Логотип JavaDroid</string>
+    <string name="a11y_welcome_projects_tab">Проєкти</string>
+    <string name="a11y_welcome_customize_tab">Налаштування</string>
+    <string name="a11y_welcome_plugins_tab">Плагіни</string>
+    <string name="a11y_welcome_materials_tab">Матеріали</string>
+    <string name="a11y_welcome_settings">Налаштування</string>
+    <string name="a11y_welcome_search">Пошук проєктів</string>
+    <string name="a11y_welcome_new_project">Створити новий проєкт</string>
+    <string name="a11y_welcome_open_project">Відкрити проєкт</string>
+    <string name="a11y_welcome_get_from_vcs">Отримати проєкт з контролю версій</string>
+
+    <!-- Налаштування -->
+    <string name="a11y_settings_theme_card">Обрати тему %1$s</string>
+    <string name="a11y_settings_custom_theme_card">Обрати власну тему</string>
+    <string name="a11y_settings_color_picker">Змінити колір %1$s</string>
+    <string name="a11y_settings_font_family">Шрифт</string>
+    <string name="a11y_settings_font_size">Розмір шрифту</string>
+    <string name="a11y_settings_tab_size">Розмір табуляції</string>
+    <string name="a11y_settings_line_spacing">Міжрядковий інтервал</string>
+    <string name="a11y_settings_java_target">Цільова версія Java</string>
+    <string name="a11y_settings_power_saving">Режим енергозбереження</string>
+    <string name="a11y_settings_ndk">Встановити або керувати C++ NDK</string>
+    <string name="a11y_settings_reset">Скинути всі налаштування до типових</string>
+    <string name="a11y_settings_color_r">Червона складова кольору</string>
+    <string name="a11y_settings_color_g">Зелена складова кольору</string>
+    <string name="a11y_settings_color_b">Синя складова кольору</string>
+    <string name="a11y_settings_hex_input">Введення HEX-кольору</string>
+
+    <!-- Глобальний пошук -->
+    <string name="a11y_global_search_field">Пошук у файлах проєкту</string>
+    <string name="a11y_global_search_button">Пошук</string>
+    <string name="a11y_global_search_result">Результат пошуку: %1$s</string>
+
+    <!-- HTTP-клієнт -->
+    <string name="a11y_http_method">Метод HTTP</string>
+    <string name="a11y_http_url">URL запиту</string>
+    <string name="a11y_http_send">Надіслати запит</string>
+    <string name="a11y_http_headers">Заголовки запиту</string>
+    <string name="a11y_http_body">Тіло запиту</string>
+
+    <!-- Інспектор бази даних -->
+    <string name="a11y_db_sql_input">Поле введення SQL-запиту</string>
+    <string name="a11y_db_run">Виконати запит</string>
+    <string name="a11y_db_clear">Очистити запит</string>
+    <string name="a11y_db_table_item">Переглянути таблицю %1$s</string>
+
+    <!-- Переглядач зображень -->
+    <string name="a11y_image_viewer">Попередній перегляд зображення</string>
+
+    <!-- Медіапрогравач -->
+    <string name="a11y_media_play_pause">Відтворити або поставити на паузу</string>
+    <string name="a11y_media_stop">Зупинити відтворення</string>
+    <string name="a11y_media_rewind">Перемотати на 10 секунд</string>
+    <string name="a11y_media_forward">Перемотати вперед на 10 секунд</string>
+    <string name="a11y_media_seek">Позиція відтворення</string>
+    <string name="a11y_media_volume">Гучність</string>
+    <string name="a11y_media_brightness">Яскравість</string>
+    <string name="a11y_media_landscape">Переключити альбомну орієнтацію</string>
+
+    <!-- AI-чат -->
+    <string name="a11y_ai_back">Повернутися до редактора</string>
+    <string name="a11y_ai_model">Змінити AI-модель</string>
+    <string name="a11y_ai_api_key">Встановити API-ключ</string>
+    <string name="a11y_ai_send">Надіслати повідомлення</string>
+    <string name="a11y_ai_input">Поле введення повідомлення</string>
+    <string name="a11y_ai_action_explain">Пояснити код</string>
+    <string name="a11y_ai_action_find_bugs">Знайти помилки</string>
+    <string name="a11y_ai_action_refactor">Рефакторинг коду</string>
+    <string name="a11y_ai_action_optimize">Оптимізувати код</string>
+    <string name="a11y_ai_action_document">Документувати код</string>
+    <string name="a11y_ai_action_test">Згенерувати тест</string>
+
+    <!-- WebView -->
+    <string name="a11y_webview_url">URL або шлях до файлу</string>
+    <string name="a11y_webview_go">Перейти за URL</string>
+    <string name="a11y_webview_reload">Перезавантажити сторінку</string>
+    <string name="a11y_webview_live">Переключити автооновлення</string>
+
+    <!-- Огляд класів -->
+    <string name="a11y_class_browser_search">Пошук класів</string>
+    <string name="a11y_class_browser_clear">Очистити пошук</string>
+    <string name="a11y_class_item">Клас: %1$s</string>
+
+    <!-- Редактор байткоду -->
+    <string name="a11y_bc_back">Назад</string>
+    <string name="a11y_bc_undo">Скасувати</string>
+    <string name="a11y_bc_redo">Повторити</string>
+    <string name="a11y_bc_copy">Копіювати в буфер</string>
+    <string name="a11y_bc_validate">Перевірити байткод</string>
+    <string name="a11y_bc_save">Зберегти файл</string>
+    <string name="a11y_bc_code_editor">Редактор байткоду</string>
+
+    <!-- Граф викликів -->
+    <string name="a11y_call_graph_search">Пошук методів</string>
+    <string name="a11y_call_graph_method">Метод: %1$s</string>
+
+    <!-- Переглядач SVG -->
+    <string name="a11y_svg_viewer">Попередній перегляд SVG-зображення</string>
+
+    <!-- Меню MainActivity -->
+    <string name="a11y_menu_search">Пошук у проєкті</string>
+    <string name="a11y_menu_save">Зберегти файл</string>
+    <string name="a11y_menu_undo">Скасувати</string>
+    <string name="a11y_menu_redo">Повторити</string>
+    <string name="a11y_menu_run">Запустити код</string>
+    <string name="a11y_menu_format">Форматувати код</string>
+    <string name="a11y_menu_find_replace">Знайти та замінити</string>
+    <string name="a11y_menu_git">Відкрити Git</string>
+    <string name="a11y_menu_settings">Відкрити налаштування</string>
+    <string name="a11y_menu_bytecode">Переглянути байткод</string>
+    <string name="a11y_menu_debug">Почати зневадження</string>
+    <string name="a11y_menu_split_screen">Переключити розділений екран</string>
+    <string name="a11y_menu_ai_chat">Відкрити AI-асистент</string>
+    <string name="a11y_menu_new_file">Створити новий файл</string>
+    <string name="a11y_menu_open_file">Відкрити файл</string>
+    <string name="a11y_menu_class_browser">Огляд класів</string>
+    <string name="a11y_menu_library_manager">Відкрити менеджер бібліотек</string>
+    <string name="a11y_menu_http_client">Відкрити HTTP-клієнт</string>
+    <string name="a11y_menu_webview">Переглянути в WebView</string>
+    <string name="a11y_menu_md_preview">Переглянути Markdown</string>
+    <string name="a11y_menu_export">Експортувати проєкт</string>
+    <string name="a11y_menu_import">Імпортувати файли</string>
+    <string name="a11y_menu_auto_import">Автоімпорт залежностей</string>
+    <string name="a11y_menu_view_formatted">Переглянути форматований вивід</string>
+    <string name="a11y_menu_call_graph">Переглянути граф викликів</string>
+    <string name="a11y_menu_play_media">Відтворити медіафайл</string>
+    <string name="a11y_menu_share">Поділитися файлом</string>
+    <string name="a11y_menu_global_search">Пошук у файлах проєкту</string>
+    <string name="a11y_menu_maven_package">Запустити Maven package</string>
+    <string name="a11y_menu_maven_test">Запустити Maven test (компіляція)</string>
+    <string name="a11y_menu_maven_test_run">Запустити Maven test</string>
+    <string name="a11y_menu_maven_clean">Запустити Maven clean</string>
+    <string name="a11y_menu_maven_install">Запустити Maven install</string>
+    <string name="a11y_menu_sync_deps">Синхронізувати залежності</string>
+    <string name="a11y_menu_new_maven_project">Створити новий Maven-проєкт</string>
+    <string name="a11y_menu_copy_console">Копіювати вивід консолі</string>
+    <string name="a11y_menu_pastebin">Поділитися в Pastebin</string>
+    <string name="a11y_menu_save_as">Зберегти файл як</string>
+    <string name="a11y_menu_cpp_module">Створити C++ модуль</string>
+    <string name="a11y_menu_load_mapping">Завантажити ProGuard мапінг</string>
+    <string name="a11y_menu_toggle_bookmark">Переключити закладку</string>
+    <string name="a11y_menu_show_bookmarks">Показати закладки</string>
+
+    <!-- Learn Activity -->
+    <string name="a11y_learn_course_selector">Обрати курс</string>
+    <string name="a11y_learn_language_toggle">Переключити мову</string>
+
+    <!-- Tutorial Activity -->
+    <string name="a11y_tutorial_theory_tab">Вкладка теорії</string>
+    <string name="a11y_tutorial_practice_tab">Вкладка практики</string>
+    <string name="a11y_tutorial_reset_code">Скинути код</string>
+    <string name="a11y_tutorial_run_playground">Запустити код площадки</string>
+    <string name="a11y_tutorial_playground_editor">Редактор коду площадки</string>
+    <string name="a11y_bytecode_search">Пошук опкоду байткоду</string>
+    <string name="a11y_callgraph_search">Пошук методу в графі викликів</string>
+    <string name="a11y_search_projects">Пошук проєктів</string>
+
+    <!-- Minimap -->
+    <string name="a11y_minimap">Мінікарта попереднього перегляду коду</string>
+
+    <!-- Dependencies -->
+    <string name="a11y_tab_deps">Вкладка залежностей</string>
+    <string name="a11y_deps_refresh">Оновити граф залежностей</string>
+
+    <!-- Profiler -->
+    <string name="a11y_tab_profiler">Вкладка профайлера</string>
+    <string name="profiler_start">Профілювання запуску</string>
+    <string name="profiler_running">Профілювання…</string>
+    <string name="profiler_done">Профілювання завершено</string>
+    <string name="profiler_no_data">Немає даних профайлера. Запустіть код з увімкненим профайлером.</string>
+
+    <!-- Refactoring -->
+    <string name="refactor_rename">Перейменувати</string>
+    <string name="refactor_rename_title">Перейменувати символ</string>
+    <string name="refactor_rename_hint">Нова назва</string>
+    <string name="refactor_extract_method">Витягти метод</string>
+    <string name="refactor_extract_method_title">Витягти метод</string>
+    <string name="refactor_extract_method_hint">Назва методу</string>
+    <string name="refactor_extract_variable">Витягти змінну</string>
+    <string name="refactor_extract_variable_title">Витягти змінну</string>
+    <string name="refactor_extract_variable_hint">Назва змінної</string>
+    <string name="refactor_inline">Вкласти (Inline)</string>
+    <string name="refactor_inline_title">Вкласти метод</string>
+    <string name="refactor_find_usages">Знайти використання</string>
+    <string name="refactor_result">Результат рефакторингу</string>
+
+    <!-- Settings -->
+    <string name="settings_inclusive_mode">Інклюзивний режим</string>
+    <string name="settings_inclusive_mode_desc">ШІ-агент може редагувати файли без підтвердження</string>
 </resources>

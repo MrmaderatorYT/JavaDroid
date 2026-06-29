@@ -2,6 +2,7 @@ package com.ccs.javadroid.ui;
 import com.ccs.javadroid.R;
 import com.ccs.javadroid.util.AppPreferences;
 import com.ccs.javadroid.util.AppTheme;
+import com.ccs.javadroid.util.FullScreenHelper;
 import com.ccs.javadroid.util.languages.JavaDroidLanguage;
 import com.ccs.javadroid.util.EditorSettingsApplier;
 import com.ccs.javadroid.tools.compilers.ProjectCompiler;
@@ -55,6 +56,7 @@ public class TutorialActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tutorial);
+        FullScreenHelper.enable(this);
 
         lessonFile = getIntent().getStringExtra("lesson_file");
         lessonTitle = getIntent().getStringExtra("lesson_title");
