@@ -1,4 +1,5 @@
 package com.ccs.javadroid.ui;
+import android.app.Activity;
 import com.ccs.javadroid.R;
 import com.ccs.javadroid.util.AppPreferences;
 import com.ccs.javadroid.util.AppTheme;
@@ -174,11 +175,7 @@ public class MainActivity extends AppCompatActivity {
     private View          bytecodeCallGraphBtn;
     private Deobfuscator  deobfuscator;
     private View          callGraphRoot;
-    private View          callGraphToolbar;
-    private LinearLayout  callGraphContent;
-    private TextView      callGraphStatus;
-    private EditText      callGraphSearch;
-    private CallGraphModel callGraphModel;
+    private CallGraphPanelManager callGraphManager;
     private boolean       bytecodeHexMode;
     private BytecodeModel bytecodeModel;
     private int           bytecodeSelectedMethod = -1;
@@ -214,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView      tabDebugConsole;
     private TextView      tabCallGraph;
     private TextView      tabBookmarks;
-    private RecyclerView  bookmarksRecycler;
+    private BookmarkUiController bookmarkController;
     private ScrollView    debugConsoleScroll;
     private TextView      debugConsoleOutput;
     private View          debuggerSplitPanel;
@@ -238,58 +235,27 @@ public class MainActivity extends AppCompatActivity {
     private MinimapView minimapView2;
 
     // ── Dependency Viewer ───────────────────────────────────
-    private View          depsPanel;
-    private TextView      tabDeps;
-    private DependencyGraphView depsGraphView;
-    private TextView      depsStatus;
-    private com.ccs.javadroid.tools.bytecode.DependencyModel dependencyModel;
+    private DependencyPanelManager depsManager;
 
     // ── Profiler ─────────────────────────────────────────────
-    private View          profilerPanel;
-    private TextView      tabProfiler;
-    private FlameChartView flameChartView;
-    private TextView      profilerStatus;
-    private ScrollView    profilerDetailScroll;
-    private TextView      profilerDetail;
-    private boolean       profilingEnabled = false;
-    private boolean       profilerLiveMode = true;
-    private final Handler profilerRefreshHandler = new Handler(Looper.getMainLooper());
+    private ProfilerPanelManager profilerManager;
 
     // ── TODO/FIXME Tracker ──────────────────────────────────
-    private View          todoPanel;
-    private TextView      tabTodo;
-    private RecyclerView  todoRecycler;
-    private EditText      todoSearch;
-    private TextView      todoStatus;
-    private com.ccs.javadroid.analysis.TodoAdapter todoAdapter;
-    private boolean       todoAutoRefreshPending = false;
-    private final Handler todoAutoRefreshHandler = new Handler(Looper.getMainLooper());
-    private final Runnable todoAutoRefreshRunnable = () -> {
-        if (todoAutoRefreshPending) {
-            todoAutoRefreshPending = false;
-            refreshTodoPanel();
-        }
-    };
-    private final Runnable profilerRefreshRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if (profilingEnabled && profilerLiveMode) {
-                refreshProfilerResults();
-                // Slower refresh in power saving mode (2s vs 500ms)
-                long interval = powerSaving.isPowerSavingActive() ? 2000 : 500;
-                profilerRefreshHandler.postDelayed(this, interval);
-            }
-        }
-    };
+    private TodoPanelManager todoManager;
+
+    // ── Refactoring ─────────────────────────────────────────
+    private RefactorController refactorController;
+
+    // ── Maven ──────────────────────────────────────────────
+    private MavenActionDelegate mavenDelegate;
 
     // ── Adapters & Managers ────────────────────────────────
     private TabsAdapter      tabsAdapter;
     private FileTreeAdapter  fileTreeAdapter;
+    private FileTreeController fileTreeController;
     private ProjectManager   projectManager;
     private ProblemsAdapter  problemsAdapter;
     private LiveProblemsScheduler liveProblemsScheduler;
-
-    private volatile boolean mavenSyncInProgress;
 
     // ── State ──────────────────────────────────────────────
     private SharedPreferences prefs;
@@ -392,6 +358,10 @@ public class MainActivity extends AppCompatActivity {
         theme = AppTheme.byId(appPrefs.getThemeId(), appPrefs);
         applyTheme();
         invalidateOptionsMenu();
+        // Update minimap visibility when returning from settings
+        boolean minimapEnabled = appPrefs.isMinimap() && !powerSaving.isPowerSavingActive();
+        if (minimapView1 != null) minimapView1.setVisibility(minimapEnabled ? View.VISIBLE : View.GONE);
+        if (minimapView2 != null) minimapView2.setVisibility(minimapEnabled && isSplitActive ? View.VISIBLE : View.GONE);
         // Auto-refresh problems on resume (e.g. returning from settings with new power saving mode)
         if (projectManager != null && projectManager.getProjectDir() != null) {
             refreshProblemsMergedAsync();
@@ -472,7 +442,7 @@ public class MainActivity extends AppCompatActivity {
         if (isDebugging) {
             stopDebug();
         }
-        stopProfilerLiveRefresh();
+        profilerManager.stopLiveRefresh();
         super.onPause();
         saveCurrentToActiveTab();
         saveSessionState();
@@ -569,7 +539,16 @@ public class MainActivity extends AppCompatActivity {
         tabDebugConsole  = findViewById(R.id.tabDebugConsole);
         tabCallGraph     = findViewById(R.id.tabCallGraph);
         tabBookmarks     = findViewById(R.id.tabBookmarks);
-        bookmarksRecycler = findViewById(R.id.bookmarksRecycler);
+        bookmarkController = new BookmarkUiController(this, new BookmarkUiController.Callback() {
+            @Override public void onBookmarkClicked(java.io.File file, int line) {
+                openFile(file);
+                if (line > 0 && activeEditor != null) {
+                    activeEditor.postDelayed(() -> activeEditor.setSelection(line - 1, 0), 200);
+                }
+            }
+            @Override public AppTheme getTheme() { return theme; }
+        });
+        bookmarkController.bind();
         debugConsoleScroll = findViewById(R.id.debugConsoleScroll);
         debugConsoleOutput = findViewById(R.id.debugConsoleOutput);
         
@@ -582,60 +561,69 @@ public class MainActivity extends AppCompatActivity {
         watchesContainer = findViewById(R.id.watchesContainer);
 
         callGraphRoot     = findViewById(R.id.callGraphRoot);
-        callGraphToolbar  = findViewById(R.id.callGraphToolbar);
-        callGraphContent  = findViewById(R.id.callGraphContent);
-        callGraphStatus   = findViewById(R.id.callGraphStatus);
-        callGraphSearch   = findViewById(R.id.callGraphSearch);
+        callGraphManager = new CallGraphPanelManager(this, new CallGraphPanelManager.Callback() {
+            @Override public File getProjectDir() { return projectManager != null ? projectManager.getProjectDir() : null; }
+            @Override public AppTheme getTheme() { return theme; }
+            @Override public void runOnUiThread(Runnable r) { MainActivity.this.runOnUiThread(r); }
+        });
+        callGraphManager.bind();
 
         // Minimap
         minimapView1 = findViewById(R.id.minimapView1);
         minimapView2 = findViewById(R.id.minimapView2);
 
         // Dependency Viewer
-        depsPanel    = findViewById(R.id.depsPanel);
-        tabDeps      = findViewById(R.id.tabDeps);
-        depsGraphView = findViewById(R.id.depsGraphView);
-        depsStatus   = findViewById(R.id.depsStatus);
+        // Dependency Viewer
+        depsManager = new DependencyPanelManager(this, new DependencyPanelManager.Callback() {
+            @Override public void runOnUiThread(Runnable r) { MainActivity.this.runOnUiThread(r); }
+            @Override public ProjectManager getProjectManager() { return projectManager; }
+            @Override public AppTheme getTheme() { return theme; }
+        });
+        depsManager.bind();
 
         // Profiler
-        profilerPanel = findViewById(R.id.profilerPanel);
-        tabProfiler  = findViewById(R.id.tabProfiler);
-        flameChartView = findViewById(R.id.flameChartView);
-        profilerStatus = findViewById(R.id.profilerStatus);
-        profilerDetailScroll = findViewById(R.id.profilerDetailScroll);
-        profilerDetail = findViewById(R.id.profilerDetail);
+        profilerManager = new ProfilerPanelManager(this, new ProfilerPanelManager.Callback() {
+            @Override public FileTab getActiveTab() { return tabsAdapter.getActiveTab(); }
+            @Override public void saveCurrentToActiveTab() { MainActivity.this.saveCurrentToActiveTab(); }
+            @Override public boolean isRunning() { return isRunning; }
+            @Override public void setRunning(boolean r) { isRunning = r; }
+            @Override public String getEditorText() { return activeEditor != null && activeEditor.getText() != null ? activeEditor.getText().toString() : ""; }
+            @Override public void runOnUiThread(Runnable r) { MainActivity.this.runOnUiThread(r); }
+            @Override public void appendConsole(String text, int color) { appendConsole(text, color); }
+            @Override public void switchBottomPanel(int panel) { MainActivity.this.switchBottomPanel(panel); }
+            @Override public void showToast(String msg) { Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show(); }
+            @Override public PowerSavingManager getPowerSaving() { return powerSaving; }
+            @Override public AppTheme getTheme() { return theme; }
+            @Override public AppPreferences getAppPrefs() { return appPrefs; }
+        });
+        profilerManager.bind();
+
+        // Maven
+        mavenDelegate = new MavenActionDelegate(new MavenActionDelegate.Callback() {
+            @Override public void runOnUiThread(Runnable r) { MainActivity.this.runOnUiThread(r); }
+            @Override public ProjectManager getProjectManager() { return projectManager; }
+            @Override public AppTheme getTheme() { return theme; }
+            @Override public void appendConsole(String text, int color) { MainActivity.this.appendConsole(text, color); }
+            @Override public void switchBottomPanel(int panel) { MainActivity.this.switchBottomPanel(panel); }
+            @Override public void setConsoleText(String text) { consoleOutput.setText(text); }
+            @Override public void setProblemsItems(List<ProblemItem> items) { problemsAdapter.setItems(items); }
+            @Override public void saveCurrentToActiveTab() { MainActivity.this.saveCurrentToActiveTab(); }
+            @Override public Activity getActivity() { return MainActivity.this; }
+        });
 
         // TODO/FIXME
-        todoPanel    = findViewById(R.id.todoPanel);
-        tabTodo      = findViewById(R.id.tabTodo);
-        todoRecycler = findViewById(R.id.todoRecycler);
-        todoSearch   = findViewById(R.id.todoSearch);
-        todoStatus   = findViewById(R.id.todoStatus);
-        todoAdapter  = new com.ccs.javadroid.analysis.TodoAdapter();
-        todoAdapter.setTheme(theme);
-        todoAdapter.setListener(item -> {
-            if (item.file != null && item.file.exists()) {
-                openFile(item.file);
-                if (item.line > 0 && activeEditor != null) {
-                    activeEditor.setSelection(Math.max(0, item.line - 1), 0);
+        todoManager = new TodoPanelManager(this, new TodoPanelManager.Callback() {
+            @Override public void onTodoItemClicked(java.io.File file, int line) {
+                openFile(file);
+                if (line > 0 && activeEditor != null) {
+                    activeEditor.setSelection(Math.max(0, line - 1), 0);
                 }
             }
+            @Override public void runOnUiThread(Runnable r) { MainActivity.this.runOnUiThread(r); }
+            @Override public ProjectManager getProjectManager() { return projectManager; }
+            @Override public AppTheme getTheme() { return theme; }
         });
-        if (todoRecycler != null) {
-            todoRecycler.setLayoutManager(new LinearLayoutManager(this));
-            todoRecycler.setAdapter(todoAdapter);
-        }
-        if (todoSearch != null) {
-            todoSearch.addTextChangedListener(new android.text.TextWatcher() {
-                @Override public void beforeTextChanged(CharSequence s, int a, int b, int c) {}
-                @Override public void onTextChanged(CharSequence s, int a, int b, int c) {}
-                @Override public void afterTextChanged(android.text.Editable s) {
-                    todoAdapter.filter(s != null ? s.toString() : "");
-                }
-            });
-        }
-        View todoRefresh = findViewById(R.id.todoRefresh);
-        if (todoRefresh != null) todoRefresh.setOnClickListener(v -> refreshTodoPanel());
+        todoManager.bind();
 
         setupDebugToolbar();
         setupDebugController();
@@ -732,41 +720,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Call Graph panel theming
-        if (callGraphRoot != null) callGraphRoot.setBackgroundColor(theme.consoleBg);
-        if (callGraphToolbar != null) callGraphToolbar.setBackgroundColor(theme.toolbar);
-        if (callGraphSearch != null) {
-            callGraphSearch.setTextColor(theme.consoleText);
-            callGraphSearch.setHintTextColor(theme.textDim);
-        }
-        if (callGraphStatus != null) {
-            callGraphStatus.setBackgroundColor(theme.consoleBg);
-            callGraphStatus.setTextColor(theme.textDim);
-        }
+        if (callGraphManager != null) callGraphManager.applyTheme(theme);
 
         // Dependency Viewer theming
-        if (depsPanel != null) depsPanel.setBackgroundColor(theme.consoleBg);
-        View depsToolbar = findViewById(R.id.depsToolbar);
-        if (depsToolbar != null) depsToolbar.setBackgroundColor(theme.toolbar);
-        if (depsStatus != null) depsStatus.setTextColor(theme.textDim);
-        if (depsGraphView != null) {
-            depsGraphView.setColors(theme.accent, 0xFFFFA500, 0xFF4CAF50, 0xFF666666, theme.text, theme.consoleBg);
-        }
+        if (depsManager != null) depsManager.applyTheme(theme);
 
         // Profiler theming
-        if (profilerPanel != null) profilerPanel.setBackgroundColor(theme.consoleBg);
-
-        // TODO panel theming
-        if (todoPanel != null) todoPanel.setBackgroundColor(theme.consoleBg);
-        if (todoRecycler != null) todoRecycler.setBackgroundColor(theme.consoleBg);
-        if (todoSearch != null) {
-            todoSearch.setTextColor(theme.consoleText);
-            todoSearch.setHintTextColor(theme.textDim);
-        }
-        if (todoStatus != null) todoStatus.setTextColor(theme.textDim);
-        if (todoAdapter != null) todoAdapter.setTheme(theme);
-        View profilerToolbarView = findViewById(R.id.profilerToolbar);
-        if (profilerToolbarView != null) profilerToolbarView.setBackgroundColor(theme.toolbar);
-        if (profilerStatus != null) profilerStatus.setTextColor(theme.textDim);
+        if (profilerManager != null) profilerManager.applyTheme(theme);
 
         // Drawer elements theming
         TextView tvDrawerProjectLabel = findViewById(R.id.tvDrawerProjectLabel);
@@ -934,6 +894,16 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupFileTree() {
         fileTreeAdapter = new FileTreeAdapter();
+        fileTreeController = new FileTreeController(this, new FileTreeController.Callback() {
+            @Override public void onFileOpened(File file) { openFile(file); }
+            @Override public void onRefreshNeeded() { /* handled by controller */ }
+            @Override public AppTheme getTheme() { return theme; }
+            @Override public ProjectManager getProjectManager() { return projectManager; }
+            @Override public FileTreeAdapter getFileTreeAdapter() { return fileTreeAdapter; }
+            @Override public TabsAdapter getTabsAdapter() { return tabsAdapter; }
+            @Override public DrawerLayout getDrawerLayout() { return drawerLayout; }
+            @Override public int dp(int v) { return MainActivity.this.dp(v); }
+        });
         fileTreeAdapter.setNodeListener(new FileTreeAdapter.NodeListener() {
             @Override
             public void onNodeClicked(FileTreeNode node) {
@@ -944,9 +914,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onNodeLongClicked(FileTreeNode node) {
                 if (node.directory) {
-                    showFolderContextMenu(node.path);
+                    fileTreeController.showFolderContextMenu(node.path);
                 } else {
-                    showFileContextMenu(node.path);
+                    fileTreeController.showFileContextMenu(node.path);
                 }
             }
         });
@@ -954,7 +924,7 @@ public class MainActivity extends AppCompatActivity {
         fileTreeRecycler.setAdapter(fileTreeAdapter);
 
         View btnNewFile = findViewById(R.id.btnNewFile);
-        if (btnNewFile != null) btnNewFile.setOnClickListener(v -> showNewFileDialog());
+        if (btnNewFile != null) btnNewFile.setOnClickListener(v -> fileTreeController.showNewFileDialog());
 
         View btnImportFiles = findViewById(R.id.btnImportFiles);
         if (btnImportFiles != null) btnImportFiles.setOnClickListener(v -> {
@@ -1040,9 +1010,7 @@ public class MainActivity extends AppCompatActivity {
                         });
                     }
             if (!powerSaving.isPowerSavingActive() && bottomPanelMode == PANEL_TODO) {
-                todoAutoRefreshPending = true;
-                todoAutoRefreshHandler.removeCallbacks(todoAutoRefreshRunnable);
-                todoAutoRefreshHandler.postDelayed(todoAutoRefreshRunnable, 1500);
+                if (todoManager != null) todoManager.scheduleAutoRefresh();
             }
         });
 
@@ -1159,9 +1127,15 @@ public class MainActivity extends AppCompatActivity {
         configureEditor(editor2);
         updateActiveEditorBorders();
 
-        // Setup minimaps
-        if (minimapView1 != null) minimapView1.setEditor(editor);
-        if (minimapView2 != null) minimapView2.setEditor(editor2);
+        // Setup minimaps — вимикається в режимі енергозбереження
+        boolean minimapEnabled = appPrefs.isMinimap() && !powerSaving.isPowerSavingActive();
+        if (minimapView1 != null) {
+            minimapView1.setVisibility(minimapEnabled ? View.VISIBLE : View.GONE);
+            minimapView1.setEditor(editor);
+        }
+        if (minimapView2 != null) {
+            minimapView2.setEditor(editor2);
+        }
 
         // Initialize Voice-to-Text
         voiceToText = new com.ccs.javadroid.util.VoiceToTextManager(this);
@@ -1240,10 +1214,13 @@ public class MainActivity extends AppCompatActivity {
         if (tabDebugConsole != null) tabDebugConsole.setOnClickListener(v -> switchBottomPanel(PANEL_DEBUG_CONSOLE));
         if (tabCallGraph != null) tabCallGraph.setOnClickListener(v -> switchBottomPanel(PANEL_CALL_GRAPH));
         if (tabBookmarks != null) tabBookmarks.setOnClickListener(v -> switchBottomPanel(PANEL_BOOKMARKS));
-        if (tabDeps != null) tabDeps.setOnClickListener(v -> switchBottomPanel(PANEL_DEPS));
-        if (tabProfiler != null) tabProfiler.setOnClickListener(v -> switchBottomPanel(PANEL_PROFILER));
-        if (tabTodo != null) tabTodo.setOnClickListener(v -> switchBottomPanel(PANEL_TODO));
-        setupProfilerToolbar();
+        if (depsManager != null && depsManager.getTab() != null)
+            depsManager.getTab().setOnClickListener(v -> switchBottomPanel(PANEL_DEPS));
+        if (profilerManager != null && profilerManager.getTab() != null)
+            profilerManager.getTab().setOnClickListener(v -> switchBottomPanel(PANEL_PROFILER));
+        if (todoManager != null && todoManager.getTab() != null)
+            todoManager.getTab().setOnClickListener(v -> switchBottomPanel(PANEL_TODO));
+        if (profilerManager != null) profilerManager.bind();
         switchBottomPanel(PANEL_RUN);
     }
 
@@ -1298,9 +1275,9 @@ public class MainActivity extends AppCompatActivity {
         if (tabDebug != null) tabDebug.setBackgroundColor(bottomPanelMode == PANEL_DEBUG ? activeBg : inactiveBg);
         if (tabDebugConsole != null) tabDebugConsole.setBackgroundColor(bottomPanelMode == PANEL_DEBUG_CONSOLE ? activeBg : inactiveBg);
         if (tabCallGraph != null) tabCallGraph.setBackgroundColor(bottomPanelMode == PANEL_CALL_GRAPH ? activeBg : inactiveBg);
-        if (tabDeps != null) tabDeps.setBackgroundColor(bottomPanelMode == PANEL_DEPS ? activeBg : inactiveBg);
-        if (tabProfiler != null) tabProfiler.setBackgroundColor(bottomPanelMode == PANEL_PROFILER ? activeBg : inactiveBg);
-        if (tabTodo != null) tabTodo.setBackgroundColor(bottomPanelMode == PANEL_TODO ? activeBg : inactiveBg);
+        if (profilerManager != null) profilerManager.updateTabStyle(bottomPanelMode == PANEL_PROFILER, theme, activeBg);
+        if (depsManager != null) depsManager.updateTabStyle(bottomPanelMode == PANEL_DEPS, theme, activeBg);
+        if (todoManager != null) todoManager.updateTabStyle(bottomPanelMode == PANEL_TODO, theme, activeBg);
 
         tabRun.setTextColor(bottomPanelMode == PANEL_RUN ? theme.successText : theme.textDim);
         tabProblems.setTextColor(bottomPanelMode == PANEL_PROBLEMS ? theme.text : theme.textDim);
@@ -1308,9 +1285,6 @@ public class MainActivity extends AppCompatActivity {
         if (tabDebug != null) tabDebug.setTextColor(bottomPanelMode == PANEL_DEBUG ? theme.accent : theme.textDim);
         if (tabDebugConsole != null) tabDebugConsole.setTextColor(bottomPanelMode == PANEL_DEBUG_CONSOLE ? theme.accent : theme.textDim);
         if (tabCallGraph != null) tabCallGraph.setTextColor(bottomPanelMode == PANEL_CALL_GRAPH ? theme.accent : theme.textDim);
-        if (tabDeps != null) tabDeps.setTextColor(bottomPanelMode == PANEL_DEPS ? theme.accent : theme.textDim);
-        if (tabProfiler != null) tabProfiler.setTextColor(bottomPanelMode == PANEL_PROFILER ? theme.accent : theme.textDim);
-        if (tabTodo != null) tabTodo.setTextColor(bottomPanelMode == PANEL_TODO ? theme.accent : theme.textDim);
     }
 
     private void switchBottomPanel(int mode) {
@@ -1323,16 +1297,12 @@ public class MainActivity extends AppCompatActivity {
             debuggerSplitPanel.setVisibility(mode == PANEL_DEBUG ? View.VISIBLE : View.GONE);
         if (debugConsoleScroll != null)
             debugConsoleScroll.setVisibility(mode == PANEL_DEBUG_CONSOLE ? View.VISIBLE : View.GONE);
-        if (callGraphRoot != null)
-            callGraphRoot.setVisibility(mode == PANEL_CALL_GRAPH ? View.VISIBLE : View.GONE);
-        if (bookmarksRecycler != null)
-            bookmarksRecycler.setVisibility(mode == PANEL_BOOKMARKS ? View.VISIBLE : View.GONE);
-        if (depsPanel != null)
-            depsPanel.setVisibility(mode == PANEL_DEPS ? View.VISIBLE : View.GONE);
-        if (profilerPanel != null)
-            profilerPanel.setVisibility(mode == PANEL_PROFILER ? View.VISIBLE : View.GONE);
-        if (todoPanel != null)
-            todoPanel.setVisibility(mode == PANEL_TODO ? View.VISIBLE : View.GONE);
+        if (callGraphManager != null) callGraphManager.setVisibility(mode == PANEL_CALL_GRAPH);
+        if (bookmarkController != null) bookmarkController.setVisibility(mode == PANEL_BOOKMARKS);
+        if (depsManager != null) depsManager.setVisibility(mode == PANEL_DEPS);
+        if (profilerManager != null) profilerManager.setVisibility(mode == PANEL_PROFILER);
+        if (todoManager != null)
+            todoManager.setVisibility(mode == PANEL_TODO);
 
         int activeBg   = blend(theme.toolbar, theme.bg, 0.4f);
         int inactiveBg = theme.toolbar;
@@ -1342,20 +1312,16 @@ public class MainActivity extends AppCompatActivity {
         if (tabDebug != null) tabDebug.setBackgroundColor(mode == PANEL_DEBUG ? activeBg : inactiveBg);
         if (tabDebugConsole != null) tabDebugConsole.setBackgroundColor(mode == PANEL_DEBUG_CONSOLE ? activeBg : inactiveBg);
         if (tabCallGraph != null) tabCallGraph.setBackgroundColor(mode == PANEL_CALL_GRAPH ? activeBg : inactiveBg);
-        if (tabBookmarks != null) tabBookmarks.setBackgroundColor(mode == PANEL_BOOKMARKS ? activeBg : inactiveBg);
-        if (tabDeps != null) tabDeps.setBackgroundColor(mode == PANEL_DEPS ? activeBg : inactiveBg);
-        if (tabProfiler != null) tabProfiler.setBackgroundColor(mode == PANEL_PROFILER ? activeBg : inactiveBg);
-        if (tabTodo != null) tabTodo.setBackgroundColor(mode == PANEL_TODO ? activeBg : inactiveBg);
+        if (bookmarkController != null) bookmarkController.updateTabStyle(mode == PANEL_BOOKMARKS, theme, activeBg);
+        if (profilerManager != null) profilerManager.updateTabStyle(mode == PANEL_PROFILER, theme, activeBg);
+        if (depsManager != null) depsManager.updateTabStyle(mode == PANEL_DEPS, theme, activeBg);
+        if (todoManager != null) todoManager.updateTabStyle(mode == PANEL_TODO, theme, activeBg);
 
         tabRun.setTextColor(mode == PANEL_RUN ? theme.successText : theme.textDim);
         tabProblems.setTextColor(mode == PANEL_PROBLEMS ? theme.text : theme.textDim);
         tabBytecode.setTextColor(mode == PANEL_BYTECODE ? theme.accent : theme.textDim);
         if (tabDebug != null) tabDebug.setTextColor(mode == PANEL_DEBUG ? theme.accent : theme.textDim);
         if (tabDebugConsole != null) tabDebugConsole.setTextColor(mode == PANEL_DEBUG_CONSOLE ? theme.accent : theme.textDim);
-        if (tabBookmarks != null) tabBookmarks.setTextColor(mode == PANEL_BOOKMARKS ? 0xFFFFD700 : theme.textDim);
-        if (tabDeps != null) tabDeps.setTextColor(mode == PANEL_DEPS ? theme.accent : theme.textDim);
-        if (tabProfiler != null) tabProfiler.setTextColor(mode == PANEL_PROFILER ? theme.accent : theme.textDim);
-        if (tabTodo != null) tabTodo.setTextColor(mode == PANEL_TODO ? theme.accent : theme.textDim);
 
         if (btnClearConsole != null) {
             btnClearConsole.setVisibility(mode == PANEL_RUN ? View.VISIBLE : View.GONE);
@@ -1365,16 +1331,16 @@ public class MainActivity extends AppCompatActivity {
             refreshBytecodePanel();
         }
         if (mode == PANEL_CALL_GRAPH) {
-            refreshCallGraphPanel();
+            if (callGraphManager != null) callGraphManager.refresh();
         }
         if (mode == PANEL_BOOKMARKS) {
-            refreshBookmarksList();
+            if (bookmarkController != null) bookmarkController.refreshList();
         }
         if (mode == PANEL_DEPS) {
-            refreshDependencyGraph();
+            if (depsManager != null) depsManager.refresh();
         }
         if (mode == PANEL_TODO) {
-            refreshTodoPanel();
+            if (todoManager != null) todoManager.refresh();
         }
     }
 
@@ -1671,7 +1637,9 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, has ? getString(R.string.bookmark_set, line) : getString(R.string.bookmark_removed, line),
                 Toast.LENGTH_SHORT).show();
         refreshBookmarkMarkers();
-        if (bottomPanelMode == PANEL_BOOKMARKS) refreshBookmarksList();
+        if (bottomPanelMode == PANEL_BOOKMARKS) {
+            if (bookmarkController != null) bookmarkController.refreshList();
+        }
     }
 
     private void refreshBookmarkMarkers() {
@@ -1684,69 +1652,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showBookmarksDialog() {
-        // Show bookmarks in the bottom panel instead of dialog
         switchBottomPanel(PANEL_BOOKMARKS);
-        refreshBookmarksList();
-    }
-
-    private void refreshBookmarksList() {
-        BookmarkManager bm = BookmarkManager.getInstance(this);
-        java.util.List<BookmarkManager.BookmarkEntry> all = bm.getAllBookmarks();
-        if (bookmarksRecycler == null) return;
-
-        if (all.isEmpty()) {
-            bookmarksRecycler.setAdapter(null);
-            TextView empty = new TextView(this);
-            empty.setText(R.string.bookmark_none);
-            empty.setTextColor(theme.textDim);
-            empty.setPadding(32, 32, 32, 32);
-            bookmarksRecycler.setLayoutManager(new LinearLayoutManager(this));
-            bookmarksRecycler.setAdapter(new RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-                @Override public int getItemCount() { return 1; }
-                @Override public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                    return new RecyclerView.ViewHolder(new TextView(parent.getContext())) {};
-                }
-                @Override public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-                    ((TextView) holder.itemView).setText(R.string.bookmark_none);
-                    ((TextView) holder.itemView).setTextColor(theme.textDim);
-                    ((TextView) holder.itemView).setPadding(32, 32, 32, 32);
-                }
-            });
-            return;
-        }
-
-        bookmarksRecycler.setLayoutManager(new LinearLayoutManager(this));
-        bookmarksRecycler.setAdapter(new RecyclerView.Adapter<BookmarkVH>() {
-            @Override public int getItemCount() { return all.size(); }
-            @Override public BookmarkVH onCreateViewHolder(ViewGroup parent, int viewType) {
-                TextView tv = new TextView(parent.getContext());
-                tv.setLayoutParams(new RecyclerView.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT, (int)(48 * getResources().getDisplayMetrics().density)));
-                tv.setPadding(32, 16, 32, 16);
-                tv.setTextSize(13);
-                tv.setGravity(android.view.Gravity.CENTER_VERTICAL);
-                return new BookmarkVH(tv);
-            }
-            @Override public void onBindViewHolder(BookmarkVH holder, int position) {
-                BookmarkManager.BookmarkEntry e = all.get(position);
-                String name = new File(e.filePath).getName();
-                ((TextView) holder.itemView).setText("★ " + name + ":" + e.line);
-                ((TextView) holder.itemView).setTextColor(0xFFFFD700);
-                holder.itemView.setOnClickListener(v -> {
-                    File file = new File(e.filePath);
-                    if (file.exists()) {
-                        openFile(file);
-                        activeEditor.postDelayed(() -> {
-                            if (e.line > 0) activeEditor.setSelection(e.line - 1, 0);
-                        }, 200);
-                    }
-                });
-            }
-        });
-    }
-
-    static class BookmarkVH extends RecyclerView.ViewHolder {
-        BookmarkVH(View itemView) { super(itemView); }
+        if (bookmarkController != null) bookmarkController.refreshList();
     }
 
     /** Діалог редагування умови умовного брейплоінта (стиль IntelliJ). */
@@ -2103,286 +2010,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // ══════════════════════════════════════════════════════════
-    //  Call Graph panel (inline, bottom)
+    //  Call Graph panel (inline, bottom) — delegated to CallGraphPanelManager
     // ══════════════════════════════════════════════════════════
-
-    private boolean callGraphLoaded = false;
-
-    private void refreshCallGraphPanel() {
-        if (callGraphContent == null || callGraphStatus == null) return;
-
-        // Setup search listener once
-        if (callGraphSearch != null && callGraphSearch.getTag() == null) {
-            callGraphSearch.setTag("init");
-            callGraphSearch.setOnEditorActionListener((v, actionId, event) -> {
-                filterCallGraph(callGraphSearch.getText().toString());
-                return true;
-            });
-            TextView refreshBtn = findViewById(R.id.callGraphRefresh);
-            if (refreshBtn != null) refreshBtn.setOnClickListener(v -> {
-                callGraphLoaded = false;
-                refreshCallGraphPanel();
-            });
-        }
-
-        File projectDir = projectManager.getProjectDir();
-        if (projectDir == null) {
-            callGraphStatus.setText(R.string.call_graph_no_project);
-            callGraphContent.removeAllViews();
-            return;
-        }
-
-        if (callGraphModel != null && callGraphLoaded) {
-            showCallGraphList(callGraphModel, "");
-            return;
-        }
-
-        callGraphStatus.setText(R.string.call_graph_analyzing);
-        callGraphContent.removeAllViews();
-
-        new Thread(() -> {
-            try {
-                CallGraphModel model = new CallGraphModel();
-                model.analyzeDirectory(projectDir);
-                runOnUiThread(() -> {
-                    callGraphModel = model;
-                    callGraphLoaded = true;
-                    callGraphStatus.setText(String.format(Locale.US,
-                            getString(R.string.call_graph_stats),
-                            model.getAllMethods().size(), model.getEdges().size()));
-                    showCallGraphList(model, callGraphSearch != null ? callGraphSearch.getText().toString() : "");
-                });
-            } catch (Exception e) {
-                runOnUiThread(() -> {
-                    callGraphStatus.setText("Error: " + e.getMessage());
-                });
-            }
-        }, "callgraph-load").start();
-    }
-
-    private void filterCallGraph(String query) {
-        if (callGraphModel != null) {
-            showCallGraphList(callGraphModel, query);
-        }
-    }
-
-    private void showCallGraphList(CallGraphModel model, String query) {
-        callGraphContent.removeAllViews();
-        String q = query.toLowerCase(Locale.ROOT);
-
-        // Group methods by class
-        java.util.LinkedHashMap<String, List<CallGraphModel.MethodNode>> classMethods = new java.util.LinkedHashMap<>();
-        for (CallGraphModel.MethodNode m : model.getAllMethods().values()) {
-            if (!m.className.startsWith("java.") && !m.className.startsWith("javax.")
-                    && !m.className.startsWith("android.") && !m.className.startsWith("androidx.")) {
-                if (q.isEmpty() || m.shortSignature().toLowerCase(Locale.ROOT).contains(q)) {
-                    classMethods.computeIfAbsent(m.className, k -> new ArrayList<>()).add(m);
-                }
-            }
-        }
-
-        for (Map.Entry<String, List<CallGraphModel.MethodNode>> entry : classMethods.entrySet()) {
-            String className = entry.getKey();
-            List<CallGraphModel.MethodNode> methods = entry.getValue();
-            methods.sort((a, b) -> a.methodName.compareToIgnoreCase(b.methodName));
-
-            // Class header (collapsible)
-            LinearLayout classGroup = new LinearLayout(this);
-            classGroup.setOrientation(LinearLayout.VERTICAL);
-
-            LinearLayout classHeader = new LinearLayout(this);
-            classHeader.setOrientation(LinearLayout.HORIZONTAL);
-            classHeader.setGravity(Gravity.CENTER_VERTICAL);
-            classHeader.setPadding(dp(8), dp(6), dp(8), dp(6));
-            classHeader.setBackgroundResource(android.R.drawable.list_selector_background);
-
-            TextView arrow = new TextView(this);
-            arrow.setText("▾");
-            arrow.setTextColor(theme.textDim);
-            arrow.setTextSize(12);
-            arrow.setPadding(0, 0, dp(4), 0);
-            classHeader.addView(arrow);
-
-            TextView classIcon = new TextView(this);
-            classIcon.setText("c");
-            classIcon.setTextColor(theme.accent);
-            classIcon.setTextSize(10);
-            classIcon.setTypeface(new AppPreferences(this).resolveTypeface(), android.graphics.Typeface.BOLD);
-            classIcon.setPadding(dp(2), dp(1), dp(6), dp(1));
-            classHeader.addView(classIcon);
-
-            // Short class name
-            String shortClass = className;
-            int lastDot = className.lastIndexOf('.');
-            if (lastDot >= 0) shortClass = className.substring(lastDot + 1);
-            TextView classNameTv = new TextView(this);
-            classNameTv.setText(shortClass);
-            classNameTv.setTextColor(theme.text);
-            classNameTv.setTextSize(12);
-            classNameTv.setTypeface(null, android.graphics.Typeface.BOLD);
-            classHeader.addView(classNameTv);
-
-            TextView count = new TextView(this);
-            count.setText(" (" + methods.size() + ")");
-            count.setTextColor(theme.textDim);
-            count.setTextSize(11);
-            classHeader.addView(count);
-
-            final LinearLayout methodsContainer = new LinearLayout(this);
-            methodsContainer.setOrientation(LinearLayout.VERTICAL);
-
-            final boolean[] expanded = {true};
-            arrow.setText(expanded[0] ? "▾" : "▸");
-            classHeader.setOnClickListener(v -> {
-                expanded[0] = !expanded[0];
-                arrow.setText(expanded[0] ? "▾" : "▸");
-                methodsContainer.setVisibility(expanded[0] ? View.VISIBLE : View.GONE);
-            });
-
-            classGroup.addView(classHeader);
-
-            // Method icons: m = method, f = field
-            for (CallGraphModel.MethodNode m : methods) {
-                TextView methodItem = new TextView(this);
-                methodItem.setPadding(dp(28), dp(3), dp(8), dp(3));
-                methodItem.setTextSize(11);
-                methodItem.setTypeface(new AppPreferences(this).resolveTypeface());
-                methodItem.setBackgroundResource(android.R.drawable.list_selector_background);
-
-                SpannableStringBuilder sb = new SpannableStringBuilder();
-                // Method icon
-                sb.append("m ");
-                int iconStart = sb.length() - 1;
-                // Method name with params
-                String shortSig = m.shortSignature();
-                sb.append(m.methodName);
-                int nameStart = sb.length() - m.methodName.length();
-
-                // Color based on call count
-                List<CallGraphModel.MethodNode> callees = callGraphModel.getCallees(m);
-                List<CallGraphModel.MethodNode> callers = callGraphModel.getCallers(m);
-                if (!callers.isEmpty() || !callees.isEmpty()) {
-                    sb.append(" (" + callees.size() + "↓ " + callers.size() + "↑)");
-                    int infoStart = sb.length() - (callees.size() + "↓ " + callers.size() + "↑").length() - 2;
-                    sb.setSpan(new ForegroundColorSpan(theme.textDim), infoStart, sb.length(),
-                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                }
-
-                sb.setSpan(new ForegroundColorSpan(theme.editorKeyword != 0 ? theme.editorKeyword : theme.accent), iconStart, iconStart + 1,
-                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                sb.setSpan(new ForegroundColorSpan(theme.accent), nameStart, nameStart + m.methodName.length(),
-                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-                methodItem.setText(sb);
-                final CallGraphModel.MethodNode node = m;
-                methodItem.setOnClickListener(v -> showCallGraphDetail(node));
-                methodsContainer.addView(methodItem);
-            }
-
-            classGroup.addView(methodsContainer);
-            callGraphContent.addView(classGroup);
-        }
-
-        if (classMethods.isEmpty()) {
-            TextView empty = new TextView(this);
-            empty.setText(R.string.call_graph_no_methods);
-            empty.setTextColor(theme.textDim);
-            empty.setPadding(dp(8), dp(12), dp(8), 0);
-            empty.setGravity(Gravity.CENTER);
-            callGraphContent.addView(empty);
-        }
-    }
-
-    private void showCallGraphDetail(CallGraphModel.MethodNode method) {
-        callGraphContent.removeAllViews();
-        callGraphSearch.setText(method.shortSignature());
-
-        SpannableStringBuilder header = new SpannableStringBuilder();
-        header.append(method.shortSignature());
-        header.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, header.length(),
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        TextView hv = new TextView(this);
-        hv.setText(header);
-        hv.setTextColor(theme.accent);
-        hv.setTextSize(12);
-        hv.setTypeface(new AppPreferences(this).resolveTypeface());
-        hv.setPadding(dp(4), dp(6), dp(4), dp(6));
-        callGraphContent.addView(hv);
-
-        // Calls
-        List<CallGraphModel.MethodNode> callees = callGraphModel.getCallees(method);
-        TextView callsLabel = new TextView(this);
-        callsLabel.setText(getString(R.string.call_graph_calls, callees.size()));
-        callsLabel.setTextColor(theme.successText);
-        callsLabel.setTextSize(11);
-        callsLabel.setTypeface(null, android.graphics.Typeface.BOLD);
-        callsLabel.setPadding(dp(4), dp(8), dp(4), dp(4));
-        callGraphContent.addView(callsLabel);
-
-        if (callees.isEmpty()) {
-            TextView none = new TextView(this);
-            none.setText("  — none");
-            none.setTextColor(theme.textDim);
-            none.setTextSize(11);
-            none.setPadding(dp(8), 0, dp(4), 0);
-            callGraphContent.addView(none);
-        } else {
-            for (CallGraphModel.MethodNode callee : callees) {
-                callGraphContent.addView(createCallGraphItem("→", callee));
-            }
-        }
-
-        // Div
-        View div = new View(this);
-        div.setBackgroundColor(theme.separator);
-        div.setAlpha(0.3f);
-        LinearLayout.LayoutParams divLp = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, 1);
-        divLp.topMargin = dp(8);
-        divLp.bottomMargin = dp(8);
-        div.setLayoutParams(divLp);
-        callGraphContent.addView(div);
-
-        // Called by
-        List<CallGraphModel.MethodNode> callers = callGraphModel.getCallers(method);
-        TextView calledByLabel = new TextView(this);
-        calledByLabel.setText(getString(R.string.call_graph_called_by, callers.size()));
-        calledByLabel.setTextColor(theme.editorNumber != 0 ? theme.editorNumber : 0xFFFFA726);
-        calledByLabel.setTextSize(11);
-        calledByLabel.setTypeface(null, android.graphics.Typeface.BOLD);
-        calledByLabel.setPadding(dp(4), dp(4), dp(4), dp(4));
-        callGraphContent.addView(calledByLabel);
-
-        if (callers.isEmpty()) {
-            TextView none = new TextView(this);
-            none.setText("  — none");
-            none.setTextColor(theme.textDim);
-            none.setTextSize(11);
-            none.setPadding(dp(8), 0, dp(4), 0);
-            callGraphContent.addView(none);
-        } else {
-            for (CallGraphModel.MethodNode caller : callers) {
-                callGraphContent.addView(createCallGraphItem("←", caller));
-            }
-        }
-    }
-
-    private TextView createCallGraphItem(String arrow, CallGraphModel.MethodNode m) {
-        TextView item = new TextView(this);
-        SpannableStringBuilder sb = new SpannableStringBuilder();
-        sb.append(arrow + " ");
-        int start = sb.length();
-        sb.append(m.shortSignature());
-        sb.setSpan(new ForegroundColorSpan(theme.accent), start, sb.length(),
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        item.setText(sb);
-        item.setTextSize(11);
-        item.setTypeface(new AppPreferences(this).resolveTypeface());
-        item.setPadding(dp(16), dp(2), dp(4), dp(2));
-        item.setBackgroundResource(android.R.drawable.list_selector_background);
-        item.setOnClickListener(v -> showCallGraphDetail(m));
-        return item;
-    }
 
     /** Встановлює інструкції обраного методу в праву панель. */
     private void selectBytecodeMethod(int methodIndex) {
@@ -3396,7 +3025,7 @@ public class MainActivity extends AppCompatActivity {
             editorDivider.setVisibility(View.VISIBLE);
             wrapperEditor2.setVisibility(View.VISIBLE);
             editor2.setVisibility(View.VISIBLE);
-            if (minimapView2 != null) minimapView2.setVisibility(View.VISIBLE);
+            if (minimapView2 != null) minimapView2.setVisibility(appPrefs.isMinimap() && !powerSaving.isPowerSavingActive() ? View.VISIBLE : View.GONE);
 
             FileTab activeTab = tabsAdapter.getActiveTab();
             FileTab secTab = null;
@@ -3954,175 +3583,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void syncDependencies() {
-        if (!projectManager.isMavenProject()) {
-            Toast.makeText(this, R.string.toast_not_maven, Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (mavenSyncInProgress) {
-            return;
-        }
-        mavenSyncInProgress = true;
-        switchBottomPanel(PANEL_RUN);
-        consoleOutput.setText("");
-        appendConsole(getString(R.string.console_sync_maven), theme.textDim);
-        new Thread(() -> {
-            try {
-                PomModel pom = PomParser.parse(MavenPaths.pomFile(projectManager.getProjectDir()));
-                MavenDependencyResolver.resolve(projectManager.getProjectDir(), pom, line ->
-                        runOnUiThread(() -> appendConsole("   " + line, theme.textDim)));
-                runOnUiThread(() -> {
-                    mavenSyncInProgress = false;
-                    appendConsole(getString(R.string.console_sync_done), theme.successText);
-                    Toast.makeText(this, R.string.toast_sync_done, Toast.LENGTH_SHORT).show();
-                });
-            } catch (Exception e) {
-                runOnUiThread(() -> {
-                    mavenSyncInProgress = false;
-                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
-            }
-        }, "maven-sync").start();
+        if (mavenDelegate != null) mavenDelegate.syncDependencies();
     }
 
     private void mavenPackage() {
-        if (!projectManager.isMavenProject()) {
-            Toast.makeText(this, R.string.toast_pom_required, Toast.LENGTH_SHORT).show();
-            return;
-        }
-        saveCurrentToActiveTab();
-        switchBottomPanel(PANEL_RUN);
-        consoleOutput.setText("");
-        appendConsole(getString(R.string.console_mvn_package), theme.textDim);
-        try {
-            PomModel pom = PomParser.parse(MavenPaths.pomFile(projectManager.getProjectDir()));
-            ProjectCompiler.mavenPackage(this, projectManager.getProjectDir(), pom,
-                    new ProjectCompiler.Callback() {
-                        @Override public void onProgress(String msg) {
-                            appendConsole("   " + msg, theme.textDim);
-                        }
-                        @Override public void onResult(String output) {
-                            appendConsole(output, theme.consoleText);
-                        }
-                        @Override public void onProblems(List<ProblemItem> problems) {
-                            if (problems != null) problemsAdapter.setItems(problems);
-                        }
-                    });
-        } catch (Exception e) {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
+        if (mavenDelegate != null) mavenDelegate.mavenPackage();
     }
 
     private void mavenTestCompile() {
-        if (!projectManager.isMavenProject()) {
-            Toast.makeText(this, R.string.toast_pom_required, Toast.LENGTH_SHORT).show();
-            return;
-        }
-        saveCurrentToActiveTab();
-        switchBottomPanel(PANEL_RUN);
-        consoleOutput.setText("");
-        appendConsole(getString(R.string.console_mvn_test_compile), theme.textDim);
-        try {
-            PomModel pom = PomParser.parse(MavenPaths.pomFile(projectManager.getProjectDir()));
-            ProjectCompiler.mavenTestCompile(this, projectManager.getProjectDir(), pom,
-                    new ProjectCompiler.Callback() {
-                        @Override public void onProgress(String msg) {
-                            appendConsole("   " + msg, theme.textDim);
-                        }
-                        @Override public void onResult(String output) {
-                            appendConsole(output, theme.consoleText);
-                        }
-                        @Override public void onProblems(List<ProblemItem> problems) {
-                            problemsAdapter.setItems(problems);
-                            if (problems != null && !problems.isEmpty()) switchBottomPanel(PANEL_PROBLEMS);
-                        }
-                    });
-        } catch (Exception e) {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
+        if (mavenDelegate != null) mavenDelegate.mavenTestCompile();
     }
 
     private void mavenTestRun() {
-        if (!projectManager.isMavenProject()) {
-            Toast.makeText(this, R.string.toast_pom_required, Toast.LENGTH_SHORT).show();
-            return;
-        }
-        saveCurrentToActiveTab();
-        switchBottomPanel(PANEL_RUN);
-        consoleOutput.setText("");
-        appendConsole(getString(R.string.console_mvn_test_run), theme.textDim);
-        try {
-            PomModel pom = PomParser.parse(MavenPaths.pomFile(projectManager.getProjectDir()));
-            ProjectCompiler.mavenTestRun(this, projectManager.getProjectDir(), pom,
-                    new ProjectCompiler.Callback() {
-                        @Override public void onProgress(String msg) {
-                            appendConsole("   " + msg, theme.textDim);
-                        }
-                        @Override public void onResult(String output) {
-                            appendConsole(output, theme.consoleText);
-                        }
-                        @Override public void onProblems(List<ProblemItem> problems) {
-                            problemsAdapter.setItems(problems);
-                            if (problems != null && !problems.isEmpty()) switchBottomPanel(PANEL_PROBLEMS);
-                        }
-                    });
-        } catch (Exception e) {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
+        if (mavenDelegate != null) mavenDelegate.mavenTestRun();
     }
 
     private void mavenClean() {
-        if (!projectManager.isMavenProject()) {
-            Toast.makeText(this, R.string.toast_pom_required, Toast.LENGTH_SHORT).show();
-            return;
-        }
-        switchBottomPanel(PANEL_RUN);
-        consoleOutput.setText("");
-        appendConsole(getString(R.string.console_mvn_clean), theme.textDim);
-        try {
-            ProjectCompiler.mavenClean(this, projectManager.getProjectDir(),
-                    new ProjectCompiler.Callback() {
-                        @Override public void onProgress(String msg) {
-                            appendConsole("   " + msg, theme.textDim);
-                        }
-                        @Override public void onResult(String output) {
-                            appendConsole(output, theme.consoleText);
-                        }
-                        @Override public void onProblems(List<ProblemItem> problems) {
-                            // clean produces no compilation problems
-                        }
-                    });
-        } catch (Exception e) {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
+        if (mavenDelegate != null) mavenDelegate.mavenClean();
     }
 
     private void mavenInstall() {
-        if (!projectManager.isMavenProject()) {
-            Toast.makeText(this, R.string.toast_pom_required, Toast.LENGTH_SHORT).show();
-            return;
-        }
-        saveCurrentToActiveTab();
-        switchBottomPanel(PANEL_RUN);
-        consoleOutput.setText("");
-        appendConsole(getString(R.string.console_mvn_install), theme.textDim);
-        try {
-            PomModel pom = PomParser.parse(MavenPaths.pomFile(projectManager.getProjectDir()));
-            ProjectCompiler.mavenInstall(this, projectManager.getProjectDir(), pom,
-                    new ProjectCompiler.Callback() {
-                        @Override public void onProgress(String msg) {
-                            appendConsole("   " + msg, theme.textDim);
-                        }
-                        @Override public void onResult(String output) {
-                            appendConsole(output, theme.consoleText);
-                        }
-                        @Override public void onProblems(List<ProblemItem> problems) {
-                            problemsAdapter.setItems(problems);
-                            if (problems != null && !problems.isEmpty()) switchBottomPanel(PANEL_PROBLEMS);
-                        }
-                    });
-        } catch (Exception e) {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
+        if (mavenDelegate != null) mavenDelegate.mavenInstall();
     }
 
 
@@ -4373,310 +3854,39 @@ public class MainActivity extends AppCompatActivity {
     // ══════════════════════════════════════════════════════════
 
     private void refreshFileTree() {
-        fileTreeAdapter.setNodes(ProjectScanner.listIdeaStyleTree(projectManager.getProjectDir()));
+        if (fileTreeController != null) fileTreeController.refreshFileTree();
     }
 
     private void showNewFileDialog() {
-        EditText input = newEditForDialog(getString(R.string.dialog_new_java_hint));
-
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.dialog_new_java_title)
-                .setView(input)
-                .setPositiveButton(R.string.dialog_create, (d, w) -> {
-                    String name = input.getText().toString().trim();
-                    if (name.isEmpty()) return;
-                    String template = "";
-                    boolean isJava = name.endsWith(".java") || !name.contains(".");
-                    String className = name.replace(".java", "");
-                    if (isJava) {
-                        if (projectManager.isMavenProject()) {
-                            try {
-                                String pkg = ProjectLayoutHelper.mainPackageName(projectManager.getProjectDir());
-                                template = "package " + pkg + ";\n\npublic class " + className + " {\n\n}\n";
-                            } catch (Exception e) {
-                                template = "public class " + className + " {\n\n}\n";
-                            }
-                        } else {
-                            template = "public class " + className + " {\n\n}\n";
-                        }
-                    }
-                    try {
-                        File f = projectManager.createFile(className, template);
-                        if (f != null) {
-                            refreshFileTree();
-                            openFile(f);
-                            drawerLayout.closeDrawer(GravityCompat.START);
-                        } else {
-                            Toast.makeText(this, getString(R.string.toast_file_exists, className),
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    } catch (IOException e) {
-                        Toast.makeText(this, getString(R.string.toast_error_prefix, e.getMessage()),
-                                Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .setNegativeButton(R.string.dialog_cancel, null)
-                .show();
+        if (fileTreeController != null) fileTreeController.showNewFileDialog();
     }
 
     private void showFolderContextMenu(File folder) {
-        java.util.List<String> optionsList = new java.util.ArrayList<>();
-        optionsList.add(getString(R.string.menu_create_file));
-        optionsList.add(getString(R.string.menu_create_folder));
-        if (copiedFile != null && copiedFile.exists()) {
-            optionsList.add(getString(R.string.dialog_folder_context_paste));
-        }
-        optionsList.add(getString(R.string.dialog_folder_context_archive));
-        optionsList.add(getString(R.string.dialog_file_context_rename));
-        optionsList.add(getString(R.string.dialog_file_context_delete));
-
-        String[] options = optionsList.toArray(new String[0]);
-        new AlertDialog.Builder(this)
-                .setTitle(folder.getName())
-                .setItems(options, (dialog, which) -> {
-                    String selected = options[which];
-                    if (selected.equals(getString(R.string.menu_create_file))) {
-                        showNewFileInFolderDialog(folder);
-                    } else if (selected.equals(getString(R.string.menu_create_folder))) {
-                        showNewFolderInFolderDialog(folder);
-                    } else if (selected.equals(getString(R.string.dialog_folder_context_paste))) {
-                        pasteFileToFolder(folder);
-                    } else if (selected.equals(getString(R.string.dialog_folder_context_archive))) {
-                        createArchiveFromFolder(folder);
-                    } else if (selected.equals(getString(R.string.dialog_file_context_rename))) {
-                        showRenameDialog(folder);
-                    } else if (selected.equals(getString(R.string.dialog_file_context_delete))) {
-                        showDeleteDialog(folder);
-                    }
-                })
-                .show();
-    }
-
-    private void showNewFileInFolderDialog(File folder) {
-        // Step 1: Show template selection
-        String[] names = FileTemplates.getDisplayNames();
-        String[] keys = FileTemplates.getKeys();
-
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.menu_create_file)
-                .setItems(names, (dialog, which) -> {
-                    String key = keys[which];
-                    String[] tpl = FileTemplates.get(key);
-                    if (tpl == null) return;
-                    showNewFileNameDialog(folder, key, tpl[0]);
-                })
-                .setNegativeButton(R.string.dialog_cancel, null)
-                .show();
-    }
-
-    private void showNewFileNameDialog(File folder, String templateKey, String templateName) {
-        EditText input = newEditForDialog(getString(R.string.dialog_new_java_hint));
-
-        new AlertDialog.Builder(this)
-                .setTitle(templateName)
-                .setView(input)
-                .setPositiveButton(R.string.dialog_create, (d, w) -> {
-                    String name = input.getText().toString().trim();
-                    if (name.isEmpty()) return;
-                    String className = name.replace(".java", "").replace(".kt", "");
-                    String[] tpl = FileTemplates.get(templateKey);
-                    String template = "";
-                    if (tpl != null) {
-                        template = FileTemplates.format(tpl[1], className);
-                    }
-                    // Add package declaration for Maven projects
-                    if (projectManager.isMavenProject() && templateKey.equals(FileTemplates.KEY_CLASS)) {
-                        try {
-                            String pkg = ProjectLayoutHelper.mainPackageName(projectManager.getProjectDir());
-                            template = "package " + pkg + ";\n\n" + template;
-                        } catch (Exception ignored) {}
-                    }
-                    try {
-                        File f = projectManager.createFile(className, template);
-                        if (f != null) {
-                            refreshFileTree();
-                            openFile(f);
-                            drawerLayout.closeDrawer(GravityCompat.START);
-                        } else {
-                            Toast.makeText(this, getString(R.string.toast_file_exists, className),
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    } catch (IOException e) {
-                        Toast.makeText(this, getString(R.string.toast_error_prefix, e.getMessage()),
-                                Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .setNegativeButton(R.string.dialog_cancel, null)
-                .show();
-    }
-
-    private void showNewFolderInFolderDialog(File folder) {
-        EditText input = newEditForDialog(getString(R.string.dialog_create_folder_hint));
-
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.dialog_create_folder_title)
-                .setView(input)
-                .setPositiveButton(R.string.dialog_create, (d, w) -> {
-                    String name = input.getText().toString().trim();
-                    if (name.isEmpty()) return;
-                    File sub = new File(folder, name);
-                    if (sub.exists()) {
-                        Toast.makeText(this, R.string.folder_already_exists, Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    if (sub.mkdirs()) {
-                        refreshFileTree();
-                    } else {
-                        Toast.makeText(this, R.string.folder_create_failed, Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .setNegativeButton(R.string.dialog_cancel, null)
-                .show();
+        if (fileTreeController != null) fileTreeController.showFolderContextMenu(folder);
     }
 
     private void showFileContextMenu(File file) {
-        String[] options = {
-                getString(R.string.dialog_file_context_open),
-                getString(R.string.dialog_file_context_rename),
-                getString(R.string.dialog_file_context_copy),
-                getString(R.string.dialog_file_context_delete)
-        };
-        new AlertDialog.Builder(this)
-                .setTitle(file.getName())
-                .setItems(options, (dialog, which) -> {
-                    switch (which) {
-                        case 0: openFile(file); break;
-                        case 1: showRenameDialog(file); break;
-                        case 2: copiedFile = file; Toast.makeText(this, R.string.toast_file_copied, Toast.LENGTH_SHORT).show(); break;
-                        case 3: showDeleteDialog(file); break;
-                    }
-                })
-                .show();
+        if (fileTreeController != null) fileTreeController.showFileContextMenu(file);
     }
 
     private void showRenameDialog(File file) {
-        EditText input = newEditForDialog("");
-        String currentNameWithoutExt = file.isDirectory() ? file.getName() :
-                (file.getName().endsWith(".java") ? file.getName().substring(0, file.getName().length() - 5) : file.getName());
-        input.setText(currentNameWithoutExt);
-
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.dialog_rename)
-                .setView(input)
-                .setPositiveButton(R.string.dialog_rename, (d, w) -> {
-                    String newName = input.getText().toString().trim();
-                    if (newName.isEmpty() || newName.equals(currentNameWithoutExt)) return;
-                    File parent = file.getParentFile() != null ? file.getParentFile() : projectManager.getProjectDir();
-                    File newFile;
-                    if (file.isDirectory()) {
-                        newFile = new File(parent, newName);
-                    } else {
-                        if (file.getName().endsWith(".java") && !newName.endsWith(".java") && !newName.contains(".")) {
-                            newFile = new File(parent, newName + ".java");
-                        } else {
-                            newFile = new File(parent, newName);
-                        }
-                    }
-                    int tabIdx = tabsAdapter.indexOfFile(file);
-                    if (tabIdx >= 0) saveCurrentToActiveTab();
-                    if (file.renameTo(newFile)) {
-                        if (tabIdx >= 0) {
-                            tabsAdapter.removeTab(tabIdx);
-                        }
-                        refreshFileTree();
-                        if (newFile.isFile()) {
-                            openFile(newFile);
-                        }
-                    } else {
-                        Toast.makeText(this, R.string.toast_rename_failed, Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .setNegativeButton(R.string.dialog_cancel, null)
-                .show();
+        if (fileTreeController != null) fileTreeController.showRenameDialog(file);
     }
 
     private void showDeleteDialog(File file) {
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.dialog_delete_file_title)
-                .setMessage(getString(R.string.dialog_delete_file_message, file.getName()))
-                .setPositiveButton(R.string.dialog_delete, (d, w) -> {
-                    int tabIdx = tabsAdapter.indexOfFile(file);
-                    if (tabIdx >= 0) doCloseTab(tabIdx);
-                    projectManager.deleteFile(file);
-                    refreshFileTree();
-                })
-                .setNegativeButton(R.string.dialog_cancel, null)
-                .show();
+        if (fileTreeController != null) fileTreeController.showDeleteDialog(file);
     }
 
     private void pasteFileToFolder(File folder) {
-        if (copiedFile == null || !copiedFile.exists()) {
-            copiedFile = null;
-            return;
-        }
-        File dest = new File(folder, copiedFile.getName());
-        if (dest.exists()) {
-            new AlertDialog.Builder(this)
-                    .setTitle(R.string.toast_file_exists_title)
-                    .setMessage(getString(R.string.toast_file_exists, copiedFile.getName()))
-                    .setPositiveButton(R.string.dialog_overwrite, (d, w) -> {
-                        doPasteFile(folder, dest);
-                    })
-                    .setNegativeButton(R.string.dialog_cancel, null)
-                    .show();
-        } else {
-            doPasteFile(folder, dest);
-        }
-    }
-
-    private void doPasteFile(File folder, File dest) {
-        try {
-            java.io.InputStream in = new java.io.FileInputStream(copiedFile);
-            java.io.OutputStream out = new java.io.FileOutputStream(dest);
-            byte[] buf = new byte[4096];
-            int len;
-            while ((len = in.read(buf)) > 0) out.write(buf, 0, len);
-            in.close();
-            out.close();
-            Toast.makeText(this, getString(R.string.toast_file_pasted, folder.getName()), Toast.LENGTH_SHORT).show();
-            refreshFileTree();
-        } catch (IOException e) {
-            Toast.makeText(this, getString(R.string.toast_error_prefix, e.getMessage()), Toast.LENGTH_SHORT).show();
-        }
+        if (fileTreeController != null) fileTreeController.pasteFileToFolder(folder);
     }
 
     private void createArchiveFromFolder(File folder) {
-        Intent i = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-        i.addCategory(Intent.CATEGORY_OPENABLE);
-        i.setType("application/zip");
-        i.putExtra(Intent.EXTRA_TITLE, folder.getName() + ".zip");
-        pendingArchiveFolder = folder;
-        try {
-            startActivityForResult(i, REQ_ARCHIVE_FOLDER);
-        } catch (Exception e) {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
+        if (fileTreeController != null) fileTreeController.createArchiveFromFolder(folder);
     }
 
-    private File pendingArchiveFolder;
-
     private void archiveFolderToUri(Uri uri) {
-        File folder = pendingArchiveFolder;
-        if (folder == null || !folder.exists()) return;
-        new Thread(() -> {
-            try (java.io.OutputStream os = getContentResolver().openOutputStream(uri);
-                 java.util.zip.ZipOutputStream zos = new java.util.zip.ZipOutputStream(os)) {
-                if (os == null) throw new IOException("Cannot open output");
-                zipDir(folder, folder, zos);
-                runOnUiThread(() -> Toast.makeText(this,
-                        getString(R.string.toast_archive_created, folder.getName() + ".zip"),
-                        Toast.LENGTH_SHORT).show());
-            } catch (Exception e) {
-                runOnUiThread(() -> Toast.makeText(this,
-                        getString(R.string.toast_archive_failed, e.getMessage()),
-                        Toast.LENGTH_SHORT).show());
-            }
-        }, "archive-folder").start();
+        if (fileTreeController != null) fileTreeController.archiveFolderToUri(uri);
     }
 
     // ══════════════════════════════════════════════════════════
@@ -5242,21 +4452,21 @@ public class MainActivity extends AppCompatActivity {
     // ══════════════════════════════════════════════════════════
 
     private void pickMediaFile() {
-        Intent i = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        i.addCategory(Intent.CATEGORY_OPENABLE);
-        i.setType("*/*");
-        String[] mimeTypes = {
-                "audio/*",
-                "video/*",
-                "audio/mpeg",
-                "audio/mp3",
-                "audio/wav",
-                "audio/ogg",
-                "video/mp4",
-                "video/webm",
-                "video/3gpp"
-        };
-        i.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
+        Intent i;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            // Photo Picker (API 33+) — system-provided, no permission needed
+            i = new Intent(android.provider.MediaStore.ACTION_PICK_IMAGES);
+            i.setType("*/*");
+            String[] mimeTypes = {"audio/*", "video/*"};
+            i.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
+        } else {
+            i = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            i.addCategory(Intent.CATEGORY_OPENABLE);
+            i.setType("*/*");
+            String[] mimeTypes = {"audio/*", "video/*", "audio/mpeg", "audio/mp3",
+                    "audio/wav", "audio/ogg", "video/mp4", "video/webm", "video/3gpp"};
+            i.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
+        }
         try {
             startActivityForResult(i, REQ_PLAY_MEDIA);
         } catch (Exception e) {
@@ -5857,643 +5067,46 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // ══════════════════════════════════════════════════════════
-    //  CPU Profiler
+    //  CPU Profiler — delegated to ProfilerPanelManager
     // ══════════════════════════════════════════════════════════
-
-    private void setupProfilerToolbar() {
-        if (flameChartView == null) return;
-
-        // Respect power saving mode for initial state
-        profilerLiveMode = !powerSaving.isPowerSavingActive();
-
-        View profilerRefresh = findViewById(R.id.profilerRefresh);
-        View profilerZoomIn = findViewById(R.id.profilerZoomIn);
-        View profilerZoomOut = findViewById(R.id.profilerZoomOut);
-        View profilerFit = findViewById(R.id.profilerFit);
-        TextView profilerLiveToggle = findViewById(R.id.profilerLiveToggle);
-
-        if (profilerRefresh != null) profilerRefresh.setOnClickListener(v -> refreshProfilerResults());
-        if (profilerZoomIn != null) profilerZoomIn.setOnClickListener(v -> flameChartView.zoomIn());
-        if (profilerZoomOut != null) profilerZoomOut.setOnClickListener(v -> flameChartView.zoomOut());
-        if (profilerFit != null) profilerFit.setOnClickListener(v -> flameChartView.fitToScreen());
-
-        View profilerRunBtn = findViewById(R.id.profilerRunBtn);
-        if (profilerRunBtn != null) profilerRunBtn.setOnClickListener(v -> runWithProfiler());
-
-        if (profilerLiveToggle != null) {
-            updateLiveToggleUI(profilerLiveToggle);
-            profilerLiveToggle.setOnClickListener(v -> {
-                profilerLiveMode = !profilerLiveMode;
-                updateLiveToggleUI(profilerLiveToggle);
-                if (profilerLiveMode && profilingEnabled) {
-                    profilerRefreshHandler.removeCallbacks(profilerRefreshRunnable);
-                    profilerRefreshHandler.post(profilerRefreshRunnable);
-                    if (powerSaving.isPowerSavingActive()) {
-                        Toast.makeText(this, "⚠ Live mode active — higher battery usage", Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    profilerRefreshHandler.removeCallbacks(profilerRefreshRunnable);
-                }
-            });
-        }
-
-        flameChartView.setOnNodeSelectedListener(profile -> {
-            if (profilerDetailScroll != null && profilerDetail != null) {
-                profilerDetailScroll.setVisibility(View.VISIBLE);
-                StringBuilder sb = new StringBuilder();
-                sb.append("Method: ").append(profile.fullSignature()).append("\n");
-                sb.append("Class:  ").append(profile.className).append("\n");
-                sb.append("─────────────────────────────\n");
-                sb.append(String.format(java.util.Locale.US, "Total time:  %.3f ms\n", profile.getTotalTimeMs()));
-                sb.append(String.format(java.util.Locale.US, "Avg time:    %.3f ms\n", profile.getAvgTimeMs()));
-                sb.append(String.format(java.util.Locale.US, "Max time:    %.3f ms\n", profile.getMaxTimeMs()));
-                sb.append(String.format(java.util.Locale.US, "Invocations: %d\n", profile.invocationCount.get()));
-                sb.append("─────────────────────────────\n");
-
-                long total = com.ccs.javadroid.profiler.ProfilerBridge.getTotalTime();
-                double pct = total > 0 ? (profile.totalTime.get() * 100.0 / total) : 0;
-                sb.append(String.format(java.util.Locale.US, "Share: %.1f%% of total\n", pct));
-
-                profilerDetail.setText(sb.toString());
-            }
-        });
-    }
-
-    private void updateLiveToggleUI(TextView toggle) {
-        if (profilerLiveMode) {
-            toggle.setText("● Live");
-            toggle.setTextColor(0xFF499C54);
-        } else {
-            toggle.setText("○ Paused");
-            toggle.setTextColor(0xFF888888);
-        }
-    }
-
-    private void startProfilerLiveRefresh() {
-        profilerRefreshHandler.removeCallbacks(profilerRefreshRunnable);
-        if (profilerLiveMode) {
-            profilerRefreshHandler.post(profilerRefreshRunnable);
-        }
-    }
-
-    private void stopProfilerLiveRefresh() {
-        profilerRefreshHandler.removeCallbacks(profilerRefreshRunnable);
-    }
-
-    // ══════════════════════════════════════════════════════════
-    //  TODO/FIXME Tracker
-    // ══════════════════════════════════════════════════════════
-
-    private void refreshTodoPanel() {
-        if (todoAdapter == null || todoStatus == null) return;
-        if (projectManager == null) return;
-
-        new Thread(() -> {
-            File root = projectManager.getProjectDir();
-            if (root == null) {
-                runOnUiThread(() -> {
-                    todoAdapter.setItems(new ArrayList<>());
-                    todoStatus.setText("No project");
-                });
-                return;
-            }
-
-            java.util.List<File> sources = ProjectScanner.listJavaSources(root);
-            java.util.List<ProblemItem> allProblems = com.ccs.javadroid.analysis.StaticAnalyzer.analyze(
-                    MainActivity.this, root, sources);
-
-            int todoCount = 0;
-            int fixmeCount = 0;
-            for (ProblemItem p : allProblems) {
-                if (p.message != null && p.message.contains("TODO")) todoCount++;
-                if (p.message != null && p.message.contains("FIXME")) fixmeCount++;
-            }
-            final int finalTodoCount = todoCount;
-            final int finalFixmeCount = fixmeCount;
-
-            runOnUiThread(() -> {
-                todoAdapter.setItems(allProblems);
-                todoStatus.setText(finalTodoCount + " TODO, " + finalFixmeCount + " FIXME");
-                if (todoSearch != null && !todoSearch.getText().toString().isEmpty()) {
-                    todoAdapter.filter(todoSearch.getText().toString());
-                }
-            });
-        }).start();
-    }
-
-    private void refreshProfilerResults() {
-        if (flameChartView == null || profilerStatus == null) return;
-
-        java.util.List<com.ccs.javadroid.profiler.ProfilerBridge.MethodProfile> results =
-                com.ccs.javadroid.profiler.ProfilerBridge.getResults();
-
-        if (results.isEmpty()) {
-            profilerStatus.setText(profilingEnabled ? "Collecting data..." : "No data — run code with profiler");
-            if (!profilingEnabled) flameChartView.clear();
-            if (profilerDetailScroll != null && !profilingEnabled) profilerDetailScroll.setVisibility(View.GONE);
-            return;
-        }
-
-        // Sort by total time descending
-        results.sort((a, b) -> Long.compare(b.totalTime.get(), a.totalTime.get()));
-
-        flameChartView.setProfiles(results);
-
-        long totalNs = com.ccs.javadroid.profiler.ProfilerBridge.getTotalTime();
-        double totalMs = totalNs / 1_000_000.0;
-        String liveIndicator = (profilingEnabled && profilerLiveMode) ? " ●LIVE" : "";
-        profilerStatus.setText(String.format(java.util.Locale.US,
-                "%d methods, %.1f ms total%s", results.size(), totalMs, liveIndicator));
-    }
-
-    private void runWithProfiler() {
-        if (isRunning) return;
-        FileTab activeTab = tabsAdapter.getActiveTab();
-        if (activeTab == null) {
-            Toast.makeText(this, R.string.toast_no_file_open, Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (!activeTab.file.getName().endsWith(".java")) {
-            Toast.makeText(this, "Profiler only supports Java files", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        saveCurrentToActiveTab();
-
-        // Respect power saving: disable live refresh when battery is low
-        profilerLiveMode = !powerSaving.isPowerSavingActive();
-
-        isRunning = true;
-        profilingEnabled = true;
-        consoleOutput.setText("");
-        switchBottomPanel(PANEL_RUN);
-        appendConsole("Profiling: " + activeTab.file.getName(), theme.textDim);
-
-        String source = activeEditor.getText().toString();
-
-        // We need to compile, instrument, and run with profiling
-        new Thread(() -> {
-            try {
-                String className = com.ccs.javadroid.tools.compilers.ProjectCompiler.extractClassNamePublic(source);
-                File cacheDir = new File(getCacheDir(), "profile_compile_cache");
-                if (cacheDir.exists()) {
-                    File[] oldFiles = cacheDir.listFiles();
-                    if (oldFiles != null) {
-                        for (File f : oldFiles) {
-                            if (f.getName().equals("android.jar")) continue;
-                            f.delete();
-                        }
-                    }
-                }
-                if (!cacheDir.exists()) cacheDir.mkdirs();
-
-                File androidJar = com.ccs.javadroid.tools.compilers.ProjectCompiler.ensureAndroidJarPublic(this, cacheDir);
-                File srcFile = new File(cacheDir, className + ".java");
-                com.ccs.javadroid.tools.compilers.ProjectCompiler.writeUtf8Public(srcFile, source);
-
-                runOnUiThread(() -> appendConsole("   Compiling...", theme.textDim));
-                String ecjErr = com.ccs.javadroid.tools.compilers.ProjectCompiler.compileEcjPublic(
-                        androidJar, null, cacheDir,
-                        new com.ccs.javadroid.util.AppPreferences(this).getJavaTarget(), srcFile);
-                if (ecjErr != null) {
-                    isRunning = false;
-                    profilingEnabled = false;
-                    runOnUiThread(() -> {
-                        stopProfilerLiveRefresh();
-                        appendConsole("Compilation Error:\n" + ecjErr, theme.errorText);
-                    });
-                    return;
-                }
-
-                File classFile = com.ccs.javadroid.tools.compilers.ProjectCompiler.findClassFilePublic(cacheDir, className);
-                if (classFile == null) {
-                    isRunning = false;
-                    profilingEnabled = false;
-                    runOnUiThread(() -> {
-                        stopProfilerLiveRefresh();
-                        appendConsole("Error: class file not found", theme.errorText);
-                    });
-                    return;
-                }
-
-                runOnUiThread(() -> appendConsole("   Instrumenting for profiling...", theme.textDim));
-                com.ccs.javadroid.profiler.ProfilerBridge.reset();
-                com.ccs.javadroid.profiler.ProfilerBridge.start();
-                com.ccs.javadroid.profiler.ProfilerInstrumenter.instrumentFile(classFile);
-
-                File dexDir = new File(cacheDir, "profile_dex");
-                if (!dexDir.exists()) dexDir.mkdirs();
-                else {
-                    File[] oldFiles = dexDir.listFiles();
-                    if (oldFiles != null) {
-                        for (File f : oldFiles) f.delete();
-                    }
-                }
-
-                runOnUiThread(() -> appendConsole("   Converting to DEX...", theme.textDim));
-                com.ccs.javadroid.tools.compilers.ProjectCompiler.runD8DexPublic(androidJar, dexDir, classFile);
-
-                String fqClassName = classFile.getAbsolutePath()
-                        .substring(cacheDir.getAbsolutePath().length() + 1)
-                        .replace(".class", "")
-                        .replace('/', '.');
-
-                runOnUiThread(() -> appendConsole("   Running with profiler...", theme.textDim));
-
-                // Start live refresh
-                runOnUiThread(() -> startProfilerLiveRefresh());
-
-                // Run the dex
-                com.ccs.javadroid.tools.compilers.ProjectCompiler.debugRunDex(
-                        this, fqClassName, dexDir, cacheDir, null,
-                        new com.ccs.javadroid.tools.compilers.ProjectCompiler.Callback() {
-                            @Override
-                            public void onProgress(String msg) {}
-
-                            @Override
-                            public void onResult(String output) {
-                                com.ccs.javadroid.profiler.ProfilerBridge.stop();
-                                isRunning = false;
-                                profilingEnabled = false;
-                                runOnUiThread(() -> stopProfilerLiveRefresh());
-
-                                runOnUiThread(() -> {
-                                    appendConsole("", theme.accent);
-                                    appendConsole("══════════════════════════════", theme.accent);
-                                    if (output != null && !output.trim().isEmpty()) {
-                                        boolean err = output.startsWith("Compilation Error")
-                                                || output.startsWith("Execution Exception")
-                                                || output.startsWith("System Error")
-                                                || output.startsWith("Error:");
-                                        appendConsole(output.trim(), err ? theme.errorText : theme.consoleText);
-                                    }
-                                    appendConsole("\nProfiling complete. Results on Profile tab.", theme.successText);
-                                    refreshProfilerResults();
-                                });
-                            }
-
-                            @Override
-                            public void onProblems(List<ProblemItem> problems) {}
-                        });
-            } catch (Exception e) {
-                isRunning = false;
-                profilingEnabled = false;
-                runOnUiThread(() -> {
-                    stopProfilerLiveRefresh();
-                    appendConsole("Profiler error: " + e.getMessage(), theme.errorText);
-                });
-            }
-        }, "ProfilerRunner").start();
-    }
 
     // ══════════════════════════════════════════════════════════
     //  Dependency Graph
     // ══════════════════════════════════════════════════════════
 
-    private void refreshDependencyGraph() {
-        if (depsGraphView == null || projectManager == null) return;
-
-        // Setup toolbar listeners once
-        if (depsGraphView.getTag() == null) {
-            depsGraphView.setTag("init");
-
-            View depsRefresh = findViewById(R.id.depsRefresh);
-            View depsZoomIn = findViewById(R.id.depsZoomIn);
-            View depsZoomOut = findViewById(R.id.depsZoomOut);
-            View depsFit = findViewById(R.id.depsFitToScreen);
-
-            if (depsRefresh != null) depsRefresh.setOnClickListener(v -> refreshDependencyGraph());
-            if (depsZoomIn != null) depsZoomIn.setOnClickListener(v -> depsGraphView.zoomIn());
-            if (depsZoomOut != null) depsZoomOut.setOnClickListener(v -> depsGraphView.zoomOut());
-            if (depsFit != null) depsFit.setOnClickListener(v -> depsGraphView.fitToScreen());
-        }
-
-        if (depsStatus != null) depsStatus.setText("Analyzing...");
-
-        new Thread(() -> {
-            try {
-                com.ccs.javadroid.tools.bytecode.DependencyModel model =
-                        new com.ccs.javadroid.tools.bytecode.DependencyModel();
-
-                File projectDir = projectManager.getProjectDir();
-                if (projectDir == null) {
-                    runOnUiThread(() -> { if (depsStatus != null) depsStatus.setText("No project"); });
-                    return;
-                }
-
-                File outDir = new File(projectDir, "out");
-                File targetDir = new File(projectDir, "target");
-                File buildDir = new File(projectDir, "build");
-
-                int count = 0;
-                if (outDir.isDirectory()) count += model.analyzeDirectory(outDir);
-                if (targetDir.isDirectory()) count += model.analyzeDirectory(targetDir);
-                if (buildDir.isDirectory()) count += model.analyzeDirectory(buildDir);
-
-                int finalCount = count;
-                dependencyModel = model;
-                runOnUiThread(() -> {
-                    if (depsGraphView != null) {
-                        depsGraphView.setModel(model);
-                        depsGraphView.fitToScreen();
-                    }
-                    if (depsStatus != null) {
-                        depsStatus.setText(finalCount + " classes, "
-                                + model.getClasses().size() + " nodes, "
-                                + model.getEdges().size() + " edges");
-                    }
-                });
-            } catch (Exception e) {
-                runOnUiThread(() -> {
-                    if (depsStatus != null) depsStatus.setText("Error: " + e.getMessage());
-                });
-            }
-        }).start();
-    }
+    // ══════════════════════════════════════════════════════════
+    //  TODO/FIXME Tracker — delegated to TodoPanelManager
+    // ══════════════════════════════════════════════════════════
 
     // ══════════════════════════════════════════════════════════
-    //  Refactoring
+    //  Dependency Graph
+    // ══════════════════════════════════════════════════════════
+
+    // ══════════════════════════════════════════════════════════
+    //  Dependency Viewer — delegated to DependencyPanelManager
+    // ══════════════════════════════════════════════════════════
+
+    // ══════════════════════════════════════════════════════════
+    //  Refactoring — delegated to RefactorController
     // ══════════════════════════════════════════════════════════
 
     private void showRefactorDialog() {
-        if (activeEditor == null) return;
-
-        io.github.rosemoe.sora.text.Cursor cursor = activeEditor.getCursor();
-        int line = cursor.getLeftLine();
-        int col = cursor.getLeftColumn();
-
-        String lineText = "";
-        try {
-            lineText = activeEditor.getText().getLine(line).toString();
-        } catch (Exception ignored) {}
-
-        String selectedText = "";
-        try {
-            io.github.rosemoe.sora.text.Content content = activeEditor.getText();
-            int leftLine = cursor.getLeftLine();
-            int leftCol = cursor.getLeftColumn();
-            int rightLine = cursor.getRightLine();
-            int rightCol = cursor.getRightColumn();
-            if (leftLine == rightLine) {
-                selectedText = content.getLine(leftLine).subSequence(leftCol, rightCol).toString().trim();
-            } else {
-                StringBuilder sb = new StringBuilder();
-                sb.append(content.getLine(leftLine).subSequence(leftCol, content.getLine(leftLine).length()));
-                for (int i = leftLine + 1; i < rightLine; i++) {
-                    sb.append("\n").append(content.getLine(i));
-                }
-                if (rightLine < content.getLineCount()) {
-                    sb.append("\n").append(content.getLine(rightLine).subSequence(0, rightCol));
-                }
-                selectedText = sb.toString().trim();
-            }
-        } catch (Exception ignored) {}
-
-        if (selectedText.isEmpty()) {
-            selectedText = extractWordAtCursor(lineText, col);
-        }
-
-        String finalSelectedText = selectedText;
-        String[] items = {
-                "Rename '" + selectedText + "'",
-                "Extract Method",
-                "Extract Variable",
-                "Inline Method",
-                "Find Usages of '" + selectedText + "'"
-        };
-
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.refactor_rename_title)
-                .setItems(items, (dialog, which) -> {
-                    switch (which) {
-                        case 0: showRenameDialog(finalSelectedText); break;
-                        case 1: showExtractMethodDialog(); break;
-                        case 2: showExtractVariableDialog(); break;
-                        case 3: showInlineDialog(finalSelectedText); break;
-                        case 4: showFindUsagesDialog(finalSelectedText); break;
-                    }
-                })
-                .show();
-    }
-
-    private String extractWordAtCursor(String lineText, int col) {
-        if (lineText.isEmpty() || col > lineText.length()) return "";
-        int start = col;
-        while (start > 0 && Character.isJavaIdentifierPart(lineText.charAt(start - 1))) start--;
-        int end = col;
-        while (end < lineText.length() && Character.isJavaIdentifierPart(lineText.charAt(end))) end++;
-        return lineText.substring(start, end);
-    }
-
-    private void showRenameDialog(String currentName) {
-        EditText input = new EditText(this);
-        input.setText(currentName);
-        input.setHint(R.string.refactor_rename_hint);
-        input.setTextColor(theme.text);
-        input.setHintTextColor(theme.textDim);
-        input.setSelection(currentName.length());
-        int pad = dp(16);
-        input.setPadding(pad, pad, pad, pad);
-
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.refactor_rename_title)
-                .setView(input)
-                .setPositiveButton("Rename", (d, w) -> {
-                    String newName = input.getText().toString().trim();
-                    if (newName.isEmpty() || newName.equals(currentName)) return;
-                    if (!com.ccs.javadroid.tools.refactor.RefactoringHelper.isValidIdentifier(newName)) {
-                        Toast.makeText(this, "Invalid identifier", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-
-                    File projectRoot = projectManager != null ? projectManager.getProjectDir() : null;
-                    com.ccs.javadroid.tools.refactor.RefactoringHelper.renameSymbolAsync(
-                            this, projectRoot, currentName, newName, result -> {
-                                Toast.makeText(this, result.summary, Toast.LENGTH_LONG).show();
-                                if (result.filesChanged > 0) {
-                                    refreshProblemsMergedAsync();
-                                    FileTab tab = (activeEditor == editor) ? leftTab : rightTab;
-                                    if (tab != null) reloadTab(tab);
-                                }
-                            });
-                })
-                .setNegativeButton(R.string.dialog_cancel, null)
-                .show();
-    }
-
-    private void showExtractMethodDialog() {
-        if (activeEditor == null) return;
-
-        io.github.rosemoe.sora.text.Cursor cursor = activeEditor.getCursor();
-        int selStartLine = cursor.getLeftLine();
-        int selEndLine = cursor.getRightLine();
-
-        if (selStartLine == selEndLine && selStartLine == cursor.getRightLine()) {
-            Toast.makeText(this, "Select code block to extract", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        EditText input = new EditText(this);
-        input.setHint(R.string.refactor_extract_method_hint);
-        input.setTextColor(theme.text);
-        input.setHintTextColor(theme.textDim);
-        int pad = dp(16);
-        input.setPadding(pad, pad, pad, pad);
-
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.refactor_extract_method_title)
-                .setView(input)
-                .setPositiveButton("Extract", (d, w) -> {
-                    String methodName = input.getText().toString().trim();
-                    if (methodName.isEmpty()) return;
-                    if (!com.ccs.javadroid.tools.refactor.RefactoringHelper.isValidIdentifier(methodName)) {
-                        Toast.makeText(this, "Invalid identifier", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-
-                    String source = activeEditor.getText().toString();
-                    com.ccs.javadroid.tools.refactor.RefactoringHelper.extractMethodAsync(
-                            this, source, selStartLine, selEndLine, methodName, result -> {
-                                Toast.makeText(this, result.summary, Toast.LENGTH_SHORT).show();
-                            });
-                })
-                .setNegativeButton(R.string.dialog_cancel, null)
-                .show();
-    }
-
-    private void showExtractVariableDialog() {
-        if (activeEditor == null) return;
-
-        io.github.rosemoe.sora.text.Cursor cursor = activeEditor.getCursor();
-        String lineText = "";
-        try {
-            lineText = activeEditor.getText().getLine(cursor.getLeftLine()).toString();
-        } catch (Exception ignored) {}
-
-        String selectedText = "";
-        try {
-            io.github.rosemoe.sora.text.Content content = activeEditor.getText();
-            int leftLine = cursor.getLeftLine();
-            int leftCol = cursor.getLeftColumn();
-            int rightLine = cursor.getRightLine();
-            int rightCol = cursor.getRightColumn();
-            if (leftLine == rightLine) {
-                selectedText = content.getLine(leftLine).subSequence(leftCol, rightCol).toString().trim();
-            } else {
-                StringBuilder sb = new StringBuilder();
-                sb.append(content.getLine(leftLine).subSequence(leftCol, content.getLine(leftLine).length()));
-                for (int i = leftLine + 1; i < rightLine; i++) {
-                    sb.append("\n").append(content.getLine(i));
-                }
-                if (rightLine < content.getLineCount()) {
-                    sb.append("\n").append(content.getLine(rightLine).subSequence(0, rightCol));
-                }
-                selectedText = sb.toString().trim();
-            }
-        } catch (Exception ignored) {}
-
-        if (selectedText.isEmpty()) {
-            Toast.makeText(this, "Select an expression to extract", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        EditText input = new EditText(this);
-        input.setHint(R.string.refactor_extract_variable_hint);
-        input.setTextColor(theme.text);
-        input.setHintTextColor(theme.textDim);
-        int pad = dp(16);
-        input.setPadding(pad, pad, pad, pad);
-
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.refactor_extract_variable_title)
-                .setView(input)
-                .setPositiveButton("Extract", (d, w) -> {
-                    String varName = input.getText().toString().trim();
-                    if (varName.isEmpty()) return;
-                    if (!com.ccs.javadroid.tools.refactor.RefactoringHelper.isValidIdentifier(varName)) {
-                        Toast.makeText(this, "Invalid identifier", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-
-                    String source = activeEditor.getText().toString();
-                    com.ccs.javadroid.tools.refactor.RefactoringHelper.extractVariableAsync(
-                            source, cursor.getLeftLine(),
-                            cursor.getLeftColumn(), cursor.getRightColumn(),
-                            varName, result -> {
-                                Toast.makeText(this, result.summary, Toast.LENGTH_SHORT).show();
-                            });
-                })
-                .setNegativeButton(R.string.dialog_cancel, null)
-                .show();
-    }
-
-    private void showInlineDialog(String methodName) {
-        if (activeEditor == null || methodName.isEmpty()) return;
-
-        String source = activeEditor.getText().toString();
-
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.refactor_inline_title)
-                .setMessage("Inline method '" + methodName + "'?")
-                .setPositiveButton("Inline", (d, w) -> {
-                    com.ccs.javadroid.tools.refactor.RefactoringHelper.inlineMethodAsync(
-                            this, source, methodName, result -> {
-                                Toast.makeText(this, result.summary, Toast.LENGTH_SHORT).show();
-                            });
-                })
-                .setNegativeButton(R.string.dialog_cancel, null)
-                .show();
-    }
-
-    private void showFindUsagesDialog(String symbolName) {
-        if (symbolName.isEmpty() || projectManager == null) return;
-
-        File projectRoot = projectManager.getProjectDir();
-        new Thread(() -> {
-            java.util.List<com.ccs.javadroid.tools.refactor.RefactoringHelper.UsageLocation> usages =
-                    com.ccs.javadroid.tools.refactor.RefactoringHelper.findUsages(projectRoot, symbolName);
-            runOnUiThread(() -> {
-                if (usages.isEmpty()) {
-                    Toast.makeText(this, "No usages found for '" + symbolName + "'", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                StringBuilder sb = new StringBuilder();
-                sb.append(usages.size()).append(" usages of '").append(symbolName).append("':\n\n");
-                for (int i = 0; i < Math.min(usages.size(), 20); i++) {
-                    com.ccs.javadroid.tools.refactor.RefactoringHelper.UsageLocation u = usages.get(i);
-                    sb.append(u.file.getName()).append(":").append(u.line).append("  ");
-                    sb.append(u.lineContent.trim()).append("\n");
-                }
-                if (usages.size() > 20) {
-                    sb.append("... and ").append(usages.size() - 20).append(" more");
-                }
-
-                new AlertDialog.Builder(this)
-                        .setTitle("Usages of '" + symbolName + "'")
-                        .setMessage(sb.toString())
-                        .setPositiveButton("OK", null)
-                        .show();
+        if (refactorController == null) {
+            refactorController = new RefactorController(this, new RefactorController.Callback() {
+                @Override public CodeEditor getActiveEditor() { return activeEditor; }
+                @Override public ProjectManager getProjectManager() { return projectManager; }
+                @Override public AppTheme getTheme() { return theme; }
+                @Override public void runOnUiThread(Runnable r) { MainActivity.this.runOnUiThread(r); }
+                @Override public void refreshProblemsAsync() { refreshProblemsMergedAsync(); }
+                @Override public FileTab getActiveTab() { return tabsAdapter.getActiveTab(); }
+                @Override public FileTab getLeftTab() { return leftTab; }
+                @Override public FileTab getRightTab() { return rightTab; }
+                @Override public CodeEditor getEditor() { return editor; }
+                @Override public CodeEditor getEditor2() { return editor2; }
+                @Override public void reloadTab(FileTab tab) { /* handled by controller */ }
+                @Override public int dp(int v) { return MainActivity.this.dp(v); }
             });
-        }).start();
-    }
-
-    private void reloadTab(FileTab tab) {
-        if (tab == null || tab.file == null || !tab.file.exists()) return;
-        try {
-            byte[] bytes = java.nio.file.Files.readAllBytes(tab.file.toPath());
-            String content = new String(bytes, java.nio.charset.StandardCharsets.UTF_8);
-
-            isProgrammaticChange = true;
-            try {
-                CodeEditor ed = (tab == leftTab) ? editor : editor2;
-                if (ed != null) {
-                    ed.setText(content);
-                }
-            } finally {
-                isProgrammaticChange = false;
-            }
-        } catch (Exception ignored) {
         }
+        refactorController.showDialog();
     }
 }

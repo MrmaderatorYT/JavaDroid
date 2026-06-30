@@ -337,7 +337,7 @@ public class WelcomeActivity extends AppCompatActivity {
                     intent.setData(android.net.Uri.parse("package:" + getPackageName()));
                     startActivity(intent);
                 } catch (Exception e3) {
-                    Toast.makeText(this, "Cannot open settings. Please grant storage permission manually.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, R.string.toast_cannot_open_settings, Toast.LENGTH_LONG).show();
                 }
             }
         }

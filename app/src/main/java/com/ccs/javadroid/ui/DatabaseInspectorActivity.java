@@ -92,7 +92,7 @@ public class DatabaseInspectorActivity extends AppCompatActivity {
 
         String path = getIntent().getStringExtra(EXTRA_DB_PATH);
         if (path == null) {
-            Toast.makeText(this, "No database file specified", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.toast_no_database, Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
@@ -133,7 +133,7 @@ public class DatabaseInspectorActivity extends AppCompatActivity {
         leftPanel.setLayoutParams(new LinearLayout.LayoutParams(dp(200), ViewGroup.LayoutParams.MATCH_PARENT));
 
         TextView tablesLabel = new TextView(this);
-        tablesLabel.setText("TABLES");
+        tablesLabel.setText(R.string.label_tables);
         tablesLabel.setTextColor(theme.textDim);
         tablesLabel.setTextSize(11);
         tablesLabel.setTypeface(new AppPreferences(this).resolveTypeface());
@@ -237,7 +237,7 @@ public class DatabaseInspectorActivity extends AppCompatActivity {
             } catch (Exception e) {
                 ui.post(() -> {
                     statusText.setText("Error: " + e.getMessage());
-                    Toast.makeText(this, "Cannot open database: " + e.getMessage(),
+                    Toast.makeText(this, getString(R.string.toast_cannot_open_db, e.getMessage()),
                             Toast.LENGTH_LONG).show();
                 });
             }
@@ -259,7 +259,7 @@ public class DatabaseInspectorActivity extends AppCompatActivity {
             ui.post(() -> {
                 if (tables.isEmpty()) {
                     TextView empty = new TextView(this);
-                    empty.setText("No tables found");
+                    empty.setText(R.string.label_no_tables);
                     empty.setTextColor(theme.textDim);
                     empty.setPadding(dp(8), dp(12), dp(8), dp(0));
                     tablesList.addView(empty);
@@ -294,12 +294,12 @@ public class DatabaseInspectorActivity extends AppCompatActivity {
     private void executeQuery() {
         String sql = sqlInput.getText().toString().trim();
         if (sql.isEmpty()) {
-            Toast.makeText(this, "Enter a SQL query", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.toast_enter_sql, Toast.LENGTH_SHORT).show();
             return;
         }
 
         resultContainer.removeAllViews();
-        statusText.setText("Executing...");
+        statusText.setText(R.string.label_executing);
 
         io.execute(() -> {
             long start = System.currentTimeMillis();
@@ -357,7 +357,7 @@ public class DatabaseInspectorActivity extends AppCompatActivity {
                                 for (String value : cells) {
                                     TextView cell = new TextView(this);
                                     if (value == null) {
-                                        cell.setText("NULL");
+                                        cell.setText(R.string.label_null);
                                         cell.setTextColor(theme.textDim);
                                     } else {
                                         if (value.length() > 80) {

@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#1E1E20"
+    tools:context=".WelcomeActivity">
+
+    <!-- ── TOP BAR: Logo + Tabs ── -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#2B2D30"
+        android:gravity="center_vertical"
+        android:paddingStart="12dp"
+        android:paddingEnd="8dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="4dp">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@mipmap/ic_launcher"
+            android:contentDescription="@string/a11y_welcome_logo" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="JavaDroid"
+            android:textColor="#FFFFFF"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:layout_marginStart="6dp" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <!-- Tabs in a horizontal scroll -->
+        <HorizontalScrollView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:scrollbars="none"
+            android:layout_marginStart="12dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/sidebarProjects"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:gravity="center_vertical"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:text="Projects"
+                    android:textColor="#FFFFFF"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:background="#3574F0"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:contentDescription="@string/a11y_welcome_projects_tab" />
+
+                <TextView
+                    android:id="@+id/sidebarCustomize"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:gravity="center_vertical"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:text="Customize"
+                    android:textColor="#DFE1E5"
+                    android:textSize="11sp"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:contentDescription="@string/a11y_welcome_customize_tab" />
+
+                <TextView
+                    android:id="@+id/sidebarPlugins"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:gravity="center_vertical"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:text="Plugins"
+                    android:textColor="#DFE1E5"
+                    android:textSize="11sp"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:contentDescription="@string/a11y_welcome_plugins_tab" />
+
+                <TextView
+                    android:id="@+id/sidebarMaterials"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:gravity="center_vertical"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:text="Materials"
+                    android:textColor="#DFE1E5"
+                    android:textSize="11sp"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:contentDescription="@string/a11y_welcome_materials_tab" />
+
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <ImageView
+            android:id="@+id/sidebarSettings"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/ic_settings"
+            android:contentDescription="@string/a11y_welcome_settings"
+            android:tint="#DFE1E5"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true" />
+    </LinearLayout>
+
+    <!-- ── CONTENT AREA ── -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:padding="12dp">
+
+        <!-- Header Actions -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="12dp">
+
+            <EditText
+                android:id="@+id/etSearchProjects"
+                android:layout_width="0dp"
+                android:layout_height="32dp"
+                android:layout_weight="1"
+                android:background="#2B2D30"
+                android:hint="Search projects"
+                android:contentDescription="@string/a11y_welcome_search"
+                android:textColorHint="#6F737A"
+                android:textColor="#FFFFFF"
+                android:textSize="11sp"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:singleLine="true"
+                android:layout_marginEnd="8dp" />
+
+            <Button
+                android:id="@+id/btnNewProject"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:text="New"
+                android:textAllCaps="false"
+                android:textSize="11sp"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#3574F0"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:contentDescription="@string/a11y_welcome_new_project"
+                android:layout_marginEnd="4dp" />
+
+            <Button
+                android:id="@+id/btnOpenProject"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:text="Open"
+                android:textAllCaps="false"
+                android:textSize="11sp"
+                android:textColor="#DFE1E5"
+                android:backgroundTint="#393B40"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:contentDescription="@string/a11y_welcome_open_project"
+                android:layout_marginEnd="4dp" />
+
+            <Button
+                android:id="@+id/btnCloneRepo"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:text="VCS"
+                android:textAllCaps="false"
+                android:textSize="11sp"
+                android:textColor="#808080"
+                android:backgroundTint="#2B2D30"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:contentDescription="@string/a11y_welcome_get_from_vcs" />
+
+        </LinearLayout>
+
+        <!-- Project List View / Placeholders -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:id="@+id/layoutEmptyProjects"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="No recent projects"
+                    android:textColor="#8F939C"
+                    android:textSize="13sp"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Create a new Maven project or open an existing directory."
+                    android:textColor="#6F737A"
+                    android:textSize="10sp" />
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvRecentProjects"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="vertical" />
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,5 +1,6 @@
 package com.ccs.javadroid.ui;
 
+import com.ccs.javadroid.R;
 import com.ccs.javadroid.util.AppPreferences;
 
 import android.content.ClipData;
@@ -62,7 +63,7 @@ public class CodeBlockView extends LinearLayout {
         header.addView(tvLang);
 
         tvCopy = new TextView(context);
-        tvCopy.setText(" Copy ");
+        tvCopy.setText(R.string.label_copy);
         tvCopy.setTextColor(0xFF4A86C8);
         tvCopy.setTextSize(11);
         tvCopy.setPadding(dp(8), dp(2), dp(8), dp(2));
@@ -71,7 +72,7 @@ public class CodeBlockView extends LinearLayout {
                     context.getSystemService(Context.CLIPBOARD_SERVICE);
             if (cm != null) {
                 cm.setPrimaryClip(ClipData.newPlainText("code", code));
-                Toast.makeText(context, "Copied!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.toast_copied, Toast.LENGTH_SHORT).show();
             }
         });
         header.addView(tvCopy);

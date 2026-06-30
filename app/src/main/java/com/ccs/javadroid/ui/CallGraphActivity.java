@@ -84,12 +84,12 @@ public class CallGraphActivity extends AppCompatActivity {
 
         String dir = getIntent().getStringExtra(EXTRA_PROJECT_DIR);
         if (dir == null) {
-            Toast.makeText(this, "No project directory", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.toast_no_project, Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
 
-        statusText.setText("Analyzing project...");
+        statusText.setText(R.string.label_analyzing_project);
         io.execute(() -> {
             try {
                 model = new CallGraphModel();
@@ -111,7 +111,7 @@ public class CallGraphActivity extends AppCompatActivity {
             } catch (Exception e) {
                 ui.post(() -> {
                     statusText.setText("Error: " + e.getMessage());
-                    Toast.makeText(this, "Analysis failed: " + e.getMessage(),
+                    Toast.makeText(this, getString(R.string.toast_analysis_failed, e.getMessage()),
                             Toast.LENGTH_LONG).show();
                 });
             }
@@ -167,7 +167,7 @@ public class CallGraphActivity extends AppCompatActivity {
         methodLabel.setTextSize(12);
         methodLabel.setTypeface(new AppPreferences(this).resolveTypeface());
         methodLabel.setPadding(dp(12), dp(8), dp(12), dp(8));
-        methodLabel.setText("Select a method to see its call graph");
+        methodLabel.setText(R.string.label_select_method);
         root.addView(methodLabel);
 
         // Content
@@ -198,7 +198,7 @@ public class CallGraphActivity extends AppCompatActivity {
 
         if (methods.isEmpty()) {
             TextView empty = new TextView(this);
-            empty.setText("No project methods found");
+            empty.setText(R.string.label_no_methods);
             empty.setTextColor(theme.textDim);
             empty.setPadding(0, dp(24), 0, 0);
             empty.setGravity(Gravity.CENTER);

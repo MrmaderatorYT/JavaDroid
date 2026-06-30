@@ -271,6 +271,7 @@
     <string name="git_error">Git error</string>
     <string name="menu_format_code">Format code</string>
     <string name="settings_format_on_save">Format code on save</string>
+    <string name="settings_minimap">Show code minimap</string>
     <string name="menu_library_manager">Library Manager</string>
     <string name="lib_title">Library Manager</string>
     <string name="lib_search_hint">e.g. gson, okhttp, junit</string>
@@ -964,6 +965,56 @@
     <string name="refactor_inline_title">Inline Method</string>
     <string name="refactor_find_usages">Find Usages</string>
     <string name="refactor_result">Refactoring result</string>
+
+    <!-- Hardcoded strings - Toast messages -->
+    <string name="toast_invalid_identifier">Invalid identifier</string>
+    <string name="toast_select_code_block">Select code block to extract</string>
+    <string name="toast_select_expression">Select an expression to extract</string>
+    <string name="toast_no_usages">No usages found for \'%1$s\'</string>
+    <string name="toast_copied">Copied!</string>
+    <string name="toast_cannot_open_settings">Cannot open settings. Please grant storage permission manually.</string>
+    <string name="toast_no_project">No project directory</string>
+    <string name="toast_analysis_failed">Analysis failed: %1$s</string>
+    <string name="toast_added_watch">Added watch: %1$s</string>
+    <string name="toast_voice_not_initialized">Voice input not initialized</string>
+    <string name="toast_voice_stopped">Stopped</string>
+    <string name="toast_voice_listening">Listening… Speak now</string>
+    <string name="toast_added">Added: %1$s</string>
+    <string name="toast_project_copied_internal">Project copied to internal storage</string>
+    <string name="toast_file_empty">File is empty</string>
+    <string name="toast_no_method_selected">No method selected</string>
+    <string name="toast_select_instruction">Select an instruction first</string>
+    <string name="toast_ldc_changed">LDC operand changed to: %1$s</string>
+    <string name="toast_instruction_deleted">Instruction %1$d deleted</string>
+    <string name="toast_nop_inserted">NOP inserted %1$s instruction %2$d</string>
+    <string name="toast_compile_error">Compile error</string>
+    <string name="toast_error">Error: %1$s</string>
+    <string name="toast_open_java_class">Open a .java or .class file first</string>
+    <string name="toast_no_database">No database file specified</string>
+    <string name="toast_cannot_open_db">Cannot open database: %1$s</string>
+    <string name="toast_enter_sql">Enter a SQL query</string>
+    <string name="toast_no_file">No file specified</string>
+    <string name="toast_enter_url">Enter a URL</string>
+    <string name="toast_error_loading_file">Error loading .http file: %1$s</string>
+    <string name="toast_key_saved">Key saved</string>
+    <string name="toast_already_running">Already running</string>
+    <string name="toast_svg_parse_error">SVG parse error: %1$s</string>
+    <string name="toast_image_decode_failed">Failed to decode image</string>
+    <string name="toast_file_not_found">File not found</string>
+    <string name="toast_error_loading">Error loading: %1$s</string>
+
+    <!-- Hardcoded strings - UI labels -->
+    <string name="label_tables">TABLES</string>
+    <string name="label_no_tables">No tables found</string>
+    <string name="label_executing">Executing…</string>
+    <string name="label_null">NULL</string>
+    <string name="label_copy">Copy</string>
+    <string name="label_no_results">No results</string>
+    <string name="label_none">(none)</string>
+    <string name="label_analyzing">Analyzing…</string>
+    <string name="label_analyzing_project">Analyzing project…</string>
+    <string name="label_select_method">Select a method to see its call graph</string>
+    <string name="label_no_methods">No project methods found</string>
 
     <!-- Settings -->
     <string name="settings_inclusive_mode">Inclusive Mode</string>

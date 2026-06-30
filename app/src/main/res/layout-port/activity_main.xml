@@ -1,0 +1,1535 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawerLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/idea_bg">
+
+    <!-- ══════════════ MAIN CONTENT ══════════════ -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!-- ── TOOLBAR ── -->
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:scrollbars="none"
+            android:background="@color/idea_toolbar"
+            android:fillViewport="true">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="wrap_content"
+            android:layout_height="44dp"
+            android:background="@android:color/transparent"
+            android:elevation="0dp"
+            app:contentInsetStart="0dp"
+            app:contentInsetStartWithNavigation="0dp">
+
+            <TextView
+                android:id="@+id/toolbarTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/app_name"
+                android:textColor="@color/idea_text"
+                android:textSize="13sp"
+                android:fontFamily="sans-serif" />
+
+            <!-- Undo / Redo handled by menu -->
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/toolbarBack"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:gravity="center"
+                android:text="←"
+                android:textColor="@color/idea_text"
+                android:textSize="18sp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:layout_marginEnd="4dp"
+                android:visibility="gone"
+                android:contentDescription="@string/a11y_back" />
+
+            <TextView
+                android:id="@+id/toolbarOverflow"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_gravity="end"
+                android:gravity="center"
+                android:text="⋮"
+                android:textColor="@color/idea_text"
+                android:textSize="20sp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:layout_marginEnd="4dp"
+                android:contentDescription="@string/a11y_overflow_menu" />
+
+        </androidx.appcompat.widget.Toolbar>
+
+        </HorizontalScrollView>
+
+        <!-- ── FILE TABS BAR ── -->
+        <LinearLayout
+            android:id="@+id/tabsBar"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:orientation="horizontal"
+            android:background="@color/idea_toolbar">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/tabsRecycler"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:scrollbars="none" />
+
+            <!-- New tab button -->
+            <TextView
+                android:id="@+id/btnNewTab"
+                android:layout_width="36dp"
+                android:layout_height="match_parent"
+                android:text="+"
+                android:textColor="@color/idea_text_dim"
+                android:textSize="18sp"
+                android:gravity="center"
+                android:background="?attr/selectableItemBackground"
+                android:contentDescription="@string/a11y_new_tab" />
+
+        </LinearLayout>
+
+        <!-- Active tab accent line -->
+        <View
+            android:id="@+id/tabBorder"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/idea_tab_border" />
+
+        <!-- ── FIND & REPLACE BAR (hidden by default) ── -->
+        <LinearLayout
+            android:id="@+id/findBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#252527"
+            android:visibility="gone">
+
+            <!-- Find row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:orientation="horizontal"
+                android:paddingStart="8dp"
+                android:paddingEnd="4dp"
+                android:gravity="center_vertical">
+
+                <EditText
+                    android:id="@+id/etFind"
+                    android:layout_width="0dp"
+                    android:layout_height="28dp"
+                    android:layout_weight="1"
+                    android:hint="@string/find_hint"
+                    android:contentDescription="@string/a11y_find_input"
+                    android:textColorHint="#555555"
+                    android:textColor="@color/idea_text"
+                    android:textSize="12sp"
+                    android:background="#2B2B2B"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:singleLine="true"
+                    android:imeOptions="actionSearch"
+                    android:inputType="text" />
+
+                <TextView
+                    android:id="@+id/btnFindPrev"
+                    android:layout_width="32dp"
+                    android:layout_height="28dp"
+                    android:text="↑"
+                    android:textColor="@color/idea_text"
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:layout_marginStart="4dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:contentDescription="@string/a11y_find_previous" />
+
+                <TextView
+                    android:id="@+id/btnFindNext"
+                    android:layout_width="32dp"
+                    android:layout_height="28dp"
+                    android:text="↓"
+                    android:textColor="@color/idea_text"
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:background="?attr/selectableItemBackground"
+                    android:contentDescription="@string/a11y_find_next" />
+
+                <TextView
+                    android:id="@+id/btnFindClose"
+                    android:layout_width="32dp"
+                    android:layout_height="28dp"
+                    android:text="✕"
+                    android:textColor="@color/idea_text_dim"
+                    android:textSize="12sp"
+                    android:gravity="center"
+                    android:layout_marginStart="4dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:contentDescription="@string/a11y_find_close" />
+
+                <Switch
+                    android:id="@+id/switchFindScope"
+                    android:layout_width="wrap_content"
+                    android:layout_height="28dp"
+                    android:text="File"
+                    android:textColor="@color/idea_accent"
+                    android:textSize="10sp"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="6dp"
+                    android:layout_marginStart="4dp"
+                    android:thumbTint="@color/idea_accent"
+                    android:trackTint="@color/idea_toolbar"
+                    android:contentDescription="@string/a11y_find_scope" />
+
+            </LinearLayout>
+
+            <!-- Replace row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:orientation="horizontal"
+                android:paddingStart="8dp"
+                android:paddingEnd="4dp"
+                android:gravity="center_vertical">
+
+                <EditText
+                    android:id="@+id/etReplace"
+                    android:layout_width="0dp"
+                    android:layout_height="28dp"
+                    android:layout_weight="1"
+                    android:hint="@string/replace_hint"
+                    android:contentDescription="@string/a11y_replace_input"
+                    android:textColorHint="#555555"
+                    android:textColor="@color/idea_text"
+                    android:textSize="12sp"
+                    android:background="#2B2B2B"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:singleLine="true"
+                    android:inputType="text" />
+
+                <TextView
+                    android:id="@+id/btnReplace"
+                    android:layout_width="wrap_content"
+                    android:layout_height="28dp"
+                    android:text="@string/replace"
+                    android:textColor="@color/idea_accent"
+                    android:textSize="11sp"
+                    android:gravity="center"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:layout_marginStart="4dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:contentDescription="@string/a11y_replace" />
+
+                <TextView
+                    android:id="@+id/btnReplaceAll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="28dp"
+                    android:text="@string/replace_all"
+                    android:textColor="@color/idea_accent"
+                    android:textSize="11sp"
+                    android:gravity="center"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:contentDescription="@string/a11y_replace_all" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/idea_separator" />
+
+        </LinearLayout>
+
+        <!-- ── KEY ACCESSORY BAR ── -->
+        <HorizontalScrollView
+            android:id="@+id/keyAccessoryBar"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:background="#2B2D30"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:id="@+id/accessoryBarLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingStart="6dp"
+                android:paddingEnd="6dp" />
+        </HorizontalScrollView>
+
+        <!-- ── EDITORS CONTAINER (SPLIT) ── -->
+        <LinearLayout
+            android:id="@+id/editorsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="3"
+            android:orientation="horizontal">
+
+            <FrameLayout
+                android:id="@+id/wrapperEditor1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:padding="1dp">
+
+                <io.github.rosemoe.sora.widget.CodeEditor
+                    android:id="@+id/editor"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/a11y_editor" />
+
+                <com.ccs.javadroid.debug.BreakpointOverlay
+                    android:id="@+id/breakpointOverlay1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/a11y_breakpoint_overlay" />
+
+                <com.ccs.javadroid.debug.BookmarkOverlay
+                    android:id="@+id/bookmarkOverlay1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/a11y_bookmark_overlay" />
+
+                <com.ccs.javadroid.ui.MinimapView
+                    android:id="@+id/minimapView1"
+                    android:layout_width="48dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="end"
+                    android:alpha="0.85"
+                    android:contentDescription="@string/a11y_minimap" />
+            </FrameLayout>
+
+            <View
+                android:id="@+id/editorDivider"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/idea_separator"
+                android:visibility="gone" />
+
+            <FrameLayout
+                android:id="@+id/wrapperEditor2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:padding="1dp"
+                android:visibility="gone">
+
+                <io.github.rosemoe.sora.widget.CodeEditor
+                    android:id="@+id/editor2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/a11y_editor2" />
+
+                <com.ccs.javadroid.debug.BreakpointOverlay
+                    android:id="@+id/breakpointOverlay2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/a11y_breakpoint_overlay" />
+
+                <com.ccs.javadroid.debug.BookmarkOverlay
+                    android:id="@+id/bookmarkOverlay2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/a11y_bookmark_overlay" />
+
+                <com.ccs.javadroid.ui.MinimapView
+                    android:id="@+id/minimapView2"
+                    android:layout_width="48dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="end"
+                    android:alpha="0.85"
+                    android:visibility="gone"
+                    android:contentDescription="@string/a11y_minimap" />
+            </FrameLayout>
+        </LinearLayout>
+
+        <!-- Editor / Console divider (draggable) -->
+        <View
+            android:id="@+id/consoleDivider"
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:background="@color/idea_separator" />
+
+        <!-- ── DEBUG TOOLBAR (hidden by default) ── -->
+        <LinearLayout
+            android:id="@+id/debugToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="28dp"
+            android:orientation="horizontal"
+            android:background="@color/idea_toolbar"
+            android:gravity="center_vertical"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/debugLocation"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:paddingStart="8dp"
+                android:text=""
+                android:textColor="@color/idea_accent"
+                android:textSize="10sp"
+                android:fontFamily="monospace" />
+
+            <TextView
+                android:id="@+id/btnDebugStepOver"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:paddingStart="6dp"
+                android:paddingEnd="6dp"
+                android:gravity="center"
+                android:text="Step Over"
+                android:textColor="@color/idea_text_dim"
+                android:textSize="10sp"
+                android:background="?attr/selectableItemBackground"
+                android:contentDescription="@string/a11y_debug_step_over" />
+
+            <TextView
+                android:id="@+id/btnDebugStepInto"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:paddingStart="6dp"
+                android:paddingEnd="6dp"
+                android:gravity="center"
+                android:text="Step Into"
+                android:textColor="@color/idea_text_dim"
+                android:textSize="10sp"
+                android:background="?attr/selectableItemBackground"
+                android:contentDescription="@string/a11y_debug_step_into" />
+
+            <TextView
+                android:id="@+id/btnDebugStepOut"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:paddingStart="6dp"
+                android:paddingEnd="6dp"
+                android:gravity="center"
+                android:text="Step Out"
+                android:textColor="@color/idea_text_dim"
+                android:textSize="10sp"
+                android:background="?attr/selectableItemBackground"
+                android:contentDescription="@string/a11y_debug_step_out" />
+
+            <TextView
+                android:id="@+id/btnDebugResume"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:paddingStart="6dp"
+                android:paddingEnd="6dp"
+                android:gravity="center"
+                android:text="Resume"
+                android:drawableStart="@drawable/ic_debug_resume"
+                android:drawablePadding="4dp"
+                android:textColor="@color/idea_run_green"
+                android:textSize="10sp"
+                android:background="?attr/selectableItemBackground"
+                android:contentDescription="@string/a11y_debug_resume" />
+
+            <TextView
+                android:id="@+id/btnDebugStop"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:paddingStart="6dp"
+                android:paddingEnd="6dp"
+                android:gravity="center"
+                android:text="Stop"
+                android:drawableStart="@drawable/ic_debug_stop"
+                android:drawablePadding="4dp"
+                android:textColor="@color/idea_error_text"
+                android:textSize="10sp"
+                android:background="?attr/selectableItemBackground"
+                android:contentDescription="@string/a11y_debug_stop" />
+
+            <TextView
+                android:id="@+id/btnDebugEvaluate"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:paddingStart="6dp"
+                android:paddingEnd="6dp"
+                android:gravity="center"
+                android:text="Eval"
+                android:textColor="@color/idea_text_dim"
+                android:textSize="10sp"
+                android:background="?attr/selectableItemBackground"
+                android:contentDescription="@string/a11y_debug_evaluate" />
+
+            <TextView
+                android:id="@+id/btnToggleBreakpoint"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:paddingStart="6dp"
+                android:paddingEnd="6dp"
+                android:gravity="center"
+                android:text="BP"
+                android:drawableStart="@drawable/ic_debug_breakpoint"
+                android:drawablePadding="4dp"
+                android:textColor="@color/idea_error_text"
+                android:textSize="10sp"
+                android:background="?attr/selectableItemBackground"
+                android:contentDescription="@string/a11y_toggle_breakpoint" />
+
+        </LinearLayout>
+
+        <!-- ── BOTTOM PANEL TABS (scrollable so Bytecode stays reachable on narrow screens) ── -->
+        <LinearLayout
+            android:id="@+id/bottomTabsBar"
+            android:layout_width="match_parent"
+            android:layout_height="28dp"
+            android:orientation="horizontal"
+            android:background="@color/idea_toolbar">
+
+            <HorizontalScrollView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:fillViewport="false"
+                android:scrollbars="none"
+                android:fadeScrollbars="false">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:id="@+id/tabRun"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:gravity="center_vertical"
+                        android:text="@string/tab_run"
+                        android:textSize="11sp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:contentDescription="@string/a11y_tab_run" />
+
+                    <TextView
+                        android:id="@+id/tabProblems"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:gravity="center_vertical"
+                        android:text="@string/tab_problems"
+                        android:textSize="11sp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:contentDescription="@string/a11y_tab_problems" />
+
+                    <TextView
+                        android:id="@+id/tabBytecode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:gravity="center_vertical"
+                        android:text="@string/tab_bytecode"
+                        android:textSize="11sp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:contentDescription="@string/a11y_tab_bytecode" />
+
+                    <TextView
+                        android:id="@+id/tabDebug"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:gravity="center_vertical"
+                        android:text="@string/tab_debug"
+                        android:textSize="11sp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:visibility="gone"
+                        android:contentDescription="@string/a11y_tab_debug" />
+
+                    <TextView
+                        android:id="@+id/tabDebugConsole"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:gravity="center_vertical"
+                        android:text="@string/tab_debug_console"
+                        android:textSize="11sp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:visibility="gone"
+                        android:contentDescription="@string/a11y_tab_debug_console" />
+
+                    <TextView
+                        android:id="@+id/tabCallGraph"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:gravity="center_vertical"
+                        android:text="Graph"
+                        android:textColor="@color/idea_accent"
+                        android:textSize="11sp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:contentDescription="@string/a11y_tab_call_graph" />
+
+                    <TextView
+                        android:id="@+id/tabBookmarks"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:gravity="center_vertical"
+                        android:text="★"
+                        android:textSize="14sp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:contentDescription="@string/a11y_tab_bookmarks" />
+
+                    <TextView
+                        android:id="@+id/tabDeps"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:gravity="center_vertical"
+                        android:text="Deps"
+                        android:textSize="11sp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:contentDescription="@string/a11y_tab_deps" />
+
+                    <TextView
+                        android:id="@+id/tabProfiler"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:gravity="center_vertical"
+                        android:text="Profile"
+                        android:textSize="11sp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:contentDescription="@string/a11y_tab_profiler" />
+
+                    <TextView
+                        android:id="@+id/tabTodo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:gravity="center_vertical"
+                        android:text="TODO"
+                        android:textSize="11sp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:contentDescription="@string/a11y_tab_todo" />
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <TextView
+                android:id="@+id/btnClearConsole"
+                android:layout_width="36dp"
+                android:layout_height="match_parent"
+                android:text="⊘"
+                android:textColor="@color/idea_text_dim"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:background="?attr/selectableItemBackground"
+                android:contentDescription="@string/a11y_clear_console" />
+
+        </LinearLayout>
+
+        <!-- ── RUN / PROBLEMS CONTENT ── -->
+        <FrameLayout
+            android:id="@+id/bottomPanelContent"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <ScrollView
+                android:id="@+id/consoleScroll"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/idea_console_bg"
+                android:fillViewport="true">
+
+                <TextView
+                    android:id="@+id/consoleOutput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:textColor="@color/idea_console_text"
+                    android:fontFamily="monospace"
+                    android:textSize="12sp"
+                    android:lineSpacingMultiplier="1.2"
+                    android:textIsSelectable="true" />
+
+            </ScrollView>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/problemsRecycler"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/idea_console_bg"
+                android:visibility="gone"
+                android:scrollbars="vertical" />
+
+            <!-- ── Bookmarks list ── -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/bookmarksRecycler"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/idea_console_bg"
+                android:visibility="gone"
+                android:scrollbars="vertical" />
+
+            <!-- ── Bytecode viewer: split (method tree + instructions) ── -->
+            <LinearLayout
+                android:id="@+id/bytecodeRoot"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:background="@color/idea_console_bg"
+                android:visibility="gone">
+
+                <!-- toolbar: search + toggles -->
+                <LinearLayout
+                    android:id="@+id/bytecodeToolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="32dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@color/idea_toolbar"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="6dp">
+
+                    <EditText
+                        android:id="@+id/bytecodeSearch"
+                        android:layout_width="0dp"
+                        android:layout_height="26dp"
+                        android:layout_weight="1"
+                        android:hint="@string/bytecode_search_hint"
+                        android:contentDescription="@string/a11y_bytecode_search"
+                        android:textColorHint="@color/idea_text_dim"
+                        android:textColor="@color/idea_console_text"
+                        android:textSize="11sp"
+                        android:singleLine="true"
+                        android:imeOptions="actionSearch"
+                        android:inputType="text"
+                        android:background="@android:color/transparent"
+                        android:paddingStart="4dp"
+                        android:paddingEnd="4dp" />
+
+                    <TextView
+                        android:id="@+id/bytecodeToggleHex"
+                        android:layout_width="wrap_content"
+                        android:layout_height="26dp"
+                        android:gravity="center"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text="HEX"
+                        android:textColor="@color/idea_text_dim"
+                        android:textSize="11sp"
+                        android:fontFamily="monospace"
+                        android:background="?attr/selectableItemBackground"
+                        android:contentDescription="@string/a11y_bytecode_toggle_hex" />
+
+                    <TextView
+                        android:id="@+id/bytecodeToggleLines"
+                        android:layout_width="wrap_content"
+                        android:layout_height="26dp"
+                        android:gravity="center"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text="Ln"
+                        android:textColor="@color/idea_console_text"
+                        android:textSize="11sp"
+                        android:fontFamily="monospace"
+                        android:background="?attr/selectableItemBackground"
+                        android:contentDescription="@string/a11y_bytecode_toggle_lines" />
+
+                    <TextView
+                        android:id="@+id/bytecodeToggleComments"
+                        android:layout_width="wrap_content"
+                        android:layout_height="26dp"
+                        android:gravity="center"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text="Cmt"
+                        android:textColor="@color/idea_console_text"
+                        android:textSize="11sp"
+                        android:fontFamily="monospace"
+                        android:background="?attr/selectableItemBackground"
+                        android:contentDescription="@string/a11y_bytecode_toggle_comments" />
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="16dp"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginEnd="4dp"
+                        android:background="@color/idea_separator" />
+
+                    <TextView
+                        android:id="@+id/bytecodeEditInsn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="26dp"
+                        android:gravity="center"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text="Edit"
+                        android:textColor="@color/idea_accent"
+                        android:textSize="11sp"
+                        android:fontFamily="monospace"
+                        android:background="?attr/selectableItemBackground"
+                        android:contentDescription="@string/a11y_bytecode_edit" />
+
+                    <TextView
+                        android:id="@+id/bytecodeSave"
+                        android:layout_width="wrap_content"
+                        android:layout_height="26dp"
+                        android:gravity="center"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text="Save"
+                        android:textColor="@color/idea_run_green"
+                        android:textSize="11sp"
+                        android:fontFamily="monospace"
+                        android:background="?attr/selectableItemBackground"
+                        android:contentDescription="@string/a11y_bytecode_save" />
+
+                    <TextView
+                        android:id="@+id/bytecodeRun"
+                        android:layout_width="wrap_content"
+                        android:layout_height="26dp"
+                        android:gravity="center"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text="▶ Run"
+                        android:textColor="@color/idea_run_green"
+                        android:textSize="11sp"
+                        android:fontFamily="monospace"
+                        android:background="?attr/selectableItemBackground"
+                        android:contentDescription="@string/a11y_bytecode_run" />
+
+                    <TextView
+                        android:id="@+id/bytecodeOpenEditor"
+                        android:layout_width="wrap_content"
+                        android:layout_height="26dp"
+                        android:gravity="center"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text="Editor"
+                        android:textColor="@color/idea_accent"
+                        android:textSize="11sp"
+                        android:fontFamily="monospace"
+                        android:background="?attr/selectableItemBackground"
+                        android:contentDescription="@string/a11y_bytecode_open_editor" />
+
+                    <TextView
+                        android:id="@+id/bytecodeCallGraph"
+                        android:layout_width="wrap_content"
+                        android:layout_height="26dp"
+                        android:gravity="center"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text="Graph"
+                        android:textColor="@color/idea_accent"
+                        android:textSize="11sp"
+                        android:fontFamily="monospace"
+                        android:background="?attr/selectableItemBackground"
+                        android:contentDescription="@string/a11y_bytecode_call_graph" />
+                </LinearLayout>
+
+                <!-- status line (class name / method count) -->
+                <TextView
+                    android:id="@+id/bytecodeStatus"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    android:textSize="10sp"
+                    android:fontFamily="monospace"
+                    android:textColor="@color/idea_text_dim"
+                    android:background="@color/idea_console_bg" />
+
+                <!-- split: method tree (left) | instructions (right) -->
+                <LinearLayout
+                    android:id="@+id/bytecodeSplitPanel"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/bytecodeMethodTree"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:scrollbars="vertical" />
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/idea_separator" />
+
+                    <FrameLayout
+                        android:id="@+id/bytecodeInsnSlot"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2">
+
+                        <HorizontalScrollView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scrollbars="horizontal"
+                            android:fillViewport="false">
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/bytecodeInstructions"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:nestedScrollingEnabled="false" />
+                        </HorizontalScrollView>
+
+                        <ScrollView
+                            android:id="@+id/bytecodeHexScroll"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:visibility="gone">
+
+                            <HorizontalScrollView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+
+                                <TextView
+                                    android:id="@+id/bytecodeHexOutput"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:padding="6dp"
+                                    android:fontFamily="monospace"
+                                    android:textSize="10sp"
+                                    android:textColor="@color/idea_console_text"
+                                    android:textIsSelectable="true" />
+                            </HorizontalScrollView>
+                        </ScrollView>
+                    </FrameLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Debug Console (output during debugging) -->
+            <ScrollView
+                android:id="@+id/debugConsoleScroll"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/idea_console_bg"
+                android:visibility="gone"
+                android:fillViewport="true">
+
+                <TextView
+                    android:id="@+id/debugConsoleOutput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:textColor="@color/idea_console_text"
+                    android:fontFamily="monospace"
+                    android:textSize="12sp"
+                    android:lineSpacingMultiplier="1.2"
+                    android:textIsSelectable="true" />
+            </ScrollView>
+
+            <!-- Debug Split View -->
+            <LinearLayout
+                android:id="@+id/debuggerSplitPanel"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:background="@color/idea_console_bg"
+                android:visibility="gone">
+
+                <!-- Left: Call Stack -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/callStackRecycler"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/idea_console_bg"
+                    android:nestedScrollingEnabled="false"
+                    android:overScrollMode="never" />
+
+                <!-- Збережено для зворотної сумісності (прихований) -->
+                <TextView
+                    android:id="@+id/callStackOutput"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:visibility="gone" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/idea_separator" />
+
+                <!-- Right: Variables & Watches -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:orientation="vertical">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/variablesRecycler"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:background="@color/idea_console_bg"
+                        android:nestedScrollingEnabled="false"
+                        android:overScrollMode="never" />
+
+                    <!-- Збережено для зворотної сумісності старого коду (прихований) -->
+                    <TextView
+                        android:id="@+id/variablesOutput"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:visibility="gone" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/idea_separator" />
+
+                    <LinearLayout
+                        android:id="@+id/watchesContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:background="@color/idea_console_bg">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="32dp"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:paddingStart="4dp"
+                            android:paddingEnd="4dp">
+
+                            <TextView
+                                android:id="@+id/btnAddWatch"
+                                android:layout_width="wrap_content"
+                                android:layout_height="24dp"
+                                android:paddingStart="8dp"
+                                android:paddingEnd="8dp"
+                                android:gravity="center"
+                                android:text="+ Add Watch"
+                                android:textColor="#499C54"
+                                android:textSize="11sp"
+                                android:background="?attr/selectableItemBackground"
+                                android:contentDescription="@string/a11y_add_watch" />
+                        </LinearLayout>
+
+                        <ScrollView
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:fillViewport="true">
+
+                            <TextView
+                                android:id="@+id/watchesOutput"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:padding="8dp"
+                                android:textColor="@color/idea_console_text"
+                                android:fontFamily="monospace"
+                                android:textSize="11sp"
+                                android:lineSpacingMultiplier="1.2"
+                                android:textIsSelectable="true" />
+                        </ScrollView>
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Call Graph panel -->
+            <LinearLayout
+                android:id="@+id/callGraphRoot"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:background="@color/idea_console_bg"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:id="@+id/callGraphToolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="32dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@color/idea_toolbar"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="6dp">
+
+                    <EditText
+                        android:id="@+id/callGraphSearch"
+                        android:layout_width="0dp"
+                        android:layout_height="26dp"
+                        android:layout_weight="1"
+                        android:hint="Search method..."
+                        android:contentDescription="@string/a11y_callgraph_search"
+                        android:textColorHint="@color/idea_text_dim"
+                        android:textColor="@color/idea_console_text"
+                        android:textSize="11sp"
+                        android:singleLine="true"
+                        android:imeOptions="actionSearch"
+                        android:inputType="text"
+                        android:background="@android:color/transparent"
+                        android:paddingStart="4dp"
+                        android:paddingEnd="4dp" />
+
+                    <TextView
+                        android:id="@+id/callGraphRefresh"
+                        android:layout_width="wrap_content"
+                        android:layout_height="26dp"
+                        android:gravity="center"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text="↻"
+                        android:textColor="@color/idea_accent"
+                        android:textSize="14sp"
+                        android:background="?attr/selectableItemBackground"
+                        android:contentDescription="@string/a11y_call_graph_refresh" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/callGraphStatus"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    android:textSize="10sp"
+                    android:textColor="@color/idea_text_dim"
+                    android:fontFamily="monospace"
+                    android:background="@color/idea_console_bg" />
+
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
+
+                    <LinearLayout
+                        android:id="@+id/callGraphContent"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="6dp" />
+
+                </ScrollView>
+
+            </LinearLayout>
+
+            <!-- ── Dependency Graph panel ── -->
+            <LinearLayout
+                android:id="@+id/depsPanel"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:background="@color/idea_console_bg"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:id="@+id/depsToolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="32dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@color/idea_toolbar"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="6dp">
+
+                    <TextView
+                        android:id="@+id/depsRefresh"
+                        android:layout_width="wrap_content"
+                        android:layout_height="26dp"
+                        android:gravity="center"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text="↻"
+                        android:textColor="@color/idea_accent"
+                        android:textSize="14sp"
+                        android:background="?attr/selectableItemBackground"
+                        android:contentDescription="@string/a11y_deps_refresh" />
+
+                    <TextView
+                        android:id="@+id/depsZoomIn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="26dp"
+                        android:gravity="center"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text="+"
+                        android:textColor="@color/idea_text"
+                        android:textSize="14sp"
+                        android:background="?attr/selectableItemBackground" />
+
+                    <TextView
+                        android:id="@+id/depsZoomOut"
+                        android:layout_width="wrap_content"
+                        android:layout_height="26dp"
+                        android:gravity="center"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text="−"
+                        android:textColor="@color/idea_text"
+                        android:textSize="14sp"
+                        android:background="?attr/selectableItemBackground" />
+
+                    <TextView
+                        android:id="@+id/depsFitToScreen"
+                        android:layout_width="wrap_content"
+                        android:layout_height="26dp"
+                        android:gravity="center"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text="Fit"
+                        android:textColor="@color/idea_text"
+                        android:textSize="11sp"
+                        android:background="?attr/selectableItemBackground" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:id="@+id/depsStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="26dp"
+                        android:gravity="center_vertical"
+                        android:text=""
+                        android:textColor="@color/idea_text_dim"
+                        android:textSize="10sp"
+                        android:fontFamily="monospace" />
+                </LinearLayout>
+
+                <com.ccs.javadroid.ui.DependencyGraphView
+                    android:id="@+id/depsGraphView"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+            </LinearLayout>
+
+            <!-- ── Profiler panel ── -->
+            <LinearLayout
+                android:id="@+id/profilerPanel"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:background="@color/idea_console_bg"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:id="@+id/profilerToolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="32dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@color/idea_toolbar"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="6dp">
+
+                    <TextView
+                        android:id="@+id/profilerRefresh"
+                        android:layout_width="wrap_content"
+                        android:layout_height="26dp"
+                        android:gravity="center"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text="↻"
+                        android:textColor="@color/idea_accent"
+                        android:textSize="14sp"
+                        android:background="?attr/selectableItemBackground" />
+
+                    <TextView
+                        android:id="@+id/profilerZoomIn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="26dp"
+                        android:gravity="center"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text="+"
+                        android:textColor="@color/idea_text"
+                        android:textSize="14sp"
+                        android:background="?attr/selectableItemBackground" />
+
+                    <TextView
+                        android:id="@+id/profilerZoomOut"
+                        android:layout_width="wrap_content"
+                        android:layout_height="26dp"
+                        android:gravity="center"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text="−"
+                        android:textColor="@color/idea_text"
+                        android:textSize="14sp"
+                        android:background="?attr/selectableItemBackground" />
+
+                    <TextView
+                        android:id="@+id/profilerFit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="26dp"
+                        android:gravity="center"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text="Fit"
+                        android:textColor="@color/idea_text"
+                        android:textSize="11sp"
+                        android:background="?attr/selectableItemBackground" />
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="16dp"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginEnd="4dp"
+                        android:background="@color/idea_separator" />
+
+                    <TextView
+                        android:id="@+id/profilerRunBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="26dp"
+                        android:gravity="center"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text="▶ Run"
+                        android:textColor="@color/idea_accent"
+                        android:textSize="11sp"
+                        android:background="?attr/selectableItemBackground" />
+
+                    <TextView
+                        android:id="@+id/profilerLiveToggle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="26dp"
+                        android:gravity="center"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text="● Live"
+                        android:textColor="#499C54"
+                        android:textSize="11sp"
+                        android:background="?attr/selectableItemBackground" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:id="@+id/profilerStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="26dp"
+                        android:gravity="center_vertical"
+                        android:text=""
+                        android:textColor="@color/idea_text_dim"
+                        android:textSize="10sp"
+                        android:fontFamily="monospace" />
+                </LinearLayout>
+
+                <com.ccs.javadroid.ui.FlameChartView
+                    android:id="@+id/flameChartView"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <ScrollView
+                    android:id="@+id/profilerDetailScroll"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:background="@color/idea_console_bg"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/profilerDetail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="8dp"
+                        android:textColor="@color/idea_console_text"
+                        android:fontFamily="monospace"
+                        android:textSize="11sp"
+                        android:lineSpacingMultiplier="1.2"
+                        android:textIsSelectable="true" />
+                </ScrollView>
+
+            </LinearLayout>
+
+            <!-- ── TODO/FIXME panel ── -->
+            <LinearLayout
+                android:id="@+id/todoPanel"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:background="@color/idea_console_bg"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="32dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@color/idea_toolbar"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="6dp">
+
+                    <EditText
+                        android:id="@+id/todoSearch"
+                        android:layout_width="0dp"
+                        android:layout_height="26dp"
+                        android:layout_weight="1"
+                        android:hint="Search TODO/FIXME..."
+                        android:textColorHint="@color/idea_text_dim"
+                        android:textColor="@color/idea_console_text"
+                        android:textSize="11sp"
+                        android:singleLine="true"
+                        android:imeOptions="actionSearch"
+                        android:inputType="text"
+                        android:background="@android:color/transparent"
+                        android:paddingStart="4dp"
+                        android:paddingEnd="4dp" />
+
+                    <TextView
+                        android:id="@+id/todoRefresh"
+                        android:layout_width="wrap_content"
+                        android:layout_height="26dp"
+                        android:gravity="center"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text="↻"
+                        android:textColor="@color/idea_accent"
+                        android:textSize="14sp"
+                        android:background="?attr/selectableItemBackground" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/todoStatus"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    android:textSize="10sp"
+                    android:textColor="@color/idea_text_dim"
+                    android:fontFamily="monospace"
+                    android:background="@color/idea_console_bg" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/todoRecycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:background="@color/idea_console_bg"
+                    android:scrollbars="vertical" />
+
+            </LinearLayout>
+
+        </FrameLayout>
+        <LinearLayout
+            android:id="@+id/statusBar"
+            android:layout_width="match_parent"
+            android:layout_height="22dp"
+            android:orientation="horizontal"
+            android:background="@color/idea_statusbar"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/statusLineCol"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                tools:text="Ln 1, Col 1"
+                android:textColor="@color/idea_statusbar_text"
+                android:textSize="10sp" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="12dp"
+                android:background="@color/idea_separator"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:id="@+id/statusFileName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="@color/idea_text_dim"
+                android:textSize="10sp" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/statusEncoding"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="@string/status_encoding"
+                android:textColor="@color/idea_statusbar_text"
+                android:textSize="10sp"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground"
+                android:contentDescription="@string/a11y_status_encoding" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/status_language_java"
+                android:textColor="@color/idea_statusbar_text"
+                android:textSize="10sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- ══════════════ FILE MANAGER DRAWER ══════════════ -->
+    <include
+        layout="@layout/drawer_file_manager"
+        android:layout_width="260dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start" />
+
+</androidx.drawerlayout.widget.DrawerLayout>

@@ -2,10 +2,12 @@
 <resources>
     <string name="app_name">JavaDroid</string>
 
+    <!-- Menu -->
     <string name="menu_undo">Rückgängig</string>
     <string name="menu_redo">Wiederholen</string>
     <string name="menu_save">Speichern</string>
     <string name="menu_run">Ausführen</string>
+    <string name="menu_debug">Debuggen</string>
     <string name="menu_find_replace">Suchen / Ersetzen</string>
     <string name="menu_bytecode">Bytecode</string>
     <string name="menu_new_java_file">Neue Java-Datei</string>
@@ -13,11 +15,27 @@
     <string name="menu_sync_deps">Abhängigkeiten synchronisieren</string>
     <string name="menu_maven_package">Maven package</string>
     <string name="menu_maven_test">Maven test (Tests kompilieren)</string>
+    <string name="menu_maven_test_run">Maven test (Tests ausführen)</string>
+    <string name="menu_maven_clean">Maven clean</string>
+    <string name="menu_maven_install">Maven install</string>
     <string name="menu_settings">Einstellungen</string>
     <string name="menu_clear_console">Konsole leeren</string>
     <string name="menu_copy_console">Konsole kopieren</string>
     <string name="menu_share_file">Aktuelle Datei teilen</string>
+    <string name="menu_pastebin">An Pastebin teilen</string>
+    <string name="pastebin_title">Pastebin API-Schlüssel</string>
+    <string name="pastebin_message">Holen Sie sich Ihren kostenlosen API-Schlüssel unter pastebin.com/doc_api
+Dann fügen Sie ihn hier ein:</string>
+    <string name="pastebin_hint">Ihr Pastebin API-Entwicklungsschlüssel</string>
+    <string name="pastebin_uploading">Wird zu Pastebin hochgeladen…</string>
+    <string name="pastebin_success">Eingefügt! URL in die Zwischenablage kopiert</string>
+    <string name="pastebin_error">Pastebin-Fehler: %1$s</string>
+    <string name="menu_split_screen">Split-Screen</string>
+    <string name="menu_auto_import">Auto-Import</string>
+    <string name="menu_view_formatted">Formatierte Ansicht (JSON/XML)</string>
+    <string name="menu_md_preview">Markdown-Vorschau</string>
 
+    <!-- Main layout -->
     <string name="drawer_project_label">PROJEKT</string>
     <string name="drawer_maven_hint">Maven: src, main, test</string>
     <string name="find_hint">Suchen…</string>
@@ -27,15 +45,20 @@
     <string name="tab_run">▶  Ausführen</string>
     <string name="tab_problems">Probleme</string>
     <string name="tab_bytecode">Bytecode</string>
+    <string name="tab_debug">Threads &amp; Variablen</string>
+    <string name="tab_debug_console">Konsole</string>
     <string name="status_line">Z. %1$d, Sp. %2$d</string>
     <string name="status_encoding">UTF-8</string>
     <string name="status_language_java">Java</string>
+    <string name="dialog_select_encoding">Dateikodierung wählen</string>
 
+    <!-- Problems adapter -->
     <string name="problem_error">FEHLER</string>
     <string name="problem_warn">WARN</string>
     <string name="problem_info">INFO</string>
     <string name="problem_location_unknown">?</string>
 
+    <!-- Toasts & messages -->
     <string name="error_cannot_create_main">Main.java konnte nicht erstellt werden</string>
     <string name="error_cannot_open">Öffnen fehlgeschlagen: %1$s</string>
     <string name="error_cannot_read">Lesen fehlgeschlagen: %1$s</string>
@@ -47,6 +70,8 @@
     <string name="toast_pom_required">pom.xml erforderlich</string>
     <string name="find_not_found">„%1$s“ nicht gefunden</string>
     <string name="toast_file_exists">%1$s.java existiert bereits</string>
+    <string name="toast_file_exists_title">Datei vorhanden</string>
+    <string name="dialog_overwrite">Überschreiben</string>
     <string name="toast_error_prefix">Fehler: %1$s</string>
     <string name="toast_copied_clipboard">In die Zwischenablage kopiert</string>
     <string name="toast_console_empty">Konsole ist leer</string>
@@ -55,6 +80,7 @@
     <string name="toolbar_project_a11y">Projektname. Langer Tipp zum Kopieren des Projektordners.</string>
     <string name="toast_rename_failed">Umbenennung fehlgeschlagen</string>
 
+    <!-- Dialogs -->
     <string name="dialog_unsaved_title">Ungespeicherte Änderungen</string>
     <string name="dialog_unsaved_message">%1$s hat ungespeicherte Änderungen.</string>
     <string name="dialog_save_close">Speichern &amp; schließen</string>
@@ -68,6 +94,18 @@
     <string name="dialog_new_java_title">Neue Java-Datei</string>
     <string name="dialog_new_java_hint">Klassenname (z. B. MyHelper)</string>
 
+    <string name="dialog_new_project_title">Neues Projekt</string>
+    <string name="project_type_maven">Maven (Java)</string>
+    <string name="project_type_gradle">Gradle (Java)</string>
+    <string name="project_type_bytecode">Bytecode (rein .class)</string>
+    <string name="dialog_new_gradle_title">Neues Gradle-Projekt</string>
+    <string name="dialog_new_gradle_message">Gradle-Struktur (wie IntelliJ): build.gradle, src/main/java mit Paketpfad, src/test/java.
+Stammordner: App-Speicher Documents/JavaDroid/.</string>
+    <string name="dialog_new_bytecode_title">Neues Bytecode-Projekt</string>
+    <string name="dialog_new_bytecode_message">Reines Bytecode-Projekt — schreiben Sie .asm-Dateien, kompilieren Sie zu .class und führen Sie aus.
+Kein Maven, kein pom.xml. Nur Bytecode.
+Stammordner: App-Speicher Documents/JavaDroid/.</string>
+
     <string name="dialog_new_maven_title">Neues Maven-Projekt</string>
     <string name="dialog_new_maven_message">Maven-Struktur (wie IntelliJ): src/main/java mit Paket, main/resources, test/java, test/resources.\nStammordner: App-Speicher Documents/JavaDroid/.</string>
     <string name="dialog_maven_name_hint">Projektordner (z. B. MyApp)</string>
@@ -77,6 +115,13 @@
     <string name="dialog_file_context_open">Öffnen</string>
     <string name="dialog_file_context_rename">Umbenennen</string>
     <string name="dialog_file_context_delete">Löschen</string>
+    <string name="dialog_file_context_copy">Kopieren</string>
+    <string name="dialog_folder_context_paste">Datei hier einfügen</string>
+    <string name="dialog_folder_context_archive">Archiv erstellen</string>
+    <string name="toast_file_copied">Datei kopiert. Lange auf einen Ordner tippen zum Einfügen.</string>
+    <string name="toast_file_pasted">Datei eingefügt nach %1$s</string>
+    <string name="toast_archive_created">Archiv erstellt: %1$s</string>
+    <string name="toast_archive_failed">Archiv konnte nicht erstellt werden: %1$s</string>
 
     <string name="dialog_delete_file_title">Datei löschen</string>
     <string name="dialog_delete_file_message">%1$s löschen? Dies kann nicht rückgängig gemacht werden.</string>
@@ -84,6 +129,7 @@
     <string name="dialog_settings_title">Einstellungen</string>
     <string name="dialog_font_size">Schriftgröße: %1$dsp</string>
 
+    <!-- Console -->
     <string name="console_maven_run">▶ Maven: kompilieren + ausführen…</string>
     <string name="console_running_file">▶ Ausführen: %1$s…</string>
     <string name="console_output_separator">──────────── Ausgabe ────────────</string>
@@ -93,10 +139,18 @@
     <string name="console_sync_done">Synchronisation abgeschlossen.</string>
     <string name="console_mvn_package">▶ mvn package…</string>
     <string name="console_mvn_test_compile">▶ mvn test-compile…</string>
+    <string name="console_mvn_test_run">▶ mvn test (ausführen)…</string>
+    <string name="console_mvn_clean">▶ mvn clean…</string>
+    <string name="console_mvn_install">▶ mvn install…</string>
 
     <string name="bytecode_compiling">Kompilieren…</string>
     <string name="bytecode_only_java">Öffnen Sie eine .java-Datei für JVM-Bytecode (ASM / javap-ähnlich).</string>
     <string name="bytecode_failed">Bytecode: %1$s</string>
+    <string name="bytecode_search_hint">Opcode suchen…</string>
+    <string name="bytecode_no_methods">Keine Methoden</string>
+    <string name="bytecode_empty">Kein Bytecode zum Anzeigen</string>
+    <string name="bytecode_class_loaded">%1$s  ·  %2$d Felder, %3$d Methoden</string>
+    <string name="bytecode_select_method">Wählen Sie eine Methode links</string>
 
     <!-- Settings screen -->
     <string name="settings_section_theme">Design</string>
@@ -126,6 +180,11 @@
     <string name="font_sans">Sans Serif</string>
     <string name="font_serif">Serif</string>
     <string name="font_default">Systemstandard</string>
+    <string name="font_jetbrains">JetBrains Mono</string>
+    <string name="font_fira_code">Fira Code</string>
+    <string name="font_source_code">Source Code Pro</string>
+    <string name="font_dejavu_mono">DejaVu Sans Mono</string>
+    <string name="font_roboto_mono">Roboto Mono</string>
 
     <string name="settings_java_target">Java-Zielversion</string>
     <string name="settings_java_hint">Beeinflusst die ECJ-Kompilierung. Höhere Versionen laufen evtl. nicht über D8.</string>
@@ -136,7 +195,10 @@
     <string name="soon">bald</string>
     <string name="soon_in_development">In Kürze in Entwicklung</string>
 
+    <!-- New features -->
     <string name="menu_open_file">Datei öffnen…</string>
+    <string name="menu_import_files">Dateien in Projekt importieren…</string>
+    <string name="toast_imported_files">%1$d Datei(en) importiert</string>
     <string name="menu_save_as">Speichern unter…</string>
     <string name="menu_export_project">Projekt exportieren (ZIP)</string>
     <string name="toast_imported_to">Importiert als %1$s</string>
@@ -155,6 +217,12 @@
     <string name="git_tab_log">Protokoll</string>
     <string name="git_tab_branches">Branches</string>
     <string name="git_tab_remote">Remote</string>
+    <string name="git_tab_diff">Diff</string>
+    <string name="git_diff_loading">Diff wird geladen…</string>
+    <string name="git_diff_no_changes">Keine Änderungen</string>
+    <string name="git_diff_open_full">Vollständigen Diff-Viewer öffnen</string>
+    <string name="git_diff_error">Diff konnte nicht geladen werden</string>
+    <string name="git_diff_activity_title">Diff</string>
 
     <string name="git_no_repo">Dieses Projekt ist noch kein Git-Repository.\n%1$s</string>
     <string name="git_no_repo_short">kein .git</string>
@@ -205,18 +273,31 @@
     <string name="git_checkout_done">Gewechselt zu %1$s</string>
 
     <string name="git_error">Git-Fehler</string>
-    <string name="menu_auto_import">Auto-Import</string>
-    <string name="menu_view_formatted">Formatierte Ansicht (JSON/XML)</string>
-    <string name="menu_md_preview">Markdown-Vorschau</string>
-    <string name="menu_debug">Debuggen</string>
-    <string name="menu_split_screen">Split-Screen</string>
+    <string name="menu_format_code">Code formatieren</string>
+    <string name="settings_format_on_save">Code beim Speichern formatieren</string>
+    <string name="menu_library_manager">Bibliotheks-Manager</string>
+    <string name="lib_title">Bibliotheks-Manager</string>
+    <string name="lib_search_hint">z.B. gson, okhttp, junit</string>
+    <string name="lib_search">Suchen</string>
+    <string name="lib_searching">Suche auf Maven Central…</string>
+    <string name="lib_no_results">Keine Bibliotheken gefunden</string>
+    <string name="lib_add_dependency">Abhängigkeit hinzufügen?</string>
+    <string name="lib_add_dependency_message">Möchten Sie %1$s:%2$s:%3$s zu pom.xml hinzufügen?</string>
+    <string name="lib_added">Hinzugefügt: %1$s</string>
+    <string name="lib_loading_versions">Versionen laden…</string>
+    <string name="lib_select_version">Version auswählen</string>
     <string name="menu_create_file">Datei erstellen</string>
     <string name="menu_create_folder">Ordner erstellen</string>
+    <string name="dialog_create_folder_title">Ordner erstellen</string>
+    <string name="dialog_create_folder_hint">Ordnername (z.B. model)</string>
     <string name="menu_create_cpp_module">C++ JNI-Modul erstellen</string>
-    <string name="menu_format_code">Code formatieren</string>
-    <string name="menu_library_manager">Bibliotheks-Manager</string>
-    <string name="tab_debug">Threads &amp; Variablen</string>
-    <string name="tab_debug_console">Konsole</string>
+    <string name="settings_verbose_logging">Detailliertes Logging (Logcat)</string>
+    <string name="kotlin_run_warning_title">Kotlin ausführen</string>
+    <string name="kotlin_run_warning_message">Das direkte Ausführen und Kompilieren von Kotlin-Dateien (.kt) auf dem Gerät wird nicht unterstützt. 
+
+Bitte verwenden Sie Syntaxhervorhebung zum Bearbeiten und kompilieren Sie auf einem externen Server oder PC.</string>
+
+    <!-- Debug -->
     <string name="console_debug_running">▶ Debugging %1$s…</string>
     <string name="console_debug_hit_breakpoint">⏸ Pause bei Zeile %1$d</string>
     <string name="console_debug_ended">Debug-Sitzung beendet.</string>
@@ -232,45 +313,276 @@
     <string name="debug_evaluate_hint">Ausdruck</string>
     <string name="dialog_debug_evaluate_title">Ausdruck auswerten</string>
     <string name="dialog_debug_watch_title">Watch-Ausdruck hinzufügen</string>
-    <string name="dialog_create_folder_title">Ordner erstellen</string>
-    <string name="dialog_create_folder_hint">Ordnername (z.B. model)</string>
-    <string name="dialog_select_encoding">Dateikodierung wählen</string>
     <string name="debug_no_variables">Keine Variablen im Geltungsbereich</string>
     <string name="debug_no_stack">Kein Aufrufstapel</string>
     <string name="debug_not_debugging">Nicht im Debug-Modus</string>
-    <string name="settings_format_on_save">Code beim Speichern formatieren</string>
-    <string name="settings_verbose_logging">Detailliertes Logging (Logcat)</string>
-    <string name="lib_title">Bibliotheks-Manager</string>
-    <string name="lib_search_hint">z.B. gson, okhttp, junit</string>
-    <string name="lib_search">Suchen</string>
-    <string name="lib_searching">Suche auf Maven Central…</string>
-    <string name="lib_no_results">Keine Bibliotheken gefunden</string>
-    <string name="lib_add_dependency">Abhängigkeit hinzufügen?</string>
-    <string name="lib_add_dependency_message">Möchten Sie %1$s:%2$s:%3$s zu pom.xml hinzufügen?</string>
-    <string name="lib_added">Hinzugefügt: %1$s</string>
-    <string name="lib_loading_versions">Versionen laden…</string>
-    <string name="lib_select_version">Version auswählen</string>
-    <string name="bytecode_class_loaded">%1$s  ·  %2$d Felder, %3$d Methoden</string>
-    <string name="bytecode_empty">Kein Bytecode zum Anzeigen</string>
-    <string name="bytecode_no_methods">Keine Methoden</string>
-    <string name="bytecode_search_hint">Opcode suchen…</string>
-    <string name="bytecode_select_method">Wählen Sie eine Methode links</string>
-    <string name="kotlin_run_warning_title">Kotlin ausführen</string>
-    <string name="kotlin_run_warning_message">Das direkte Ausführen und Kompilieren von Kotlin-Dateien (.kt) auf dem Gerät wird nicht unterstützt. 
 
-Bitte verwenden Sie Syntaxhervorhebung zum Bearbeiten und kompilieren Sie auf einem externen Server oder PC.</string>
+    <!-- Class Browser -->
+    <string name="menu_class_browser">Klassen durchsuchen</string>
+    <string name="class_browser_title">Klassenbrowser</string>
+    <string name="class_browser_hint">z.B. System, ArrayList, okhttp3…</string>
+    <string name="class_browser_hint_count">z.B. System, ArrayList, okhttp3… (%1$d Klassen)</string>
+    <string name="class_browser_clear">Löschen</string>
+    <string name="class_browser_loading">Klassen werden geladen…</string>
+    <string name="class_browser_scanning">JAR-Dateien werden gescannt…</string>
+    <string name="class_browser_no_results">Keine Klassen gefunden</string>
+    <string name="class_browser_found">%1$d Klassen</string>
+    <string name="class_browser_import_copied">Kopiert: %1$s</string>
+    <string name="class_browser_opened">%1$s geöffnet (schreibgeschützt)</string>
+    <string name="class_browser_jar_not_found">JAR-Datei nicht gefunden</string>
+    <string name="class_browser_class_not_found">Klasse nicht in JAR gefunden</string>
+    <string name="class_browser_view_bytecode">Bytecode anzeigen</string>
+
+    <!-- Global Search -->
+    <string name="menu_global_search">Im Projekt suchen</string>
+    <string name="global_search_hint">In allen Dateien suchen…</string>
+
+    <!-- Media Player -->
+    <string name="menu_play_media">Mediendatei abspielen</string>
+    <string name="media_player_title">Medienplayer</string>
+    <string name="media_no_file">Keine Mediendatei ausgewählt</string>
+    <string name="media_not_supported">Dieses Dateiformat wird nicht unterstützt</string>
+
+    <!-- Bytecode Editor -->
+    <string name="bytecode_save">Geänderten Bytecode speichern</string>
+    <string name="bytecode_edit_instruction">Anweisung bearbeiten</string>
+    <string name="bytecode_save_success">Bytecode gespeichert</string>
+    <string name="bytecode_save_failed">Speichern fehlgeschlagen: %1$s</string>
+    <string name="bytecode_edit_operand">Operandenwert</string>
+    <string name="bytecode_edit_var">Variablenindex</string>
+    <string name="bytecode_edit_incr">Erhöhungswert</string>
+    <string name="bytecode_edit_ldc">LDC-Konstantenwert</string>
+    <string name="bytecode_delete_insn">Anweisung löschen</string>
+    <string name="bytecode_insert_before">Anweisung davor einfügen</string>
+    <string name="bytecode_insert_after">Anweisung danach einfügen</string>
+    <string name="bytecode_select_opcode">Opcode auswählen</string>
+    <string name="bytecode_insert_snippet">Snippet einfügen</string>
+    <string name="bytecode_snippet">Snippet</string>
+    <string name="bytecode_snippet_nop">NOP</string>
+    <string name="bytecode_snippet_iconst_m1">iconst_m1</string>
+    <string name="bytecode_snippet_iconst_0">iconst_0</string>
+    <string name="bytecode_snippet_iconst_1">iconst_1</string>
+    <string name="bytecode_snippet_lconst_0">lconst_0</string>
+    <string name="bytecode_snippet_lconst_1">lconst_1</string>
+    <string name="bytecode_snippet_dconst_0">dconst_0</string>
+    <string name="bytecode_snippet_dconst_1">dconst_1</string>
+    <string name="bytecode_snippet_aconst_null">aconst_null</string>
+    <string name="bytecode_snippet_pop">pop</string>
+    <string name="bytecode_snippet_dup">dup</string>
+    <string name="bytecode_snippet_iadd">iadd</string>
+    <string name="bytecode_snippet_isub">isub</string>
+    <string name="bytecode_snippet_imul">imul</string>
+    <string name="bytecode_snippet_idiv">idiv</string>
+    <string name="bytecode_snippet_irem">irem</string>
+    <string name="bytecode_snippet_ineg">ineg</string>
+    <string name="bytecode_snippet_ireturn">ireturn</string>
+    <string name="bytecode_snippet_areturn">areturn</string>
+    <string name="bytecode_snippet_return">return</string>
+    <string name="bytecode_snippet_athrow">athrow</string>
+    <string name="bytecode_snippet_arraylength">arraylength</string>
+
+    <!-- AI Chat -->
+    <string name="menu_ai_chat">KI-Assistent</string>
+    <string name="ai_title">KI-Assistent</string>
+    <string name="ai_no_api_key">Legen Sie Ihren Gemini API-Schlüssel in den Einstellungen fest</string>
+    <string name="ai_explain">Erklären</string>
+    <string name="ai_find_bugs">Fehler finden</string>
+    <string name="ai_refactor">Refactor</string>
+    <string name="ai_optimize">Optimieren</string>
+    <string name="ai_document">Dokumentieren</string>
+    <string name="ai_generate_test">Test erstellen</string>
+    <string name="ai_input_hint">Fragen zu Ihrem Code…</string>
+    <string name="ai_send">Senden</string>
+    <string name="ai_clear">Leeren</string>
+    <string name="ai_change_model">Modell wechseln</string>
+    <string name="ai_model_select">KI-Modell auswählen</string>
+    <string name="ai_api_key_title">Gemini API-Schlüssel</string>
+    <string name="ai_api_key_message">Holen Sie sich Ihren kostenlosen API-Schlüssel unter aistudio.google.com</string>
+    <string name="ai_api_key_hint">API-Schlüssel von aistudio.google.com einfügen</string>
+    <string name="ai_open_studio">KI Studio öffnen</string>
+    <string name="ai_error">Fehler: %1$s</string>
+    <string name="ai_loading">Wird verarbeitet…</string>
+    <string name="settings_ai_section">KI-Einstellungen</string>
+    <string name="settings_ai_api_key">Gemini API-Schlüssel</string>
+    <string name="settings_ai_model">KI-Modell</string>
+
+    <!-- WelcomeActivity - Project options dialog -->
+    <string name="welcome_project_options_open">Öffnen</string>
+    <string name="welcome_project_options_remove">Aus Verlauf entfernen</string>
+    <string name="welcome_project_options_delete">Projekt vom Datenträger löschen</string>
+    <string name="welcome_delete_project_title">Projekt löschen</string>
+    <string name="welcome_delete_project_message">Möchten Sie %1$s und alle Dateien dauerhaft löschen? Dies kann nicht rückgängig gemacht werden.</string>
+    <string name="welcome_no_projects">Noch keine Projekte in Documents/JavaDroid.</string>
+    <string name="welcome_open_folder_title">Projektordner öffnen</string>
+    <string name="welcome_clone_url_hint">Repository-URL (https://…)</string>
+    <string name="welcome_clone_name_hint">Projektordnername</string>
+    <string name="welcome_clone_user_hint">Benutzername (optional, für private Repos)</string>
+    <string name="welcome_clone_token_hint">Token / Passwort (optional)</string>
+    <string name="welcome_clone_repo_title">Repository klonen</string>
+    <string name="welcome_clone_repo_message">Klonen Sie ein Git-Repository von GitHub, GitLab, Bitbucket oder einer beliebigen URL.</string>
+    <string name="welcome_clone_button">Klonen</string>
+    <string name="welcome_url_required">URL ist erforderlich</string>
+    <string name="welcome_cloning">Wird geklont…</string>
+    <string name="welcome_cloned_success">Erfolgreich geklont!</string>
+    <string name="welcome_clone_failed">Klonen fehlgeschlagen: %1$s</string>
+    <string name="welcome_playground_option">Playground (Demo-Projekt)</string>
+    <string name="welcome_creating_playground">Playground wird erstellt…</string>
+    <string name="welcome_playground_created">Playground erstellt!</string>
+    <string name="welcome_playground_hint">Projektordnername (z.B. MyBytecode)</string>
+    <string name="welcome_invalid_git_url">Ungültige Git-URL</string>
+    <string name="welcome_error">Fehler: %1$s</string>
+    <string name="welcome_project_name_hint">Projektordnername (z.B. MyApp)</string>
+    <string name="welcome_project_group_hint">Group ID / Paket (z.B. com.firma.app)</string>
+    <string name="welcome_project_artifact_hint">Artifact ID (z.B. myapp), optional</string>
+    <string name="welcome_project_name_bytecode_hint">Projektordnername (z.B. MyBytecode)</string>
+    <string name="project_type_playground">Playground (Demo-Projekt)</string>
+
+    <!-- SettingsActivity - NDK -->
+    <string name="settings_ndk_install">C++ NDK installieren (~130MB)</string>
+    <string name="settings_ndk_installed">C++ NDK installiert (Deinstallieren)</string>
+    <string name="settings_ndk_uninstall_title">NDK deinstallieren</string>
+    <string name="settings_ndk_uninstall_message">C++ NDK entfernen, um Speicherplatz freizugeben?</string>
+    <string name="settings_ndk_remove">Entfernen</string>
+    <string name="settings_ndk_removed">NDK entfernt</string>
+    <string name="settings_ndk_install_title">C++ NDK installieren</string>
+    <string name="settings_ndk_install_message">Es werden ~130MB (entpackt ~500MB) des Clang/LLVM-Toolchains für vollständige C++-Unterstützung heruntergeladen. Fortfahren?</string>
+    <string name="settings_ndk_download">Herunterladen</string>
+    <string name="settings_ndk_installing">NDK wird installiert</string>
+    <string name="settings_ndk_connecting">Verbinden…</string>
+    <string name="settings_ndk_success">NDK erfolgreich installiert!</string>
+    <string name="settings_ndk_error_title">Fehler</string>
+    <string name="settings_ndk_error_message">NDK-Installation fehlgeschlagen:
+%1$s</string>
+    <string name="settings_ndk_ok">OK</string>
+
+    <!-- MainActivity - Find & Replace -->
+    <string name="find_scope_project">Projekt</string>
+    <string name="find_scope_file">Datei</string>
+    <string name="find_scope_hint">In allen Dateien suchen…</string>
+
+    <!-- MainActivity - Debug -->
+    <string name="debug_breakpoint_set">● Haltepunkt bei Zeile %1$d</string>
+    <string name="debug_breakpoint_removed">○ Haltepunkt bei Zeile %1$d entfernt</string>
+    <string name="debug_no_watch">Keine Watch-Ausdrücke.\nTippen Sie auf \'+ Watch hinzufügen\' um einen hinzuzufügen.</string>
+    <string name="debug_java_only">Debuggen unterstützt nur .java-Dateien</string>
+    <string name="debug_starting">▶ Debug-Sitzung wird gestartet…</string>
+    <string name="debug_file_label">Datei: %1$s</string>
+    <string name="debug_breakpoints_label">Haltepunkte: %1$d</string>
+
+    <!-- MainActivity - Breakpoint dialog -->
+    <string name="breakpoint_dialog_title">Haltepunkt bei Zeile %1$d</string>
+    <string name="breakpoint_condition_hint">Bedingung, z.B. i == 5</string>
+    <string name="breakpoint_set_button">Setzen</string>
+    <string name="breakpoint_remove_button">Entfernen</string>
+    <string name="breakpoint_unconditional">● Unbedingter Haltepunkt bei Zeile %1$d</string>
+    <string name="breakpoint_conditional">● Bedingter Haltepunkt bei Zeile %1$d: %1$s</string>
+
+    <!-- Bookmarks -->
+    <string name="bookmark_set">★ Lesezeichen bei Zeile %1$d</string>
+    <string name="bookmark_removed">☆ Lesezeichen bei Zeile %1$d entfernt</string>
+    <string name="bookmark_list_title">Lesezeichen</string>
+    <string name="bookmark_none">Keine Lesezeichen gesetzt</string>
+    <string name="menu_toggle_bookmark">Lesezeichen umschalten</string>
+    <string name="menu_show_bookmarks">Lesezeichen anzeigen</string>
+
+    <!-- MainActivity - Call Graph -->
+    <string name="call_graph_title">Aufrufgraf</string>
+    <string name="call_graph_no_methods">Keine Methoden gefunden</string>
+    <string name="call_graph_calls">Aufrufe (%1$d)</string>
+    <string name="call_graph_called_by">Aufgerufen von (%1$d)</string>
+    <string name="call_graph_none">— keiner</string>
+    <string name="call_graph_no_project">Kein Projekt geöffnet</string>
+    <string name="call_graph_analyzing">Projekt wird analysiert…</string>
+    <string name="call_graph_stats">%1$d Methoden, %2$d Aufrufe</string>
+
+    <!-- MainActivity - Actions dialog -->
+    <string name="actions_title">Aktionen</string>
+    <string name="actions_search_hint">Aktionen suchen…</string>
+    <string name="actions_no_matching">Keine passenden Aktionen</string>
+
+    <!-- MainActivity - Markdown preview -->
+    <string name="md_preview_title">Markdown-Vorschau</string>
+    <string name="close_button">Schließen</string>
+    <string name="md_only_markdown">Nur Markdown-Dateien (.md) können in der Vorschau angezeigt werden</string>
+    <string name="file_is_empty">Datei ist leer</string>
+
+    <!-- MainActivity - Auto-import -->
+    <string name="auto_import_java_only">Auto-Import nur für .java-Dateien</string>
+    <string name="auto_import_none">Keine fehlenden Imports gefunden</string>
+    <string name="auto_import_title">Imports hinzufügen</string>
+    <string name="auto_import_add">Hinzufügen</string>
+
+    <!-- MainActivity - Formatted view -->
+    <string name="formatted_only_json_xml">Nur JSON- und XML-Dateien können formatiert werden</string>
+    <string name="copy_button">Kopieren</string>
+    <string name="apply_to_editor">Auf Editor anwenden</string>
+
+    <!-- MainActivity - C++ Module dialog -->
+    <string name="cpp_module_hint">Modul-/Bibliotheksname (z.B. native-lib)</string>
+    <string name="cpp_module_c_option">C (Schnell, eingebauter TCC-Compiler)</string>
+    <string name="cpp_module_cpp_option">C++ (Erfordert externes NDK ~130MB)</string>
+    <string name="cpp_module_exists">Native Datei existiert bereits</string>
+    <string name="cpp_module_created">C++-Modul erfolgreich erstellt</string>
+    <string name="cpp_module_failed">C++-Modul konnte nicht erstellt werden: %1$s</string>
+
+    <!-- MainActivity - Folder dialogs -->
+    <string name="folder_already_exists">Ordner existiert bereits</string>
+    <string name="folder_create_failed">Ordner konnte nicht erstellt werden</string>
+
+    <!-- MainActivity - ProGuard mapping -->
+    <string name="mapping_loaded">Mapping geladen: %1$s</string>
+    <string name="mapping_load_failed">Mapping konnte nicht geladen werden: %1$s</string>
+
+    <!-- Searchable menu items -->
+    <string name="menu_bytecode_view">Bytecode-Ansicht</string>
+    <string name="menu_load_mapping">ProGuard-Mapping laden</string>
+    <string name="menu_http_client">HTTP-Client</string>
+    <string name="menu_webview_preview">WebView-Vorschau</string>
+    <string name="menu_call_graph">Aufrufgraf</string>
+
+    <!-- ProjectCompiler - NDK warnings -->
+    <string name="ndk_warning_c_not_available">Warnung: Eingebauter C-Compiler nicht verfügbar, native Kompilierung wird übersprungen</string>
+    <string name="ndk_warning_cpp_requires_ndk">Warnung: C++-Quelldateien erfordern externes NDK. Wird übersprungen.</string>
+    <string name="ndk_warning_cannot_read">Warnung: %1$s kann nicht gelesen werden: %2$s</string>
+    <string name="ndk_warning_c_error">Warnung: C-Kompilierungsfehler (%1$s): %2$s</string>
+    <string name="ndk_compiled_tcc">Kompiliert (TCC) %1$s → %2$s</string>
+    <string name="ndk_warning_cpp_error">Warnung: C++-Kompilierungsfehler (%1$s): %2$s</string>
+    <string name="ndk_warning_cpp_failed">Warnung: C++-Kompilierung fehlgeschlagen (%1$s): %2$s</string>
+    <string name="ndk_compiled_clang">Kompiliert (Clang++) %1$s → %2$s</string>
+    <string name="ndk_error_c_not_available">❌ Nativer Build-Fehler:
+Eingebauter C-Compiler ist auf diesem Gerät nicht verfügbar.</string>
+    <string name="ndk_error_cannot_read">❌ %1$s kann nicht gelesen werden: %2$s</string>
+    <string name="ndk_error_c_compile">❌ C-Kompilierungsfehler (%1$s):
+%2$s</string>
+    <string name="ndk_error_cpp_ndk_required">❌ C++-Build-Fehler:
+C++-Quelldateien (.cpp) erfordern das externe NDK.
+
+Bitte gehen Sie zu Einstellungen → C++ NDK installieren, um das Toolchain herunterzuladen (~130MB).
+Oder schreiben Sie Ihren JNI-Code in reinem C (.c) für den eingebauten schnellen Compiler.</string>
+    <string name="ndk_error_cpp_compile">❌ C++-Kompilierungsfehler (%1$s):
+%2$s</string>
+    <string name="ndk_error_cpp_execute">❌ C++-Build-Fehler:
+clang++ konnte für %1$s nicht ausgeführt werden: %2$s</string>
+
+    <!-- Power Saving -->
     <string name="settings_section_power_saving">Energiesparmodus</string>
     <string name="settings_power_saving_mode">Energiesparmodus</string>
     <string name="settings_power_saving_auto">Automatisch (Akku &lt; 30%%)</string>
     <string name="settings_power_saving_disabled">Deaktiviert</string>
     <string name="settings_power_saving_performance">Immer Leistung</string>
     <string name="settings_power_saving_desc">Automatisch: reduziert Funktionen bei niedrigem Akku. Leistung: aktiviert immer alle Funktionen.</string>
+    <string name="settings_auto_search">Automatische Suche in Dateien</string>
+    <string name="settings_auto_search_desc">Beim Tippen automatisch in Projektdateien suchen</string>
+
+    <!-- Static Analysis -->
     <string name="sa_empty_file">Leere Datei</string>
     <string name="sa_long_line">Zeile länger als %1$d Zeichen (%2$d)</string>
     <string name="sa_todo">TODO im Code</string>
     <string name="sa_fixme">FIXME im Code — muss behoben werden</string>
     <string name="sa_hack">HACK im Code — temporäre Lösung</string>
     <string name="sa_xxx">XXX-Marker im Code</string>
+    <string name="sa_nosonar">NOSONAR — blendet SonarQube-Warnungen aus</string>
+    <string name="sa_noinspection">noinspection — blendet Analyzer-Warnungen aus</string>
     <string name="sa_trailing_space">Leerzeichen am Zeilenende</string>
     <string name="sa_mixed_tabs">Gemischte Tabs und Leerzeichen</string>
     <string name="sa_commented_code">Auskommentierter Code</string>
@@ -281,8 +593,10 @@ Bitte verwenden Sie Syntaxhervorhebung zum Bearbeiten und kompilieren Sie auf ei
     <string name="sa_hardcoded_path">Hardcodierter Dateipfad</string>
     <string name="sa_hardcoded_ip">Hardcodierte IP-Adresse</string>
     <string name="sa_password_in_code">Mögliches Passwort/Schlüssel im Code!</string>
+    <string name="sa_empty_block">Leerer Block %1$s</string>
     <string name="sa_multiple_statements">Mehrere Operationen in einer Zeile</string>
     <string name="sa_wildcard_import">Wildcard-Import — spezifische Imports verwenden</string>
+    <string name="sa_suppress_all">SuppressWarnings("all") — blendet ALLE Warnungen aus</string>
     <string name="sa_empty_string_concat">Leerer String in Konkatenation</string>
     <string name="sa_resource_leak">Möglicher Ressourcen-Leck — try-with-resources</string>
     <string name="sa_unused_import">Unbenutzter Import: %1$s</string>
@@ -306,6 +620,7 @@ Bitte verwenden Sie Syntaxhervorhebung zum Bearbeiten und kompilieren Sie auf ei
     <string name="sa_empty_catch">Leerer catch-Block</string>
     <string name="sa_catch_no_log">Catch ohne Behandlung</string>
     <string name="sa_string_equals">String-Vergleich mit == (besser .equals())</string>
+    <string name="sa_magic_number">Magische Zahl %1$s — in Konstante extrahieren</string>
     <string name="sa_system_out">System.out — Logger verwenden</string>
     <string name="sa_system_err">System.err — Logger verwenden</string>
     <string name="sa_print_stacktrace">printStackTrace() — Logger mit cause</string>
@@ -320,6 +635,7 @@ Bitte verwenden Sie Syntaxhervorhebung zum Bearbeiten und kompilieren Sie auf ei
     <string name="sa_one_line_block">Einzeiliger Block ohne Klammern</string>
     <string name="sa_long_ternary">Langer ternärer Operator</string>
     <string name="sa_unnecessary_semicolon">Überflüssiges Semikolon</string>
+    <string name="sa_constant_naming">Konstante \'%1$s\' — UPPER_CASE</string>
     <string name="sa_redundant_this">Überflüssiges this.</string>
     <string name="sa_bool_true_false">== true / == false — überflüssig</string>
     <string name="sa_redundant_boxing">Überflüssiges Boxing/Unboxing</string>
@@ -332,7 +648,11 @@ Bitte verwenden Sie Syntaxhervorhebung zum Bearbeiten und kompilieren Sie auf ei
     <string name="sa_math_random">Math.random() — SecureRandom verwenden</string>
     <string name="sa_runtime_exec">Externen Prozess ausführen — Eingabe prüfen</string>
     <string name="sa_mutable_static">Veränderliches static Feld</string>
+    <string name="sa_field_final">Feld \'%1$s\' kann final sein</string>
     <string name="sa_long_chain">Langer Methodenaufruf (%1$d Aufrufe)</string>
+    <string name="sa_single_char_var">Einzelbuchstaben-Variable \'%1$s\'</string>
+    <string name="sa_bool_naming">Boolean \'%1$s\' — Präfix ist/has/can verwenden</string>
+    <string name="sa_hungarian">Ungarische Notation (mField) — nicht empfohlen</string>
     <string name="sa_connection_leak">Connection ohne try-with-resources</string>
     <string name="sa_socket_leak">Socket ohne try-with-resources</string>
     <string name="sa_executor_no_shutdown">ExecutorService ohne shutdown</string>
@@ -341,27 +661,79 @@ Bitte verwenden Sie Syntaxhervorhebung zum Bearbeiten und kompilieren Sie auf ei
     <string name="sa_return_null">Null zurückgegeben — Optional oder Collections.empty*</string>
     <string name="sa_null_in_collection">null in Sammlung — NPE möglich</string>
     <string name="sa_optional_get">Optional.get() ohne Prüfung</string>
-    <string name="sa_optional_field">Optional als Feld — Anti-Pattern</string>
-    <string name="sa_optional_or_null">Optional.orElse(null) — verliert Optional-Zweck</string>
-    <string name="sa_override_missing">Fehlender @Override für %1$s</string>
-    <string name="sa_lambda_long">Lambda &gt; 5 Zeilen — Methode extrahieren</string>
-    <string name="sa_lambda_method_ref">Lambda kann Methodenverweis sein</string>
+    <string name="sa_simple_date_format_static">SimpleDateFormat in statischem Kontext — threadsicher?</string>
+    <string name="sa_hashmap_threaded">HashMap in multithreadedem Kontext — ConcurrentHashMap?</string>
+    <string name="sa_dcl_volatile">Double-checked locking ohne volatile — unsicher!</string>
+    <string name="sa_indexed_for_list">Indexierte for-Schleife auf List — for-each oder stream()</string>
+    <string name="sa_anonymous_to_lambda">Anonyme Klasse — Lambda-Ausdruck ist kürzer</string>
+    <string name="sa_stringbuilder_chain">StringBuilder — String.join() oder stream().collect() in Betracht ziehen</string>
+    <string name="sa_arraycopy">System.arraycopy — Arrays.copyOf() ist kürzer</string>
+    <string name="sa_arraystostring">Arrays.toString() — Arrays.deepToString() für Debugging verwenden</string>
+    <string name="sa_date_parse">SimpleDateFormat.parse — LocalDate.parse() in Java 8+</string>
+    <string name="sa_diamond_operator">Diamond-Operator &lt;&gt; — Typen rechts entfernen</string>
+    <string name="sa_fallthrough">Fall-through in switch — break vergessen?</string>
+    <string name="sa_switch_string">Switch mit String — Enum oder Map in Betracht ziehen</string>
     <string name="sa_test_no_assert">Test ohne assert — Prüfung macht nichts</string>
     <string name="sa_test_sysout">System.out in Test — assert verwenden</string>
+    <string name="sa_test_sleep">Thread.sleep in Test — unzuverlässig, Awaitility verwenden</string>
     <string name="sa_test_empty">Leerer Test</string>
     <string name="sa_missing_class_javadoc">Klasse ohne JavaDoc</string>
     <string name="sa_hashtable_vector">Veraltete Klasse — HashMap/ArrayList</string>
-    <string name="sa_date_new">new Date() — Instant.now()</string>
-    <string name="sa_calendar">Calendar.getInstance() — LocalDateTime</string>
+    <string name="sa_tostring_equals">.toString().equals() — Object.equals() oder String.equals()</string>
+    <string name="sa_addall_after_create">addAll nach Erstellung — Elemente im Konstruktor übergeben</string>
+    <string name="sa_keyset_get">keySet() + get() — entrySet() effizienter</string>
+    <string name="sa_list_fill">Erstellung und Befüllung — List.of() oder Arrays.asList()</string>
+    <string name="sa_unmodifiable_list">Finale Sammlung — unmodifiableList/Map/Set verwenden</string>
+    <string name="sa_string_field_final">String-Feld kann final sein</string>
+    <string name="sa_raw_type_generic">Roh-Typ — Parameter &lt;T&gt; hinzufügen</string>
+    <string name="sa_unchecked_cast">Möglicher unchecked cast — @SuppressWarnings hinzufügen</string>
+    <string name="sa_wildcard_return">Wildcard &lt;? extends T&gt; in Rückgabe — PECS</string>
+    <string name="sa_deep_generic">Tiefe Generik-Verschachtelung (&gt; 2) — TypeAlias in Betracht ziehen</string>
     <string name="sa_stream_no_terminal">Stream ohne Terminal-Operation</string>
     <string name="sa_collect_tolist">collect(toList()) — Java 16+ .toList()</string>
     <string name="sa_findfirst_get">findFirst().get() — .findFirst().orElseThrow()</string>
+    <string name="sa_parallel_stream">parallelStream() — Overhead für kleine Sammlungen</string>
+    <string name="sa_foreach_return">return in forEach-Lambda verlässt Methode nicht</string>
+    <string name="sa_optional_field">Optional als Feld — Anti-Pattern</string>
+    <string name="sa_optional_or_null">Optional.orElse(null) — verliert Optional-Zweck</string>
+    <string name="sa_override_missing">Fehlender @Override für %1$s</string>
+    <string name="sa_suppress_unchecked">@SuppressWarnings("unchecked") — Kommentar hinzufügen warum</string>
+    <string name="sa_deprecated_javadoc">@Deprecated ohne @deprecated-Javadoc-Tag</string>
+    <string name="sa_multiple_suppress">Mehrere Suppressions — Code benötigt evtl. Refactoring</string>
+    <string name="sa_nullable_dereference">Dereferenzierung auf @Nullable-Wert</string>
+    <string name="sa_enum_constants">Enum mit %1$d Konstanten — Strategy-Muster in Betracht ziehen</string>
+    <string name="sa_enum_ordinal">ordinal() — unzuverlässig, name() oder eigenes Feld verwenden</string>
+    <string name="sa_enummap">HashMap mit Enum-Schlüsseln — EnumMap effizienter</string>
+    <string name="sa_switch_no_default">switch ohne default</string>
+    <string name="sa_mutable_collection_return">Veränderliche Sammlung zurückgegeben — unmodifiableList?</string>
+    <string name="sa_boolean_param">Boolean-Parameter — Builder oder zwei Methoden in Betracht ziehen</string>
+    <string name="sa_public_field">Öffentliches Feld — Kapselung (Getter/Setter)</string>
+    <string name="sa_public_static_mutable">Öffentliches statisches veränderliches Feld — threadsicher?</string>
+    <string name="sa_duplicate_line">Doppelte Zeile (%1$d mal): %2$s</string>
+    <string name="sa_triple_duplicate">Dreifache Zeilenduplizierung — in Methode extrahieren</string>
+    <string name="sa_constant_before_fields">Konstanten sollten vor normalen Feldern stehen</string>
+    <string name="sa_field_one_use">Feld \'%1$s\' wird nur an einer Stelle verwendet — lokale Variable?</string>
+    <string name="sa_case_no_break">Fall-through in switch — break vergessen?</string>
+    <string name="sa_switch_many_cases">Switch mit %1$d Fällen — Polymorphie oder Map in Betracht ziehen</string>
+    <string name="sa_lambda_long">Lambda &gt; 5 Zeilen — Methode extrahieren</string>
+    <string name="sa_lambda_method_ref">Lambda kann Methodenverweis sein</string>
+    <string name="sa_optional_get_equals">Optional.get().equals() — .map().orElse() ist sicherer</string>
+    <string name="sa_optional_empty_filter">Optional.empty().filter() — bewirkt nichts</string>
+    <string name="sa_date_new">new Date() — Instant.now()</string>
+    <string name="sa_calendar">Calendar.getInstance() — LocalDateTime</string>
+    <string name="sa_simple_date_format_use">SimpleDateFormat — DateTimeFormatter (threadsicher)</string>
+    <string name="sa_date_gettime">Date.getTime() zum Vergleichen — Instant/LocalDateTime</string>
+    <string name="sa_sql_date">java.sql.Date/Timestamp — LocalDateTime</string>
+    <string name="sa_timezone">TimeZone.getDefault() — ZoneId.systemDefault()</string>
     <string name="sa_pattern_compile_loop">Pattern.compile() in Schleife</string>
     <string name="sa_string_matches">String.matches() — Pattern.compile verwenden</string>
-    <string name="sa_fallthrough">Fall-through in switch — break vergessen?</string>
-    <string name="sa_switch_no_default">switch ohne default</string>
+    <string name="sa_greedy_regex">Greedy-Quantifier .* — .*? (lazy) in Betracht ziehen</string>
+    <string name="sa_split_dot">.split(".") — Pattern.quote(".") ist sicherer</string>
+    <string name="sa_enum_too_many">Enum mit %1$d Konstanten — Strategy-Muster in Betracht ziehen</string>
+    <string name="sa_enum_ordinal_use">ordinal() — unzuverlässig, name() oder eigenes Feld verwenden</string>
+    <string name="sa_enum_hashmap">HashMap mit Enum-Schlüsseln — EnumMap effizienter</string>
+    <string name="sa_inline_method">Methode \'%1$s\' wird 1 mal verwendet und ist kurz — inline</string>
     <string name="sa_final_local">Lokale Variable \'%1$s\' — final für Lesbarkeit</string>
-
 
     <!-- Storage Permission -->
     <string name="permission_storage_title">Dateizugriff</string>
@@ -371,4 +743,295 @@ Bitte verwenden Sie Syntaxhervorhebung zum Bearbeiten und kompilieren Sie auf ei
     <string name="permission_storage_denied_title">Zugriff nicht erteilt</string>
     <string name="permission_storage_denied_message">Ohne Dateizugriff kann die App nicht mit Projekten arbeiten.</string>
     <string name="permission_storage_try_again">Erneut versuchen</string>
+
+    <!-- Accessibility -->
+    <string name="a11y_back">Zurück</string>
+    <string name="a11y_overflow_menu">Weitere Optionen</string>
+    <string name="a11y_new_tab">Neuer Tab</string>
+    <string name="a11y_find_input">Text suchen</string>
+    <string name="a11y_find_previous">Vorheriges suchen</string>
+    <string name="a11y_find_next">Nächstes suchen</string>
+    <string name="a11y_find_close">Suchleiste schließen</string>
+    <string name="a11y_find_scope">Suchbereich umschalten</string>
+    <string name="a11y_replace_input">Text ersetzen</string>
+    <string name="a11y_replace">Aktuellen ersetzen</string>
+    <string name="a11y_replace_all">Alle ersetzen</string>
+    <string name="a11y_editor">Code-Editor</string>
+    <string name="a11y_editor2">Code-Editor, zweiter Bereich</string>
+    <string name="a11y_breakpoint_overlay">Haltepunkt-Markierungen</string>
+    <string name="a11y_bookmark_overlay">Lesezeichen-Markierungen</string>
+    <string name="a11y_tab_run">Ausführen-Tab</string>
+    <string name="a11y_tab_problems">Probleme-Tab</string>
+    <string name="a11y_tab_bytecode">Bytecode-Tab</string>
+    <string name="a11y_tab_debug">Debug-Tab</string>
+    <string name="a11y_tab_debug_console">Debug-Konsolen-Tab</string>
+    <string name="a11y_tab_call_graph">Aufrufgraf-Tab</string>
+    <string name="a11y_tab_bookmarks">Lesezeichen-Tab</string>
+    <string name="a11y_clear_console">Konsole leeren</string>
+    <string name="a11y_debug_step_over">Überspringen</string>
+    <string name="a11y_debug_step_into">Hineinspringen</string>
+    <string name="a11y_debug_step_out">Herausspringen</string>
+    <string name="a11y_debug_resume">Ausführung fortsetzen</string>
+    <string name="a11y_debug_stop">Debugging stoppen</string>
+    <string name="a11y_debug_evaluate">Ausdruck auswerten</string>
+    <string name="a11y_toggle_breakpoint">Haltepunkt umschalten</string>
+    <string name="a11y_bytecode_toggle_hex">Hex-Ansicht umschalten</string>
+    <string name="a11y_bytecode_toggle_lines">Zeilennummern umschalten</string>
+    <string name="a11y_bytecode_toggle_comments">Kommentare umschalten</string>
+    <string name="a11y_bytecode_edit">Anweisung bearbeiten</string>
+    <string name="a11y_bytecode_save">Bytecode speichern</string>
+    <string name="a11y_bytecode_run">Bytecode ausführen</string>
+    <string name="a11y_bytecode_open_editor">Im Editor öffnen</string>
+    <string name="a11y_bytecode_call_graph">Aufrufgraf anzeigen</string>
+    <string name="a11y_call_graph_refresh">Aufrufgraf aktualisieren</string>
+    <string name="a11y_add_watch">Watch-Ausdruck hinzufügen</string>
+    <string name="a11y_status_encoding">Dateikodierung</string>
+
+    <!-- Welcome Activity -->
+    <string name="a11y_welcome_logo">JavaDroid-Logo</string>
+    <string name="a11y_welcome_projects_tab">Projekte</string>
+    <string name="a11y_welcome_customize_tab">Anpassen</string>
+    <string name="a11y_welcome_plugins_tab">Plugins</string>
+    <string name="a11y_welcome_materials_tab">Materialien</string>
+    <string name="a11y_welcome_settings">Einstellungen</string>
+    <string name="a11y_welcome_search">Projekte suchen</string>
+    <string name="a11y_welcome_new_project">Neues Projekt erstellen</string>
+    <string name="a11y_welcome_open_project">Projekt öffnen</string>
+    <string name="a11y_welcome_get_from_vcs">Projekt aus Versionskontrolle holen</string>
+
+    <!-- Settings -->
+    <string name="a11y_settings_theme_card">Design %1$s auswählen</string>
+    <string name="a11y_settings_custom_theme_card">Benutzerdefiniertes Design auswählen</string>
+    <string name="a11y_settings_color_picker">%1$s-Farbe ändern</string>
+    <string name="a11y_settings_font_family">Schriftfamilie</string>
+    <string name="a11y_settings_font_size">Schriftgröße</string>
+    <string name="a11y_settings_tab_size">Tabulatorbreite</string>
+    <string name="a11y_settings_line_spacing">Zeilenabstand</string>
+    <string name="a11y_settings_java_target">Java-Zielversion</string>
+    <string name="a11y_settings_power_saving">Energiesparmodus</string>
+    <string name="a11y_settings_ndk">C++ NDK installieren oder verwalten</string>
+    <string name="a11y_settings_reset">Alle Einstellungen auf Standard zurücksetzen</string>
+    <string name="a11y_settings_color_r">Roter Farbanteil</string>
+    <string name="a11y_settings_color_g">Grüner Farbanteil</string>
+    <string name="a11y_settings_color_b">Blauer Farbanteil</string>
+    <string name="a11y_settings_hex_input">Hex-Farbeingabe</string>
+
+    <!-- Global Search -->
+    <string name="a11y_global_search_field">In allen Projektdateien suchen</string>
+    <string name="a11y_global_search_button">Suchen</string>
+    <string name="a11y_global_search_result">Suchergebnis: %1$s</string>
+
+    <!-- HTTP Client -->
+    <string name="a11y_http_method">HTTP-Methode</string>
+    <string name="a11y_http_url">Anfrage-URL</string>
+    <string name="a11y_http_send">Anfrage senden</string>
+    <string name="a11y_http_headers">Anfrage-Header</string>
+    <string name="a11y_http_body">Anfrage-Body</string>
+
+    <!-- Database Inspector -->
+    <string name="a11y_db_sql_input">SQL-Abfrageeingabe</string>
+    <string name="a11y_db_run">Abfrage ausführen</string>
+    <string name="a11y_db_clear">Abfrage leeren</string>
+    <string name="a11y_db_table_item">Tabelle %1$s durchsuchen</string>
+
+    <!-- Image Viewer -->
+    <string name="a11y_image_viewer">Bildvorschau</string>
+
+    <!-- Media Player -->
+    <string name="a11y_media_play_pause">Abspielen oder pausieren</string>
+    <string name="a11y_media_stop">Wiedergabe stoppen</string>
+    <string name="a11y_media_rewind">10 Sekunden zurückspulen</string>
+    <string name="a11y_media_forward">10 Sekunden vorspulen</string>
+    <string name="a11y_media_seek">Position einstellen</string>
+    <string name="a11y_media_volume">Lautstärke</string>
+    <string name="a11y_media_brightness">Helligkeit</string>
+    <string name="a11y_media_landscape">Querformat umschalten</string>
+
+    <!-- AI Chat -->
+    <string name="a11y_ai_back">Zurück zum Editor</string>
+    <string name="a11y_ai_model">KI-Modell wechseln</string>
+    <string name="a11y_ai_api_key">API-Schlüssel festlegen</string>
+    <string name="a11y_ai_send">Nachricht senden</string>
+    <string name="a11y_ai_input">Nachricht eingeben</string>
+    <string name="a11y_ai_action_explain">Code erklären</string>
+    <string name="a11y_ai_action_find_bugs">Fehler finden</string>
+    <string name="a11y_ai_action_refactor">Code refactoren</string>
+    <string name="a11y_ai_action_optimize">Code optimieren</string>
+    <string name="a11y_ai_action_document">Code dokumentieren</string>
+    <string name="a11y_ai_action_test">Test erstellen</string>
+
+    <!-- WebView -->
+    <string name="a11y_webview_url">URL oder Dateipfad</string>
+    <string name="a11y_webview_go">Zu URL navigieren</string>
+    <string name="a11y_webview_reload">Seite neu laden</string>
+    <string name="a11y_webview_live">Live-Neuladen umschalten</string>
+
+    <!-- Class Browser -->
+    <string name="a11y_class_browser_search">Klassen suchen</string>
+    <string name="a11y_class_browser_clear">Suche löschen</string>
+    <string name="a11y_class_item">Klasse: %1$s</string>
+
+    <!-- Bytecode Editor -->
+    <string name="a11y_bc_back">Zurück</string>
+    <string name="a11y_bc_undo">Rückgängig</string>
+    <string name="a11y_bc_redo">Wiederholen</string>
+    <string name="a11y_bc_copy">In Zwischenablage kopieren</string>
+    <string name="a11y_bc_validate">Bytecode validieren</string>
+    <string name="a11y_bc_save">Datei speichern</string>
+    <string name="a11y_bc_code_editor">Bytecode-Editor</string>
+
+    <!-- Call Graph -->
+    <string name="a11y_call_graph_search">Methoden suchen</string>
+    <string name="a11y_call_graph_method">Methode: %1$s</string>
+
+    <!-- SVG Viewer -->
+    <string name="a11y_svg_viewer">SVG-Bildvorschau</string>
+
+    <!-- MainActivity menu a11y -->
+    <string name="a11y_menu_search">Im Projekt suchen</string>
+    <string name="a11y_menu_save">Datei speichern</string>
+    <string name="a11y_menu_undo">Rückgängig</string>
+    <string name="a11y_menu_redo">Wiederholen</string>
+    <string name="a11y_menu_run">Code ausführen</string>
+    <string name="a11y_menu_format">Code formatieren</string>
+    <string name="a11y_menu_find_replace">Suchen und ersetzen</string>
+    <string name="a11y_menu_git">Git öffnen</string>
+    <string name="a11y_menu_settings">Einstellungen öffnen</string>
+    <string name="a11y_menu_bytecode">Bytecode anzeigen</string>
+    <string name="a11y_menu_debug">Debugging starten</string>
+    <string name="a11y_menu_split_screen">Geteilten Bildschirm umschalten</string>
+    <string name="a11y_menu_ai_chat">KI-Assistent öffnen</string>
+    <string name="a11y_menu_new_file">Neue Datei erstellen</string>
+    <string name="a11y_menu_open_file">Datei öffnen</string>
+    <string name="a11y_menu_class_browser">Klassen durchsuchen</string>
+    <string name="a11y_menu_library_manager">Bibliotheks-Manager öffnen</string>
+    <string name="a11y_menu_http_client">HTTP-Client öffnen</string>
+    <string name="a11y_menu_webview">In WebView vorschauen</string>
+    <string name="a11y_menu_md_preview">Markdown vorschauen</string>
+    <string name="a11y_menu_export">Projekt exportieren</string>
+    <string name="a11y_menu_import">Dateien importieren</string>
+    <string name="a11y_menu_auto_import">Abhängigkeiten automatisch importieren</string>
+    <string name="a11y_menu_view_formatted">Formatierte Ausgabe anzeigen</string>
+    <string name="a11y_menu_call_graph">Aufrufgraf anzeigen</string>
+    <string name="a11y_menu_play_media">Mediendatei abspielen</string>
+    <string name="a11y_menu_share">Datei teilen</string>
+    <string name="a11y_menu_global_search">In Projektdateien suchen</string>
+    <string name="a11y_menu_maven_package">Maven package ausführen</string>
+    <string name="a11y_menu_maven_test">Maven test-compile ausführen</string>
+    <string name="a11y_menu_maven_test_run">Maven test ausführen</string>
+    <string name="a11y_menu_maven_clean">Maven clean ausführen</string>
+    <string name="a11y_menu_maven_install">Maven install ausführen</string>
+    <string name="a11y_menu_sync_deps">Abhängigkeiten synchronisieren</string>
+    <string name="a11y_menu_new_maven_project">Neues Maven-Projekt erstellen</string>
+    <string name="a11y_menu_copy_console">Konsolenausgabe kopieren</string>
+    <string name="a11y_menu_pastebin">An Pastebin teilen</string>
+    <string name="a11y_menu_save_as">Datei speichern unter</string>
+    <string name="a11y_menu_cpp_module">C++-Modul erstellen</string>
+    <string name="a11y_menu_load_mapping">ProGuard-Mapping laden</string>
+    <string name="a11y_menu_toggle_bookmark">Lesezeichen umschalten</string>
+    <string name="a11y_menu_show_bookmarks">Lesezeichen anzeigen</string>
+
+    <!-- Learn Activity -->
+    <string name="a11y_learn_course_selector">Kurs auswählen</string>
+    <string name="a11y_learn_language_toggle">Sprache wechseln</string>
+
+    <!-- Tutorial Activity -->
+    <string name="a11y_tutorial_theory_tab">Theorie-Tab</string>
+    <string name="a11y_tutorial_practice_tab">Praxis-Tab</string>
+    <string name="a11y_tutorial_reset_code">Code zurücksetzen</string>
+    <string name="a11y_tutorial_run_playground">Playground-Code ausführen</string>
+    <string name="a11y_tutorial_playground_editor">Playground-Code-Editor</string>
+    <string name="a11y_bytecode_search">Bytecode-Opcode suchen</string>
+    <string name="a11y_callgraph_search">Methode in Aufrufgraf suchen</string>
+    <string name="a11y_search_projects">Projekte suchen</string>
+
+    <!-- Minimap -->
+    <string name="a11y_minimap">Code-Minimap-Vorschau</string>
+
+    <!-- Dependencies -->
+    <string name="a11y_tab_deps">Abhängigkeiten-Tab</string>
+    <string name="a11y_deps_refresh">Abhängigkeitsgraf aktualisieren</string>
+
+    <!-- TODO/FIXME Tracker -->
+    <string name="a11y_tab_todo">TODO/FIXME-Tab</string>
+    <string name="a11y_toolbar_run">Ausführen</string>
+    <string name="a11y_toolbar_debug">Debuggen</string>
+    <string name="a11y_toolbar_save">Speichern</string>
+    <string name="a11y_toolbar_find">Suchen</string>
+    <string name="a11y_toolbar_git">Git</string>
+    <string name="a11y_toolbar_ai">KI-Assistent</string>
+
+    <!-- Profiler -->
+    <string name="a11y_tab_profiler">Profiler-Tab</string>
+    <string name="profiler_start">Profilstart</string>
+    <string name="profiler_running">Profiling läuft…</string>
+    <string name="profiler_done">Profiling abgeschlossen</string>
+    <string name="profiler_no_data">Keine Profiling-Daten. Führen Sie Code mit aktiviertem Profiler aus.</string>
+    <string name="refactor_rename_title">Symbol umbenennen</string>
+    <string name="refactor_rename_hint">Neuer Name</string>
+    <string name="refactor_extract_method">Methode extrahieren</string>
+    <string name="refactor_extract_method_title">Methode extrahieren</string>
+    <string name="refactor_extract_method_hint">Methodenname</string>
+    <string name="refactor_extract_variable">Variable extrahieren</string>
+    <string name="refactor_extract_variable_title">Variable extrahieren</string>
+    <string name="refactor_extract_variable_hint">Variablenname</string>
+    <string name="refactor_inline">Inline</string>
+    <string name="refactor_inline_title">Methode inlineen</string>
+    <string name="refactor_find_usages">Verwendungen finden</string>
+    <string name="refactor_result">Refactoring-Ergebnis</string>
+
+    <!-- Hardcoded strings - Toast messages -->
+    <string name="toast_invalid_identifier">Ungültiger Bezeichner</string>
+    <string name="toast_select_code_block">Wählen Sie einen Codeblock zum Extrahieren</string>
+    <string name="toast_select_expression">Wählen Sie einen Ausdruck zum Extrahieren</string>
+    <string name="toast_no_usages">Keine Verwendungen für \'%1$s\' gefunden</string>
+    <string name="toast_copied">Kopiert!</string>
+    <string name="toast_cannot_open_settings">Einstellungen können nicht geöffnet werden. Bitte erteilen Sie den Speicherzugriff manuell.</string>
+    <string name="toast_no_project">Kein Projektverzeichnis</string>
+    <string name="toast_analysis_failed">Analyse fehlgeschlagen: %1$s</string>
+    <string name="toast_added_watch">Watch hinzugefügt: %1$s</string>
+    <string name="toast_voice_not_initialized">Spracheingabe nicht initialisiert</string>
+    <string name="toast_voice_stopped">Gestoppt</string>
+    <string name="toast_voice_listening">Zuhören… Bitte sprechen</string>
+    <string name="toast_added">Hinzugefügt: %1$s</string>
+    <string name="toast_project_copied_internal">Projekt in internen Speicher kopiert</string>
+    <string name="toast_file_empty">Datei ist leer</string>
+    <string name="toast_no_method_selected">Keine Methode ausgewählt</string>
+    <string name="toast_select_instruction">Wählen Sie zuerst eine Anweisung</string>
+    <string name="toast_ldc_changed">LDC-Operand geändert zu: %1$s</string>
+    <string name="toast_instruction_deleted">Anweisung %1$d gelöscht</string>
+    <string name="toast_nop_inserted">NOP eingefügt %1$s Anweisung %2$d</string>
+    <string name="toast_compile_error">Kompilierungsfehler</string>
+    <string name="toast_error">Fehler: %1$s</string>
+    <string name="toast_open_java_class">Öffnen Sie zuerst eine .java- oder .class-Datei</string>
+    <string name="toast_no_database">Keine Datenbankdatei angegeben</string>
+    <string name="toast_cannot_open_db">Datenbank kann nicht geöffnet werden: %1$s</string>
+    <string name="toast_enter_sql">Geben Sie eine SQL-Abfrage ein</string>
+    <string name="toast_no_file">Keine Datei angegeben</string>
+    <string name="toast_enter_url">Geben Sie eine URL ein</string>
+    <string name="toast_error_loading_file">Fehler beim Laden der .http-Datei: %1$s</string>
+    <string name="toast_key_saved">Schlüssel gespeichert</string>
+    <string name="toast_already_running">Wird bereits ausgeführt</string>
+    <string name="toast_svg_parse_error">SVG-Parserfehler: %1$s</string>
+    <string name="toast_image_decode_failed">Bild konnte nicht decodiert werden</string>
+    <string name="toast_file_not_found">Datei nicht gefunden</string>
+    <string name="toast_error_loading">Fehler beim Laden: %1$s</string>
+
+    <!-- Hardcoded strings - UI labels -->
+    <string name="label_tables">TABELLEN</string>
+    <string name="label_no_tables">Keine Tabellen gefunden</string>
+    <string name="label_executing">Wird ausgeführt…</string>
+    <string name="label_null">NULL</string>
+    <string name="label_copy">Kopieren</string>
+    <string name="label_no_results">Keine Ergebnisse</string>
+    <string name="label_none">(keine)</string>
+    <string name="label_analyzing">Wird analysiert…</string>
+    <string name="label_analyzing_project">Projekt wird analysiert…</string>
+    <string name="label_select_method">Wählen Sie eine Methode, um ihren Aufrufgraphen anzuzeigen</string>
+    <string name="label_no_methods">Keine Projektmethoden gefunden</string>
+
+    <!-- Settings -->
+    <string name="settings_inclusive_mode">Inklusivmodus</string>
+    <string name="settings_inclusive_mode_desc">KI-Agent kann Dateien ohne Bestätigung bearbeiten</string>
 </resources>
+

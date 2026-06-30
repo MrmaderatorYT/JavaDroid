@@ -223,6 +223,7 @@
     <string name="git_error">Помилка Git</string>
     <string name="menu_format_code">Форматувати код</string>
     <string name="settings_format_on_save">Форматувати код при збереженні</string>
+    <string name="settings_minimap">Показувати мінікарту коду</string>
     <string name="menu_library_manager">Менеджер бібліотек</string>
     <string name="lib_title">Менеджер бібліотек</string>
     <string name="lib_search_hint">напр. gson, okhttp, junit</string>
@@ -932,7 +933,6 @@
     <string name="profiler_no_data">Немає даних профайлера. Запустіть код з увімкненим профайлером.</string>
 
     <!-- Refactoring -->
-    <string name="refactor_rename">Перейменувати</string>
     <string name="refactor_rename_title">Перейменувати символ</string>
     <string name="refactor_rename_hint">Нова назва</string>
     <string name="refactor_extract_method">Витягти метод</string>
@@ -945,6 +945,65 @@
     <string name="refactor_inline_title">Вкласти метод</string>
     <string name="refactor_find_usages">Знайти використання</string>
     <string name="refactor_result">Результат рефакторингу</string>
+
+    <!-- Доступність -->
+    <string name="a11y_tab_todo">Вкладка TODO/FIXME</string>
+    <string name="a11y_toolbar_ai">ШІ-асистент</string>
+    <string name="a11y_toolbar_debug">Зневадження</string>
+    <string name="a11y_toolbar_find">Пошук</string>
+    <string name="a11y_toolbar_git">Git</string>
+    <string name="a11y_toolbar_run">Запуск</string>
+    <string name="a11y_toolbar_save">Зберегти</string>
+
+    <!-- Мітки -->
+    <string name="label_analyzing">Аналіз…</string>
+    <string name="label_analyzing_project">Аналіз проєкту…</string>
+    <string name="label_copy">Копіювати</string>
+    <string name="label_executing">Виконання…</string>
+    <string name="label_no_methods">Методів проєкту не знайдено</string>
+    <string name="label_no_results">Результатів немає</string>
+    <string name="label_no_tables">Таблиць не знайдено</string>
+    <string name="label_none">(немає)</string>
+    <string name="label_null">NULL</string>
+    <string name="label_select_method">Оберіть метод для перегляду графа викликів</string>
+    <string name="label_tables">ТАБЛИЦІ</string>
+
+    <!-- Toast повідомлення -->
+    <string name="toast_added">Додано: %1$s</string>
+    <string name="toast_added_watch">Додано спостереження: %1$s</string>
+    <string name="toast_already_running">Вже виконується</string>
+    <string name="toast_analysis_failed">Помилка аналізу: %1$s</string>
+    <string name="toast_cannot_open_db">Не вдалося відкрити базу даних: %1$s</string>
+    <string name="toast_cannot_open_settings">Не вдалося відкрити налаштування. Надайте дозвіл на файли вручну.</string>
+    <string name="toast_compile_error">Помилка компіляції</string>
+    <string name="toast_copied">Скопійовано!</string>
+    <string name="toast_enter_sql">Введіть SQL-запит</string>
+    <string name="toast_enter_url">Введіть URL</string>
+    <string name="toast_error">Помилка: %1$s</string>
+    <string name="toast_error_loading">Помилка завантаження: %1$s</string>
+    <string name="toast_error_loading_file">Помилка завантаження .http файлу: %1$s</string>
+    <string name="toast_file_empty">Файл порожній</string>
+    <string name="toast_file_not_found">Файл не знайдено</string>
+    <string name="toast_image_decode_failed">Не вдалося декодувати зображення</string>
+    <string name="toast_instruction_deleted">Інструкцію %1$d видалено</string>
+    <string name="toast_invalid_identifier">Невалідний ідентифікатор</string>
+    <string name="toast_key_saved">Ключ збережено</string>
+    <string name="toast_ldc_changed">Операnd LDC змінено на: %1$s</string>
+    <string name="toast_no_database">Файл бази даних не вказано</string>
+    <string name="toast_no_file">Файл не вказано</string>
+    <string name="toast_no_method_selected">Метод не обрано</string>
+    <string name="toast_no_project">Каталог проєкту не знайдено</string>
+    <string name="toast_no_usages">Використань \'%1$s\' не знайдено</string>
+    <string name="toast_nop_inserted">NOP вставлено %1$s інструкцію %2$d</string>
+    <string name="toast_open_java_class">Спочатку відкрийте .java або .class файл</string>
+    <string name="toast_project_copied_internal">Проєкт скопійовано у внутрішню пам\'ять</string>
+    <string name="toast_select_code_block">Оберіть блок коду для витягу</string>
+    <string name="toast_select_expression">Оберіть вираз для витягу</string>
+    <string name="toast_select_instruction">Спочатку оберіть інструкцію</string>
+    <string name="toast_svg_parse_error">Помилка аналізу SVG: %1$s</string>
+    <string name="toast_voice_listening">Слухаю… Говоріть</string>
+    <string name="toast_voice_not_initialized">Голосовий ввід не ініціалізовано</string>
+    <string name="toast_voice_stopped">Зупинено</string>
 
     <!-- Settings -->
     <string name="settings_inclusive_mode">Інклюзивний режим</string>

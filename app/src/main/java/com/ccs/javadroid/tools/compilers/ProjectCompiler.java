@@ -134,7 +134,7 @@ public final class ProjectCompiler {
                     File srcFile = new File(cacheDir, className + ".kt");
                     writeUtf8(srcFile, sourceCode);
 
-                    List<File> classFiles = compileKotlinViaCompilerApi(srcFile, projectRoot, cacheDir, androidJar, className, callback, context);
+                    List<File> classFiles = KotlinCompiler.compile(srcFile, projectRoot, cacheDir, androidJar, className, callback, context);
                     if (classFiles == null || classFiles.isEmpty()) {
                         return;
                     }
@@ -1414,12 +1414,12 @@ public final class ProjectCompiler {
         return null;
     }
 
-    private static void postProgress(Callback cb, String msg) {
+    static void postProgress(Callback cb, String msg) {
         if (cb == null) return;
         new Handler(Looper.getMainLooper()).post(() -> cb.onProgress(msg));
     }
 
-    private static void postResult(Callback cb, String r) {
+    static void postResult(Callback cb, String r) {
         if (cb == null) return;
         new Handler(Looper.getMainLooper()).post(() -> cb.onResult(r));
     }
@@ -1557,6 +1557,12 @@ public final class ProjectCompiler {
      *
      * @return list of generated .class files, or null on failure
      */
+    private static List<File> compileKotlinViaCompilerApi(File srcFile, File projectRoot, File cacheDir,
+                                                            File androidJar, String className,
+                                                            Callback callback, Context context) {
+        return KotlinCompiler.compile(srcFile, projectRoot, cacheDir, androidJar, className, callback, context);
+    }
+
     private static void collectSources(File dir, List<File> out) {
         File[] files = dir.listFiles();
         if (files == null) return;
@@ -1572,286 +1578,7 @@ public final class ProjectCompiler {
         }
     }
 
-    private static List<File> compileKotlinViaCompilerApi(File srcFile, File projectRoot, File cacheDir,
-                                                           File androidJar, String className,
-                                                           Callback callback, Context context) {
-        try {
-            postProgress(callback, "Preparing Kotlin compiler...");
-
-            // 1. Ensure kotlin-stdlib.jar is on disk (compiler needs it for type resolution)
-            File stdlibJar = ensureKotlinStdlib(cacheDir);
-            if (stdlibJar == null) {
-                postResult(callback, "Kotlin Error: kotlin-stdlib-1.9.22.jar not available.\n" +
-                        "Please connect to internet on first use to download it.");
-                return null;
-            }
-
-            // 2. Create plugin root with META-INF/extensions/compiler.xml
-            //    This bypasses PathUtil.getResourcePathForClass() which fails on Android DEX.
-            //    registerApplicationExtensionPointsAndExtensionsFrom() checks INTELLIJ_PLUGIN_ROOT first.
-            File pluginRoot = ensureKotlinPluginRoot(cacheDir);
-
-            // 3. Create child-first classloader with stdlib JAR for resource access.
-            //    BuiltInsLoaderImpl uses this::class.java.classLoader.getResourceAsStream()
-            //    which needs "kotlin/kotlin.kotlin_builtins" from kotlin-stdlib.jar.
-            //    PathClassLoader with APK+stdlib in dexPath can serve resources from the JAR.
-            File apkFile = new File(context.getApplicationInfo().sourceDir);
-            String combinedDexPath = apkFile.getAbsolutePath() + ":" + stdlibJar.getAbsolutePath();
-            ClassLoader appCl = context.getClassLoader();
-            dalvik.system.PathClassLoader kotlinCl = new dalvik.system.PathClassLoader(
-                    combinedDexPath, null, appCl) {
-                @Override
-                protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
-                    Class<?> c = findLoadedClass(name);
-                    if (c != null) return c;
-                    boolean isKotlin = name.startsWith("org.jetbrains.kotlin.") || name.startsWith("kotlin.");
-                    if (isKotlin) {
-                        try {
-                            c = findClass(name);
-                            if (resolve) resolveClass(c);
-                            return c;
-                        } catch (ClassNotFoundException ignored) {}
-                    }
-                    return super.loadClass(name, resolve);
-                }
-            };
-
-            // 4. Build CompilerConfiguration
-            Class<?> cfgClass = Class.forName("org.jetbrains.kotlin.config.CompilerConfiguration", true, kotlinCl);
-            Object config = cfgClass.getDeclaredConstructor().newInstance();
-
-            // Configuration key classes
-            Class<?> cckClass = Class.forName("org.jetbrains.kotlin.config.CompilerConfigurationKey", true, kotlinCl);
-            Class<?> cliKeysClass = Class.forName("org.jetbrains.kotlin.cli.common.CLIConfigurationKeys", true, kotlinCl);
-            Class<?> jvmKeysClass = Class.forName("org.jetbrains.kotlin.config.JVMConfigurationKeys", true, kotlinCl);
-            Class<?> commonKeysClass = Class.forName("org.jetbrains.kotlin.config.CommonConfigurationKeys", true, kotlinCl);
-
-            Method putMethod = cfgClass.getMethod("put", cckClass, Object.class);
-            Method addMethod = cfgClass.getMethod("add", cckClass, Object.class);
-
-            // INTELLIJ_PLUGIN_ROOT — plugin root with compiler.xml (bypasses getResourcePathForClass)
-            Field pluginRootField = cliKeysClass.getField("INTELLIJ_PLUGIN_ROOT");
-            Object pluginRootKey = pluginRootField.get(null);
-            // INTELLIJ_PLUGIN_ROOT is typed as String (the code does ?.let(::File) on it),
-            // so pass the absolute path, not a File instance.
-            putMethod.invoke(config, pluginRootKey, pluginRoot.getAbsolutePath());
-
-            // NO_JDK — don't try to discover JDK, we provide classpath manually
-            Field noJdkField = jvmKeysClass.getField("NO_JDK");
-            putMethod.invoke(config, noJdkField.get(null), true);
-
-            // OUTPUT_DIRECTORY — where .class files are written
-            Field outputDirField = jvmKeysClass.getField("OUTPUT_DIRECTORY");
-            putMethod.invoke(config, outputDirField.get(null), cacheDir);
-
-            // MODULE_NAME
-            Field moduleNameField = commonKeysClass.getField("MODULE_NAME");
-            putMethod.invoke(config, moduleNameField.get(null), "main");
-
-            // JVM_TARGET — JVM_1_8
-            Class<?> jvmTargetEnumClass = Class.forName("org.jetbrains.kotlin.config.JvmTarget", true, kotlinCl);
-            Field jvmTargetField = jvmKeysClass.getField("JVM_TARGET");
-            Object jvm18 = Enum.valueOf((Class<Enum>) jvmTargetEnumClass, "JVM_1_8");
-            putMethod.invoke(config, jvmTargetField.get(null), jvm18);
-
-            // MESSAGE_COLLECTOR_KEY — capture compiler messages/errors
-            final boolean[] hadError = {false};
-            final StringBuilder compilerMessages = new StringBuilder();
-            Class<?> mcInterface = Class.forName("org.jetbrains.kotlin.cli.common.messages.MessageCollector", true, kotlinCl);
-            Class<?> severityClass = Class.forName("org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity", true, kotlinCl);
-            Method isErrorMethod = severityClass.getMethod("isError");
-            Object messageCollector = Proxy.newProxyInstance(
-                    mcInterface.getClassLoader(),
-                    new Class<?>[]{mcInterface},
-                    (InvocationHandler) (proxy, method, args) -> {
-                        String methodName = method.getName();
-                        if ("report".equals(methodName) && args != null && args.length >= 2) {
-                            Object severity = args[0];
-                            String message = (String) args[1];
-                            boolean isError = false;
-                            try {
-                                isError = (boolean) isErrorMethod.invoke(severity);
-                            } catch (Exception ignored) {}
-                            if (isError) hadError[0] = true;
-                            String prefix = isError ? "ERROR: " : "INFO: ";
-                            compilerMessages.append(prefix).append(message).append("\n");
-                            Log.d("KotlinCompiler", prefix + message);
-                            return null;
-                        }
-                        if ("clear".equals(methodName)) {
-                            compilerMessages.setLength(0);
-                            hadError[0] = false;
-                            return null;
-                        }
-                        if ("hasErrors".equals(methodName)) {
-                            return hadError[0];
-                        }
-                        // Object methods
-                        if ("toString".equals(methodName)) return "JavaDroidMessageCollector";
-                        if ("hashCode".equals(methodName)) return System.identityHashCode(proxy);
-                        if ("equals".equals(methodName)) return proxy == args[0];
-                        // Default for any other interface method
-                        Class<?> rt = method.getReturnType();
-                        if (rt == boolean.class) return hadError[0];
-                        if (rt == int.class) return 0;
-                        return null;
-                    }
-            );
-            Field mcKeyField = cliKeysClass.getField("MESSAGE_COLLECTOR_KEY");
-            putMethod.invoke(config, mcKeyField.get(null), messageCollector);
-
-            // CONTENT_ROOTS — source roots + classpath roots
-            Field contentRootsField = cliKeysClass.getField("CONTENT_ROOTS");
-
-            // KotlinSourceRoot — source file directory
-            Class<?> kotlinSourceRootClass = Class.forName("org.jetbrains.kotlin.cli.common.config.KotlinSourceRoot", true, kotlinCl);
-            Object sourceRoot = kotlinSourceRootClass.getDeclaredConstructor(
-                    String.class, boolean.class, String.class)
-                    .newInstance(srcFile.getAbsolutePath(), false, null);
-            addMethod.invoke(config, contentRootsField.get(null), sourceRoot);
-
-            if (projectRoot != null && projectRoot.exists()) {
-                List<File> allSources = new java.util.ArrayList<>();
-                collectSources(projectRoot, allSources);
-                for (File f : allSources) {
-                    if (f.getAbsolutePath().equals(srcFile.getAbsolutePath())) continue;
-                    Object extSourceRoot = kotlinSourceRootClass.getDeclaredConstructor(
-                            String.class, boolean.class, String.class)
-                            .newInstance(f.getAbsolutePath(), false, null);
-                    addMethod.invoke(config, contentRootsField.get(null), extSourceRoot);
-                }
-            }
-
-            // JvmClasspathRoot — classpath entries (android.jar + kotlin-stdlib)
-            Class<?> jvmCpRootClass = Class.forName("org.jetbrains.kotlin.cli.jvm.config.JvmClasspathRoot", true, kotlinCl);
-            Object cpRootAndroid = jvmCpRootClass.getDeclaredConstructor(File.class)
-                    .newInstance(androidJar);
-            addMethod.invoke(config, contentRootsField.get(null), cpRootAndroid);
-            Object cpRootStdlib = jvmCpRootClass.getDeclaredConstructor(File.class)
-                    .newInstance(stdlibJar);
-            addMethod.invoke(config, contentRootsField.get(null), cpRootStdlib);
-
-            // 5. Create KotlinCoreEnvironment
-            postProgress(callback, "Initializing Kotlin compiler environment...");
-            Class<?> disposableClass = Class.forName("org.jetbrains.kotlin.com.intellij.openapi.Disposable", true, kotlinCl);
-            Class<?> disposerClass = Class.forName("org.jetbrains.kotlin.com.intellij.openapi.util.Disposer", true, kotlinCl);
-            Object disposable = disposerClass.getMethod("newDisposable").invoke(null);
-
-            Class<?> envConfigClass = Class.forName("org.jetbrains.kotlin.cli.jvm.compiler.EnvironmentConfigFiles", true, kotlinCl);
-            Object jvmConfigFiles = Enum.valueOf((Class<Enum>) envConfigClass, "JVM_CONFIG_FILES");
-
-            Class<?> kotlinCoreEnvClass = Class.forName("org.jetbrains.kotlin.cli.jvm.compiler.KotlinCoreEnvironment", true, kotlinCl);
-            Object environment = null;
-            try {
-                environment = kotlinCoreEnvClass.getMethod(
-                        "createForProduction", disposableClass,
-                        cfgClass, envConfigClass)
-                        .invoke(null, disposable, config, jvmConfigFiles);
-            } catch (Exception e) {
-                Log.e("KotlinCompiler", "Failed to create KotlinCoreEnvironment", e);
-                postResult(callback, "Kotlin Error: Failed to initialize compiler environment.\n" +
-                        e.getClass().getSimpleName() + ": " + e.getMessage());
-                return null;
-            }
-
-            // 5. Compile using KotlinToJVMBytecodeCompiler.compileBunchOfSources
-            postProgress(callback, "Compiling Kotlin...");
-            Class<?> compilerClass = Class.forName("org.jetbrains.kotlin.cli.jvm.compiler.KotlinToJVMBytecodeCompiler", true, kotlinCl);
-            Object compilerInstance = compilerClass.getField("INSTANCE").get(null);
-
-            Method compileMethod = compilerClass.getMethod("compileBunchOfSources", kotlinCoreEnvClass);
-            boolean success = (Boolean) compileMethod.invoke(compilerInstance, environment);
-
-            // 6. Collect generated .class files
-            List<File> classFiles = findAllClassFiles(cacheDir);
-
-            if (!success && classFiles.isEmpty()) {
-                String errDetail = compilerMessages.toString();
-                if (errDetail.isEmpty()) {
-                    errDetail = "compileBunchOfSources returned false with no output files.";
-                }
-                postResult(callback, "Kotlin Compilation Error:\n" + errDetail);
-                return null;
-            }
-
-            // Log what was generated
-            Log.d("KotlinCompiler", "Generated " + classFiles.size() + " class files:");
-            for (File cf : classFiles) {
-                Log.d("KotlinCompiler", "  " + cf.getAbsolutePath() + " (" + cf.length() + " bytes)");
-            }
-
-            if (hadError[0] && classFiles.isEmpty()) {
-                postResult(callback, "Kotlin Compilation Error:\n" + compilerMessages);
-                return null;
-            }
-
-            return classFiles.isEmpty() ? null : classFiles;
-
-        } catch (ClassNotFoundException e) {
-            Log.e("KotlinCompiler", "Kotlin compiler class not found", e);
-            postResult(callback, "Kotlin Error: compiler library not integrated.\n" +
-                    e.getMessage());
-        } catch (NoSuchMethodException e) {
-            Log.e("KotlinCompiler", "Method not found in compiler library", e);
-            postResult(callback, "Kotlin Error: incompatible compiler API.\n" +
-                    e.getMessage());
-        } catch (Exception e) {
-            Log.e("KotlinCompiler", "Kotlin compilation failed", e);
-            postResult(callback, "Kotlin System Error:\n" + e.getClass().getSimpleName() +
-                    ": " + e.getMessage() + "\n" + Log.getStackTraceString(e));
-        }
-        return null;
-    }
-
     /**
-     * Ensure kotlin-stdlib-1.9.22.jar is available on disk.
-     * Downloaded from Maven Central on first use and cached.
-     */
-    private static File ensureKotlinStdlib(File cacheDir) {
-        File stdlibJar = new File(cacheDir, "kotlin-stdlib-1.9.22.jar");
-        if (stdlibJar.exists() && stdlibJar.length() > 0) {
-            return stdlibJar;
-        }
-        String url = "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.9.22/kotlin-stdlib-1.9.22.jar";
-        try {
-            Log.d("KotlinCompiler", "Downloading kotlin-stdlib from " + url);
-            if (downloadFile(url, stdlibJar, 30000, 60000)) {
-                Log.d("KotlinCompiler", "kotlin-stdlib downloaded: " + stdlibJar.length() + " bytes");
-                return stdlibJar;
-            }
-        } catch (Exception e) {
-            Log.e("KotlinCompiler", "Failed to download kotlin-stdlib", e);
-        }
-        // Fallback: try without stdlib (some simple programs may work)
-        Log.w("KotlinCompiler", "kotlin-stdlib not available, compilation may fail for complex code");
-        return null;
-    }
-
-    /**
-     * Create a plugin root directory with the real META-INF/extensions/compiler.xml extracted
-     * from the kotlin-compiler-embeddable classes (via the DEX classloader's getResourceAsStream).
-     *
-     * This is needed because KotlinCoreEnvironment calls PathUtil.getResourcePathForClass()
-     * to locate compiler.xml, which fails on Android DEX (getResource() returns null for classes).
-     * Setting CLIConfigurationKeys.INTELLIJ_PLUGIN_ROOT to this directory bypasses that lookup.
-     *
-     * The real compiler.xml (with all <extensionPoints>) is required: the compiler later calls
-     * registerExtensionPoint() for each extension point defined in it, so an empty stub would
-     * cause the compiler to fail when registering/looking up its own extension points.
-     */
-    private static File ensureKotlinPluginRoot(File cacheDir) {
-        File pluginRoot = new File(cacheDir, "kotlin_plugin_root");
-        File extensions = new File(pluginRoot, "META-INF/extensions");
-        File compilerXml = new File(extensions, "compiler.xml");
-
-        if (compilerXml.exists() && compilerXml.length() > 100) {
-            return pluginRoot;
-        }
-
-        extensions.mkdirs();
-        boolean ok = false;
-
-        // 1. Try to extract the real compiler.xml from the embeddable compiler via the DEX classloader.
         //    getResourceAsStream() works on DEX/APK resources even though getResource() returns null.
         try (InputStream is = ProjectCompiler.class.getClassLoader()
                 .getResourceAsStream("META-INF/extensions/compiler.xml")) {
@@ -1926,7 +1653,7 @@ public final class ProjectCompiler {
     /**
      * Download a file from URL to local destination.
      */
-    private static boolean downloadFile(String urlStr, File dest, int connectTimeout, int readTimeout) throws IOException {
+    static boolean downloadFile(String urlStr, File dest, int connectTimeout, int readTimeout) throws IOException {
         HttpURLConnection c = (HttpURLConnection) new URL(urlStr).openConnection();
         c.setConnectTimeout(connectTimeout);
         c.setReadTimeout(readTimeout);

@@ -592,6 +592,8 @@ public class SettingsActivity extends AppCompatActivity {
                 prefs.isAutoSave(), prefs::setAutoSave));
         section.addView(buildSwitch(getString(R.string.settings_format_on_save),
                 prefs.isFormatOnSave(), prefs::setFormatOnSave));
+        section.addView(buildSwitch(getString(R.string.settings_minimap),
+                prefs.isMinimap(), prefs::setMinimap));
 
         return section;
     }
