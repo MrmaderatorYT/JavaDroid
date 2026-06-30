@@ -2,6 +2,10 @@
 
 A full-featured Java IDE for Android — edit, compile, run, and debug Java/Kotlin code directly on your device.
 
+## License
+
+This project is licensed under the **GNU General Public License v3.0** — applies to all versions.
+
 ## Features
 
 ### Code Editor
