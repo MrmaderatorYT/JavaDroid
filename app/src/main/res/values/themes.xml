@@ -18,6 +18,8 @@
         <item name="android:navigationBarColor">@color/idea_statusbar</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
         <item name="colorControlHighlight">#334A86C8</item>
+        <item name="shapeAppearanceSmallComponent">@style/Shape.JavaDroid.Rounded</item>
+        <item name="shapeAppearanceMediumComponent">@style/Shape.JavaDroid.Rounded</item>
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.JavaDroid.AlertDialog</item>
         <item name="alertDialogTheme">@style/ThemeOverlay.JavaDroid.AlertDialog</item>
     </style>
@@ -39,6 +41,11 @@
         <item name="rippleColor">#334A86C8</item>
     </style>
 
+    <style name="Shape.JavaDroid.Rounded" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">20dp</item>
+    </style>
+
     <style name="Theme.JavaDroid.Light" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimary">#E7E7E7</item>
         <item name="colorPrimaryVariant">#FFFFFF</item>
@@ -56,6 +63,8 @@
         <item name="android:navigationBarColor">#E7E7E7</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
         <item name="colorControlHighlight">#331F6FEB</item>
+        <item name="shapeAppearanceSmallComponent">@style/Shape.JavaDroid.Rounded</item>
+        <item name="shapeAppearanceMediumComponent">@style/Shape.JavaDroid.Rounded</item>
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.JavaDroid.AlertDialog.Light</item>
         <item name="alertDialogTheme">@style/ThemeOverlay.JavaDroid.AlertDialog.Light</item>
     </style>
