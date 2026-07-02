@@ -1,7 +1,6 @@
 package com.ccs.javadroid.ui;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.text.Editable;
@@ -62,7 +61,7 @@ public final class FileTreeController {
         EditText input = newEditText("");
         input.setHint(R.string.dialog_new_java_hint);
 
-        new AlertDialog.Builder(activity)
+        new com.google.android.material.dialog.MaterialAlertDialogBuilder(activity)
                 .setTitle(R.string.dialog_new_java_title)
                 .setView(input)
                 .setPositiveButton(R.string.dialog_create, (d, w) -> {
@@ -113,7 +112,7 @@ public final class FileTreeController {
         optionsList.add(activity.getString(R.string.dialog_file_context_delete));
 
         String[] options = optionsList.toArray(new String[0]);
-        new AlertDialog.Builder(activity)
+        new com.google.android.material.dialog.MaterialAlertDialogBuilder(activity)
                 .setTitle(folder.getName())
                 .setItems(options, (dialog, which) -> {
                     String selected = options[which];
@@ -141,7 +140,7 @@ public final class FileTreeController {
                 activity.getString(R.string.dialog_file_context_copy),
                 activity.getString(R.string.dialog_file_context_delete)
         };
-        new AlertDialog.Builder(activity)
+        new com.google.android.material.dialog.MaterialAlertDialogBuilder(activity)
                 .setTitle(file.getName())
                 .setItems(options, (dialog, which) -> {
                     switch (which) {
@@ -158,7 +157,7 @@ public final class FileTreeController {
         String[] names = FileTemplates.getDisplayNames();
         String[] keys = FileTemplates.getKeys();
 
-        new AlertDialog.Builder(activity)
+        new com.google.android.material.dialog.MaterialAlertDialogBuilder(activity)
                 .setTitle(R.string.menu_create_file)
                 .setItems(names, (dialog, which) -> {
                     String key = keys[which];
@@ -175,7 +174,7 @@ public final class FileTreeController {
         EditText input = newEditText("");
         input.setHint(R.string.dialog_new_java_hint);
 
-        new AlertDialog.Builder(activity)
+        new com.google.android.material.dialog.MaterialAlertDialogBuilder(activity)
                 .setTitle(templateName)
                 .setView(input)
                 .setPositiveButton(R.string.dialog_create, (d, w) -> {
@@ -215,7 +214,7 @@ public final class FileTreeController {
         EditText input = newEditText("");
         input.setHint(R.string.dialog_create_folder_hint);
 
-        new AlertDialog.Builder(activity)
+        new com.google.android.material.dialog.MaterialAlertDialogBuilder(activity)
                 .setTitle(R.string.dialog_create_folder_title)
                 .setView(input)
                 .setPositiveButton(R.string.dialog_create, (d, w) -> {
@@ -244,7 +243,7 @@ public final class FileTreeController {
                 (file.getName().endsWith(".java") ? file.getName().substring(0, file.getName().length() - 5) : file.getName());
         input.setText(currentNameWithoutExt);
 
-        new AlertDialog.Builder(activity)
+        new com.google.android.material.dialog.MaterialAlertDialogBuilder(activity)
                 .setTitle(R.string.dialog_rename)
                 .setView(input)
                 .setPositiveButton(R.string.dialog_rename, (d, w) -> {
@@ -279,7 +278,7 @@ public final class FileTreeController {
     public void showDeleteDialog(File file) {
         ProjectManager pm = callback.getProjectManager();
         TabsAdapter tabs = callback.getTabsAdapter();
-        new AlertDialog.Builder(activity)
+        new com.google.android.material.dialog.MaterialAlertDialogBuilder(activity)
                 .setTitle(R.string.dialog_delete_file_title)
                 .setMessage(activity.getString(R.string.dialog_delete_file_message, file.getName()))
                 .setPositiveButton(R.string.dialog_delete, (d, w) -> {
@@ -299,7 +298,7 @@ public final class FileTreeController {
         }
         File dest = new File(folder, copiedFile.getName());
         if (dest.exists()) {
-            new AlertDialog.Builder(activity)
+            new com.google.android.material.dialog.MaterialAlertDialogBuilder(activity)
                     .setTitle(R.string.toast_file_exists_title)
                     .setMessage(activity.getString(R.string.toast_file_exists, copiedFile.getName()))
                     .setPositiveButton(R.string.dialog_overwrite, (d, w) -> doPasteFile(folder, dest))

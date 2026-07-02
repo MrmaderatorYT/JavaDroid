@@ -462,7 +462,7 @@ public class SettingsActivity extends AppCompatActivity {
         }
         box.addView(grid);
 
-        new AlertDialog.Builder(this)
+        newRoundedDialog()
                 .setTitle(title)
                 .setView(box)
                 .setPositiveButton(R.string.dialog_apply, (d, w) -> {
@@ -643,7 +643,7 @@ public class SettingsActivity extends AppCompatActivity {
         ndkBtn.setContentDescription(getString(R.string.a11y_settings_ndk));
         ndkBtn.setOnClickListener(v -> {
             if (NdkManager.isNdkInstalled(this)) {
-                new AlertDialog.Builder(this)
+                newRoundedDialog()
                         .setTitle(R.string.settings_ndk_uninstall_title)
                         .setMessage(R.string.settings_ndk_uninstall_message)
                         .setPositiveButton(R.string.settings_ndk_remove, (di, w) -> {
@@ -655,7 +655,7 @@ public class SettingsActivity extends AppCompatActivity {
                         .setNegativeButton("Cancel", null)
                         .show();
             } else {
-                new AlertDialog.Builder(this)
+                newRoundedDialog()
                         .setTitle(R.string.settings_ndk_install_title)
                         .setMessage(R.string.settings_ndk_install_message)
                         .setPositiveButton(R.string.settings_ndk_download, (di, w) -> {
@@ -754,7 +754,7 @@ public class SettingsActivity extends AppCompatActivity {
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         lp.topMargin = dp(24);
         btn.setLayoutParams(lp);
-        btn.setOnClickListener(v -> new AlertDialog.Builder(this)
+        btn.setOnClickListener(v -> newRoundedDialog()
                 .setTitle(R.string.settings_reset_defaults)
                 .setMessage(R.string.settings_reset_confirm)
                 .setPositiveButton(R.string.dialog_apply, (di, w) -> resetDefaults())
@@ -910,6 +910,10 @@ public class SettingsActivity extends AppCompatActivity {
 
     private int dp(int v) {
         return (int) (v * getResources().getDisplayMetrics().density);
+    }
+
+    private com.google.android.material.dialog.MaterialAlertDialogBuilder newRoundedDialog() {
+        return new com.google.android.material.dialog.MaterialAlertDialogBuilder(this);
     }
 
     public static void launch(Activity host, int requestCode) {

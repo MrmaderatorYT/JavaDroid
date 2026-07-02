@@ -46,6 +46,16 @@ public final class DependencyPanelManager {
     public void applyTheme(@NonNull AppTheme theme) {
         if (panel != null) panel.setBackgroundColor(theme.consoleBg);
         if (status != null) status.setTextColor(theme.textDim);
+        View depsToolbar = activity.findViewById(R.id.depsToolbar);
+        if (depsToolbar != null) depsToolbar.setBackgroundColor(theme.toolbar);
+        View depsRefresh = activity.findViewById(R.id.depsRefresh);
+        if (depsRefresh != null) ((TextView) depsRefresh).setTextColor(theme.accent);
+        View depsZoomIn = activity.findViewById(R.id.depsZoomIn);
+        if (depsZoomIn != null) ((TextView) depsZoomIn).setTextColor(theme.text);
+        View depsZoomOut = activity.findViewById(R.id.depsZoomOut);
+        if (depsZoomOut != null) ((TextView) depsZoomOut).setTextColor(theme.text);
+        View depsFit = activity.findViewById(R.id.depsFitToScreen);
+        if (depsFit != null) ((TextView) depsFit).setTextColor(theme.text);
         if (graphView != null) {
             graphView.setColors(theme.accent, 0xFFFFA500, 0xFF4CAF50, 0xFF666666, theme.text, theme.consoleBg);
         }

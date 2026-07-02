@@ -25,7 +25,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
-import androidx.appcompat.app.AlertDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.File;
@@ -70,6 +70,10 @@ public class AiChatActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AppPreferences prefs = new AppPreferences(this);
+        AppTheme appTheme = AppTheme.byId(prefs.getThemeId(), prefs);
+        setTheme(appTheme.dark ? R.style.Theme_JavaDroid : R.style.Theme_JavaDroid_Light);
+
         super.onCreate(savedInstanceState);
         FullScreenHelper.enable(this);
         applyColors();
@@ -203,7 +207,7 @@ public class AiChatActivity extends AppCompatActivity {
         etInput.setHint("Ask about your code...");
         etInput.setHintTextColor(dimColor);
         etInput.setTextColor(textColor);
-        etInput.setBackgroundColor(0xFF3A3F47);
+        etInput.setBackgroundColor(bgColor);
         etInput.setTextSize(14);
         etInput.setMaxLines(5);
         etInput.setPadding(dp(12), dp(8), dp(12), dp(8));
@@ -642,7 +646,7 @@ public class AiChatActivity extends AppCompatActivity {
         for (int i = 0; i < GeminiService.AVAILABLE_MODELS.length; i++) {
             if (GeminiService.AVAILABLE_MODELS[i].equals(current)) { checked = i; break; }
         }
-        new AlertDialog.Builder(this)
+        new MaterialAlertDialogBuilder(this)
                 .setTitle("Select AI Model")
                 .setSingleChoiceItems(GeminiService.MODEL_DISPLAY_NAMES, checked, (d, w) -> {
                     GeminiService.setSelectedModel(this, GeminiService.AVAILABLE_MODELS[w]);
@@ -664,7 +668,7 @@ public class AiChatActivity extends AppCompatActivity {
         String saved = GeminiService.getApiKey(this);
         if (saved != null && !saved.isEmpty()) input.setText(saved);
 
-        new AlertDialog.Builder(this)
+        new MaterialAlertDialogBuilder(this)
                 .setTitle("Gemini API Key")
                 .setMessage("Get your free key at aistudio.google.com/apikey")
                 .setView(input)

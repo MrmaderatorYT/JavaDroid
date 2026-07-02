@@ -132,6 +132,21 @@ public final class ProfilerPanelManager {
     public void applyTheme(@NonNull AppTheme theme) {
         if (panel != null) panel.setBackgroundColor(theme.consoleBg);
         if (status != null) status.setTextColor(theme.textDim);
+        View profilerToolbar = activity.findViewById(R.id.profilerToolbar);
+        if (profilerToolbar != null) profilerToolbar.setBackgroundColor(theme.toolbar);
+        View profilerRefresh = activity.findViewById(R.id.profilerRefresh);
+        if (profilerRefresh != null) ((TextView) profilerRefresh).setTextColor(theme.accent);
+        View profilerZoomIn = activity.findViewById(R.id.profilerZoomIn);
+        if (profilerZoomIn != null) ((TextView) profilerZoomIn).setTextColor(theme.text);
+        View profilerZoomOut = activity.findViewById(R.id.profilerZoomOut);
+        if (profilerZoomOut != null) ((TextView) profilerZoomOut).setTextColor(theme.text);
+        View profilerFit = activity.findViewById(R.id.profilerFit);
+        if (profilerFit != null) ((TextView) profilerFit).setTextColor(theme.text);
+        View profilerRunBtn = activity.findViewById(R.id.profilerRunBtn);
+        if (profilerRunBtn != null) ((TextView) profilerRunBtn).setTextColor(theme.accent);
+        if (detailScroll != null) detailScroll.setBackgroundColor(theme.consoleBg);
+        if (detail != null) detail.setTextColor(theme.consoleText);
+        if (flameChartView != null) flameChartView.setBackgroundColor(theme.consoleBg);
     }
 
     public void updateTabStyle(boolean active, @NonNull AppTheme theme, int activeBg) {

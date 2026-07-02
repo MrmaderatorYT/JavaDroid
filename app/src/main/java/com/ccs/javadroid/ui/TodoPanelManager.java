@@ -96,6 +96,15 @@ public final class TodoPanelManager {
             search.setHintTextColor(theme.textDim);
         }
         if (status != null) status.setTextColor(theme.textDim);
+        if (panel instanceof android.view.ViewGroup) {
+            android.view.ViewGroup vg = (android.view.ViewGroup) panel;
+            if (vg.getChildCount() > 0) {
+                View firstChild = vg.getChildAt(0);
+                if (firstChild != null) firstChild.setBackgroundColor(theme.toolbar);
+            }
+        }
+        View todoRefresh = panel != null ? panel.findViewById(R.id.todoRefresh) : null;
+        if (todoRefresh != null) ((TextView) todoRefresh).setTextColor(theme.accent);
         adapter.setTheme(theme);
     }
 

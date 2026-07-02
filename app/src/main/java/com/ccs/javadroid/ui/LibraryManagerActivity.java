@@ -333,7 +333,7 @@ public class LibraryManagerActivity extends AppCompatActivity {
             return;
         }
 
-        AlertDialog loadingDlg = new AlertDialog.Builder(this)
+        AlertDialog loadingDlg = newRoundedDialog()
                 .setMessage(getString(R.string.lib_loading_versions))
                 .setCancelable(false)
                 .show();
@@ -405,7 +405,7 @@ public class LibraryManagerActivity extends AppCompatActivity {
         final String[] versionArray = versions.toArray(new String[0]);
         final int[] selected = {0};
 
-        new AlertDialog.Builder(this)
+        newRoundedDialog()
                 .setTitle(getString(R.string.lib_select_version))
                 .setSingleChoiceItems(versionArray, 0, (dialog, which) -> selected[0] = which)
                 .setPositiveButton(R.string.dialog_apply, (dialog, which) -> {
@@ -442,6 +442,10 @@ public class LibraryManagerActivity extends AppCompatActivity {
 
     private int dp(int v) {
         return (int) (v * getResources().getDisplayMetrics().density);
+    }
+
+    private com.google.android.material.dialog.MaterialAlertDialogBuilder newRoundedDialog() {
+        return new com.google.android.material.dialog.MaterialAlertDialogBuilder(this);
     }
 
     public static void launch(Activity host, File projectPath, int requestCode) {

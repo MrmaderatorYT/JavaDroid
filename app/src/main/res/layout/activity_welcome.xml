@@ -2,18 +2,18 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/welcome_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:background="#1E1E20"
     tools:context=".WelcomeActivity">
 
     <!-- Left Navigation Sidebar -->
     <LinearLayout
+        android:id="@+id/welcome_sidebar"
         android:layout_width="200dp"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:background="#2B2D30"
         android:padding="12dp">
 
         <!-- App Logo & Version Header -->
@@ -38,18 +38,18 @@
                 android:layout_marginStart="8dp">
 
                 <TextView
+                    android:id="@+id/tvAppName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="JavaDroid"
-                    android:textColor="#FFFFFF"
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/tvAppVersion"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="1.7.0"
-                    android:textColor="#808080"
                     android:textSize="10sp" />
             </LinearLayout>
         </LinearLayout>
@@ -62,43 +62,11 @@
             android:gravity="center_vertical"
             android:paddingStart="12dp"
             android:text="Projects"
-            android:textColor="#FFFFFF"
             android:textSize="12sp"
             android:textStyle="bold"
-            android:background="#3574F0"
             android:clickable="true"
             android:focusable="true"
             android:contentDescription="@string/a11y_welcome_projects_tab"
-            android:layout_marginBottom="4dp" />
-
-        <TextView
-            android:id="@+id/sidebarCustomize"
-            android:layout_width="match_parent"
-            android:layout_height="36dp"
-            android:gravity="center_vertical"
-            android:paddingStart="12dp"
-            android:text="Customize"
-            android:textColor="#DFE1E5"
-            android:textSize="12sp"
-            android:background="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true"
-            android:contentDescription="@string/a11y_welcome_customize_tab"
-            android:layout_marginBottom="4dp" />
-
-        <TextView
-            android:id="@+id/sidebarPlugins"
-            android:layout_width="match_parent"
-            android:layout_height="36dp"
-            android:gravity="center_vertical"
-            android:paddingStart="12dp"
-            android:text="Plugins"
-            android:textColor="#DFE1E5"
-            android:textSize="12sp"
-            android:background="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true"
-            android:contentDescription="@string/a11y_welcome_plugins_tab"
             android:layout_marginBottom="4dp" />
 
         <TextView
@@ -108,7 +76,6 @@
             android:gravity="center_vertical"
             android:paddingStart="12dp"
             android:text="Матеріали"
-            android:textColor="#DFE1E5"
             android:textSize="12sp"
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
@@ -130,7 +97,6 @@
             android:layout_marginStart="8dp"
             android:src="@drawable/ic_settings"
             android:contentDescription="@string/a11y_welcome_settings"
-            android:tint="#DFE1E5"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true" />
@@ -158,11 +124,8 @@
                 android:layout_width="0dp"
                 android:layout_height="36dp"
                 android:layout_weight="1"
-                android:background="#2B2D30"
                 android:hint="Search projects"
                 android:contentDescription="@string/a11y_welcome_search"
-                android:textColorHint="#6F737A"
-                android:textColor="#FFFFFF"
                 android:textSize="12sp"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"
@@ -177,8 +140,6 @@
                 android:text="New Project"
                 android:textAllCaps="false"
                 android:textSize="12sp"
-                android:textColor="#FFFFFF"
-                android:backgroundTint="#3574F0"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"
                 android:contentDescription="@string/a11y_welcome_new_project"
@@ -191,8 +152,6 @@
                 android:text="Open"
                 android:textAllCaps="false"
                 android:textSize="12sp"
-                android:textColor="#DFE1E5"
-                android:backgroundTint="#393B40"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"
                 android:contentDescription="@string/a11y_welcome_open_project"
@@ -205,8 +164,6 @@
                 android:text="Get from VCS"
                 android:textAllCaps="false"
                 android:textSize="12sp"
-                android:textColor="#808080"
-                android:backgroundTint="#2B2D30"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"
                 android:contentDescription="@string/a11y_welcome_get_from_vcs" />
@@ -229,18 +186,18 @@
                 android:visibility="gone">
 
                 <TextView
+                    android:id="@+id/tvEmptyTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="No recent projects"
-                    android:textColor="#8F939C"
                     android:textSize="14sp"
                     android:layout_marginBottom="8dp" />
 
                 <TextView
+                    android:id="@+id/tvEmptySubtitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Create a new Maven project or open an existing directory."
-                    android:textColor="#6F737A"
                     android:textSize="11sp" />
             </LinearLayout>
 

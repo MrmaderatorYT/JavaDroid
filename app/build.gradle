@@ -126,6 +126,12 @@ dependencies {
 
     // JSON parsing for HTTP client
     implementation 'org.json:json:20231013'
+
+    // App Startup — optimize initialization
+    implementation 'androidx.startup:startup-runtime:1.1.1'
+
+    // Baseline Profiles — faster cold start
+    implementation 'androidx.profileinstaller:profileinstaller:1.3.1'
 }
 
 configurations.all {
@@ -281,10 +287,17 @@ task patchAndroidJar {
         
         zos.close()
         
-        // 3. Replace original jar
-        originalJar.delete()
-        tempJar.renameTo(originalJar)
-        println "android.jar successfully patched with StringConcatFactory stubs!"
+        // 3. Replace original jar safely
+        try {
+            java.nio.file.Files.move(
+                tempJar.toPath(), 
+                originalJar.toPath(), 
+                java.nio.file.StandardCopyOption.REPLACE_EXISTING
+            )
+            println "android.jar successfully patched with StringConcatFactory stubs!"
+        } catch (java.io.IOException e) {
+            throw new GradleException("Failed to replace original android.jar. This usually happens if the file is locked by a process. Error: " + e.getMessage(), e)
+        }
     }
 }
 

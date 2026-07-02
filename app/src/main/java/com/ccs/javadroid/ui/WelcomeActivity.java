@@ -98,81 +98,73 @@ public class WelcomeActivity extends AppCompatActivity {
     }
 
     private void applyThemeStyles() {
-        // Apply theme color tokens to welcome layout elements
-        View rootLayout = findViewById(android.R.id.content);
+        // Root
+        View rootLayout = findViewById(R.id.welcome_root);
+        if (rootLayout == null) {
+            rootLayout = findViewById(android.R.id.content);
+        }
         if (rootLayout != null) {
             rootLayout.setBackgroundColor(theme.bg);
         }
-        
-        // Find right workspace area parent layout and sidebar layout
-        LinearLayout rightWorkspace = findViewById(R.id.rvRecentProjects) != null ? 
-                (LinearLayout) findViewById(R.id.rvRecentProjects).getParent().getParent() : null;
-        if (rightWorkspace != null) {
-            rightWorkspace.setBackgroundColor(theme.bg);
-        }
 
-        View sidebarLayout = findViewById(R.id.sidebarProjects) != null ? 
-                (View) findViewById(R.id.sidebarProjects).getParent() : null;
+        // Navigation Bar / Sidebar
+        View sidebarLayout = findViewById(R.id.welcome_sidebar);
+        if (sidebarLayout == null) {
+            sidebarLayout = findViewById(R.id.sidebarProjects) != null ?
+                    (View) findViewById(R.id.sidebarProjects).getParent() : null;
+        }
         if (sidebarLayout != null) {
             sidebarLayout.setBackgroundColor(theme.toolbar);
         }
 
-        TextView appTitle = null;
-        if (sidebarLayout instanceof LinearLayout) {
-            LinearLayout sl = (LinearLayout) sidebarLayout;
-            if (sl.getChildCount() > 0 && sl.getChildAt(0) instanceof LinearLayout) {
-                LinearLayout header = (LinearLayout) sl.getChildAt(0);
-                if (header.getChildCount() > 1 && header.getChildAt(1) instanceof LinearLayout) {
-                    LinearLayout textContainer = (LinearLayout) header.getChildAt(1);
-                    if (textContainer.getChildCount() > 0 && textContainer.getChildAt(0) instanceof TextView) {
-                        appTitle = (TextView) textContainer.getChildAt(0);
-                    }
-                }
-            }
-        }
-        if (appTitle != null) {
-            appTitle.setTextColor(theme.text);
-        }
+        // App title & version
+        TextView tvAppName = findViewById(R.id.tvAppName);
+        if (tvAppName != null) tvAppName.setTextColor(theme.text);
+        TextView tvAppVersion = findViewById(R.id.tvAppVersion);
+        if (tvAppVersion != null) tvAppVersion.setTextColor(theme.textDim);
 
+        // Search field
         if (etSearchProjects != null) {
             etSearchProjects.setBackgroundColor(blend(theme.toolbar, theme.bg, 0.2f));
             etSearchProjects.setTextColor(theme.text);
             etSearchProjects.setHintTextColor(theme.textDim);
         }
+
+        // Buttons (using ColorStateList for compatibility with MaterialButton)
         if (btnNewProject != null) {
-            btnNewProject.setBackgroundColor(theme.accent);
+            btnNewProject.setBackgroundTintList(android.content.res.ColorStateList.valueOf(theme.accent));
             btnNewProject.setTextColor(Color.WHITE);
         }
         if (btnOpenProject != null) {
-            btnOpenProject.setBackgroundColor(theme.bg);
+            btnOpenProject.setBackgroundTintList(android.content.res.ColorStateList.valueOf(theme.toolbar));
             btnOpenProject.setTextColor(theme.text);
         }
         if (btnCloneRepo != null) {
-            btnCloneRepo.setBackgroundColor(theme.bg);
+            btnCloneRepo.setBackgroundTintList(android.content.res.ColorStateList.valueOf(theme.toolbar));
             btnCloneRepo.setTextColor(theme.textDim);
         }
-        // Sidebar items styling
+
+        // Sidebar items
         TextView sidebarProjects = findViewById(R.id.sidebarProjects);
         if (sidebarProjects != null) {
-            sidebarProjects.setBackgroundColor(theme.accent);
+            float density = getResources().getDisplayMetrics().density;
+            GradientDrawable gd = new GradientDrawable();
+            gd.setColor(theme.accent);
+            gd.setCornerRadius(6f * density); // 6dp corner radius
+            sidebarProjects.setBackground(gd);
             sidebarProjects.setTextColor(Color.WHITE);
         }
-        TextView sidebarCustomize = findViewById(R.id.sidebarCustomize);
-        if (sidebarCustomize != null) {
-            sidebarCustomize.setTextColor(theme.textDim);
-        }
-        TextView sidebarPlugins = findViewById(R.id.sidebarPlugins);
-        if (sidebarPlugins != null) {
-            sidebarPlugins.setTextColor(theme.textDim);
-        }
         TextView sidebarMaterials = findViewById(R.id.sidebarMaterials);
-        if (sidebarMaterials != null) {
-            sidebarMaterials.setTextColor(theme.textDim);
-        }
+        if (sidebarMaterials != null) sidebarMaterials.setTextColor(theme.textDim);
+
         android.widget.ImageView sidebarSettings = findViewById(R.id.sidebarSettings);
-        if (sidebarSettings != null) {
-            sidebarSettings.setColorFilter(theme.textDim);
-        }
+        if (sidebarSettings != null) sidebarSettings.setColorFilter(theme.textDim);
+
+        // Empty state
+        TextView tvEmptyTitle = findViewById(R.id.tvEmptyTitle);
+        if (tvEmptyTitle != null) tvEmptyTitle.setTextColor(theme.textDim);
+        TextView tvEmptySubtitle = findViewById(R.id.tvEmptySubtitle);
+        if (tvEmptySubtitle != null) tvEmptySubtitle.setTextColor(theme.textDim);
     }
 
     private void setupRecentProjects() {
@@ -232,16 +224,6 @@ public class WelcomeActivity extends AppCompatActivity {
         btnNewProject.setOnClickListener(v -> showNewMavenProjectDialog());
         btnOpenProject.setOnClickListener(v -> showOpenFolderDialog());
         btnCloneRepo.setOnClickListener(v -> showCloneRepoDialog());
-
-        View sidebarCustomize = findViewById(R.id.sidebarCustomize);
-        if (sidebarCustomize != null) {
-            sidebarCustomize.setOnClickListener(v -> Toast.makeText(this, R.string.soon_in_development, Toast.LENGTH_SHORT).show());
-        }
-
-        View sidebarPlugins = findViewById(R.id.sidebarPlugins);
-        if (sidebarPlugins != null) {
-            sidebarPlugins.setOnClickListener(v -> Toast.makeText(this, R.string.soon_in_development, Toast.LENGTH_SHORT).show());
-        }
 
         View sidebarMaterials = findViewById(R.id.sidebarMaterials);
         if (sidebarMaterials != null) {
@@ -306,7 +288,7 @@ public class WelcomeActivity extends AppCompatActivity {
         }
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
             if (!android.os.Environment.isExternalStorageManager()) {
-                new androidx.appcompat.app.AlertDialog.Builder(this)
+                newRoundedDialog()
                         .setTitle(R.string.permission_storage_title)
                         .setMessage(R.string.permission_storage_message)
                         .setPositiveButton(R.string.permission_storage_open_settings, (d, w) -> {
@@ -349,7 +331,7 @@ public class WelcomeActivity extends AppCompatActivity {
         if (requestCode == REQ_STORAGE_PERMISSION) {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
                 if (!android.os.Environment.isExternalStorageManager()) {
-                    new androidx.appcompat.app.AlertDialog.Builder(this)
+                    newRoundedDialog()
                             .setTitle(R.string.permission_storage_denied_title)
                             .setMessage(R.string.permission_storage_denied_message)
                             .setPositiveButton(R.string.permission_storage_try_again, (d, w) -> requestStoragePermission())
@@ -400,7 +382,7 @@ public class WelcomeActivity extends AppCompatActivity {
     private void showProjectOptions(String path, View anchor) {
         final File file = new File(path);
         String[] options = { getString(R.string.welcome_project_options_open), getString(R.string.welcome_project_options_remove), getString(R.string.welcome_project_options_delete) };
-        new AlertDialog.Builder(this)
+        newRoundedDialog()
                 .setTitle(file.getName())
                 .setItems(options, (dialog, which) -> {
                     if (which == 0) {
@@ -409,7 +391,7 @@ public class WelcomeActivity extends AppCompatActivity {
                         appPrefs.removeRecentProject(path);
                         setupRecentProjects();
                     } else if (which == 2) {
-                        new AlertDialog.Builder(this)
+                        newRoundedDialog()
                                 .setTitle(R.string.welcome_delete_project_title)
                                 .setMessage(getString(R.string.welcome_delete_project_message, file.getName()))
                                 .setPositiveButton(R.string.dialog_delete, (d, w) -> {
@@ -437,7 +419,7 @@ public class WelcomeActivity extends AppCompatActivity {
             names[i] = dirs[i].getName();
         }
 
-        new AlertDialog.Builder(this)
+        newRoundedDialog()
                 .setTitle(R.string.welcome_open_folder_title)
                 .setItems(names, (dialog, which) -> openProject(dirs[which].getAbsolutePath()))
                 .setNegativeButton(R.string.dialog_cancel, null)
@@ -461,7 +443,7 @@ public class WelcomeActivity extends AppCompatActivity {
         box.addView(etUser);
         box.addView(etToken);
 
-        new AlertDialog.Builder(this)
+        newRoundedDialog()
                 .setTitle(R.string.welcome_clone_repo_title)
                 .setMessage(R.string.welcome_clone_repo_message)
                 .setView(box)
@@ -520,7 +502,7 @@ public class WelcomeActivity extends AppCompatActivity {
             getString(R.string.project_type_playground)
         };
 
-        new AlertDialog.Builder(this)
+        newRoundedDialog()
                 .setTitle(R.string.dialog_new_project_title)
                 .setItems(projectTypes, (dialog, which) -> {
                     if (which == 0) {
@@ -569,7 +551,7 @@ public class WelcomeActivity extends AppCompatActivity {
         box.addView(etGroup);
         box.addView(etArtifact);
 
-        new AlertDialog.Builder(this)
+        newRoundedDialog()
                 .setTitle(R.string.dialog_new_maven_title)
                 .setMessage(R.string.dialog_new_maven_message)
                 .setView(box)
@@ -606,7 +588,7 @@ public class WelcomeActivity extends AppCompatActivity {
         box.addView(etName);
         box.addView(etGroup);
 
-        new AlertDialog.Builder(this)
+        newRoundedDialog()
                 .setTitle(R.string.dialog_new_gradle_title)
                 .setMessage(R.string.dialog_new_gradle_message)
                 .setView(box)
@@ -640,7 +622,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
         box.addView(etName);
 
-        new AlertDialog.Builder(this)
+        newRoundedDialog()
                 .setTitle(R.string.dialog_new_bytecode_title)
                 .setMessage(R.string.dialog_new_bytecode_message)
                 .setView(box)
@@ -680,6 +662,10 @@ public class WelcomeActivity extends AppCompatActivity {
 
     private int dp(int value) {
         return (int) (value * getResources().getDisplayMetrics().density);
+    }
+
+    private com.google.android.material.dialog.MaterialAlertDialogBuilder newRoundedDialog() {
+        return new com.google.android.material.dialog.MaterialAlertDialogBuilder(this);
     }
 
     private static int blend(int a, int b, float t) {

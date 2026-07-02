@@ -31,6 +31,8 @@
         <item name="colorOnSurface">@color/idea_text</item>
         <item name="android:textColorPrimary">@color/idea_text</item>
         <item name="android:textColorSecondary">@color/idea_text_dim</item>
+        <item name="shapeAppearanceSmallComponent">@style/Shape.JavaDroid.Rounded</item>
+        <item name="shapeAppearanceMediumComponent">@style/Shape.JavaDroid.Rounded</item>
         <item name="buttonBarPositiveButtonStyle">@style/Widget.JavaDroid.DialogButton</item>
         <item name="buttonBarNegativeButtonStyle">@style/Widget.JavaDroid.DialogButton</item>
         <item name="buttonBarNeutralButtonStyle">@style/Widget.JavaDroid.DialogButton</item>
@@ -44,6 +46,12 @@
     <style name="Shape.JavaDroid.Rounded" parent="ShapeAppearance.MaterialComponents.SmallComponent">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">20dp</item>
+    </style>
+
+    <style name="Widget.JavaDroid.Button.Rounded" parent="Widget.MaterialComponents.Button">
+        <item name="cornerRadius">20dp</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
     </style>
 
     <style name="Theme.JavaDroid.Light" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -76,6 +84,8 @@
         <item name="colorOnSurface">#1E1E1E</item>
         <item name="android:textColorPrimary">#1E1E1E</item>
         <item name="android:textColorSecondary">#606060</item>
+        <item name="shapeAppearanceSmallComponent">@style/Shape.JavaDroid.Rounded</item>
+        <item name="shapeAppearanceMediumComponent">@style/Shape.JavaDroid.Rounded</item>
         <item name="buttonBarPositiveButtonStyle">@style/Widget.JavaDroid.DialogButton.Light</item>
         <item name="buttonBarNegativeButtonStyle">@style/Widget.JavaDroid.DialogButton.Light</item>
         <item name="buttonBarNeutralButtonStyle">@style/Widget.JavaDroid.DialogButton.Light</item>

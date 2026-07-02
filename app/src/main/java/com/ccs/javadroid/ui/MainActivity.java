@@ -645,6 +645,12 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         if (toolbarTitle != null) toolbarTitle.setTextColor(theme.text);
+        View toolbarBackBtn = findViewById(R.id.toolbarBack);
+        if (toolbarBackBtn != null) ((TextView) toolbarBackBtn).setTextColor(theme.text);
+        View toolbarOverflowBtn = findViewById(R.id.toolbarOverflow);
+        if (toolbarOverflowBtn != null) ((TextView) toolbarOverflowBtn).setTextColor(theme.text);
+        Drawable navIcon = toolbar != null ? toolbar.getNavigationIcon() : null;
+        if (navIcon != null) navIcon.mutate().setColorFilter(theme.text, PorterDuff.Mode.SRC_IN);
         if (tabsBar != null)      tabsBar.setBackgroundColor(theme.toolbar);
         if (tabBorder != null)    tabBorder.setBackgroundColor(theme.accent);
         if (editorDivider != null) editorDivider.setBackgroundColor(theme.separator);
@@ -669,6 +675,10 @@ public class MainActivity extends AppCompatActivity {
         if (consoleScroll != null) consoleScroll.setBackgroundColor(theme.consoleBg);
         if (consoleOutput != null) consoleOutput.setTextColor(theme.consoleText);
         if (problemsRecycler != null) problemsRecycler.setBackgroundColor(theme.consoleBg);
+        if (bookmarkController != null && bookmarkController.getRecycler() != null)
+            bookmarkController.getRecycler().setBackgroundColor(theme.consoleBg);
+        if (tabBookmarks != null && bottomPanelMode != PANEL_BOOKMARKS)
+            tabBookmarks.setTextColor(theme.textDim);
         if (bytecodeRoot != null) bytecodeRoot.setBackgroundColor(theme.consoleBg);
         if (bytecodeToolbar != null) bytecodeToolbar.setBackgroundColor(theme.toolbar);
         if (bytecodeStatus != null) bytecodeStatus.setBackgroundColor(theme.consoleBg);
@@ -1100,7 +1110,7 @@ public class MainActivity extends AppCompatActivity {
 
             // Show context menu
             String[] items = {"Evaluate '" + selText + "'", "Add Watch '" + selText + "'"};
-            new AlertDialog.Builder(ed.getContext())
+            new com.google.android.material.dialog.MaterialAlertDialogBuilder(ed.getContext())
                     .setItems(items, (dialog, which) -> {
                         if (which == 0) {
                             evaluateExpression(selText);
@@ -1275,6 +1285,7 @@ public class MainActivity extends AppCompatActivity {
         if (tabDebug != null) tabDebug.setBackgroundColor(bottomPanelMode == PANEL_DEBUG ? activeBg : inactiveBg);
         if (tabDebugConsole != null) tabDebugConsole.setBackgroundColor(bottomPanelMode == PANEL_DEBUG_CONSOLE ? activeBg : inactiveBg);
         if (tabCallGraph != null) tabCallGraph.setBackgroundColor(bottomPanelMode == PANEL_CALL_GRAPH ? activeBg : inactiveBg);
+        if (tabBookmarks != null) tabBookmarks.setBackgroundColor(bottomPanelMode == PANEL_BOOKMARKS ? activeBg : inactiveBg);
         if (profilerManager != null) profilerManager.updateTabStyle(bottomPanelMode == PANEL_PROFILER, theme, activeBg);
         if (depsManager != null) depsManager.updateTabStyle(bottomPanelMode == PANEL_DEPS, theme, activeBg);
         if (todoManager != null) todoManager.updateTabStyle(bottomPanelMode == PANEL_TODO, theme, activeBg);
@@ -1285,6 +1296,7 @@ public class MainActivity extends AppCompatActivity {
         if (tabDebug != null) tabDebug.setTextColor(bottomPanelMode == PANEL_DEBUG ? theme.accent : theme.textDim);
         if (tabDebugConsole != null) tabDebugConsole.setTextColor(bottomPanelMode == PANEL_DEBUG_CONSOLE ? theme.accent : theme.textDim);
         if (tabCallGraph != null) tabCallGraph.setTextColor(bottomPanelMode == PANEL_CALL_GRAPH ? theme.accent : theme.textDim);
+        if (tabBookmarks != null) tabBookmarks.setTextColor(bottomPanelMode == PANEL_BOOKMARKS ? 0xFFFFD700 : theme.textDim);
     }
 
     private void switchBottomPanel(int mode) {
@@ -1669,7 +1681,7 @@ public class MainActivity extends AppCompatActivity {
         if (current != null) input.setText(current);
         input.setPadding(48, 24, 48, 24);
 
-        new AlertDialog.Builder(this)
+        newRoundedDialog()
                 .setTitle(getString(R.string.breakpoint_dialog_title, line))
                 .setView(input)
                 .setPositiveButton(R.string.breakpoint_set_button, (d, w) -> {
@@ -1713,7 +1725,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        new AlertDialog.Builder(this)
+        newRoundedDialog()
                 .setTitle(R.string.dialog_debug_evaluate_title)
                 .setView(input)
                 .setPositiveButton(R.string.dialog_apply, (d, w) -> {
@@ -1779,7 +1791,7 @@ public class MainActivity extends AppCompatActivity {
         input.setHint(R.string.debug_watch_hint);
         input.setSingleLine(true);
 
-        new AlertDialog.Builder(this)
+        newRoundedDialog()
                 .setTitle(R.string.dialog_debug_watch_title)
                 .setView(input)
                 .setPositiveButton(R.string.dialog_create, (d, w) -> {
@@ -2479,7 +2491,7 @@ public class MainActivity extends AppCompatActivity {
         input.setPadding(dp(32), dp(16), dp(32), dp(16));
         input.setSingleLine(true);
 
-        new AlertDialog.Builder(this)
+        newRoundedDialog()
                 .setTitle(R.string.pastebin_title)
                 .setMessage(R.string.pastebin_message)
                 .setView(input)
@@ -2654,7 +2666,7 @@ public class MainActivity extends AppCompatActivity {
         dialogRoot.addView(sv, new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, dp(400)));
 
-        AlertDialog dialog = new AlertDialog.Builder(this)
+        AlertDialog dialog = newRoundedDialog()
                 .setTitle(R.string.actions_title)
                 .setView(dialogRoot)
                 .setNegativeButton(R.string.dialog_cancel, null)
@@ -2832,7 +2844,7 @@ public class MainActivity extends AppCompatActivity {
             } catch (IOException e) {
                 String msg = e.getMessage();
                 if (msg != null && msg.contains("permission denied")) {
-                    new androidx.appcompat.app.AlertDialog.Builder(this)
+                    newRoundedDialog()
                             .setTitle(R.string.permission_storage_denied_title)
                             .setMessage(R.string.permission_storage_denied_message)
                             .setPositiveButton(R.string.permission_storage_open_settings, (d, w) -> openStorageSettings())
@@ -2871,7 +2883,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             String msg = e.getMessage();
             if (msg != null && msg.contains("permission denied")) {
-                new androidx.appcompat.app.AlertDialog.Builder(this)
+                newRoundedDialog()
                         .setTitle(R.string.permission_storage_denied_title)
                         .setMessage(R.string.permission_storage_denied_message)
                         .setPositiveButton(R.string.permission_storage_open_settings, (d, w) -> openStorageSettings())
@@ -2935,7 +2947,7 @@ public class MainActivity extends AppCompatActivity {
         if (index < 0 || index >= tabsAdapter.getTabs().size()) return;
         FileTab tab = tabsAdapter.getTabs().get(index);
         if (tab.isModified) {
-            new AlertDialog.Builder(this)
+            newRoundedDialog()
                     .setTitle(R.string.dialog_unsaved_title)
                     .setMessage(getString(R.string.dialog_unsaved_message, tab.file.getName()))
                     .setPositiveButton(R.string.dialog_save_close, (d, w) -> { saveTab(index); doCloseTab(index); })
@@ -3321,7 +3333,7 @@ public class MainActivity extends AppCompatActivity {
                         items[i] = "import " + suggestions.get(i).fullImport + ";";
                         checked[i] = true;
                     }
-                    new AlertDialog.Builder(this)
+                    newRoundedDialog()
                             .setTitle(R.string.auto_import_title)
                             .setMultiChoiceItems(items, checked, (d, w, isChecked) -> checked[w] = isChecked)
                             .setPositiveButton(R.string.auto_import_add, (d, w) -> {
@@ -3389,7 +3401,7 @@ public class MainActivity extends AppCompatActivity {
         scroll.addView(formattedOutput);
         scroll.setBackgroundColor(theme.consoleBg);
 
-        new AlertDialog.Builder(this)
+        newRoundedDialog()
                 .setTitle(name + " — formatted")
                 .setView(scroll)
                 .setPositiveButton(R.string.copy_button, (d, w) -> {
@@ -3627,7 +3639,7 @@ public class MainActivity extends AppCompatActivity {
         rg.addView(rbCpp);
         layout.addView(rg);
 
-        new AlertDialog.Builder(this)
+        newRoundedDialog()
                 .setTitle(R.string.menu_create_cpp_module)
                 .setView(layout)
                 .setPositiveButton(R.string.dialog_create, (d, w) -> {
@@ -4102,7 +4114,7 @@ public class MainActivity extends AppCompatActivity {
                 if (android.os.Environment.isExternalStorageManager()) {
                     recreate();
                 } else {
-                    new androidx.appcompat.app.AlertDialog.Builder(this)
+                    newRoundedDialog()
                             .setTitle(R.string.permission_storage_denied_title)
                             .setMessage(R.string.permission_storage_denied_message)
                             .setPositiveButton(R.string.permission_storage_try_again, (d, w) -> {
@@ -4399,6 +4411,10 @@ public class MainActivity extends AppCompatActivity {
         return (int) (value * getResources().getDisplayMetrics().density);
     }
 
+    private com.google.android.material.dialog.MaterialAlertDialogBuilder newRoundedDialog() {
+        return new com.google.android.material.dialog.MaterialAlertDialogBuilder(this);
+    }
+
     private void showEncodingSelectionDialog() {
         final String[] encodings = { "UTF-8", "US-ASCII", "ISO-8859-1", "UTF-16", "Windows-1251", "Windows-1252" };
         String current = appPrefs.getFileEncoding();
@@ -4410,7 +4426,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        new AlertDialog.Builder(this)
+        newRoundedDialog()
                 .setTitle(R.string.dialog_select_encoding)
                 .setSingleChoiceItems(encodings, checkedItem, (dialog, which) -> {
                     String selected = encodings[which];
@@ -4552,7 +4568,7 @@ public class MainActivity extends AppCompatActivity {
             };
         }
 
-        new AlertDialog.Builder(this)
+        newRoundedDialog()
                 .setTitle("Edit: " + insn.opcode + " " + (insn.operand != null ? insn.operand : ""))
                 .setItems(options, (d, w) -> {
                     switch (w) {
@@ -4583,7 +4599,7 @@ public class MainActivity extends AppCompatActivity {
         input.setHintTextColor(theme.textDim);
         input.setPadding(48, 24, 48, 24);
 
-        new AlertDialog.Builder(this)
+        newRoundedDialog()
                 .setTitle("Edit LDC constant")
                 .setView(input)
                 .setPositiveButton("Apply", (d, w) -> {
@@ -4598,7 +4614,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showDeleteInsnDialog(int index) {
-        new AlertDialog.Builder(this)
+        newRoundedDialog()
                 .setTitle(R.string.bytecode_delete_insn)
                 .setPositiveButton("Delete", (d, w) -> {
                     Toast.makeText(this, "Instruction " + index + " deleted", Toast.LENGTH_SHORT).show();
@@ -4609,7 +4625,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showInsertNopDialog(int index, boolean before) {
-        new AlertDialog.Builder(this)
+        newRoundedDialog()
                 .setTitle(before ? R.string.bytecode_insert_before : R.string.bytecode_insert_after)
                 .setPositiveButton("NOP", (d, w) -> {
                     String pos = before ? "before" : "after";
@@ -4945,7 +4961,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean checkStoragePermission() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
             if (!android.os.Environment.isExternalStorageManager()) {
-                new androidx.appcompat.app.AlertDialog.Builder(this)
+                newRoundedDialog()
                         .setTitle(R.string.permission_storage_title)
                         .setMessage(R.string.permission_storage_message)
                         .setPositiveButton(R.string.permission_storage_open_settings, (d, w) -> {

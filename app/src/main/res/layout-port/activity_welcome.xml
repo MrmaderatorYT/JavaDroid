@@ -2,18 +2,18 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/welcome_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#1E1E20"
     tools:context=".WelcomeActivity">
 
     <!-- ── TOP BAR: Logo + Tabs ── -->
     <LinearLayout
+        android:id="@+id/welcome_sidebar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:background="#2B2D30"
         android:gravity="center_vertical"
         android:paddingStart="12dp"
         android:paddingEnd="8dp"
@@ -27,6 +27,7 @@
             android:contentDescription="@string/a11y_welcome_logo" />
 
         <TextView
+            android:id="@+id/tvAppName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="JavaDroid"
@@ -68,36 +69,6 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:contentDescription="@string/a11y_welcome_projects_tab" />
-
-                <TextView
-                    android:id="@+id/sidebarCustomize"
-                    android:layout_width="wrap_content"
-                    android:layout_height="30dp"
-                    android:gravity="center_vertical"
-                    android:paddingStart="10dp"
-                    android:paddingEnd="10dp"
-                    android:text="Customize"
-                    android:textColor="#DFE1E5"
-                    android:textSize="11sp"
-                    android:background="?attr/selectableItemBackground"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:contentDescription="@string/a11y_welcome_customize_tab" />
-
-                <TextView
-                    android:id="@+id/sidebarPlugins"
-                    android:layout_width="wrap_content"
-                    android:layout_height="30dp"
-                    android:gravity="center_vertical"
-                    android:paddingStart="10dp"
-                    android:paddingEnd="10dp"
-                    android:text="Plugins"
-                    android:textColor="#DFE1E5"
-                    android:textSize="11sp"
-                    android:background="?attr/selectableItemBackground"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:contentDescription="@string/a11y_welcome_plugins_tab" />
 
                 <TextView
                     android:id="@+id/sidebarMaterials"
@@ -162,43 +133,48 @@
                 android:singleLine="true"
                 android:layout_marginEnd="8dp" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnNewProject"
                 android:layout_width="wrap_content"
-                android:layout_height="32dp"
+                android:layout_height="36dp"
                 android:text="New"
                 android:textAllCaps="false"
                 android:textSize="11sp"
                 android:textColor="#FFFFFF"
                 android:backgroundTint="#3574F0"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
+                app:cornerRadius="18dp"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
                 android:contentDescription="@string/a11y_welcome_new_project"
                 android:layout_marginEnd="4dp" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnOpenProject"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="wrap_content"
-                android:layout_height="32dp"
+                android:layout_height="36dp"
                 android:text="Open"
                 android:textAllCaps="false"
                 android:textSize="11sp"
                 android:textColor="#DFE1E5"
                 android:backgroundTint="#393B40"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
+                app:cornerRadius="18dp"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
                 android:contentDescription="@string/a11y_welcome_open_project"
                 android:layout_marginEnd="4dp" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnCloneRepo"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="wrap_content"
-                android:layout_height="32dp"
+                android:layout_height="36dp"
                 android:text="VCS"
                 android:textAllCaps="false"
                 android:textSize="11sp"
                 android:textColor="#808080"
                 android:backgroundTint="#2B2D30"
+                app:cornerRadius="18dp"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
                 android:contentDescription="@string/a11y_welcome_get_from_vcs" />
@@ -220,6 +196,7 @@
                 android:visibility="gone">
 
                 <TextView
+                    android:id="@+id/tvEmptyTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="No recent projects"
@@ -228,6 +205,7 @@
                     android:layout_marginBottom="8dp" />
 
                 <TextView
+                    android:id="@+id/tvEmptySubtitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Create a new Maven project or open an existing directory."
