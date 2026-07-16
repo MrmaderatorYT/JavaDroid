@@ -17,7 +17,7 @@ android {
         applicationId 'com.ccs.javadroid'
         minSdk 26
         targetSdk 35
-        versionCode 12
+        versionCode 13
         versionName '1.7.1'
 
         ndk {
@@ -122,7 +122,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:4.12.0'
 
     // Offline speech-to-text (Vosk)
-    implementation 'com.alphacephei:vosk-android:0.3.45'
+    implementation 'com.alphacephei:vosk-android:0.3.75'
 
     // JSON parsing for HTTP client
     implementation 'org.json:json:20231013'
