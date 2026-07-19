@@ -17,8 +17,8 @@ android {
         applicationId 'com.ccs.javadroid'
         minSdk 26
         targetSdk 35
-        versionCode 13
-        versionName '1.7.1'
+        versionCode 14
+        versionName '1.7.2'
 
         ndk {
             abiFilters 'arm64-v8a', 'armeabi-v7a', 'x86_64', 'x86'
@@ -79,6 +79,12 @@ android {
             excludes += 'META-INF/LICENSE'
         }
     }
+
+    sourceSets {
+        main {
+            assets.srcDirs += "$buildDir/generated/assets/patched-android-jar"
+        }
+    }
 }
 
 dependencies {
@@ -109,8 +115,8 @@ dependencies {
     implementation 'org.slf4j:slf4j-nop:1.7.36'
 
     // Kotlin Runtime Compiler support for on-device compilation
-    implementation 'org.jetbrains.kotlin:kotlin-compiler-embeddable:1.9.22'
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.9.22'
+    implementation 'org.jetbrains.kotlin:kotlin-compiler-embeddable:2.0.21'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:2.0.21'
     // kotlin-compiler-embeddable's XmlReader needs javax.xml.stream (StAX) — not in Android DEX
     implementation 'javax.xml.stream:stax-api:1.0-2'
     implementation 'org.codehaus.woodstox:stax2-api:4.2.2'
@@ -229,20 +235,22 @@ task compileStubs(type: JavaCompile) {
 task patchAndroidJar {
     dependsOn compileStubs
     
-    def originalJar = file("src/main/assets/android.jar")
+    def originalJar = file("android-sdk-jar/android.jar")
     def tempJar = file("$buildDir/patched-android.jar")
+    def patchedJar = file("$buildDir/generated/assets/patched-android-jar/android.jar")
     def stubClassesDir = file("$buildDir/stubs")
     
     inputs.file(originalJar)
     inputs.dir(stubClassesDir)
-    outputs.file(originalJar)
+    outputs.file(patchedJar)
     
     doLast {
         if (!originalJar.exists()) {
-            throw new GradleException("Original android.jar not found!")
+            throw new GradleException("Original android.jar not found at ${originalJar.absolutePath}")
         }
         
         tempJar.parentFile.mkdirs()
+        patchedJar.parentFile.mkdirs()
         
         java.util.zip.ZipOutputStream zos = new java.util.zip.ZipOutputStream(new FileOutputStream(tempJar))
         
@@ -291,12 +299,12 @@ task patchAndroidJar {
         try {
             java.nio.file.Files.move(
                 tempJar.toPath(), 
-                originalJar.toPath(), 
+                patchedJar.toPath(), 
                 java.nio.file.StandardCopyOption.REPLACE_EXISTING
             )
-            println "android.jar successfully patched with StringConcatFactory stubs!"
+            println "android.jar successfully patched and written to generated assets!"
         } catch (java.io.IOException e) {
-            throw new GradleException("Failed to replace original android.jar. This usually happens if the file is locked by a process. Error: " + e.getMessage(), e)
+            throw new GradleException("Failed to move patched android.jar. This usually happens if the file is locked by a process. Error: " + e.getMessage(), e)
         }
     }
 }

@@ -45,6 +45,9 @@
     <string name="tab_problems">Problems</string>
     <string name="tab_bytecode">Bytecode</string>
     <string name="tab_debug">Threads &amp; Variables</string>
+    <string name="tab_variables">Variables</string>
+    <string name="tab_callstack">Call Stack</string>
+    <string name="tab_watches">Watches</string>
     <string name="tab_debug_console">Console</string>
     <string name="status_line">Ln %1$d, Col %2$d</string>
     <string name="status_encoding">UTF-8</string>
@@ -1019,4 +1022,15 @@
     <!-- Settings -->
     <string name="settings_inclusive_mode">Inclusive Mode</string>
     <string name="settings_inclusive_mode_desc">AI agent can edit files without confirmation</string>
+    <string name="lesson_run">▶ Run</string>
+    <string name="lesson_running">Running…</string>
+    <string name="lesson_run_example">Run this Java example</string>
+    <string name="lesson_output">Output</string>
+    <string name="lesson_clear">Clear</string>
+    <string name="lesson_clear_output">Clear output</string>
+    <string name="lesson_hide_output">Hide output</string>
+    <string name="lesson_no_output">Program finished without output.</string>
+    <string name="lesson_compiling">Compiling Java 8 example…</string>
+    <string name="lesson_dexing">Converting example to DEX…</string>
+    <string name="lesson_executing">Running example…</string>
 </resources>

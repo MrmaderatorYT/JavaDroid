@@ -807,7 +807,7 @@ final class Jdk8DeepDiveMoreChapters {
                 + "LocalDate today = LocalDate.now();\n"
                 + "Period age = Period.between(birthday, today);\n"
                 + "\n"
-                + "ZoneId kyiv = ZoneId.of(\"Europe/Kyiv\");\n"
+                + "ZoneId kyiv = ZoneId.of(\"Europe/Kiev\"); // сумісно з tzdb Android 8/JDK 8\n"
                 + "ZonedDateTime meeting = LocalDateTime.of(2026, 6, 20, 14, 0)\n"
                 + "        .atZone(kyiv);\n"
                 + "Instant meetingInstant = meeting.toInstant();"));

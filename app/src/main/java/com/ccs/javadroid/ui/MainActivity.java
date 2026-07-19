@@ -327,23 +327,6 @@ public class MainActivity extends AppCompatActivity {
 
         setupProject(savedInstanceState != null);
 
-        if (savedInstanceState != null) {
-            java.util.ArrayList<String> paths = savedInstanceState.getStringArrayList("open_tab_paths");
-            int activeIndex = savedInstanceState.getInt("active_tab_index", -1);
-            if (paths != null && !paths.isEmpty()) {
-                tabsAdapter.getTabs().clear();
-                tabsAdapter.notifyDataSetChanged();
-                tabsAdapter.setActiveIndex(-1);
-
-                for (String path : paths) {
-                    tabsAdapter.addTab(new FileTab(new File(path)));
-                }
-                if (activeIndex >= 0 && activeIndex < tabsAdapter.getTabs().size()) {
-                    switchTab(activeIndex);
-                }
-            }
-        }
-
         applyTheme();
         initLiveProblemsScheduler();
     }
@@ -2236,6 +2219,7 @@ public class MainActivity extends AppCompatActivity {
             if (internalRoot != null) {
                 root = internalRoot;
                 prefs.edit().putString("project_root", root.getAbsolutePath()).apply();
+                sessionState.copy(oldRootPath, root.getAbsolutePath());
                 sessionState.clear(oldRootPath);
                 Toast.makeText(this, "Project copied to internal storage", Toast.LENGTH_SHORT).show();
             }
@@ -2246,83 +2230,81 @@ public class MainActivity extends AppCompatActivity {
         setupToolbarProjectPathLongClick();
         refreshFileTree();
 
-        if (!isRestoringState) {
-            // Try to restore session state (saved tabs and cursor positions)
-            SessionState.SavedSession session = sessionState.restore(root.getAbsolutePath());
-            if (session != null && !session.tabPaths.isEmpty()) {
-                boolean anyOpened = false;
-                for (int i = 0; i < session.tabPaths.size(); i++) {
+        // Always try to restore session from SharedPreferences (more reliable than savedInstanceState)
+        SessionState.SavedSession session = sessionState.restore(root.getAbsolutePath());
+        if (session != null && !session.tabPaths.isEmpty()) {
+            boolean anyOpened = false;
+            for (int i = 0; i < session.tabPaths.size(); i++) {
+                File f = new File(session.tabPaths.get(i));
+                if (f.exists() && f.canRead()) {
+                    try {
+                        openFile(f);
+                        anyOpened = true;
+                    } catch (Exception e) {
+                        // Skip unreadable files
+                    }
+                }
+            }
+            // Restore active tab
+            if (anyOpened && session.activeIndex >= 0
+                    && session.activeIndex < tabsAdapter.getTabs().size()) {
+                switchTab(session.activeIndex);
+            }
+            // Restore cursor positions to tabs and active editor
+            for (int i = 0; i < session.tabPaths.size(); i++) {
+                if (i < session.cursorLines.size()) {
                     File f = new File(session.tabPaths.get(i));
-                    if (f.exists() && f.canRead()) {
-                        try {
-                            openFile(f);
-                            anyOpened = true;
-                        } catch (Exception e) {
-                            // Skip unreadable files
+                    int idx = tabsAdapter.indexOfFile(f);
+                    if (idx >= 0) {
+                        int line = session.cursorLines.get(i) - 1;
+                        int col = (i < session.cursorCols.size()) ? session.cursorCols.get(i) : 0;
+                        FileTab tab = tabsAdapter.getTabs().get(idx);
+                        tab.cursorLine = line;
+                        tab.cursorColumn = col;
+                        if (idx == tabsAdapter.getActiveIndex()) {
+                            try {
+                                activeEditor.setSelection(line, col);
+                            } catch (Exception e) {}
                         }
                     }
                 }
-                // Restore active tab
-                if (anyOpened && session.activeIndex >= 0
-                        && session.activeIndex < tabsAdapter.getTabs().size()) {
-                    switchTab(session.activeIndex);
+            }
+            // Fallback: if no files opened from session, open first file
+            if (!anyOpened) {
+                List<File> files = projectManager.getJavaFiles();
+                if (!files.isEmpty()) {
+                    openFile(files.get(0));
                 }
-                // Restore cursor positions to tabs and active editor
-                for (int i = 0; i < session.tabPaths.size(); i++) {
-                    if (i < session.cursorLines.size()) {
-                        File f = new File(session.tabPaths.get(i));
-                        int idx = tabsAdapter.indexOfFile(f);
-                        if (idx >= 0) {
-                            int line = session.cursorLines.get(i) - 1;
-                            int col = (i < session.cursorCols.size()) ? session.cursorCols.get(i) : 0;
-                            FileTab tab = tabsAdapter.getTabs().get(idx);
-                            tab.cursorLine = line;
-                            tab.cursorColumn = col;
-                            if (idx == tabsAdapter.getActiveIndex()) {
-                                try {
-                                    activeEditor.setSelection(line, col);
-                                } catch (Exception e) {}
-                            }
-                        }
+            }
+        } else if (!isRestoringState) {
+            // No saved session AND not restoring from savedInstanceState — open first file or create default
+            List<File> files = projectManager.getJavaFiles();
+            if (files.isEmpty()) {
+                if (projectManager.isMavenProject()) {
+                    try {
+                        File pkgDir = ProjectLayoutHelper.mainJavaPackageDir(root);
+                        String pkg = ProjectLayoutHelper.mainPackageName(root);
+                        File app = new File(pkgDir, "App.java");
+                        projectManager.writeFile(app,
+                                "package " + pkg + ";\n\npublic class App {\n"
+                                        + "    public static void main(String[] args) {\n"
+                                        + "        System.out.println(\"Hello\");\n"
+                                        + "    }\n}\n");
+                        refreshFileTree();
+                        openFile(app);
+                    } catch (Exception e) {
+                        Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
-                }
-                // Fallback: if no files opened from session, open first file
-                if (!anyOpened) {
-                    List<File> files = projectManager.getJavaFiles();
-                    if (!files.isEmpty()) {
-                        openFile(files.get(0));
+                } else {
+                    try {
+                        File main = projectManager.createFile("Main", DEFAULT_CODE);
+                        if (main != null) openFile(main);
+                    } catch (IOException e) {
+                        Toast.makeText(this, R.string.error_cannot_create_main, Toast.LENGTH_SHORT).show();
                     }
                 }
             } else {
-                // No saved session — open first file or create default
-                List<File> files = projectManager.getJavaFiles();
-                if (files.isEmpty()) {
-                    if (projectManager.isMavenProject()) {
-                        try {
-                            File pkgDir = ProjectLayoutHelper.mainJavaPackageDir(root);
-                            String pkg = ProjectLayoutHelper.mainPackageName(root);
-                            File app = new File(pkgDir, "App.java");
-                            projectManager.writeFile(app,
-                                    "package " + pkg + ";\n\npublic class App {\n"
-                                            + "    public static void main(String[] args) {\n"
-                                            + "        System.out.println(\"Hello\");\n"
-                                            + "    }\n}\n");
-                            refreshFileTree();
-                            openFile(app);
-                        } catch (Exception e) {
-                            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    } else {
-                        try {
-                            File main = projectManager.createFile("Main", DEFAULT_CODE);
-                            if (main != null) openFile(main);
-                        } catch (IOException e) {
-                            Toast.makeText(this, R.string.error_cannot_create_main, Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                } else {
-                    openFile(files.get(0));
-                }
+                openFile(files.get(0));
             }
         }
         refreshProblemsMergedAsync();
@@ -2971,6 +2953,9 @@ public class MainActivity extends AppCompatActivity {
             isProgrammaticChange = false;
             editor.setEditable(false);
             editor2.setEditable(false);
+            // Free language syntax trees from memory
+            editor.setEditorLanguage(null);
+            editor2.setEditorLanguage(null);
             leftTab = null;
             rightTab = null;
             statusFileName.setText("");

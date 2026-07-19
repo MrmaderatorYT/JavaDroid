@@ -54,6 +54,10 @@ import dalvik.system.DexClassLoader;
  */
 public final class ProjectCompiler {
 
+    /** System.out/System.err are process-global; every in-process compiler/run must serialize access. */
+    private static final Object SYSTEM_STREAM_LOCK = new Object();
+    private static final Object SNIPPET_CACHE_LOCK = new Object();
+
     public interface Callback {
         void onProgress(String message);
         void onResult(String output);
@@ -98,6 +102,72 @@ public final class ProjectCompiler {
 
     public static void runSingleSource(Context context, String sourceCode, Callback callback) {
         runSingleSource(context, sourceCode, null, null, callback);
+    }
+
+    /**
+     * Компілює і запускає самодостатній Java-приклад з матеріалів.
+     *
+     * <p>На відміну від звичайного редактора, кожен приклад отримує окремий output-каталог,
+     * тому швидкі повторні натискання Run не змішують .class/DEX. Спільним лишається тільки
+     * read-only android.jar. Source/target навмисно зафіксовано на Java 8.</p>
+     */
+    public static void runJavaSnippet(Context context, String sourceCode, Callback rawCallback) {
+        final Callback callback = wrapCallback(context, rawCallback);
+        new Thread(() -> {
+            File runDir = null;
+            try {
+                postProgress(callback, context.getString(R.string.lesson_compiling));
+                File snippetRoot = new File(context.getCacheDir(), "lesson_snippets");
+                File androidJar;
+                synchronized (SNIPPET_CACHE_LOCK) {
+                    androidJar = ensureAndroidJar(context, snippetRoot);
+                }
+
+                String className = extractClassName(sourceCode);
+                runDir = new File(snippetRoot,
+                        "run_" + System.currentTimeMillis() + "_" + Thread.currentThread().getId());
+                if (!runDir.mkdirs() && !runDir.isDirectory()) {
+                    throw new IOException("Cannot create snippet directory: " + runDir);
+                }
+
+                File srcFile = new File(runDir, className + ".java");
+                writeUtf8(srcFile, sourceCode);
+                String ecjErr = compileEcj(androidJar, null, runDir, AppPreferences.JAVA_8, srcFile);
+                if (ecjErr != null) {
+                    postResult(callback, "Compilation Error:\n" + ecjErr);
+                    return;
+                }
+                postProblems(callback, context, null, "", null);
+
+                File classFile = findClassFile(runDir, className);
+                if (classFile == null) {
+                    postResult(callback, "Error: " + className + ".class not found.");
+                    return;
+                }
+
+                List<File> classFiles = findAllClassFiles(runDir);
+                File dexDir = new File(runDir, "dex");
+                if (!dexDir.mkdirs() && !dexDir.isDirectory()) {
+                    throw new IOException("Cannot create snippet dex directory: " + dexDir);
+                }
+                postProgress(callback, context.getString(R.string.lesson_dexing));
+                runD8Dex(androidJar, dexDir, classFiles);
+
+                String fqName = classFile.getAbsolutePath()
+                        .substring(runDir.getAbsolutePath().length() + 1)
+                        .replace(".class", "")
+                        .replace('/', '.');
+                postProgress(callback, context.getString(R.string.lesson_executing));
+                runDexMain(context, null, dexDir, fqName, callback);
+            } catch (Exception e) {
+                postResult(callback, "System Error: " + e.getMessage() + "\n"
+                        + Log.getStackTraceString(e));
+            } finally {
+                if (runDir != null) {
+                    deleteRecursive(runDir);
+                }
+            }
+        }, "lesson-snippet").start();
     }
 
     /**
@@ -457,22 +527,25 @@ public final class ProjectCompiler {
                 }
             };
             PrintStream ps = new PrintStream(interceptor, true);
-            PrintStream oldOut = System.out;
-            PrintStream oldErr = System.err;
-            System.setOut(ps);
-            System.setErr(ps);
-            try {
-                main.invoke(null, new Object[]{new String[]{}});
-                ps.flush();
-                postResult(callback, execOut.toString("UTF-8"));
-            } catch (Throwable e) {
-                Log.e("JavaDroidDebug", "Debug execution exception", e);
-                e.printStackTrace(ps);
-                ps.flush();
-                postResult(callback, "Execution Exception:\n" + execOut.toString("UTF-8"));
-            } finally {
-                System.setOut(oldOut);
-                System.setErr(oldErr);
+            synchronized (SYSTEM_STREAM_LOCK) {
+                PrintStream oldOut = System.out;
+                PrintStream oldErr = System.err;
+                System.setOut(ps);
+                System.setErr(ps);
+                try {
+                    main.invoke(null, new Object[]{new String[]{}});
+                    ps.flush();
+                    postResult(callback, execOut.toString("UTF-8"));
+                } catch (Throwable e) {
+                    Log.e("JavaDroidDebug", "Debug execution exception", e);
+                    e.printStackTrace(ps);
+                    ps.flush();
+                    postResult(callback, "Execution Exception:\n" + execOut.toString("UTF-8"));
+                } finally {
+                    System.setOut(oldOut);
+                    System.setErr(oldErr);
+                    ps.close();
+                }
             }
         } catch (Throwable e) {
             postResult(callback, "System Error: " + e.getMessage() + "\n" + Log.getStackTraceString(e));
@@ -1170,14 +1243,16 @@ public final class ProjectCompiler {
             for (File s : srcFiles) args.add(s.getAbsolutePath());
         }
         
-        PrintStream oldErr = System.err;
-        // Silence ECJ's internal System.err prints (like ZipException for non-jar classpath entries)
-        System.setErr(new PrintStream(new ByteArrayOutputStream()));
         boolean ok;
-        try {
-            ok = ecj.compile(args.toArray(new String[0]));
-        } finally {
-            System.setErr(oldErr);
+        synchronized (SYSTEM_STREAM_LOCK) {
+            PrintStream oldErr = System.err;
+            // Silence ECJ's internal System.err prints (like ZipException for non-jar classpath entries)
+            System.setErr(new PrintStream(new ByteArrayOutputStream()));
+            try {
+                ok = ecj.compile(args.toArray(new String[0]));
+            } finally {
+                System.setErr(oldErr);
+            }
         }
         
         outWriter.flush();
@@ -1350,21 +1425,24 @@ public final class ProjectCompiler {
                 }
             };
             PrintStream ps = new PrintStream(interceptor, true);
-            PrintStream oldOut = System.out;
-            PrintStream oldErr = System.err;
-            System.setOut(ps);
-            System.setErr(ps);
-            try {
-                main.invoke(null, new Object[]{new String[]{}});
-                ps.flush();
-                postResult(callback, execOut.toString("UTF-8"));
-            } catch (Throwable e) {
-                e.printStackTrace(ps);
-                ps.flush();
-                postResult(callback, "Execution Exception:\n" + execOut.toString("UTF-8"));
-            } finally {
-                System.setOut(oldOut);
-                System.setErr(oldErr);
+            synchronized (SYSTEM_STREAM_LOCK) {
+                PrintStream oldOut = System.out;
+                PrintStream oldErr = System.err;
+                System.setOut(ps);
+                System.setErr(ps);
+                try {
+                    main.invoke(null, new Object[]{new String[]{}});
+                    ps.flush();
+                    postResult(callback, execOut.toString("UTF-8"));
+                } catch (Throwable e) {
+                    e.printStackTrace(ps);
+                    ps.flush();
+                    postResult(callback, "Execution Exception:\n" + execOut.toString("UTF-8"));
+                } finally {
+                    System.setOut(oldOut);
+                    System.setErr(oldErr);
+                    ps.close();
+                }
             }
         } catch (Throwable e) {
             postResult(callback, "System Error: " + e.getMessage() + "\n" + Log.getStackTraceString(e));

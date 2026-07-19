@@ -107,6 +107,18 @@ public final class SessionState {
         prefs.edit().remove(projectKey(projectRoot)).apply();
     }
 
+    /**
+     * Копіює стан сесії з одного шляху проекту до іншого (при копіюванні проекту).
+     */
+    public void copy(String fromProjectRoot, String toProjectRoot) {
+        String fromKey = projectKey(fromProjectRoot);
+        String toKey = projectKey(toProjectRoot);
+        String data = prefs.getString(fromKey, null);
+        if (data != null && !data.isEmpty()) {
+            prefs.edit().putString(toKey, data).apply();
+        }
+    }
+
     private String projectKey(String projectRoot) {
         return "session_" + projectRoot.hashCode();
     }

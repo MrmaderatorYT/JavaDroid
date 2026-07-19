@@ -167,8 +167,8 @@ final class JrcChapters03to15 {
                 + "}\n"
                 + "\n"
                 + "Calc c = new Calc();\n"
-                + "System.out.println(s.add(2, 3));       // 5\n"
-                + "System.out.println(s.add(2.5, 3.5));   // 6.0\n"
+                + "System.out.println(c.add(2, 3));       // 5\n"
+                + "System.out.println(c.add(2.5, 3.5));   // 6.0\n"
                 + "System.out.println(Calc.square(4));    // 16"));
         uk.add(LessonBlock.heading("Передавання параметрів"));
         uk.add(LessonBlock.paragraph(
@@ -1404,7 +1404,7 @@ final class JrcChapters03to15 {
                 + "try {\n"
                 + "    String s = \"abc\";\n"
                 + "    int n = Integer.parseInt(s);  // NumberFormatException\n"
-                + "} catch (NumberFormatException | IllegalArgumentException e) {\n"
+                + "} catch (NumberFormatException | NullPointerException e) {\n"
                 + "    System.out.println(\"Погане значення: \" + e.getMessage());\n"
                 + "}"));
         uk.add(LessonBlock.heading("Рекомендації з розробки"));
@@ -1613,7 +1613,7 @@ final class JrcChapters03to15 {
                 + "\n"
                 + "String c = new String(\"hello\");\n"
                 + "System.out.println(a == c);   // false — new завжди створює новий об'єкт\n"
-                + "System.out.println(a.equals(s));  // true — порівнює зміст"));
+                + "System.out.println(a.equals(c));  // true — порівнює зміст"));
         uk.add(LessonBlock.warning(
                 "Порівнюйте рядки через equals(), а НЕ через ==. "
                 + "== перевіряє чи це той самий об'єкт у пам'яті, а equals — "

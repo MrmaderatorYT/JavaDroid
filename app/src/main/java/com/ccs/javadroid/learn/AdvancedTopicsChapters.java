@@ -501,7 +501,7 @@ final class AdvancedTopicsChapters {
         uk.add(LessonBlock.code(
                 "Predicate<String> isLong = s -> s.length() > 10;\n"
                 + "Function<String, Integer> len = String::length;\n"
-                + "Consumer<String> printer = System.out::println;\n"
+                + "Consumer<Integer> printer = System.out::println;\n"
                 + "Supplier<ArrayList<String>> listFactory = ArrayList::new;\n"
                 + "UnaryOperator<String> upper = String::toUpperCase;\n"
                 + "BinaryOperator<Integer> sum = Integer::sum;\n"
@@ -1238,7 +1238,7 @@ final class AdvancedTopicsChapters {
                 + "    private List<Command> history = new ArrayList<>();\n"
                 + "    void executeCommand(Command c) {\n"
                 + "        c.execute();\n"
-                + "        history.add(s);\n"
+                + "        history.add(c);\n"
                 + "    }\n"
                 + "}"));
         List<LessonBlock> en = new ArrayList<>();

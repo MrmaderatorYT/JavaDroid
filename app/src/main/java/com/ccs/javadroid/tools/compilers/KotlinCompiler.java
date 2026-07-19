@@ -24,6 +24,7 @@ final class KotlinCompiler {
 
     private KotlinCompiler() {}
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     static List<File> compile(File srcFile, File projectRoot, File cacheDir,
                               File androidJar, String className,
                               ProjectCompiler.Callback callback, Context context) {
@@ -32,7 +33,7 @@ final class KotlinCompiler {
 
             File stdlibJar = ensureKotlinStdlib(cacheDir);
             if (stdlibJar == null) {
-                ProjectCompiler.postResult(callback, "Kotlin Error: kotlin-stdlib-1.9.22.jar not available.\n" +
+                ProjectCompiler.postResult(callback, "Kotlin Error: kotlin-stdlib-2.0.21.jar not available.\n" +
                         "Please connect to internet on first use to download it.");
                 return null;
             }
@@ -208,9 +209,9 @@ final class KotlinCompiler {
     }
 
     private static File ensureKotlinStdlib(File cacheDir) {
-        File stdlibJar = new File(cacheDir, "kotlin-stdlib-1.9.22.jar");
+        File stdlibJar = new File(cacheDir, "kotlin-stdlib-2.0.21.jar");
         if (stdlibJar.exists() && stdlibJar.length() > 0) return stdlibJar;
-        String url = "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.9.22/kotlin-stdlib-1.9.22.jar";
+        String url = "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/2.0.21/kotlin-stdlib-2.0.21.jar";
         try {
             Log.d(TAG, "Downloading kotlin-stdlib from " + url);
             if (ProjectCompiler.downloadFile(url, stdlibJar, 30000, 60000)) {

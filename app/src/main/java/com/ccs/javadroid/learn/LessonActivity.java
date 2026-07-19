@@ -33,6 +33,7 @@ public class LessonActivity extends AppCompatActivity {
     private String lessonId;
     private List<Lesson> materials;
     private int currentIndex = 0;
+    private boolean destroyed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +76,7 @@ public class LessonActivity extends AppCompatActivity {
         tvTitle.setText(material.title(lang));
         tvTitle.setTextColor(theme.text);
 
-        adapter = new LessonBlockAdapter(material.content(lang), theme);
+        adapter = new LessonBlockAdapter(material.content(lang), theme, this::runSnippet);
         rv.setLayoutManager(new LinearLayoutManager(this));
         rv.setAdapter(adapter);
 
@@ -98,5 +99,25 @@ public class LessonActivity extends AppCompatActivity {
         if (rv.getLayoutManager() != null) rv.getLayoutManager().scrollToPosition(0);
         findViewById(R.id.btnMaterialPrev).setVisibility(idx > 0 ? View.VISIBLE : View.INVISIBLE);
         findViewById(R.id.btnMaterialNext).setVisibility(idx < materials.size() - 1 ? View.VISIBLE : View.INVISIBLE);
+    }
+
+    private void runSnippet(LessonBlock block, LessonBlockAdapter.RunCallback callback) {
+        LessonSnippetRunner.run(getApplicationContext(), block, new LessonSnippetRunner.Callback() {
+            @Override
+            public void onProgress(String message) {
+                if (!destroyed) callback.onProgress(message);
+            }
+
+            @Override
+            public void onResult(String output) {
+                if (!destroyed) callback.onResult(output);
+            }
+        });
+    }
+
+    @Override
+    protected void onDestroy() {
+        destroyed = true;
+        super.onDestroy();
     }
 }

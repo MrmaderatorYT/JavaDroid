@@ -1008,4 +1008,15 @@
     <!-- Settings -->
     <string name="settings_inclusive_mode">Інклюзивний режим</string>
     <string name="settings_inclusive_mode_desc">ШІ-агент може редагувати файли без підтвердження</string>
+    <string name="lesson_run">▶ Запустити</string>
+    <string name="lesson_running">Виконується…</string>
+    <string name="lesson_run_example">Запустити цей приклад Java</string>
+    <string name="lesson_output">Результат</string>
+    <string name="lesson_clear">Очистити</string>
+    <string name="lesson_clear_output">Очистити результат</string>
+    <string name="lesson_hide_output">Сховати результат</string>
+    <string name="lesson_no_output">Програму завершено без виводу.</string>
+    <string name="lesson_compiling">Компіляція прикладу Java 8…</string>
+    <string name="lesson_dexing">Перетворення прикладу на DEX…</string>
+    <string name="lesson_executing">Запуск прикладу…</string>
 </resources>

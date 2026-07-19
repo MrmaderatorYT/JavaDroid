@@ -73,6 +73,12 @@ public final class CourseRegistry {
         Jdk8DeepDiveMoreChapters.add(java);
         Jdk8DeepDiveAdvancedChapters.add(java);
 
+        // Український reference-шар для кожного Java-side JDK 8 Deep Dive матеріалу.
+        // Англійські списки навмисно не змінюються до окремого перекладацького проходу.
+        Jdk8UkrainianReferenceExpansion.apply(java);
+        Jdk8RunnableExamples.apply(java);
+        JavaCourseRunnableExamples.apply(java);
+
         courses.add(java);
 
         // ── Bytecode розділ ──────────────────────────────────────────────
