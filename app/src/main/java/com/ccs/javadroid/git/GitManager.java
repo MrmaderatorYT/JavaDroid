@@ -239,10 +239,16 @@ public final class GitManager {
         }
     }
 
-    public static void clone(String url, File dest, String username, String password) throws Exception {
+    public static void clone(String url, File dest, String username, String password, org.eclipse.jgit.lib.ProgressMonitor monitor) throws Exception {
+        if (monitor == null) {
+            monitor = org.eclipse.jgit.lib.NullProgressMonitor.INSTANCE;
+        }
+
         CloneCommand cmd = Git.cloneRepository()
                 .setURI(url)
-                .setDirectory(dest);
+                .setDirectory(dest)
+                .setTimeout(30)
+                .setProgressMonitor(monitor);
         if (username != null && !username.isEmpty()) {
             cmd.setCredentialsProvider(new UsernamePasswordCredentialsProvider(
                     username, password == null ? "" : password));

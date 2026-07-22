@@ -877,6 +877,9 @@ public final class ProjectCompiler {
                     mainClass = pom.properties.get("mainClass");
                     if (mainClass != null) mainClass = pom.resolveProperty(mainClass);
                 }
+                if (mainClass == null || mainClass.isEmpty()) {
+                    mainClass = findMainClass(classes);
+                }
                 if (mainClass == null || mainClass.isEmpty()) mainClass = "com.ccs.App";
 
                 postProgress(callback, "Running " + mainClass + "...");
@@ -1617,14 +1620,9 @@ public final class ProjectCompiler {
 
     private static void deleteRecursive(File f) {
         if (f.isDirectory()) {
-            File[] ch = f.listFiles();
-            if (ch != null) {
-                for (File c : ch) {
-                    deleteRecursive(c);
-                }
-            }
+            File[] c = f.listFiles();
+            if (c != null) for (File child : c) deleteRecursive(child);
         }
-        //noinspection ResultOfMethodCallIgnored
         f.delete();
     }
 
@@ -1861,4 +1859,25 @@ public final class ProjectCompiler {
         runD8Dex(androidJar, dexDir, classFile);
     }
 
+    private static String findMainClass(List<java.nio.file.Path> classes) {
+        for (java.nio.file.Path c : classes) {
+            try {
+                org.objectweb.asm.ClassReader cr = new org.objectweb.asm.ClassReader(java.nio.file.Files.readAllBytes(c));
+                final String[] foundMain = new String[1];
+                cr.accept(new org.objectweb.asm.ClassVisitor(org.objectweb.asm.Opcodes.ASM9) {
+                    @Override
+                    public org.objectweb.asm.MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
+                        if ("main".equals(name) && "([Ljava/lang/String;)V".equals(descriptor) 
+                                && (access & org.objectweb.asm.Opcodes.ACC_STATIC) != 0 
+                                && (access & org.objectweb.asm.Opcodes.ACC_PUBLIC) != 0) {
+                            foundMain[0] = cr.getClassName().replace('/', '.');
+                        }
+                        return null;
+                    }
+                }, org.objectweb.asm.ClassReader.SKIP_CODE);
+                if (foundMain[0] != null) return foundMain[0];
+            } catch (Exception e) {}
+        }
+        return null;
+    }
 }

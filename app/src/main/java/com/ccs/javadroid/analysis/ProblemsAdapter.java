@@ -60,7 +60,7 @@ public class ProblemsAdapter extends RecyclerView.Adapter<ProblemsAdapter.VH> {
                 break;
             case WARNING:
                 sev = ctx.getString(R.string.problem_warn);
-                color = 0xFFFFB74D;
+                color = theme != null ? (theme.dark ? 0xFFFFB74D : 0xFFF57C00) : 0xFFFFB74D;
                 break;
             default:
                 sev = ctx.getString(R.string.problem_info);

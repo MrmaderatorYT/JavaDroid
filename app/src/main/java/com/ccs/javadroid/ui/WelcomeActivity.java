@@ -121,7 +121,13 @@ public class WelcomeActivity extends AppCompatActivity {
         TextView tvAppName = findViewById(R.id.tvAppName);
         if (tvAppName != null) tvAppName.setTextColor(theme.text);
         TextView tvAppVersion = findViewById(R.id.tvAppVersion);
-        if (tvAppVersion != null) tvAppVersion.setTextColor(theme.textDim);
+        if (tvAppVersion != null) {
+            tvAppVersion.setTextColor(theme.textDim);
+            try {
+                String version = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+                tvAppVersion.setText(version);
+            } catch (Exception e) {}
+        }
 
         // Search field
         if (etSearchProjects != null) {
@@ -469,22 +475,59 @@ public class WelcomeActivity extends AppCompatActivity {
 
                     File projectDir = new File(MavenPaths.getJavaDroidBase(this), name);
 
-                    Toast.makeText(this, getString(R.string.welcome_cloning), Toast.LENGTH_SHORT).show();
+                    if (projectDir.exists() && projectDir.isDirectory()) {
+                        String[] files = projectDir.list();
+                        if (files != null && files.length > 0) {
+                            Toast.makeText(this, "Папка з такою назвою (" + name + ") вже існує і не є порожньою. Будь ласка, вкажіть іншу назву.", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                    }
+
+                    android.app.ProgressDialog pd = new android.app.ProgressDialog(this);
+                    pd.setMessage(getString(R.string.welcome_cloning));
+                    pd.setCancelable(false);
+                    pd.show();
 
                     io.execute(() -> {
                         try {
+                            org.eclipse.jgit.lib.ProgressMonitor monitor = new org.eclipse.jgit.lib.ProgressMonitor() {
+                                private int totalWork;
+                                private int completed;
+                                @Override public void start(int totalTasks) { }
+                                @Override public void beginTask(String title, int total) {
+                                    this.totalWork = total;
+                                    this.completed = 0;
+                                    android.util.Log.i("GitManager", "Git task: " + title + " (total=" + totalWork + ")");
+                                    ui.post(() -> {
+                                        if (pd.isShowing()) pd.setMessage("Клонування: " + title);
+                                    });
+                                }
+                                @Override public void update(int c) {
+                                    this.completed += c;
+                                    if (totalWork > 0 && this.completed % 10 == 0) { // Update occasionally
+                                        // Optional: update progress bar if we had one
+                                    }
+                                }
+                                @Override public void endTask() { }
+                                @Override public boolean isCancelled() { return !pd.isShowing(); }
+                            };
+
                             GitManager.clone(url, projectDir,
                                     user.isEmpty() ? null : user,
-                                    token.isEmpty() ? null : token);
+                                    token.isEmpty() ? null : token,
+                                    monitor);
                             ui.post(() -> {
+                                if (pd.isShowing()) pd.dismiss();
                                 appPrefs.setProjectRoot(projectDir.getAbsolutePath());
                                 appPrefs.addRecentProject(projectDir.getAbsolutePath());
-                                Toast.makeText(this, getString(R.string.welcome_cloned_success), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), getString(R.string.welcome_cloned_success), Toast.LENGTH_SHORT).show();
                                 openProject(projectDir.getAbsolutePath());
                             });
-                        } catch (Exception e) {
+                        } catch (Throwable e) {
+                            android.util.Log.e("GitManager", "Clone failed", e);
                             ui.post(() -> {
-                                Toast.makeText(this, getString(R.string.welcome_clone_failed, e.getMessage()),
+                                if (pd.isShowing()) pd.dismiss();
+                                Toast.makeText(getApplicationContext(), getString(R.string.welcome_clone_failed, e.toString()),
                                         Toast.LENGTH_LONG).show();
                             });
                         }

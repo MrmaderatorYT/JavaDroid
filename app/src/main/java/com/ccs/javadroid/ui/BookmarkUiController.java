@@ -45,7 +45,7 @@ public final class BookmarkUiController {
         TextView tab = activity.findViewById(R.id.tabBookmarks);
         if (tab != null) {
             tab.setBackgroundColor(active ? activeBg : theme.toolbar);
-            tab.setTextColor(active ? 0xFFFFD700 : theme.textDim);
+            tab.setTextColor(active ? theme.accent : theme.textDim);
         }
     }
 
@@ -87,7 +87,7 @@ public final class BookmarkUiController {
                 BookmarkManager.BookmarkEntry e = all.get(position);
                 String name = new File(e.filePath).getName();
                 ((TextView) holder.itemView).setText("★ " + name + ":" + e.line);
-                ((TextView) holder.itemView).setTextColor(0xFFFFD700);
+                ((TextView) holder.itemView).setTextColor(theme != null ? theme.accent : 0xFFFFD700);
                 holder.itemView.setOnClickListener(v -> callback.onBookmarkClicked(new File(e.filePath), e.line));
             }
         });

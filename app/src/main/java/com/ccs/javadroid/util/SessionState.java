@@ -69,7 +69,7 @@ public final class SessionState {
         if (parts.length < 3) return null;
 
         // Parse tab paths
-        String[] paths = parts[0].split(SEP, -1);
+        String[] paths = parts[0].split("\\|\\|\\|");
         List<String> tabPaths = new ArrayList<>();
         for (String p : paths) {
             if (!p.isEmpty()) tabPaths.add(p);
@@ -86,7 +86,7 @@ public final class SessionState {
         // Parse cursor positions
         List<Integer> cursorLines = new ArrayList<>();
         List<Integer> cursorCols = new ArrayList<>();
-        String[] cursors = parts[2].split(SEP, -1);
+        String[] cursors = parts[2].split("\\|\\|\\|");
         for (String c : cursors) {
             if (c.isEmpty()) continue;
             String[] lc = c.split(":");

@@ -146,7 +146,10 @@ public final class ProfilerPanelManager {
         if (profilerRunBtn != null) ((TextView) profilerRunBtn).setTextColor(theme.accent);
         if (detailScroll != null) detailScroll.setBackgroundColor(theme.consoleBg);
         if (detail != null) detail.setTextColor(theme.consoleText);
-        if (flameChartView != null) flameChartView.setBackgroundColor(theme.consoleBg);
+        if (flameChartView != null) {
+            flameChartView.setBackgroundColor(theme.consoleBg);
+            flameChartView.applyTheme(theme);
+        }
     }
 
     public void updateTabStyle(boolean active, @NonNull AppTheme theme, int activeBg) {

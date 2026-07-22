@@ -93,7 +93,9 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.VH> {
         Context ctx = h.itemView.getContext();
 
         h.tag.setText(item.tag);
-        h.tag.setTextColor("FIXME".equals(item.tag) ? 0xFFFFB74D : 0xFF64B5F6);
+        int fixmeColor = theme != null ? (theme.dark ? 0xFFFFB74D : 0xFFF57C00) : 0xFFFFB74D;
+        int todoColor = theme != null ? theme.accent : 0xFF64B5F6;
+        h.tag.setTextColor("FIXME".equals(item.tag) ? fixmeColor : todoColor);
 
         String loc = item.file != null ? item.file.getName() : "?";
         if (item.line > 0) loc += ":" + item.line;

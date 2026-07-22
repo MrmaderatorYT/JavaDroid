@@ -342,7 +342,7 @@ public class MainActivity extends AppCompatActivity {
         applyTheme();
         invalidateOptionsMenu();
         // Update minimap visibility when returning from settings
-        boolean minimapEnabled = appPrefs.isMinimap() && !powerSaving.isPowerSavingActive();
+        boolean minimapEnabled = isMinimapAllowed();
         if (minimapView1 != null) minimapView1.setVisibility(minimapEnabled ? View.VISIBLE : View.GONE);
         if (minimapView2 != null) minimapView2.setVisibility(minimapEnabled && isSplitActive ? View.VISIBLE : View.GONE);
         // Auto-refresh problems on resume (e.g. returning from settings with new power saving mode)
@@ -720,6 +720,9 @@ public class MainActivity extends AppCompatActivity {
 
         // Profiler theming
         if (profilerManager != null) profilerManager.applyTheme(theme);
+
+        // TODO/FIXME theming
+        if (todoManager != null) todoManager.applyTheme(theme);
 
         // Drawer elements theming
         TextView tvDrawerProjectLabel = findViewById(R.id.tvDrawerProjectLabel);
@@ -1120,8 +1123,8 @@ public class MainActivity extends AppCompatActivity {
         configureEditor(editor2);
         updateActiveEditorBorders();
 
-        // Setup minimaps — вимикається в режимі енергозбереження
-        boolean minimapEnabled = appPrefs.isMinimap() && !powerSaving.isPowerSavingActive();
+        // Setup minimaps — вимикається в режимі енергозбереження та портретному режимі
+        boolean minimapEnabled = isMinimapAllowed();
         if (minimapView1 != null) {
             minimapView1.setVisibility(minimapEnabled ? View.VISIBLE : View.GONE);
             minimapView1.setEditor(editor);
@@ -1317,6 +1320,8 @@ public class MainActivity extends AppCompatActivity {
         tabBytecode.setTextColor(mode == PANEL_BYTECODE ? theme.accent : theme.textDim);
         if (tabDebug != null) tabDebug.setTextColor(mode == PANEL_DEBUG ? theme.accent : theme.textDim);
         if (tabDebugConsole != null) tabDebugConsole.setTextColor(mode == PANEL_DEBUG_CONSOLE ? theme.accent : theme.textDim);
+        if (tabCallGraph != null) tabCallGraph.setTextColor(mode == PANEL_CALL_GRAPH ? theme.accent : theme.textDim);
+        if (tabBookmarks != null) tabBookmarks.setTextColor(mode == PANEL_BOOKMARKS ? theme.accent : theme.textDim);
 
         if (btnClearConsole != null) {
             btnClearConsole.setVisibility(mode == PANEL_RUN ? View.VISIBLE : View.GONE);
@@ -3022,7 +3027,7 @@ public class MainActivity extends AppCompatActivity {
             editorDivider.setVisibility(View.VISIBLE);
             wrapperEditor2.setVisibility(View.VISIBLE);
             editor2.setVisibility(View.VISIBLE);
-            if (minimapView2 != null) minimapView2.setVisibility(appPrefs.isMinimap() && !powerSaving.isPowerSavingActive() ? View.VISIBLE : View.GONE);
+            if (minimapView2 != null) minimapView2.setVisibility(isMinimapAllowed() ? View.VISIBLE : View.GONE);
 
             FileTab activeTab = tabsAdapter.getActiveTab();
             FileTab secTab = null;
@@ -5109,5 +5114,10 @@ public class MainActivity extends AppCompatActivity {
             });
         }
         refactorController.showDialog();
+    }
+
+    private boolean isMinimapAllowed() {
+        boolean isPortrait = getResources().getConfiguration().orientation == android.content.res.Configuration.ORIENTATION_PORTRAIT;
+        return appPrefs.isMinimap() && !powerSaving.isPowerSavingActive() && !isPortrait;
     }
 }

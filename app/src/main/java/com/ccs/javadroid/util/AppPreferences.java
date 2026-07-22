@@ -21,7 +21,7 @@ import android.graphics.Typeface;
     private static final String K_LINE_SPACING_X10 = "line_spacing_x10"; // зберігаємо як ціле *10
     private static final String K_AUTO_SAVE        = "auto_save";
     private static final String K_FORMAT_ON_SAVE   = "format_on_save";
-    private static final String K_MINIMAP          = "minimap";
+    private static final String K_MINIMAP          = "minimap_enabled_v2";
 
     // ── Theme ─────────────────────────────────────────────────
     private static final String K_THEME_ID         = "theme_id";
@@ -103,7 +103,7 @@ import android.graphics.Typeface;
     public boolean isFormatOnSave()       { return prefs.getBoolean(K_FORMAT_ON_SAVE, false); }
     public void setFormatOnSave(boolean v) { prefs.edit().putBoolean(K_FORMAT_ON_SAVE, v).apply(); }
 
-    public boolean isMinimap()            { return prefs.getBoolean(K_MINIMAP, true); }
+    public boolean isMinimap()            { return prefs.getBoolean(K_MINIMAP, false); }
     public void setMinimap(boolean v)     { prefs.edit().putBoolean(K_MINIMAP, v).apply(); }
 
     // ── Theme ─────────────────────────────────────────────────

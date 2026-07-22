@@ -145,6 +145,13 @@ public class FlameChartView extends View {
         this.listener = l;
     }
 
+    public void applyTheme(com.ccs.javadroid.util.AppTheme theme) {
+        bgPaint.setColor(theme.consoleBg);
+        headerPaint.setColor(theme.toolbar);
+        textPaint.setColor(theme.textDim);
+        invalidate();
+    }
+
     public void setProfiles(List<ProfilerBridge.MethodProfile> profiles) {
         this.profiles = profiles != null ? new ArrayList<>(profiles) : new ArrayList<>();
         buildFlameChart();
@@ -217,7 +224,7 @@ public class FlameChartView extends View {
         // Draw header
         canvas.drawRect(0, 0, getWidth(), 36, headerPaint);
         textPaint.setTextSize(20f);
-        textPaint.setColor(0xFFAAAAAA);
+        textPaint.setColor(headerPaint.getColor() == 0xFF333333 ? 0xFFAAAAAA : 0xFF888888);
         canvas.drawText("Flame Chart — click a block to see details", 8, 24, textPaint);
 
         canvas.save();

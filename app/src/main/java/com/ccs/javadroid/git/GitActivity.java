@@ -302,7 +302,7 @@ public class GitActivity extends AppCompatActivity {
                     File tmp = new File(getCacheDir(), "git_clone_" + System.currentTimeMillis());
                     doBackground(() -> {
                         if (tmp.exists()) deleteRecursive(tmp);
-                        GitManager.clone(u, tmp, un, tk);
+                        GitManager.clone(u, tmp, un, tk, null);
                         // Переносимо у projectDir (зберігаючи його шлях)
                         if (!projectDir.exists()) projectDir.mkdirs();
                         moveAllChildren(tmp, projectDir);

@@ -217,7 +217,7 @@ public final class CallGraphPanelManager {
 
         View div = new View(activity);
         div.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
-        div.setBackgroundColor(Color.parseColor("#333333"));
+        div.setBackgroundColor(callback.getTheme().toolbar);
         content.addView(div);
 
         List<CallGraphModel.MethodNode> callers = model.getCallers(method);
