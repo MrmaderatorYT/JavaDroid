@@ -115,7 +115,8 @@ public class MarkdownLanguage implements Language {
                 "interface", "long", "native", "new", "package", "private", "protected", "public",
                 "return", "short", "static", "strictfp", "super", "switch", "synchronized", "this",
                 "throw", "throws", "transient", "try", "void", "volatile", "while", "true", "false", "null",
-                "var", "record", "yield", "sealed", "permits"));
+                "var", "record", "yield", "sealed", "non-sealed", "permits", "when",
+                "exports", "module", "opens", "provides", "requires", "to", "uses", "with", "transitive"));
 
         private static final java.util.HashSet<String> PYTHON_KEYWORDS = new java.util.HashSet<>(java.util.Arrays.asList(
                 "def", "class", "return", "if", "elif", "else", "for", "while", "in", "not", "and", "or",

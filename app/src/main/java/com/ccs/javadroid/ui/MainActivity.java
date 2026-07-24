@@ -114,6 +114,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import io.github.rosemoe.sora.event.ContentChangeEvent;
 import io.github.rosemoe.sora.event.SelectionChangeEvent;
@@ -147,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView      statusLineCol;
     private TextView      statusFileName;
     private TextView      statusEncoding;
+    private TextView      tvAppVersion;
     private TextView      toolbarTitle;
     private ScrollView    consoleScroll;
     private TextView      consoleOutput;
@@ -180,6 +184,8 @@ public class MainActivity extends AppCompatActivity {
     private BytecodeModel bytecodeModel;
     private int           bytecodeSelectedMethod = -1;
     private View          btnClearConsole;
+    private View          btnCopyPanel;
+    private View          tabConsole;
     private View          tabsBar;
     private View          tabBorder;
     private View          bottomTabsBar;
@@ -200,6 +206,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int PANEL_DEPS          = 7;
     private static final int PANEL_PROFILER      = 8;
     private static final int PANEL_TODO          = 9;
+    private static final int PANEL_CONSOLE       = 10;
 
     private int bottomPanelMode = PANEL_RUN;
     private volatile boolean bytecodeRefreshRunning;
@@ -242,6 +249,7 @@ public class MainActivity extends AppCompatActivity {
 
     // ── TODO/FIXME Tracker ──────────────────────────────────
     private TodoPanelManager todoManager;
+    private JShellPanelManager jshellManager;
 
     // ── Refactoring ─────────────────────────────────────────
     private RefactorController refactorController;
@@ -306,6 +314,14 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
         FullScreenHelper.enable(this);
+
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content), (v, windowInsets) -> {
+            Insets imeInsets = windowInsets.getInsets(WindowInsetsCompat.Type.ime());
+            Insets systemBarsInsets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
+            int bottomMargin = Math.max(imeInsets.bottom, systemBarsInsets.bottom);
+            v.setPadding(0, 0, 0, bottomMargin);
+            return windowInsets;
+        });
 
         prefs = getSharedPreferences(AppPreferences.PREFS_NAME, MODE_PRIVATE);
 
@@ -504,6 +520,8 @@ public class MainActivity extends AppCompatActivity {
         bytecodeOpenEditorBtn = findViewById(R.id.bytecodeOpenEditor);
         bytecodeCallGraphBtn = findViewById(R.id.bytecodeCallGraph);
         btnClearConsole  = findViewById(R.id.btnClearConsole);
+        btnCopyPanel     = findViewById(R.id.btnCopyPanel);
+        tabConsole       = findViewById(R.id.tabConsole);
         tabsBar          = findViewById(R.id.tabsBar);
         tabBorder        = findViewById(R.id.tabBorder);
         bottomTabsBar    = findViewById(R.id.bottomTabsBar);
@@ -511,6 +529,10 @@ public class MainActivity extends AppCompatActivity {
         bottomPanelContent = findViewById(R.id.bottomPanelContent);
         statusBar        = findViewById(R.id.statusBar);
         statusEncoding   = findViewById(R.id.statusEncoding);
+        tvAppVersion     = findViewById(R.id.tvAppVersion);
+        if (tvAppVersion != null) {
+            tvAppVersion.setText("v" + com.ccs.javadroid.BuildConfig.VERSION_NAME);
+        }
         toolbar          = findViewById(R.id.toolbar);
         keyAccessoryBar  = findViewById(R.id.keyAccessoryBar);
         accessoryBarLayout = findViewById(R.id.accessoryBarLayout);
@@ -607,6 +629,14 @@ public class MainActivity extends AppCompatActivity {
             @Override public AppTheme getTheme() { return theme; }
         });
         todoManager.bind();
+
+        // JShell Console
+        jshellManager = new JShellPanelManager(this,
+                findViewById(R.id.panelJShell),
+                (TextView) findViewById(R.id.tabConsole),
+                findViewById(R.id.jshellScroll),
+                findViewById(R.id.jshellOutput),
+                findViewById(R.id.jshellInput));
 
         setupDebugToolbar();
         setupDebugController();
@@ -723,6 +753,9 @@ public class MainActivity extends AppCompatActivity {
 
         // TODO/FIXME theming
         if (todoManager != null) todoManager.applyTheme(theme);
+
+        // JShell theming
+        if (jshellManager != null) jshellManager.applyTheme(theme);
 
         // Drawer elements theming
         TextView tvDrawerProjectLabel = findViewById(R.id.tvDrawerProjectLabel);
@@ -869,10 +902,36 @@ public class MainActivity extends AppCompatActivity {
 
         // Clear console button in bottom panel
         if (btnClearConsole != null) {
-            btnClearConsole.setOnClickListener(v -> consoleOutput.setText(""));
+            btnClearConsole.setOnClickListener(v -> {
+                if (bottomPanelMode == PANEL_RUN) consoleOutput.setText("");
+                else if (bottomPanelMode == PANEL_CONSOLE && jshellManager != null) jshellManager.getConsoleOutput().setText("");
+            });
+        }
+        if (btnCopyPanel != null) {
+            btnCopyPanel.setOnClickListener(v -> {
+                String textToCopy = "";
+                if (bottomPanelMode == PANEL_RUN) {
+                    textToCopy = consoleOutput.getText().toString();
+                } else if (bottomPanelMode == PANEL_CONSOLE && jshellManager != null) {
+                    textToCopy = jshellManager.getConsoleOutput().getText().toString();
+                } else if (bottomPanelMode == PANEL_TODO && todoManager != null) {
+                    textToCopy = "TODO list copy not supported yet."; // or could gather TODOs
+                } else if (bottomPanelMode == PANEL_PROBLEMS && problemsAdapter != null) {
+                    StringBuilder sb = new StringBuilder();
+                    for (ProblemItem p : problemsAdapter.getItems()) {
+                        sb.append(p.message).append(" (").append(p.file).append(":").append(p.line).append(")\n");
+                    }
+                    textToCopy = sb.toString();
+                }
+                if (!textToCopy.isEmpty()) {
+                    android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(android.content.Context.CLIPBOARD_SERVICE);
+                    android.content.ClipData clip = android.content.ClipData.newPlainText("Panel Output", textToCopy);
+                    clipboard.setPrimaryClip(clip);
+                    android.widget.Toast.makeText(MainActivity.this, "Copied to clipboard", android.widget.Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
-
     private void setupTabs() {
         tabsAdapter = new TabsAdapter();
         tabsAdapter.setTabListener(new TabsAdapter.TabListener() {
@@ -907,6 +966,8 @@ public class MainActivity extends AppCompatActivity {
                 openFile(node.path);
                 drawerLayout.closeDrawer(GravityCompat.START);
             }
+
+
             @Override
             public void onNodeLongClicked(FileTreeNode node) {
                 if (node.directory) {
@@ -927,6 +988,164 @@ public class MainActivity extends AppCompatActivity {
             drawerLayout.closeDrawer(GravityCompat.START);
             importFilesToProject();
         });
+    }
+
+    private void showDependenciesDialog() {
+        if (projectManager == null || projectManager.getProjectDir() == null) {
+            Toast.makeText(this, R.string.toast_no_project_open, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Toast.makeText(this, "Dependencies Manager not implemented", Toast.LENGTH_SHORT).show();
+    }
+
+    private void showRegexTesterDialog() {
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        int pad = dp(16);
+        layout.setPadding(pad, pad, pad, pad);
+
+        EditText etRegex = new EditText(this);
+        etRegex.setHint("Regular Expression (e.g., \\d+)");
+        etRegex.setTextColor(theme.text);
+        etRegex.setHintTextColor(theme.textDim);
+
+        EditText etText = new EditText(this);
+        etText.setHint("Test String");
+        etText.setTextColor(theme.text);
+        etText.setHintTextColor(theme.textDim);
+        etText.setMinLines(3);
+        etText.setGravity(Gravity.TOP | Gravity.START);
+
+        TextView tvResult = new TextView(this);
+        tvResult.setTextColor(theme.accent);
+        tvResult.setPadding(0, dp(8), 0, 0);
+
+        layout.addView(etRegex);
+        layout.addView(etText);
+        layout.addView(tvResult);
+
+        android.text.TextWatcher watcher = new android.text.TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String regex = etRegex.getText().toString();
+                String text = etText.getText().toString();
+                if (regex.isEmpty()) {
+                    tvResult.setText("");
+                    return;
+                }
+                try {
+                    java.util.regex.Pattern p = java.util.regex.Pattern.compile(regex);
+                    java.util.regex.Matcher m = p.matcher(text);
+                    StringBuilder sb = new StringBuilder();
+                    int matches = 0;
+                    while(m.find()) {
+                        matches++;
+                        sb.append("Match ").append(matches).append(": [").append(m.group()).append("]\n");
+                    }
+                    if (matches == 0) sb.append("No matches");
+                    tvResult.setText(sb.toString());
+                } catch (Exception e) {
+                    tvResult.setText("Invalid regex: " + e.getMessage());
+                }
+            }
+            @Override public void afterTextChanged(android.text.Editable s) {}
+        };
+        etRegex.addTextChangedListener(watcher);
+        etText.addTextChangedListener(watcher);
+
+        newRoundedDialog()
+                .setTitle("Regex Tester")
+                .setView(layout)
+                .setPositiveButton(android.R.string.ok, null)
+                .show();
+    }
+
+    private void showBase64EncoderDialog() {
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        int pad = dp(16);
+        layout.setPadding(pad, pad, pad, pad);
+
+        EditText etInput = new EditText(this);
+        etInput.setHint("Input Text");
+        etInput.setTextColor(theme.text);
+        etInput.setHintTextColor(theme.textDim);
+        etInput.setMinLines(3);
+        etInput.setGravity(Gravity.TOP | Gravity.START);
+
+        TextView tvOutput = new TextView(this);
+        tvOutput.setTextColor(theme.accent);
+        tvOutput.setTextIsSelectable(true);
+        tvOutput.setPadding(0, dp(8), 0, dp(8));
+
+        android.widget.Button btnEncode = new android.widget.Button(this);
+        btnEncode.setText("Encode");
+        btnEncode.setOnClickListener(v -> {
+            try {
+                String in = etInput.getText().toString();
+                String out = android.util.Base64.encodeToString(in.getBytes(java.nio.charset.StandardCharsets.UTF_8), android.util.Base64.DEFAULT);
+                tvOutput.setText(out);
+            } catch (Exception e) {
+                tvOutput.setText("Error: " + e.getMessage());
+            }
+        });
+
+        android.widget.Button btnDecode = new android.widget.Button(this);
+        btnDecode.setText("Decode");
+        btnDecode.setOnClickListener(v -> {
+            try {
+                String in = etInput.getText().toString();
+                String out = new String(android.util.Base64.decode(in, android.util.Base64.DEFAULT), java.nio.charset.StandardCharsets.UTF_8);
+                tvOutput.setText(out);
+            } catch (Exception e) {
+                tvOutput.setText("Invalid Base64: " + e.getMessage());
+            }
+        });
+
+        android.widget.Button btnUrlEncode = new android.widget.Button(this);
+        btnUrlEncode.setText("URL Enc");
+        btnUrlEncode.setOnClickListener(v -> {
+            try {
+                String in = etInput.getText().toString();
+                String out = java.net.URLEncoder.encode(in, "UTF-8");
+                tvOutput.setText(out);
+            } catch (Exception e) {
+                tvOutput.setText("Error: " + e.getMessage());
+            }
+        });
+
+        android.widget.Button btnUrlDecode = new android.widget.Button(this);
+        btnUrlDecode.setText("URL Dec");
+        btnUrlDecode.setOnClickListener(v -> {
+            try {
+                String in = etInput.getText().toString();
+                String out = java.net.URLDecoder.decode(in, "UTF-8");
+                tvOutput.setText(out);
+            } catch (Exception e) {
+                tvOutput.setText("Error: " + e.getMessage());
+            }
+        });
+
+        LinearLayout btnLayout1 = new LinearLayout(this);
+        btnLayout1.setOrientation(LinearLayout.HORIZONTAL);
+        btnLayout1.addView(btnEncode);
+        btnLayout1.addView(btnDecode);
+
+        LinearLayout btnLayout2 = new LinearLayout(this);
+        btnLayout2.setOrientation(LinearLayout.HORIZONTAL);
+        btnLayout2.addView(btnUrlEncode);
+        btnLayout2.addView(btnUrlDecode);
+
+        layout.addView(etInput);
+        layout.addView(btnLayout1);
+        layout.addView(btnLayout2);
+        layout.addView(tvOutput);
+
+        newRoundedDialog()
+                .setTitle("Encoder/Decoder (Base64 & URL)")
+                .setView(layout)
+                .setPositiveButton(android.R.string.ok, null)
+                .show();
     }
 
     private void saveEditorToTab(CodeEditor ed, FileTab tab) {
@@ -1206,6 +1425,7 @@ public class MainActivity extends AppCompatActivity {
         tabRun.setOnClickListener(v -> switchBottomPanel(PANEL_RUN));
         tabProblems.setOnClickListener(v -> switchBottomPanel(PANEL_PROBLEMS));
         tabBytecode.setOnClickListener(v -> switchBottomPanel(PANEL_BYTECODE));
+        if (tabConsole != null) tabConsole.setOnClickListener(v -> switchBottomPanel(PANEL_CONSOLE));
         if (tabDebug != null) tabDebug.setOnClickListener(v -> switchBottomPanel(PANEL_DEBUG));
         if (tabDebugConsole != null) tabDebugConsole.setOnClickListener(v -> switchBottomPanel(PANEL_DEBUG_CONSOLE));
         if (tabCallGraph != null) tabCallGraph.setOnClickListener(v -> switchBottomPanel(PANEL_CALL_GRAPH));
@@ -1275,6 +1495,7 @@ public class MainActivity extends AppCompatActivity {
         if (profilerManager != null) profilerManager.updateTabStyle(bottomPanelMode == PANEL_PROFILER, theme, activeBg);
         if (depsManager != null) depsManager.updateTabStyle(bottomPanelMode == PANEL_DEPS, theme, activeBg);
         if (todoManager != null) todoManager.updateTabStyle(bottomPanelMode == PANEL_TODO, theme, activeBg);
+        if (tabConsole != null) tabConsole.setBackgroundColor(bottomPanelMode == PANEL_CONSOLE ? activeBg : inactiveBg);
 
         tabRun.setTextColor(bottomPanelMode == PANEL_RUN ? theme.successText : theme.textDim);
         tabProblems.setTextColor(bottomPanelMode == PANEL_PROBLEMS ? theme.text : theme.textDim);
@@ -1283,6 +1504,7 @@ public class MainActivity extends AppCompatActivity {
         if (tabDebugConsole != null) tabDebugConsole.setTextColor(bottomPanelMode == PANEL_DEBUG_CONSOLE ? theme.accent : theme.textDim);
         if (tabCallGraph != null) tabCallGraph.setTextColor(bottomPanelMode == PANEL_CALL_GRAPH ? theme.accent : theme.textDim);
         if (tabBookmarks != null) tabBookmarks.setTextColor(bottomPanelMode == PANEL_BOOKMARKS ? 0xFFFFD700 : theme.textDim);
+        if (tabConsole != null) ((TextView) tabConsole).setTextColor(bottomPanelMode == PANEL_CONSOLE ? theme.accent : theme.textDim);
     }
 
     private void switchBottomPanel(int mode) {
@@ -1301,6 +1523,8 @@ public class MainActivity extends AppCompatActivity {
         if (profilerManager != null) profilerManager.setVisibility(mode == PANEL_PROFILER);
         if (todoManager != null)
             todoManager.setVisibility(mode == PANEL_TODO);
+        if (jshellManager != null)
+            jshellManager.setVisibility(mode == PANEL_CONSOLE ? View.VISIBLE : View.GONE);
 
         int activeBg   = blend(theme.toolbar, theme.bg, 0.4f);
         int inactiveBg = theme.toolbar;
@@ -1314,6 +1538,7 @@ public class MainActivity extends AppCompatActivity {
         if (profilerManager != null) profilerManager.updateTabStyle(mode == PANEL_PROFILER, theme, activeBg);
         if (depsManager != null) depsManager.updateTabStyle(mode == PANEL_DEPS, theme, activeBg);
         if (todoManager != null) todoManager.updateTabStyle(mode == PANEL_TODO, theme, activeBg);
+        if (tabConsole != null) tabConsole.setBackgroundColor(mode == PANEL_CONSOLE ? activeBg : inactiveBg);
 
         tabRun.setTextColor(mode == PANEL_RUN ? theme.successText : theme.textDim);
         tabProblems.setTextColor(mode == PANEL_PROBLEMS ? theme.text : theme.textDim);
@@ -1322,10 +1547,15 @@ public class MainActivity extends AppCompatActivity {
         if (tabDebugConsole != null) tabDebugConsole.setTextColor(mode == PANEL_DEBUG_CONSOLE ? theme.accent : theme.textDim);
         if (tabCallGraph != null) tabCallGraph.setTextColor(mode == PANEL_CALL_GRAPH ? theme.accent : theme.textDim);
         if (tabBookmarks != null) tabBookmarks.setTextColor(mode == PANEL_BOOKMARKS ? theme.accent : theme.textDim);
+        if (tabConsole != null) ((TextView) tabConsole).setTextColor(mode == PANEL_CONSOLE ? theme.accent : theme.textDim);
 
         if (btnClearConsole != null) {
-            btnClearConsole.setVisibility(mode == PANEL_RUN ? View.VISIBLE : View.GONE);
+            btnClearConsole.setVisibility((mode == PANEL_RUN || mode == PANEL_CONSOLE) ? View.VISIBLE : View.GONE);
             ((TextView) btnClearConsole).setTextColor(theme.textDim);
+        }
+        if (btnCopyPanel != null) {
+            btnCopyPanel.setVisibility((mode == PANEL_RUN || mode == PANEL_CONSOLE || mode == PANEL_TODO || mode == PANEL_PROBLEMS) ? View.VISIBLE : View.GONE);
+            ((TextView) btnCopyPanel).setTextColor(theme.textDim);
         }
         if (mode == PANEL_BYTECODE) {
             refreshBytecodePanel();
@@ -2561,7 +2791,6 @@ public class MainActivity extends AppCompatActivity {
         else if (id == R.id.action_debug)         { startDebug();           return true; }
         else if (id == R.id.action_save)          { saveCurrentFile();      return true; }
         else if (id == R.id.action_find)          { toggleFindBar();        return true; }
-        else if (id == R.id.action_bytecode)      { switchBottomPanel(PANEL_BYTECODE); return true; }
         else if (id == R.id.action_undo)          { activeEditor.undo();          return true; }
         else if (id == R.id.action_redo)          { activeEditor.redo();          return true; }
         else if (id == R.id.action_settings)         { openSettings();            return true; }
@@ -2585,12 +2814,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void showSearchableMenu() {
         final String[][] menuItems = {
-            {"Bytecode View",    "bytecode"},
-            {"New Java File",    "new_file"},
-            {"New Maven Project","new_maven"},
             {"Sync Dependencies","sync_deps"},
             {"Library Manager",  "library"},
-            {"Class Browser",    "class_browser"},
             {"Load ProGuard Mapping", "load_mapping"},
             {"Maven Package",    "maven_package"},
             {"Maven Test (compile)", "maven_test"},
@@ -2598,30 +2823,22 @@ public class MainActivity extends AppCompatActivity {
             {"Maven Clean",      "maven_clean"},
             {"Maven Install",    "maven_install"},
             {"Create C++ Module","cpp_module"},
-            {"Clear Console",    "clear_console"},
-            {"Copy Console",     "copy_console"},
             {"Share File",       "share_file"},
             {"Pastebin",         "pastebin"},
             {"Open File",        "open_file"},
             {"Import Files",     "import_files"},
-            {"Save As",          "save_as"},
             {"Format Code",      "format"},
             {"Auto Import",      "auto_import"},
             {"View Formatted",   "view_formatted"},
-            {"Markdown Preview", "md_preview"},
             {"Export Project",   "export_project"},
             {"Split Screen",     "split_screen"},
             {"Play Media",       "play_media"},
-            {"HTTP Client",      "http_client"},
-            {"WebView Preview",  "webview_preview"},
-            {"Call Graph",       "call_graph"},
-            {"Toggle Bookmark",  "toggle_bookmark"},
-            {"Show Bookmarks",   "show_bookmarks"},
             {"🎤 Voice Input",   "voice_input"},
             {"Refactor...",      "refactor"},
             {"Dependencies",     "dependencies"},
+            {"Regex Tester",     "regex_tester"},
+            {"Base64 Encoder",   "base64_encoder"}
         };
-
         final List<String> filteredTitles = new ArrayList<>();
         final List<String> filteredActions = new ArrayList<>();
         for (String[] item : menuItems) {
@@ -2728,7 +2945,6 @@ public class MainActivity extends AppCompatActivity {
             case "maven_install": mavenInstall(); break;
             case "cpp_module":    showCreateCppModuleDialog(); break;
             case "clear_console": consoleOutput.setText(""); break;
-            case "copy_console":  copyConsoleToClipboard(); break;
             case "share_file":    shareCurrentFile(); break;
             case "pastebin":      shareToPastebin(); break;
             case "open_file":     pickFileToOpen(); break;
@@ -2749,6 +2965,8 @@ public class MainActivity extends AppCompatActivity {
             case "voice_input":     toggleVoiceInput(); break;
             case "refactor":        showRefactorDialog(); break;
             case "dependencies":    switchBottomPanel(PANEL_DEPS); break;
+            case "regex_tester":    showRegexTesterDialog(); break;
+            case "base64_encoder":  showBase64EncoderDialog(); break;
         }
     }
 
@@ -2771,8 +2989,8 @@ public class MainActivity extends AppCompatActivity {
 
         String nameLower = file.getName().toLowerCase(Locale.ROOT);
 
-        // .svg — open in editor (preview via menu)
-        if (nameLower.endsWith(".svg")) {
+        // .svg, .html, .htm — open in editor (preview via menu)
+        if (nameLower.endsWith(".svg") || nameLower.endsWith(".html") || nameLower.endsWith(".htm")) {
             openEditableFile(file);
             return;
         }
@@ -3293,6 +3511,8 @@ public class MainActivity extends AppCompatActivity {
                 WebViewPreviewActivity.launch(this, tab.file);
             } else if (name.endsWith(".md") || name.endsWith(".markdown")) {
                 showMarkdownPreview();
+            } else if (name.endsWith(".html") || name.endsWith(".htm")) {
+                HtmlViewerActivity.launch(this, tab.file);
             } else if (name.endsWith(".svg")) {
                 SvgViewerActivity.launch(this, tab.file);
             }

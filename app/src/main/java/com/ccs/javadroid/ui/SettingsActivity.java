@@ -604,9 +604,12 @@ public class SettingsActivity extends AppCompatActivity {
         LinearLayout section = newSection(getString(R.string.settings_section_compiler));
 
         section.addView(label(getString(R.string.settings_java_target)));
-        final String[] codes = { AppPreferences.JAVA_8 };
+        final String[] codes = { AppPreferences.JAVA_8, AppPreferences.JAVA_11, AppPreferences.JAVA_17, AppPreferences.JAVA_21 };
         String[] labels = {
-                "Java 8"
+                "Java 8",
+                "Java 11",
+                "Java 17",
+                "Java 21"
         };
         Spinner sp = newSpinner(labels);
         sp.setContentDescription(getString(R.string.a11y_settings_java_target));

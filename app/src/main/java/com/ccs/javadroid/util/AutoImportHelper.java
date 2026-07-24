@@ -53,7 +53,8 @@ public final class AutoImportHelper {
             "interface", "long", "native", "new", "package", "private", "protected", "public",
             "return", "short", "static", "strictfp", "super", "switch", "synchronized", "this",
             "throw", "throws", "transient", "try", "void", "volatile", "while", "true", "false",
-            "null", "var", "record", "yield", "sealed", "permits"
+            "null", "var", "record", "yield", "sealed", "non-sealed", "permits", "when",
+            "exports", "module", "opens", "provides", "requires", "to", "uses", "with", "transitive"
     ));
 
     private static final Set<String> PRIMITIVE_TYPES = new HashSet<>(Arrays.asList(

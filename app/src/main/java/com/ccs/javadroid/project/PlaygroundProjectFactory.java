@@ -42,9 +42,9 @@ public final class PlaygroundProjectFactory {
         write(mainJavaPkg, "Calculator.java", CALCULATOR_JAVA);
         write(mainJavaPkg, "Box.java", BOX_JAVA);
 
-        // Kotlin files in project root (non-Maven but loadable)
-        write(root, "HelloWorld.kt", HELLO_KOTLIN);
-        write(root, "DataModel.kt", DATA_MODEL_KOTLIN);
+        // Kotlin files in src/main/java/com/playground/
+        write(mainJavaPkg, "HelloWorld.kt", HELLO_KOTLIN);
+        write(mainJavaPkg, "DataModel.kt", DATA_MODEL_KOTLIN);
 
         // Web files in project root
         write(root, "hello.html", HELLO_HTML);

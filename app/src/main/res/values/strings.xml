@@ -61,6 +61,7 @@
     <string name="problem_location_unknown">?</string>
 
     <!-- Toasts & messages -->
+    <string name="toast_no_project_open">No project open</string>
     <string name="error_cannot_create_main">Cannot create Main.java</string>
     <string name="error_cannot_open">Cannot open: %1$s</string>
     <string name="error_cannot_read">Cannot read: %1$s</string>

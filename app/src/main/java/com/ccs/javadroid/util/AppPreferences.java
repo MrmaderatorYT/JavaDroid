@@ -59,6 +59,9 @@ import android.graphics.Typeface;
 
     // Java target constants (передаємо як ECJ -1.8 / -11)
     public static final String JAVA_8  = "1.8";
+    public static final String JAVA_11 = "11";
+    public static final String JAVA_17 = "17";
+    public static final String JAVA_21 = "21";
 
     private final SharedPreferences prefs;
     private final Context context;

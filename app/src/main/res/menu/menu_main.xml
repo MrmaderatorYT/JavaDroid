@@ -44,22 +44,6 @@
         android:contentDescription="@string/a11y_menu_find_replace"
         app:showAsAction="always" />
 
-    <item
-        android:id="@+id/action_bytecode"
-        android:title="@string/menu_bytecode"
-        android:contentDescription="@string/a11y_menu_bytecode"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/action_new_file"
-        android:title="@string/menu_new_java_file"
-        android:contentDescription="@string/a11y_menu_new_file"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/action_new_maven_project"
-        android:title="@string/menu_new_maven_project"
-        app:showAsAction="never" />
 
     <item
         android:id="@+id/action_sync_deps"
@@ -104,11 +88,6 @@
         android:contentDescription="@string/a11y_menu_settings"
         app:showAsAction="always" />
 
-    <item
-        android:id="@+id/action_clear_console"
-        android:title="@string/menu_clear_console"
-        android:contentDescription="@string/a11y_clear_console"
-        app:showAsAction="never" />
 
     <item
         android:id="@+id/action_copy_console"
@@ -136,10 +115,6 @@
         android:contentDescription="@string/a11y_menu_import"
         app:showAsAction="never" />
 
-    <item
-        android:id="@+id/action_save_as"
-        android:title="@string/menu_save_as"
-        app:showAsAction="never" />
 
     <item
         android:id="@+id/action_format"
@@ -155,11 +130,6 @@
         android:id="@+id/action_view_formatted"
         android:title="@string/menu_view_formatted"
         android:contentDescription="@string/a11y_menu_view_formatted"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/action_md_preview"
-        android:title="@string/menu_md_preview"
-        android:contentDescription="@string/a11y_menu_md_preview"
         app:showAsAction="never" />
 
     <item
@@ -189,11 +159,6 @@
         android:contentDescription="@string/a11y_menu_play_media"
         app:showAsAction="never" />
     <item
-        android:id="@+id/action_class_browser"
-        android:title="@string/menu_class_browser"
-        android:contentDescription="@string/a11y_menu_class_browser"
-        app:showAsAction="never" />
-    <item
         android:id="@+id/action_load_mapping"
         android:title="Load ProGuard Mapping"
         app:showAsAction="never" />
@@ -202,4 +167,17 @@
         android:title="@string/menu_ai_chat"
         android:contentDescription="@string/a11y_menu_ai_chat"
         app:showAsAction="always" />
+    <item
+        android:id="@+id/action_tools_menu"
+        android:title="Tools"
+        app:showAsAction="never">
+        <menu>
+            <item
+                android:id="@+id/action_regex_tester"
+                android:title="Regex Tester" />
+            <item
+                android:id="@+id/action_base64_encoder"
+                android:title="Base64 Encoder" />
+        </menu>
+    </item>
 </menu>

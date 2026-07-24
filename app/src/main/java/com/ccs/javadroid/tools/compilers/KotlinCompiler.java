@@ -85,10 +85,22 @@ final class KotlinCompiler {
             Field moduleNameField = commonKeysClass.getField("MODULE_NAME");
             putMethod.invoke(config, moduleNameField.get(null), "main");
 
+            com.ccs.javadroid.util.AppPreferences prefs = new com.ccs.javadroid.util.AppPreferences(context);
+            String javaTarget = prefs.getJavaTarget();
+            String jvmTargetName = "JVM_1_8";
+            if ("11".equals(javaTarget)) jvmTargetName = "JVM_11";
+            else if ("17".equals(javaTarget)) jvmTargetName = "JVM_17";
+            else if ("21".equals(javaTarget)) jvmTargetName = "JVM_21";
+
             Class<?> jvmTargetEnumClass = Class.forName("org.jetbrains.kotlin.config.JvmTarget", true, kotlinCl);
             Field jvmTargetField = jvmKeysClass.getField("JVM_TARGET");
-            Object jvm18 = Enum.valueOf((Class<Enum>) jvmTargetEnumClass, "JVM_1_8");
-            putMethod.invoke(config, jvmTargetField.get(null), jvm18);
+            Object jvmTargetObj = null;
+            try {
+                jvmTargetObj = Enum.valueOf((Class<Enum>) jvmTargetEnumClass, jvmTargetName);
+            } catch (IllegalArgumentException e) {
+                jvmTargetObj = Enum.valueOf((Class<Enum>) jvmTargetEnumClass, "JVM_1_8");
+            }
+            putMethod.invoke(config, jvmTargetField.get(null), jvmTargetObj);
 
             final boolean[] hadError = {false};
             final StringBuilder compilerMessages = new StringBuilder();
@@ -208,7 +220,7 @@ final class KotlinCompiler {
         return null;
     }
 
-    private static File ensureKotlinStdlib(File cacheDir) {
+    public static File ensureKotlinStdlib(File cacheDir) {
         File stdlibJar = new File(cacheDir, "kotlin-stdlib-2.0.21.jar");
         if (stdlibJar.exists() && stdlibJar.length() > 0) return stdlibJar;
         String url = "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/2.0.21/kotlin-stdlib-2.0.21.jar";

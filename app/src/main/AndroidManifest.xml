@@ -46,6 +46,7 @@
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"
+            android:windowSoftInputMode="adjustResize"
             android:theme="@style/Theme.JavaDroid.Fullscreen" />
 
         <activity
@@ -118,6 +119,18 @@
             android:name=".ui.SvgViewerActivity"
             android:exported="false"
             android:label="SVG Viewer"
+            android:parentActivityName=".ui.MainActivity" />
+
+        <activity
+            android:name=".ui.HtmlViewerActivity"
+            android:exported="false"
+            android:label="HTML Viewer"
+            android:parentActivityName=".ui.MainActivity" />
+
+        <activity
+            android:name=".ui.JShellActivity"
+            android:exported="false"
+            android:label="JShell"
             android:parentActivityName=".ui.MainActivity" />
 
         <activity

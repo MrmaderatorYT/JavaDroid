@@ -346,6 +346,113 @@ public class WelcomeActivity extends AppCompatActivity {
                             .show();
                 }
             }
+        } else if (requestCode == REQUEST_IMPORT_ZIP && resultCode == RESULT_OK && data != null) {
+            importZipResult(data.getData());
+        } else if (requestCode == REQUEST_IMPORT_FOLDER && resultCode == RESULT_OK && data != null) {
+            importFolderResult(data.getData());
+        }
+    }
+
+    private void importZipResult(android.net.Uri uri) {
+        android.app.ProgressDialog pd = new android.app.ProgressDialog(this);
+        pd.setMessage("Extracting ZIP...");
+        pd.setCancelable(false);
+        pd.show();
+
+        new Thread(() -> {
+            try {
+                java.io.InputStream is = getContentResolver().openInputStream(uri);
+                if (is == null) throw new java.io.IOException("Cannot open URI");
+                
+                String fileName = "ImportedProject_" + System.currentTimeMillis();
+                try (android.database.Cursor cursor = getContentResolver().query(uri, null, null, null, null)) {
+                    if (cursor != null && cursor.moveToFirst()) {
+                        int nameIndex = cursor.getColumnIndex(android.provider.OpenableColumns.DISPLAY_NAME);
+                        if (nameIndex != -1) {
+                            fileName = cursor.getString(nameIndex);
+                            if (fileName.toLowerCase().endsWith(".zip")) {
+                                fileName = fileName.substring(0, fileName.length() - 4);
+                            }
+                        }
+                    }
+                }
+                
+                File dest = new File(MavenPaths.getJavaDroidBase(this), fileName);
+                com.ccs.javadroid.utils.ZipUtils.unzip(is, dest);
+                is.close();
+                
+                File[] children = dest.listFiles();
+                if (children != null && children.length == 1 && children[0].isDirectory()) {
+                    dest = children[0];
+                }
+                final String projectPath = dest.getAbsolutePath();
+                
+                runOnUiThread(() -> {
+                    pd.dismiss();
+                    Toast.makeText(WelcomeActivity.this, "Imported successfully", Toast.LENGTH_SHORT).show();
+                    appPrefs.addRecentProject(projectPath);
+                    setupRecentProjects();
+                });
+            } catch (Exception e) {
+                runOnUiThread(() -> {
+                    pd.dismiss();
+                    newRoundedDialog().setTitle("Error").setMessage(e.getMessage()).setPositiveButton(android.R.string.ok, null).show();
+                });
+            }
+        }).start();
+    }
+
+    private void importFolderResult(android.net.Uri uri) {
+        android.app.ProgressDialog pd = new android.app.ProgressDialog(this);
+        pd.setMessage("Copying Folder...");
+        pd.setCancelable(false);
+        pd.show();
+
+        new Thread(() -> {
+            try {
+                androidx.documentfile.provider.DocumentFile tree = androidx.documentfile.provider.DocumentFile.fromTreeUri(this, uri);
+                if (tree == null) throw new java.io.IOException("Cannot open folder");
+                
+                String folderName = tree.getName();
+                if (folderName == null) folderName = "ImportedFolder_" + System.currentTimeMillis();
+                
+                File dest = new File(MavenPaths.getJavaDroidBase(this), folderName);
+                if (!dest.exists()) dest.mkdirs();
+                
+                copyDocumentFile(tree, dest);
+                
+                runOnUiThread(() -> {
+                    pd.dismiss();
+                    Toast.makeText(WelcomeActivity.this, "Imported successfully", Toast.LENGTH_SHORT).show();
+                    appPrefs.addRecentProject(dest.getAbsolutePath());
+                    setupRecentProjects();
+                });
+            } catch (Exception e) {
+                runOnUiThread(() -> {
+                    pd.dismiss();
+                    newRoundedDialog().setTitle("Error").setMessage(e.getMessage()).setPositiveButton(android.R.string.ok, null).show();
+                });
+            }
+        }).start();
+    }
+
+    private void copyDocumentFile(androidx.documentfile.provider.DocumentFile sourceFile, File destDir) throws java.io.IOException {
+        for (androidx.documentfile.provider.DocumentFile file : sourceFile.listFiles()) {
+            if (file.isDirectory()) {
+                File newDir = new File(destDir, file.getName());
+                newDir.mkdirs();
+                copyDocumentFile(file, newDir);
+            } else {
+                File newFile = new File(destDir, file.getName());
+                try (java.io.InputStream in = getContentResolver().openInputStream(file.getUri());
+                     java.io.OutputStream out = new java.io.FileOutputStream(newFile)) {
+                    byte[] buffer = new byte[4096];
+                    int read;
+                    while ((read = in.read(buffer)) != -1) {
+                        out.write(buffer, 0, read);
+                    }
+                }
+            }
         }
     }
 
@@ -415,21 +522,57 @@ public class WelcomeActivity extends AppCompatActivity {
     private void showOpenFolderDialog() {
         File base = MavenPaths.getJavaDroidBase(this);
         final File[] dirs = base.listFiles(File::isDirectory);
-        if (dirs == null || dirs.length == 0) {
-            Toast.makeText(this, getString(R.string.welcome_no_projects), Toast.LENGTH_LONG).show();
-            return;
-        }
-
-        final String[] names = new String[dirs.length];
-        for (int i = 0; i < dirs.length; i++) {
-            names[i] = dirs[i].getName();
+        
+        int dirCount = (dirs == null) ? 0 : dirs.length;
+        final String[] names = new String[dirCount + 1];
+        names[0] = "➕ Import from ZIP / Folder";
+        
+        for (int i = 0; i < dirCount; i++) {
+            names[i + 1] = dirs[i].getName();
         }
 
         newRoundedDialog()
                 .setTitle(R.string.welcome_open_folder_title)
-                .setItems(names, (dialog, which) -> openProject(dirs[which].getAbsolutePath()))
+                .setItems(names, (dialog, which) -> {
+                    if (which == 0) {
+                        showImportTypeDialog();
+                    } else {
+                        openProject(dirs[which - 1].getAbsolutePath());
+                    }
+                })
                 .setNegativeButton(R.string.dialog_cancel, null)
                 .show();
+    }
+
+    private void showImportTypeDialog() {
+        String[] options = {"Select ZIP Archive", "Select Folder"};
+        newRoundedDialog()
+                .setTitle("Import Project")
+                .setItems(options, (dialog, which) -> {
+                    if (which == 0) {
+                        importZip();
+                    } else {
+                        importFolder();
+                    }
+                })
+                .setNegativeButton(R.string.dialog_cancel, null)
+                .show();
+    }
+
+    private static final int REQUEST_IMPORT_ZIP = 2001;
+    private static final int REQUEST_IMPORT_FOLDER = 2002;
+
+    private void importZip() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("*/*");
+        String[] mimeTypes = {"application/zip", "application/x-zip-compressed"};
+        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
+        startActivityForResult(intent, REQUEST_IMPORT_ZIP);
+    }
+
+    private void importFolder() {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+        startActivityForResult(intent, REQUEST_IMPORT_FOLDER);
     }
 
     private void showCloneRepoDialog() {

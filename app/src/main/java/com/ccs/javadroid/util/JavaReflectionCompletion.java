@@ -55,7 +55,8 @@ public final class JavaReflectionCompletion {
             "interface", "long", "native", "new", "package", "private", "protected", "public",
             "return", "short", "static", "strictfp", "super", "switch", "synchronized", "this",
             "throw", "throws", "transient", "try", "void", "volatile", "while", "true", "false", "null",
-            "var", "record", "yield", "sealed", "permits"));
+            "var", "record", "yield", "sealed", "non-sealed", "permits", "when",
+            "exports", "module", "opens", "provides", "requires", "to", "uses", "with", "transitive"));
 
     // ── Вбудовані Java-бібліотеки: popular classes + їх popular methods ─────────
     private static final String[][] BUILTIN_CLASSES = {

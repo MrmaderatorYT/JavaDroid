@@ -38,7 +38,7 @@ public final class ChatFormatter {
             + "if|implements|import|instanceof|int|interface|long|native|new|package|private|"
             + "protected|public|return|short|static|strictfp|super|switch|synchronized|this|"
             + "throw|throws|transient|try|void|volatile|while|true|false|null|var|record|yield|"
-            + "sealed|permits|module|opens|provides|requires|to|uses|with";
+            + "sealed|non-sealed|permits|module|opens|provides|requires|to|uses|with|when|exports|transitive";
 
     private static final String KOTLIN_KW = "abstract|actual|annotation|as|break|by|catch|class|companion|"
             + "const|constructor|crossinline|data|delegate|do|dynamic|else|enum|expect|external|"

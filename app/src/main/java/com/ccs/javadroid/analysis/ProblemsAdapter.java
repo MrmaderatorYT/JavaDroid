@@ -39,6 +39,10 @@ public class ProblemsAdapter extends RecyclerView.Adapter<ProblemsAdapter.VH> {
         notifyDataSetChanged();
     }
 
+    public List<ProblemItem> getItems() {
+        return items;
+    }
+
     @NonNull
     @Override
     public VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

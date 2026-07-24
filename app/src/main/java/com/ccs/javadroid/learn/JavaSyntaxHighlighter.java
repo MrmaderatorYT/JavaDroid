@@ -24,7 +24,7 @@ final class JavaSyntaxHighlighter {
                 + "extends,final,finally,for,goto,if,implements,import,instanceof,interface,"
                 + "native,new,package,private,protected,public,return,static,strictfp,super,"
                 + "switch,synchronized,this,throw,throws,transient,try,void,volatile,while,"
-                + "true,false,null,var,record,yield,sealed,permits";
+                + "true,false,null,var,record,yield,sealed,non-sealed,permits,when,exports,module,opens,provides,requires,to,uses,with,transitive";
         for (String s : k.split(",")) KEYWORDS.add(s.trim());
         String t = "boolean,byte,char,double,float,int,long,short,void,String";
         for (String s : t.split(",")) TYPES.add(s.trim());
@@ -36,7 +36,7 @@ final class JavaSyntaxHighlighter {
     private static final Pattern P_CHAR = Pattern.compile("'(?:\\\\.|[^'\\\\])'");
     private static final Pattern P_ANNOT = Pattern.compile("@[A-Za-z_][A-Za-z0-9_]*");
     private static final Pattern P_NUMBER = Pattern.compile("\\b\\d+(?:\\.\\d+)?[fFdDlL]?\\b");
-    private static final Pattern P_WORD = Pattern.compile("\\b[A-Za-z_$][A-Za-z0-9_$]*\\b");
+    private static final Pattern P_WORD = Pattern.compile("\\b[A-Za-z_$][A-Za-z0-9_$-]*\\b");
 
     private JavaSyntaxHighlighter() {}
 

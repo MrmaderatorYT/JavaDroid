@@ -207,8 +207,9 @@ public final class ProfilerPanelManager {
             callback.showToast(activity.getString(R.string.toast_no_file_open));
             return;
         }
-        if (!activeTab.file.getName().endsWith(".java")) {
-            callback.showToast("Profiler only supports Java files");
+        boolean isKotlin = activeTab.file.getName().endsWith(".kt");
+        if (!activeTab.file.getName().endsWith(".java") && !isKotlin) {
+            callback.showToast("Profiler only supports Java and Kotlin files");
             return;
         }
 
@@ -238,21 +239,43 @@ public final class ProfilerPanelManager {
                 if (!cacheDir.exists()) cacheDir.mkdirs();
 
                 File androidJar = ProjectCompiler.ensureAndroidJarPublic(activity, cacheDir);
-                File srcFile = new File(cacheDir, className + ".java");
+                File srcFile = new File(cacheDir, className + (isKotlin ? ".kt" : ".java"));
                 ProjectCompiler.writeUtf8Public(srcFile, source);
 
                 callback.runOnUiThread(() -> callback.appendConsole("   " + activity.getString(R.string.label_analyzing), theme.textDim));
-                String ecjErr = ProjectCompiler.compileEcjPublic(
-                        androidJar, null, cacheDir,
-                        callback.getAppPrefs().getJavaTarget(), srcFile);
-                if (ecjErr != null) {
-                    callback.setRunning(false);
-                    profilingEnabled = false;
-                    callback.runOnUiThread(() -> {
-                        stopLiveRefresh();
-                        callback.appendConsole(activity.getString(R.string.toast_compile_error), theme.errorText);
-                    });
-                    return;
+                if (isKotlin) {
+                    java.util.List<File> kClasses = ProjectCompiler.compileKotlinPublic(
+                            srcFile, cacheDir, cacheDir, androidJar, className,
+                            new ProjectCompiler.Callback() {
+                                @Override public void onProgress(String msg) {
+                                    callback.runOnUiThread(() -> callback.appendConsole("   " + msg, theme.textDim));
+                                }
+                                @Override public void onResult(String res) {}
+                                @Override public void onProblems(java.util.List<com.ccs.javadroid.analysis.ProblemItem> problems) {}
+                            }, activity
+                    );
+                    if (kClasses == null || kClasses.isEmpty()) {
+                        callback.setRunning(false);
+                        profilingEnabled = false;
+                        callback.runOnUiThread(() -> {
+                            stopLiveRefresh();
+                            callback.appendConsole(activity.getString(R.string.toast_compile_error), theme.errorText);
+                        });
+                        return;
+                    }
+                } else {
+                    String ecjErr = ProjectCompiler.compileEcjPublic(
+                            androidJar, null, cacheDir,
+                            callback.getAppPrefs().getJavaTarget(), srcFile);
+                    if (ecjErr != null) {
+                        callback.setRunning(false);
+                        profilingEnabled = false;
+                        callback.runOnUiThread(() -> {
+                            stopLiveRefresh();
+                            callback.appendConsole(activity.getString(R.string.toast_compile_error), theme.errorText);
+                        });
+                        return;
+                    }
                 }
 
                 File classFile = ProjectCompiler.findClassFilePublic(cacheDir, className);
@@ -269,7 +292,7 @@ public final class ProfilerPanelManager {
                 callback.runOnUiThread(() -> callback.appendConsole("   " + activity.getString(R.string.label_analyzing), theme.textDim));
                 ProfilerBridge.reset();
                 ProfilerBridge.start();
-                ProfilerInstrumenter.instrumentFile(classFile);
+                ProfilerInstrumenter.instrumentDirectory(cacheDir); // Instrument ALL generated classes, not just main class
 
                 File dexDir = new File(cacheDir, "profile_dex");
                 if (!dexDir.exists()) dexDir.mkdirs();
@@ -279,7 +302,12 @@ public final class ProfilerPanelManager {
                 }
 
                 callback.runOnUiThread(() -> callback.appendConsole("   " + activity.getString(R.string.label_analyzing), theme.textDim));
-                ProjectCompiler.runD8DexPublic(androidJar, dexDir, classFile);
+                File[] allClasses = cacheDir.listFiles((d, name) -> name.endsWith(".class"));
+                if (allClasses != null) {
+                    for (File c : allClasses) {
+                        ProjectCompiler.runD8DexPublic(androidJar, dexDir, c);
+                    }
+                }
 
                 String fqClassName = classFile.getAbsolutePath()
                         .substring(cacheDir.getAbsolutePath().length() + 1)

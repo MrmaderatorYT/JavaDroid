@@ -649,8 +649,31 @@
                         android:clickable="true"
                         android:focusable="true"
                         android:contentDescription="@string/a11y_tab_todo" />
+
+                    <TextView
+                        android:id="@+id/tabConsole"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:gravity="center_vertical"
+                        android:text="Console"
+                        android:textSize="11sp"
+                        android:clickable="true"
+                        android:focusable="true" />
                 </LinearLayout>
             </HorizontalScrollView>
+
+            <TextView
+                android:id="@+id/btnCopyPanel"
+                android:layout_width="36dp"
+                android:layout_height="match_parent"
+                android:text="⎘"
+                android:textColor="@color/idea_text_dim"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:background="?attr/selectableItemBackground"
+                android:contentDescription="Copy to clipboard" />
 
             <TextView
                 android:id="@+id/btnClearConsole"
@@ -671,6 +694,46 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1">
+
+            <!-- ── JShell Console ── -->
+            <LinearLayout
+                android:id="@+id/panelJShell"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:background="@color/idea_console_bg"
+                android:visibility="gone">
+                <ScrollView
+                    android:id="@+id/jshellScroll"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:fillViewport="true">
+                    <TextView
+                        android:id="@+id/jshellOutput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="8dp"
+                        android:textColor="@color/idea_console_text"
+                        android:fontFamily="monospace"
+                        android:textSize="12sp"
+                        android:lineSpacingMultiplier="1.2"
+                        android:textIsSelectable="true" />
+                </ScrollView>
+                <EditText
+                    android:id="@+id/jshellInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="jshell> enter Java code here..."
+                    android:textColorHint="@color/idea_text_dim"
+                    android:textColor="@color/idea_text"
+                    android:fontFamily="monospace"
+                    android:singleLine="true"
+                    android:imeOptions="actionDone"
+                    android:background="@color/idea_toolbar"
+                    android:padding="12dp"
+                    android:textSize="12sp" />
+            </LinearLayout>
 
             <ScrollView
                 android:id="@+id/consoleScroll"
@@ -1520,6 +1583,15 @@
                 android:text="@string/status_language_java"
                 android:textColor="@color/idea_statusbar_text"
                 android:textSize="10sp" />
+
+            <TextView
+                android:id="@+id/tvAppVersion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:textColor="@color/idea_statusbar_text"
+                android:textSize="10sp"
+                tools:text="v1.8.0" />
 
         </LinearLayout>
 

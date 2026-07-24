@@ -110,6 +110,7 @@ public final class FileTreeController {
         optionsList.add(activity.getString(R.string.dialog_folder_context_archive));
         optionsList.add(activity.getString(R.string.dialog_file_context_rename));
         optionsList.add(activity.getString(R.string.dialog_file_context_delete));
+        optionsList.add("Open In...");
 
         String[] options = optionsList.toArray(new String[0]);
         new com.google.android.material.dialog.MaterialAlertDialogBuilder(activity)
@@ -128,6 +129,8 @@ public final class FileTreeController {
                         showRenameDialog(folder);
                     } else if (selected.equals(activity.getString(R.string.dialog_file_context_delete))) {
                         showDeleteDialog(folder);
+                    } else if (selected.equals("Open In...")) {
+                        openInExternalApp(folder);
                     }
                 })
                 .show();
@@ -138,7 +141,8 @@ public final class FileTreeController {
                 activity.getString(R.string.dialog_file_context_open),
                 activity.getString(R.string.dialog_file_context_rename),
                 activity.getString(R.string.dialog_file_context_copy),
-                activity.getString(R.string.dialog_file_context_delete)
+                activity.getString(R.string.dialog_file_context_delete),
+                "Open In..."
         };
         new com.google.android.material.dialog.MaterialAlertDialogBuilder(activity)
                 .setTitle(file.getName())
@@ -148,9 +152,36 @@ public final class FileTreeController {
                         case 1: showRenameDialog(file); break;
                         case 2: copiedFile = file; Toast.makeText(activity, R.string.toast_file_copied, Toast.LENGTH_SHORT).show(); break;
                         case 3: showDeleteDialog(file); break;
+                        case 4: openInExternalApp(file); break;
                     }
                 })
                 .show();
+    }
+
+    private void openInExternalApp(File file) {
+        try {
+            android.net.Uri uri = androidx.core.content.FileProvider.getUriForFile(
+                    activity,
+                    "com.ccs.javadroid.fileprovider",
+                    file
+            );
+            android.content.Intent intent = new android.content.Intent(android.content.Intent.ACTION_VIEW);
+            String mimeType = "*/*";
+            String name = file.getName().toLowerCase(java.util.Locale.ROOT);
+            if (file.isDirectory()) mimeType = "resource/folder";
+            else if (name.endsWith(".jpg") || name.endsWith(".jpeg") || name.endsWith(".png")) mimeType = "image/*";
+            else if (name.endsWith(".mp4") || name.endsWith(".avi")) mimeType = "video/*";
+            else if (name.endsWith(".mp3") || name.endsWith(".wav")) mimeType = "audio/*";
+            else if (name.endsWith(".apk")) mimeType = "application/vnd.android.package-archive";
+            else if (name.endsWith(".pdf")) mimeType = "application/pdf";
+            
+
+            intent.setDataAndType(uri, mimeType);
+            intent.addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            activity.startActivity(android.content.Intent.createChooser(intent, "Open in..."));
+        } catch (Exception e) {
+            Toast.makeText(activity, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void showNewFileInFolderDialog(File folder) {

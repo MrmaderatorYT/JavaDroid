@@ -208,8 +208,15 @@ public final class ProjectCompiler {
                     if (classFiles == null || classFiles.isEmpty()) {
                         return;
                     }
-
-                    runD8Dex(androidJar, dexDir, classFiles);
+                    
+                    File stdlib = KotlinCompiler.ensureKotlinStdlib(cacheDir);
+                    if (stdlib != null && stdlib.exists()) {
+                        List<File> allFiles = new java.util.ArrayList<>(classFiles);
+                        allFiles.add(stdlib);
+                        runD8Dex(androidJar, dexDir, allFiles);
+                    } else {
+                        runD8Dex(androidJar, dexDir, classFiles);
+                    }
 
                     // Determine the class name to run.
                     // Kotlin generates ClassNameKt.class for top-level functions,
@@ -1616,6 +1623,10 @@ public final class ProjectCompiler {
             String msg = e.getMessage();
             return new BytecodeCompileResult(null, msg != null ? msg : "compile error");
         }
+    }
+
+    public static java.util.List<File> compileKotlinPublic(File srcFile, File projectRoot, File cacheDir, File androidJar, String className, Callback callback, android.content.Context context) {
+        return compileKotlinViaCompilerApi(srcFile, projectRoot, cacheDir, androidJar, className, callback, context);
     }
 
     private static void deleteRecursive(File f) {
