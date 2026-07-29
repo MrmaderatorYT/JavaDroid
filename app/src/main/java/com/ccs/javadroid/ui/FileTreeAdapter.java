@@ -14,7 +14,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
+/**
+ * Project drawer tree. Directories show a disclosure triangle and can be
+ * expanded or collapsed; files show a type icon.
+ */
 public class FileTreeAdapter extends RecyclerView.Adapter<FileTreeAdapter.FileViewHolder> {
 
     public interface NodeListener {
@@ -26,6 +31,8 @@ public class FileTreeAdapter extends RecyclerView.Adapter<FileTreeAdapter.FileVi
     private NodeListener listener;
     private File activeFile;
     private AppTheme theme;
+    /** Paths the user has marked read-only, drawn with a padlock. */
+    private java.util.Set<String> readOnlyPaths = java.util.Collections.emptySet();
 
     public void setTheme(AppTheme theme) {
         this.theme = theme;
@@ -51,6 +58,12 @@ public class FileTreeAdapter extends RecyclerView.Adapter<FileTreeAdapter.FileVi
         return activeFile;
     }
 
+    /** Marks these absolute paths with a padlock in the tree. */
+    public void setReadOnlyPaths(java.util.Set<String> paths) {
+        this.readOnlyPaths = paths != null ? paths : java.util.Collections.emptySet();
+        notifyDataSetChanged();
+    }
+
     @NonNull
     @Override
     public FileViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -65,19 +78,16 @@ public class FileTreeAdapter extends RecyclerView.Adapter<FileTreeAdapter.FileVi
         String name = node.shortName();
 
         if (node.directory) {
-            holder.itemView.setBackgroundColor(0x00000000);
-            holder.icon.setText("📁");
+            holder.chevron.setText(node.hasChildren ? (node.expanded ? "▾" : "▸") : "");
+            holder.chevron.setTextColor(theme != null ? theme.textDim : 0xFF9E9E9E);
+            holder.icon.setText(node.expanded ? "📂" : "📁");
             holder.fileName.setText(name);
             holder.fileName.setTextColor(theme != null ? theme.textDim : 0xFF9E9E9E);
         } else {
-            String lower = name.toLowerCase();
-            if (lower.endsWith(".java")) holder.icon.setText("☕");
-            else if (lower.endsWith(".class")) holder.icon.setText("🅒");
-            else if (lower.endsWith(".xml")) holder.icon.setText("📜");
-            else if (lower.endsWith(".properties")) holder.icon.setText("⚙");
-            else if (lower.endsWith(".c") || lower.endsWith(".cpp") || lower.endsWith(".h") || lower.endsWith(".hpp")) holder.icon.setText("🛠️");
-            else holder.icon.setText("📄");
-            holder.fileName.setText(name);
+            holder.chevron.setText("");
+            holder.icon.setText(iconFor(name));
+            boolean locked = readOnlyPaths.contains(node.path.getAbsolutePath());
+            holder.fileName.setText(locked ? name + "  🔒" : name);
             boolean active = node.path.equals(activeFile);
             if (theme != null) {
                 holder.fileName.setTextColor(active ? theme.text : theme.textDim);
@@ -108,17 +118,48 @@ public class FileTreeAdapter extends RecyclerView.Adapter<FileTreeAdapter.FileVi
         });
     }
 
+    /** Icon for a file, chosen by extension. */
+    private static String iconFor(String name) {
+        String lower = name.toLowerCase(Locale.ROOT);
+        if (lower.endsWith(".java")) return "☕";
+        if (lower.endsWith(".kt") || lower.endsWith(".kts")) return "🇰";
+        if (lower.endsWith(".class")) return "🅒";
+        if (lower.endsWith(".gradle") || lower.endsWith(".gradle.kts")) return "🐘";
+        if (lower.equals("pom.xml")) return "🅜";
+        if (lower.endsWith(".xml") || lower.endsWith(".html") || lower.endsWith(".htm")) return "📜";
+        if (lower.endsWith(".properties")) return "⚙";
+        if (lower.endsWith(".json")) return "🧩";
+        if (lower.endsWith(".md") || lower.endsWith(".markdown")) return "📝";
+        if (lower.endsWith(".c") || lower.endsWith(".cpp") || lower.endsWith(".h")
+                || lower.endsWith(".hpp")) return "🛠️";
+        if (lower.endsWith(".png") || lower.endsWith(".jpg") || lower.endsWith(".jpeg")
+                || lower.endsWith(".gif") || lower.endsWith(".webp") || lower.endsWith(".bmp")
+                || lower.endsWith(".svg")) return "🖼️";
+        if (lower.endsWith(".mp4") || lower.endsWith(".mkv") || lower.endsWith(".webm")
+                || lower.endsWith(".mov") || lower.endsWith(".avi")) return "🎬";
+        if (lower.endsWith(".mp3") || lower.endsWith(".ogg") || lower.endsWith(".opus")
+                || lower.endsWith(".flac") || lower.endsWith(".wav")) return "🎵";
+        if (lower.endsWith(".jar") || lower.endsWith(".zip") || lower.endsWith(".apk")
+                || lower.endsWith(".aar")) return "📦";
+        if (lower.endsWith(".db") || lower.endsWith(".sqlite") || lower.endsWith(".sqlite3")) return "🗄️";
+        if (lower.endsWith(".sh") || lower.endsWith(".bash")) return "⌨️";
+        if (lower.endsWith(".so") || lower.endsWith(".dex") || lower.endsWith(".bin")) return "⬢";
+        return "📄";
+    }
+
     @Override
     public int getItemCount() {
         return nodes.size();
     }
 
     static class FileViewHolder extends RecyclerView.ViewHolder {
+        final TextView chevron;
         final TextView icon;
         final TextView fileName;
 
         FileViewHolder(View view) {
             super(view);
+            chevron = view.findViewById(R.id.nodeChevron);
             icon = view.findViewById(R.id.nodeIcon);
             fileName = view.findViewById(R.id.fileName);
         }

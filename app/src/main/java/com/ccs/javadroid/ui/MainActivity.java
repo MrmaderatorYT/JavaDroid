@@ -150,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView      statusLineCol;
     private TextView      statusFileName;
     private TextView      statusEncoding;
+    private TextView      statusReadOnly;
     private TextView      tvAppVersion;
     private TextView      toolbarTitle;
     private ScrollView    consoleScroll;
@@ -328,6 +329,13 @@ public class MainActivity extends AppCompatActivity {
         bindViews();
         if (statusEncoding != null) {
             statusEncoding.setOnClickListener(v -> showEncodingSelectionDialog());
+        }
+        if (statusReadOnly != null) {
+            statusReadOnly.setOnClickListener(v -> toggleReadOnly());
+            statusReadOnly.setOnLongClickListener(v -> {
+                showReadOnlyInfo();
+                return true;
+            });
         }
         setupBackHandling();
         setupToolbar();
@@ -529,6 +537,7 @@ public class MainActivity extends AppCompatActivity {
         bottomPanelContent = findViewById(R.id.bottomPanelContent);
         statusBar        = findViewById(R.id.statusBar);
         statusEncoding   = findViewById(R.id.statusEncoding);
+        statusReadOnly   = findViewById(R.id.statusReadOnly);
         tvAppVersion     = findViewById(R.id.tvAppVersion);
         if (tvAppVersion != null) {
             tvAppVersion.setText("v" + com.ccs.javadroid.BuildConfig.VERSION_NAME);
@@ -825,6 +834,12 @@ public class MainActivity extends AppCompatActivity {
             statusEncoding.setTextColor(theme.textDim);
             statusEncoding.setText(appPrefs.getFileEncoding());
         }
+        // The padlock recolours itself from the current theme.
+        updateReadOnlyIndicator();
+        for (int id : new int[]{R.id.btnTreeExpandAll, R.id.btnTreeCollapseAll}) {
+            View v = findViewById(id);
+            if (v instanceof TextView) ((TextView) v).setTextColor(theme.textDim);
+        }
         if (keyAccessoryBar != null) keyAccessoryBar.setBackgroundColor(theme.toolbar);
         setupKeyAccessoryBar();
         invalidateOptionsMenu();
@@ -962,7 +977,11 @@ public class MainActivity extends AppCompatActivity {
         fileTreeAdapter.setNodeListener(new FileTreeAdapter.NodeListener() {
             @Override
             public void onNodeClicked(FileTreeNode node) {
-                if (node.directory) return;
+                if (node.directory) {
+                    // Tapping a folder opens or closes it instead of doing nothing.
+                    fileTreeController.toggleFolder(node.path);
+                    return;
+                }
                 openFile(node.path);
                 drawerLayout.closeDrawer(GravityCompat.START);
             }
@@ -979,6 +998,16 @@ public class MainActivity extends AppCompatActivity {
         });
         fileTreeRecycler.setLayoutManager(new LinearLayoutManager(this));
         fileTreeRecycler.setAdapter(fileTreeAdapter);
+        fileTreeAdapter.setReadOnlyPaths(appPrefs.getReadOnlyFiles());
+
+        View btnTreeExpandAll = findViewById(R.id.btnTreeExpandAll);
+        if (btnTreeExpandAll != null) {
+            btnTreeExpandAll.setOnClickListener(v -> fileTreeController.expandAll());
+        }
+        View btnTreeCollapseAll = findViewById(R.id.btnTreeCollapseAll);
+        if (btnTreeCollapseAll != null) {
+            btnTreeCollapseAll.setOnClickListener(v -> fileTreeController.collapseAll());
+        }
 
         View btnNewFile = findViewById(R.id.btnNewFile);
         if (btnNewFile != null) btnNewFile.setOnClickListener(v -> fileTreeController.showNewFileDialog());
@@ -2403,8 +2432,13 @@ public class MainActivity extends AppCompatActivity {
             } else if (name.endsWith(".sql")) {
                 ed.setEditorLanguage(new SqlLanguage());
                 return;
-            } else if (name.endsWith(".gradle")) {
+            } else if (name.endsWith(".gradle") || name.endsWith(".gradle.kts")) {
+                // Checked before .kts/.kt so Kotlin-DSL build scripts get the
+                // Gradle highlighter rather than the plain Kotlin one.
                 ed.setEditorLanguage(new GradleLanguage());
+                return;
+            } else if (name.endsWith(".properties")) {
+                ed.setEditorLanguage(new com.ccs.javadroid.util.languages.PropertiesLanguage());
                 return;
             } else if (name.endsWith(".json")) {
                 ed.setEditorLanguage(new JsonLanguage());
@@ -2412,7 +2446,7 @@ public class MainActivity extends AppCompatActivity {
             } else if (name.endsWith(".sh") || name.endsWith(".bash")) {
                 ed.setEditorLanguage(new BashLanguage());
                 return;
-            } else if (name.endsWith(".kt")) {
+            } else if (name.endsWith(".kt") || name.endsWith(".kts")) {
                 ed.setEditorLanguage(new KotlinLanguage());
                 return;
             } else if (name.endsWith(".md") || name.endsWith(".markdown")) {
@@ -2420,7 +2454,23 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
         }
-        ed.setEditorLanguage(new JavaDroidLanguage(this, projectManager.getProjectDir()));
+        ed.setEditorLanguage(resolveJavaLanguage());
+    }
+
+    private io.github.rosemoe.sora.lang.Language resolveJavaLanguage() {
+        File projectRoot = projectManager != null ? projectManager.getProjectDir() : null;
+        if (powerSaving != null && powerSaving.isPerformanceMode()) {
+            return new com.ccs.javadroid.util.languages.AstJavaLanguage(
+                    this, projectRoot);
+        }
+        if (powerSaving != null && powerSaving.isPowerSavingActive()) {
+            return new JavaDroidLanguage(this, projectRoot);
+        }
+        if (appPrefs != null && appPrefs.isAstHighlighting()) {
+            return new com.ccs.javadroid.util.languages.AstJavaLanguage(
+                    this, projectRoot);
+        }
+        return new JavaDroidLanguage(this, projectRoot);
     }
 
     private void setupProject(boolean isRestoringState) {
@@ -2515,7 +2565,7 @@ public class MainActivity extends AppCompatActivity {
             // No saved session AND not restoring from savedInstanceState — open first file or create default
             List<File> files = projectManager.getJavaFiles();
             if (files.isEmpty()) {
-                if (projectManager.isMavenProject()) {
+                if (projectManager.hasStandardLayout()) {
                     try {
                         File pkgDir = ProjectLayoutHelper.mainJavaPackageDir(root);
                         String pkg = ProjectLayoutHelper.mainPackageName(root);
@@ -2573,11 +2623,14 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public boolean shouldSkipScan() {
-                        return isRunning;
+                        return isRunning || !powerSaving.shouldRunLiveProblems();
                     }
                 },
                 problemsAdapter::setItems);
         liveProblemsScheduler.setInterval(powerSaving.getProblemsScanIntervalMs());
+        if (!powerSaving.shouldRunLiveProblems()) {
+            liveProblemsScheduler.stop();
+        }
     }
 
     /** ECJ (активний файл) + static (проєкт); з диска для інших файлів. */
@@ -2979,6 +3032,24 @@ public class MainActivity extends AppCompatActivity {
     //  Tab management
     // ══════════════════════════════════════════════════════════
 
+    /**
+     * Extensions that hold binary data the editor cannot render as text. These
+     * go to the hex editor instead of being decoded as broken UTF-8.
+     */
+    private static boolean isBinaryByExtension(String nameLower) {
+        String[] binary = {
+                ".bin", ".dat", ".so", ".o", ".a", ".dex", ".odex", ".vdex", ".art",
+                ".jar", ".zip", ".apk", ".aar", ".aab", ".war", ".ear",
+                ".gz", ".bz2", ".xz", ".7z", ".rar", ".tar",
+                ".pdf", ".ttf", ".otf", ".woff", ".woff2", ".ico", ".icns",
+                ".pyc", ".exe", ".dll", ".dylib", ".keystore", ".jks", ".p12", ".der"
+        };
+        for (String ext : binary) {
+            if (nameLower.endsWith(ext)) return true;
+        }
+        return false;
+    }
+
     private void openFile(File file) {
         int existing = tabsAdapter.indexOfFile(file);
         if (existing >= 0) {
@@ -2995,11 +3066,21 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        // .jpg/.jpeg/.png/.gif/.webp/.bmp — bitmap image: open in image viewer
-        if (nameLower.endsWith(".jpg") || nameLower.endsWith(".jpeg")
-                || nameLower.endsWith(".png") || nameLower.endsWith(".gif")
-                || nameLower.endsWith(".webp") || nameLower.endsWith(".bmp")) {
+        // Bitmap image: open in the image viewer (zoom, rotate, animation).
+        if (ImageViewerActivity.isSupported(nameLower)) {
             ImageViewerActivity.launch(this, file);
+            return;
+        }
+
+        // Audio or video: open in the media player.
+        if (MediaPlayerActivity.isMediaFile(nameLower)) {
+            MediaPlayerActivity.launch(this, file);
+            return;
+        }
+
+        // Binary formats with no dedicated viewer: open in the hex editor.
+        if (isBinaryByExtension(nameLower)) {
+            HexEditorActivity.launch(this, file);
             return;
         }
 
@@ -3073,10 +3154,11 @@ public class MainActivity extends AppCompatActivity {
             activeEditor.setText(content);
             isProgrammaticChange = false;
             applyEditorLanguage(file, activeEditor);
-            activeEditor.setEditable(true);
+            activeEditor.setEditable(!isFileReadOnly(file));
             tabsRecycler.scrollToPosition(idx);
             updateStatusFileName(file);
             fileTreeAdapter.setActiveFile(file);
+            fileTreeController.revealInTree(file);
 
             if (activeEditor == editor) {
                 leftTab = tab;
@@ -3127,7 +3209,7 @@ public class MainActivity extends AppCompatActivity {
             activeEditor.setText(content);
             isProgrammaticChange = false;
             applyEditorLanguage(tab.file, activeEditor);
-            activeEditor.setEditable(true);
+            activeEditor.setEditable(!isFileReadOnly(tab.file));
             try {
                 activeEditor.setSelection(tab.cursorLine, tab.cursorColumn);
             } catch (Exception e) {}
@@ -3313,12 +3395,23 @@ public class MainActivity extends AppCompatActivity {
     private void saveCurrentFile() {
         int idx = tabsAdapter.getActiveIndex();
         if (idx < 0) return;
-        saveTab(idx);
-        Toast.makeText(this, R.string.toast_saved, Toast.LENGTH_SHORT).show();
+        if (saveTab(idx)) {
+            Toast.makeText(this, R.string.toast_saved, Toast.LENGTH_SHORT).show();
+        }
     }
 
-    private void saveTab(int index) {
+    /**
+     * Writes the tab's editor contents to disk.
+     *
+     * @return false when the file is locked read-only or the write failed
+     */
+    private boolean saveTab(int index) {
         FileTab tab = tabsAdapter.getTabs().get(index);
+        if (isFileReadOnly(tab.file)) {
+            Toast.makeText(this, getString(R.string.read_only_save_blocked, tab.file.getName()),
+                    Toast.LENGTH_LONG).show();
+            return false;
+        }
         CodeEditor targetEd = null;
         if (tab == leftTab) targetEd = editor;
         else if (tab == rightTab) targetEd = editor2;
@@ -3334,8 +3427,10 @@ public class MainActivity extends AppCompatActivity {
             }
             projectManager.writeFile(tab.file, targetEd.getText().toString());
             tabsAdapter.markModified(index, false);
+            return true;
         } catch (IOException e) {
             Toast.makeText(this, getString(R.string.toast_save_failed, e.getMessage()), Toast.LENGTH_SHORT).show();
+            return false;
         }
     }
 
@@ -3710,13 +3805,21 @@ public class MainActivity extends AppCompatActivity {
             autoImportBeforeRun();
         }
 
-        if (projectManager.isMavenProject()) {
+        if (com.ccs.javadroid.project.BuildSystem.isBuildable(projectManager.getProjectDir())) {
             isRunning = true;
             consoleOutput.setText("");
             switchBottomPanel(PANEL_RUN);
-            appendConsole(getString(R.string.console_maven_run), theme.textDim);
+            com.ccs.javadroid.project.BuildSystem.Kind buildKind =
+                    com.ccs.javadroid.project.BuildSystem.detect(projectManager.getProjectDir());
+            appendConsole(getString(R.string.console_build_run,
+                    com.ccs.javadroid.project.BuildSystem.displayName(buildKind)), theme.textDim);
             try {
-                PomModel pom = PomParser.parse(MavenPaths.pomFile(projectManager.getProjectDir()));
+                com.ccs.javadroid.project.BuildSystem.Model buildModel =
+                        com.ccs.javadroid.project.BuildSystem.model(projectManager.getProjectDir());
+                for (String warning : buildModel.warnings) {
+                    appendConsole("   ⚠ " + warning, theme.errorText);
+                }
+                PomModel pom = buildModel.pom;
                 ProjectCompiler.mavenCompileAndRun(this, projectManager.getProjectDir(), pom,
                         new ProjectCompiler.Callback() {
                             @Override
@@ -4157,8 +4260,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void openLibraryManager() {
-        if (!projectManager.isMavenProject()) {
-            Toast.makeText(this, R.string.toast_not_maven, Toast.LENGTH_SHORT).show();
+        if (!com.ccs.javadroid.project.BuildSystem.isBuildable(projectManager.getProjectDir())) {
+            Toast.makeText(this, R.string.toast_no_build_script, Toast.LENGTH_SHORT).show();
             return;
         }
         saveCurrentToActiveTab();
@@ -4166,7 +4269,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void openClassBrowser() {
-        String path = projectManager.isMavenProject() ? projectManager.getProjectDir().getAbsolutePath() : null;
+        String path = projectManager.hasStandardLayout()
+                ? projectManager.getProjectDir().getAbsolutePath() : null;
         ClassBrowserActivity.launch(this, path);
     }
 
@@ -4466,7 +4570,7 @@ public class MainActivity extends AppCompatActivity {
                 String className = safe.substring(0, safe.length() - 5);
                 File made = projectManager.createFile(className, text);
                 if (made == null) {
-                    File dir = projectManager.isMavenProject()
+                    File dir = projectManager.hasStandardLayout()
                             ? ProjectLayoutHelper.mainJavaPackageDir(projectManager.getProjectDir())
                             : projectManager.getProjectDir();
                     target = new File(dir, safe);
@@ -4602,6 +4706,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateStatusFileName(File file) {
         statusFileName.setText(file.getName());
+        // The padlock belongs to the file now shown, so refresh it together.
+        updateReadOnlyIndicator();
     }
 
     private void showKeyboard(View view) {
@@ -4623,6 +4729,127 @@ public class MainActivity extends AppCompatActivity {
 
     private com.google.android.material.dialog.MaterialAlertDialogBuilder newRoundedDialog() {
         return new com.google.android.material.dialog.MaterialAlertDialogBuilder(this);
+    }
+
+    // ══════════════════════════════════════════════════════════
+    //  Read-only lock
+    // ══════════════════════════════════════════════════════════
+
+    /**
+     * True when the active file must not be edited — either the user locked it,
+     * or the filesystem refuses writes.
+     */
+    private boolean isActiveFileReadOnly() {
+        FileTab tab = tabsAdapter != null ? tabsAdapter.getActiveTab() : null;
+        if (tab == null || tab.file == null) return false;
+        return isFileReadOnly(tab.file);
+    }
+
+    private boolean isFileReadOnly(File file) {
+        if (file == null) return false;
+        if (appPrefs != null && appPrefs.isReadOnly(file.getAbsolutePath())) return true;
+        return file.exists() && !file.canWrite();
+    }
+
+    /** Flips the user's lock on the active file. */
+    private void toggleReadOnly() {
+        FileTab tab = tabsAdapter != null ? tabsAdapter.getActiveTab() : null;
+        if (tab == null || tab.file == null) {
+            Toast.makeText(this, R.string.toast_no_file_open, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        File file = tab.file;
+
+        // A file the filesystem itself protects cannot be unlocked from here.
+        if (file.exists() && !file.canWrite() && !appPrefs.isReadOnly(file.getAbsolutePath())) {
+            Toast.makeText(this, R.string.read_only_filesystem, Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        boolean nowLocked = !appPrefs.isReadOnly(file.getAbsolutePath());
+        if (nowLocked && tab.isModified) {
+            // Locking would strand the pending edits, so offer to save them first.
+            newRoundedDialog()
+                    .setTitle(R.string.read_only_lock_title)
+                    .setMessage(R.string.read_only_unsaved_message)
+                    .setPositiveButton(R.string.dialog_save_and_lock, (d, w) -> {
+                        saveCurrentFile();
+                        applyReadOnly(file, true);
+                    })
+                    .setNeutralButton(R.string.read_only_lock_anyway, (d, w) -> applyReadOnly(file, true))
+                    .setNegativeButton(R.string.dialog_cancel, null)
+                    .show();
+            return;
+        }
+        applyReadOnly(file, nowLocked);
+    }
+
+    private void applyReadOnly(File file, boolean locked) {
+        appPrefs.setReadOnly(file.getAbsolutePath(), locked);
+        updateReadOnlyIndicator();
+        applyEditableStateToEditors();
+        if (fileTreeAdapter != null) {
+            fileTreeAdapter.setReadOnlyPaths(appPrefs.getReadOnlyFiles());
+        }
+        Toast.makeText(this, locked ? R.string.read_only_locked : R.string.read_only_unlocked,
+                Toast.LENGTH_SHORT).show();
+    }
+
+    /** Repaints the padlock to match the active file's state. */
+    private void updateReadOnlyIndicator() {
+        if (statusReadOnly == null) return;
+        FileTab tab = tabsAdapter != null ? tabsAdapter.getActiveTab() : null;
+        if (tab == null || tab.file == null) {
+            statusReadOnly.setText(R.string.status_lock_open);
+            statusReadOnly.setTextColor(theme != null ? theme.textDim : 0xFF808080);
+            statusReadOnly.setContentDescription(getString(R.string.a11y_status_read_only));
+            return;
+        }
+        boolean locked = isFileReadOnly(tab.file);
+        statusReadOnly.setText(locked ? R.string.status_lock_closed : R.string.status_lock_open);
+        statusReadOnly.setTextColor(locked
+                ? (theme != null ? theme.errorText : 0xFFFF6B6B)
+                : (theme != null ? theme.textDim : 0xFF808080));
+        statusReadOnly.setContentDescription(getString(locked
+                ? R.string.a11y_status_read_only_on : R.string.a11y_status_read_only_off));
+    }
+
+    /**
+     * Makes each editor's editable state match its tab's lock. Class files stay
+     * non-editable regardless, since they are shown as bytecode.
+     */
+    private void applyEditableStateToEditors() {
+        applyEditableState(editor, leftTab);
+        applyEditableState(editor2, rightTab);
+    }
+
+    private void applyEditableState(CodeEditor target, FileTab tab) {
+        if (target == null) return;
+        if (tab == null || tab.file == null) return;
+        if (tab.classBytes != null) {
+            target.setEditable(false);
+            return;
+        }
+        target.setEditable(!isFileReadOnly(tab.file));
+    }
+
+    private void showReadOnlyInfo() {
+        FileTab tab = tabsAdapter != null ? tabsAdapter.getActiveTab() : null;
+        if (tab == null || tab.file == null) {
+            Toast.makeText(this, R.string.toast_no_file_open, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        File file = tab.file;
+        boolean userLocked = appPrefs.isReadOnly(file.getAbsolutePath());
+        boolean fsLocked = file.exists() && !file.canWrite();
+        newRoundedDialog()
+                .setTitle(R.string.read_only_lock_title)
+                .setMessage(getString(R.string.read_only_info_body,
+                        file.getName(),
+                        userLocked ? getString(R.string.read_only_yes) : getString(R.string.read_only_no),
+                        fsLocked ? getString(R.string.read_only_yes) : getString(R.string.read_only_no)))
+                .setPositiveButton(android.R.string.ok, null)
+                .show();
     }
 
     private void showEncodingSelectionDialog() {

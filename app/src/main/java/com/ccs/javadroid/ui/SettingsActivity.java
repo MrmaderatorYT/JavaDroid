@@ -2,6 +2,7 @@ package com.ccs.javadroid.ui;
 import com.ccs.javadroid.R;
 import com.ccs.javadroid.util.AppPreferences;
 import com.ccs.javadroid.util.AppTheme;
+import com.ccs.javadroid.util.PowerSavingManager;
 import com.ccs.javadroid.util.FullScreenHelper;
 import com.ccs.javadroid.tools.compilers.NdkManager;
 
@@ -59,6 +60,13 @@ public class SettingsActivity extends AppCompatActivity {
     private int initialFontSize, initialFontFamily, initialTabSize;
     private float initialLineSpacing;
     private boolean initialLineNumbers, initialWordWrap;
+    private boolean initialAutoSave, initialFormatOnSave, initialMinimap, initialAstHighlighting;
+    private boolean initialVerboseLogging, initialLiveProblems, initialAutoSearch;
+    private boolean initialPerfAst, initialPerfLive, initialPerfAutoSave, initialPerfFormat,
+            initialPerfMinimap, initialPerfSearch, initialPerfVerbose;
+    private boolean initialPsAst, initialPsLive, initialPsAutoSave, initialPsFormat,
+            initialPsMinimap, initialPsSearch, initialPsVerbose;
+    private int initialPowerSavingMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +89,28 @@ public class SettingsActivity extends AppCompatActivity {
         initialLineSpacing = prefs.getLineSpacing();
         initialLineNumbers = prefs.isLineNumbers();
         initialWordWrap = prefs.isWordWrap();
+        initialAutoSave = prefs.isAutoSave();
+        initialFormatOnSave = prefs.isFormatOnSave();
+        initialMinimap = prefs.isMinimap();
+        initialAstHighlighting = prefs.isAstHighlighting();
+        initialVerboseLogging = prefs.isVerboseLoggingEnabled();
+        initialLiveProblems = prefs.isLiveProblemsEnabled();
+        initialAutoSearch = prefs.isAutoSearchEnabled();
+        initialPerfAst = prefs.isPerfAstHighlighting();
+        initialPerfLive = prefs.isPerfLiveProblems();
+        initialPerfAutoSave = prefs.isPerfAutoSave();
+        initialPerfFormat = prefs.isPerfFormatOnSave();
+        initialPerfMinimap = prefs.isPerfMinimap();
+        initialPerfSearch = prefs.isPerfAutoSearch();
+        initialPerfVerbose = prefs.isPerfVerboseLogging();
+        initialPsAst = prefs.isPsAstHighlighting();
+        initialPsLive = prefs.isPsLiveProblems();
+        initialPsAutoSave = prefs.isPsAutoSave();
+        initialPsFormat = prefs.isPsFormatOnSave();
+        initialPsMinimap = prefs.isPsMinimap();
+        initialPsSearch = prefs.isPsAutoSearch();
+        initialPsVerbose = prefs.isPsVerboseLogging();
+        initialPowerSavingMode = prefs.getPowerSavingMode();
 
         super.onCreate(savedInstanceState);
         getWindow().setWindowAnimations(0);
@@ -104,7 +134,29 @@ public class SettingsActivity extends AppCompatActivity {
                 || initialTabSize != prefs.getTabSize()
                 || initialLineSpacing != prefs.getLineSpacing()
                 || initialLineNumbers != prefs.isLineNumbers()
-                || initialWordWrap != prefs.isWordWrap();
+                || initialWordWrap != prefs.isWordWrap()
+                || initialAutoSave != prefs.isAutoSave()
+                || initialFormatOnSave != prefs.isFormatOnSave()
+                || initialMinimap != prefs.isMinimap()
+                || initialAstHighlighting != prefs.isAstHighlighting()
+                || initialVerboseLogging != prefs.isVerboseLoggingEnabled()
+                || initialLiveProblems != prefs.isLiveProblemsEnabled()
+                || initialAutoSearch != prefs.isAutoSearchEnabled()
+                || initialPerfAst != prefs.isPerfAstHighlighting()
+                || initialPerfLive != prefs.isPerfLiveProblems()
+                || initialPerfAutoSave != prefs.isPerfAutoSave()
+                || initialPerfFormat != prefs.isPerfFormatOnSave()
+                || initialPerfMinimap != prefs.isPerfMinimap()
+                || initialPerfSearch != prefs.isPerfAutoSearch()
+                || initialPerfVerbose != prefs.isPerfVerboseLogging()
+                || initialPsAst != prefs.isPsAstHighlighting()
+                || initialPsLive != prefs.isPsLiveProblems()
+                || initialPsAutoSave != prefs.isPsAutoSave()
+                || initialPsFormat != prefs.isPsFormatOnSave()
+                || initialPsMinimap != prefs.isPsMinimap()
+                || initialPsSearch != prefs.isPsAutoSearch()
+                || initialPsVerbose != prefs.isPsVerboseLogging()
+                || initialPowerSavingMode != prefs.getPowerSavingMode();
         setResult(Activity.RESULT_OK, getIntent().putExtra(EXTRA_CHANGED, changed));
         super.onBackPressed();
     }
@@ -595,7 +647,31 @@ public class SettingsActivity extends AppCompatActivity {
         section.addView(buildSwitch(getString(R.string.settings_minimap),
                 prefs.isMinimap(), prefs::setMinimap));
 
+        PowerSavingManager powerSaving = new PowerSavingManager(this);
+        boolean forceAst = powerSaving.isPerformanceMode();
+        LinearLayout astRow = (LinearLayout) buildSwitch(getString(R.string.settings_ast_highlighting),
+                forceAst || prefs.isAstHighlighting(), prefs::setAstHighlighting);
+        Switch astSwitch = (Switch) astRow.getChildAt(1);
+        astSwitch.setEnabled(!forceAst);
+        if (forceAst) {
+            astSwitch.setChecked(true);
+        }
+        section.addView(astRow);
+        section.addView(buildHint(forceAst
+                ? getString(R.string.settings_ast_highlighting_forced_hint)
+                : getString(R.string.settings_ast_highlighting_hint)));
+
         return section;
+    }
+
+    /** Small dim caption under a setting, explaining what it changes. */
+    private View buildHint(String text) {
+        TextView hint = new TextView(this);
+        hint.setText(text);
+        hint.setTextColor(theme.textDim);
+        hint.setTextSize(11);
+        hint.setPadding(dp(4), 0, dp(4), dp(8));
+        return hint;
     }
 
     // ── Compiler ──────────────────────────────────────────────
@@ -737,7 +813,184 @@ public class SettingsActivity extends AppCompatActivity {
         });
         section.addView(sp);
 
+        section.addView(buildHint(getString(R.string.settings_power_saving_highlight_hint)));
+
+        section.addView(buildPowerProfileEditor());
+
         return section;
+    }
+
+    private View buildPowerProfileEditor() {
+        LinearLayout card = new LinearLayout(this);
+        card.setOrientation(LinearLayout.VERTICAL);
+        card.setPadding(dp(12), dp(12), dp(12), dp(12));
+        LinearLayout.LayoutParams cardParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        cardParams.topMargin = dp(14);
+        card.setLayoutParams(cardParams);
+        GradientDrawable cardBackground = new GradientDrawable();
+        cardBackground.setColor(theme.toolbar);
+        cardBackground.setStroke(dp(1), theme.separator);
+        cardBackground.setCornerRadius(dp(10));
+        card.setBackground(cardBackground);
+
+        LinearLayout controls = new LinearLayout(this);
+        controls.setOrientation(LinearLayout.HORIZONTAL);
+        controls.setGravity(Gravity.CENTER_VERTICAL);
+
+        LinearLayout tabs = new LinearLayout(this);
+        tabs.setOrientation(LinearLayout.HORIZONTAL);
+        LinearLayout.LayoutParams tabsParams = new LinearLayout.LayoutParams(0, dp(40), 1f);
+        tabs.setLayoutParams(tabsParams);
+
+        TextView performanceTab = profileTab(getString(R.string.settings_profile_performance));
+        TextView savingTab = profileTab(getString(R.string.settings_profile_power_saving));
+        tabs.addView(performanceTab, new LinearLayout.LayoutParams(0,
+                ViewGroup.LayoutParams.MATCH_PARENT, 1f));
+        tabs.addView(savingTab, new LinearLayout.LayoutParams(0,
+                ViewGroup.LayoutParams.MATCH_PARENT, 1f));
+        controls.addView(tabs);
+
+        TextView reset = new TextView(this);
+        reset.setText(getString(R.string.settings_profile_reset));
+        reset.setTextColor(theme.errorText);
+        reset.setTextSize(11);
+        reset.setGravity(Gravity.CENTER);
+        reset.setPadding(dp(10), 0, dp(10), 0);
+        LinearLayout.LayoutParams resetParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, dp(40));
+        resetParams.leftMargin = dp(8);
+        reset.setLayoutParams(resetParams);
+        GradientDrawable resetBackground = new GradientDrawable();
+        resetBackground.setColor(Color.TRANSPARENT);
+        resetBackground.setStroke(dp(1), theme.errorText);
+        resetBackground.setCornerRadius(dp(8));
+        reset.setBackground(resetBackground);
+        controls.addView(reset);
+        card.addView(controls);
+
+        TextView hint = (TextView) buildHint("");
+        card.addView(hint);
+
+        LinearLayout options = new LinearLayout(this);
+        options.setOrientation(LinearLayout.VERTICAL);
+        card.addView(options);
+
+        final boolean[] performanceSelected = { true };
+        Runnable refresh = () -> {
+            boolean performance = performanceSelected[0];
+            styleProfileTab(performanceTab, performance, true);
+            styleProfileTab(savingTab, !performance, false);
+            hint.setText(getString(performance
+                    ? R.string.settings_power_saving_performance_hint
+                    : R.string.settings_power_saving_mode_hint));
+            populatePowerProfileOptions(options, performance);
+        };
+
+        performanceTab.setOnClickListener(v -> {
+            performanceSelected[0] = true;
+            refresh.run();
+        });
+        savingTab.setOnClickListener(v -> {
+            performanceSelected[0] = false;
+            refresh.run();
+        });
+        reset.setOnClickListener(v -> newRoundedDialog()
+                .setTitle(R.string.settings_profile_reset)
+                .setMessage(performanceSelected[0]
+                        ? R.string.settings_profile_reset_performance_confirm
+                        : R.string.settings_profile_reset_saving_confirm)
+                .setPositiveButton(R.string.dialog_apply, (dialog, which) -> {
+                    resetPowerProfile(performanceSelected[0]);
+                    refresh.run();
+                    Toast.makeText(this, R.string.settings_profile_reset_done,
+                            Toast.LENGTH_SHORT).show();
+                })
+                .setNegativeButton(R.string.dialog_cancel, null)
+                .show());
+
+        refresh.run();
+        return card;
+    }
+
+    private TextView profileTab(String title) {
+        TextView tab = new TextView(this);
+        tab.setText(title);
+        tab.setTextSize(12);
+        tab.setGravity(Gravity.CENTER);
+        tab.setPadding(dp(8), 0, dp(8), 0);
+        tab.setClickable(true);
+        tab.setFocusable(true);
+        tab.setContentDescription(title);
+        return tab;
+    }
+
+    private void styleProfileTab(TextView tab, boolean selected, boolean left) {
+        GradientDrawable background = new GradientDrawable();
+        background.setColor(selected ? theme.accent : Color.TRANSPARENT);
+        background.setStroke(dp(1), selected ? theme.accent : theme.separator);
+        float radius = dp(8);
+        background.setCornerRadii(left
+                ? new float[] { radius, radius, 0, 0, 0, 0, radius, radius }
+                : new float[] { 0, 0, radius, radius, radius, radius, 0, 0 });
+        tab.setBackground(background);
+        tab.setTextColor(selected ? theme.bg : theme.textDim);
+        tab.setSelected(selected);
+    }
+
+    private void populatePowerProfileOptions(LinearLayout options, boolean performance) {
+        options.removeAllViews();
+        if (performance) {
+            options.addView(buildSwitch(getString(R.string.settings_profile_ast),
+                    prefs.isPerfAstHighlighting(), prefs::setPerfAstHighlighting));
+            options.addView(buildSwitch(getString(R.string.settings_profile_live_problems),
+                    prefs.isPerfLiveProblems(), prefs::setPerfLiveProblems));
+            options.addView(buildSwitch(getString(R.string.settings_profile_auto_save),
+                    prefs.isPerfAutoSave(), prefs::setPerfAutoSave));
+            options.addView(buildSwitch(getString(R.string.settings_profile_format_on_save),
+                    prefs.isPerfFormatOnSave(), prefs::setPerfFormatOnSave));
+            options.addView(buildSwitch(getString(R.string.settings_profile_minimap),
+                    prefs.isPerfMinimap(), prefs::setPerfMinimap));
+            options.addView(buildSwitch(getString(R.string.settings_profile_auto_search),
+                    prefs.isPerfAutoSearch(), prefs::setPerfAutoSearch));
+            options.addView(buildSwitch(getString(R.string.settings_profile_verbose_logging),
+                    prefs.isPerfVerboseLogging(), prefs::setPerfVerboseLogging));
+        } else {
+            options.addView(buildSwitch(getString(R.string.settings_profile_ast),
+                    prefs.isPsAstHighlighting(), prefs::setPsAstHighlighting));
+            options.addView(buildSwitch(getString(R.string.settings_profile_live_problems),
+                    prefs.isPsLiveProblems(), prefs::setPsLiveProblems));
+            options.addView(buildSwitch(getString(R.string.settings_profile_auto_save),
+                    prefs.isPsAutoSave(), prefs::setPsAutoSave));
+            options.addView(buildSwitch(getString(R.string.settings_profile_format_on_save),
+                    prefs.isPsFormatOnSave(), prefs::setPsFormatOnSave));
+            options.addView(buildSwitch(getString(R.string.settings_profile_minimap),
+                    prefs.isPsMinimap(), prefs::setPsMinimap));
+            options.addView(buildSwitch(getString(R.string.settings_profile_auto_search),
+                    prefs.isPsAutoSearch(), prefs::setPsAutoSearch));
+            options.addView(buildSwitch(getString(R.string.settings_profile_verbose_logging),
+                    prefs.isPsVerboseLogging(), prefs::setPsVerboseLogging));
+        }
+    }
+
+    private void resetPowerProfile(boolean performance) {
+        if (performance) {
+            prefs.setPerfAstHighlighting(true);
+            prefs.setPerfLiveProblems(true);
+            prefs.setPerfAutoSave(true);
+            prefs.setPerfFormatOnSave(true);
+            prefs.setPerfMinimap(true);
+            prefs.setPerfAutoSearch(true);
+            prefs.setPerfVerboseLogging(true);
+        } else {
+            prefs.setPsAstHighlighting(false);
+            prefs.setPsLiveProblems(false);
+            prefs.setPsAutoSave(false);
+            prefs.setPsFormatOnSave(false);
+            prefs.setPsMinimap(false);
+            prefs.setPsAutoSearch(false);
+            prefs.setPsVerboseLogging(false);
+        }
     }
 
     private View buildResetButton() {

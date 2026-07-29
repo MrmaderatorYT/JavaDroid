@@ -73,7 +73,7 @@ public final class PowerSavingManager {
         if (isPowerSavingActive()) {
             return false;
         }
-        return isPerformanceMode();
+        return isPerformanceMode() ? prefs.isPerfAutoSearch() : prefs.isAutoSearchEnabled();
     }
 
     public boolean shouldFormatOnSave() {
@@ -87,11 +87,32 @@ public final class PowerSavingManager {
         if (isPowerSavingActive()) {
             return false;
         }
-        return prefs.isVerboseLoggingEnabled();
+        return isPerformanceMode() ? prefs.isPerfVerboseLogging() : prefs.isVerboseLoggingEnabled();
     }
 
     public boolean shouldReduceAnimations() {
         return isPowerSavingActive();
+    }
+
+    public boolean shouldUseMinimap() {
+        if (isPowerSavingActive()) {
+            return false;
+        }
+        return isPerformanceMode() ? prefs.isPerfMinimap() : prefs.isMinimap();
+    }
+
+    public boolean shouldUseAstHighlighting() {
+        if (isPowerSavingActive()) {
+            return false;
+        }
+        return isPerformanceMode() ? prefs.isPerfAstHighlighting() : prefs.isAstHighlighting();
+    }
+
+    public boolean shouldRunLiveProblems() {
+        if (isPowerSavingActive()) {
+            return false;
+        }
+        return isPerformanceMode() ? prefs.isPerfLiveProblems() : prefs.isLiveProblemsEnabled();
     }
 
     private int getBatteryLevel() {

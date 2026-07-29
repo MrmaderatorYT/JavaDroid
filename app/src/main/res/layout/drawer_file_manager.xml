@@ -51,11 +51,44 @@
 
         <TextView
             android:id="@+id/tvDrawerMavenHint"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="@string/drawer_maven_hint"
             android:textColor="#808080"
-            android:textSize="11sp" />
+            android:textSize="11sp"
+            android:singleLine="true"
+            android:ellipsize="end" />
+
+        <TextView
+            android:id="@+id/btnTreeExpandAll"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="⊞"
+            android:textColor="#808080"
+            android:textSize="13sp"
+            android:gravity="center"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackground"
+            android:contentDescription="@string/tree_expand_all" />
+
+        <TextView
+            android:id="@+id/btnTreeCollapseAll"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="⊟"
+            android:textColor="#808080"
+            android:textSize="13sp"
+            android:gravity="center"
+            android:paddingStart="8dp"
+            android:paddingEnd="12dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackground"
+            android:contentDescription="@string/tree_collapse_all" />
 
     </LinearLayout>
 

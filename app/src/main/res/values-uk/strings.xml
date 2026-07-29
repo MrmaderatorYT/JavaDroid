@@ -1019,4 +1019,178 @@
     <string name="lesson_compiling">Компіляція прикладу Java 8…</string>
     <string name="lesson_dexing">Перетворення прикладу на DEX…</string>
     <string name="lesson_executing">Запуск прикладу…</string>
+
+    <!-- ══════════════ v1.9.0: Gradle, AST-підсвітка, hex-редактор, перегляд ══════════════ -->
+
+    <!-- Система збірки -->
+    <string name="toast_no_build_script">Немає скрипта збірки (pom.xml або build.gradle)</string>
+    <string name="toast_build_script_required">Потрібен pom.xml або build.gradle</string>
+    <string name="console_sync_build">▶ %1$s: завантаження залежностей…</string>
+    <string name="console_build_task">▶ %1$s %2$s…</string>
+    <string name="console_build_run">▶ %1$s: компіляція + запуск…</string>
+    <string name="lib_already_present">%1$s уже додано</string>
+
+    <!-- AST-підсвітка -->
+    <string name="settings_ast_highlighting">Підсвітка синтаксису на основі AST</string>
+    <string name="settings_ast_highlighting_hint">Визначає кожне ім\'я через дерево областей видимості, тож типи, методи, поля, параметри та локальні змінні отримують різні кольори. Вимкніть для швидшої підсвітки у дуже великих файлах.</string>
+    <string name="settings_ast_highlighting_forced_hint">У режимі «Завжди продуктивний» AST-підсвітка примусово увімкнена. У режимі енергозбереження редактор повертається до легшого варіанту, щоб зменшити навантаження на CPU і зробити набір тексту плавнішим на слабших пристроях.</string>
+    <string name="settings_power_saving_highlight_hint">Тип підсвітки змінюється разом із режимом живлення: «Завжди продуктивний» тримає AST, а енергозбереження переходить на легшу підсвітку, щоб економити батарею та зменшити фоновий парсинг.</string>
+    <string name="settings_power_saving_performance_title">Пресети «Завжди продуктивний»</string>
+    <string name="settings_power_saving_performance_hint">Ці перемикачі описують швидкий сценарій. У режимі «Завжди продуктивний» вони вважаються повністю увімкненими, а редактор оновлюється агресивніше.</string>
+    <string name="settings_power_saving_mode_title">Пресети енергозбереження</string>
+    <string name="settings_power_saving_mode_hint">Ці перемикачі описують сценарій економії батареї. У режимі енергозбереження вони вважаються повністю вимкненими, а фонові задачі сповільнюються.</string>
+    <string name="settings_perf_ast">AST-підсвітка увімкнена</string>
+    <string name="settings_perf_live_problems">Live problems увімкнено</string>
+    <string name="settings_perf_auto_save">Автозбереження увімкнене</string>
+    <string name="settings_perf_format_on_save">Форматування при збереженні увімкнене</string>
+    <string name="settings_perf_minimap">Мінікарта увімкнена</string>
+    <string name="settings_perf_auto_search">Автопошук увімкнений</string>
+    <string name="settings_perf_verbose_logging">Детальний лог увімкнений</string>
+    <string name="settings_ps_ast">AST-підсвітка вимкнена</string>
+    <string name="settings_ps_live_problems">Live problems вимкнено</string>
+    <string name="settings_ps_auto_save">Автозбереження вимкнене</string>
+    <string name="settings_ps_format_on_save">Форматування при збереженні вимкнене</string>
+    <string name="settings_ps_minimap">Мінікарта вимкнена</string>
+    <string name="settings_ps_auto_search">Автопошук вимкнений</string>
+    <string name="settings_ps_verbose_logging">Детальний лог вимкнений</string>
+    <string name="settings_profile_performance">Продуктивний</string>
+    <string name="settings_profile_power_saving">Енергозбереження</string>
+    <string name="settings_profile_reset">Скинути</string>
+    <string name="settings_profile_reset_performance_confirm">Скинути профіль «Продуктивний»? Усі його функції буде ввімкнено.</string>
+    <string name="settings_profile_reset_saving_confirm">Скинути профіль «Енергозбереження»? Ресурсомісткі функції буде вимкнено.</string>
+    <string name="settings_profile_reset_done">Профіль скинуто до заводських значень</string>
+    <string name="settings_profile_ast">AST-підсвітка</string>
+    <string name="settings_profile_live_problems">Пошук помилок у реальному часі</string>
+    <string name="settings_profile_auto_save">Автозбереження</string>
+    <string name="settings_profile_format_on_save">Форматування при збереженні</string>
+    <string name="settings_profile_minimap">Мінікарта</string>
+    <string name="settings_profile_auto_search">Автоматичний пошук</string>
+    <string name="settings_profile_verbose_logging">Детальне логування</string>
+
+    <!-- Дерево проєкту: розкриття папок -->
+    <string name="tree_expand_all">Розкрити всі папки</string>
+    <string name="tree_collapse_all">Згорнути всі папки</string>
+    <string name="tree_expand_all_in_folder">Розкрити все всередині</string>
+    <string name="tree_collapse_all_in_folder">Згорнути все всередині</string>
+    <string name="menu_open_in_external">Відкрити в…</string>
+    <string name="menu_open_in_hex">Відкрити в hex-редакторі</string>
+
+    <!-- Замок «лише для читання» -->
+    <string name="status_lock_open">🔓</string>
+    <string name="status_lock_closed">🔒</string>
+    <string name="a11y_status_read_only">Замок «лише для читання»</string>
+    <string name="a11y_status_read_only_on">Файл заблоковано для читання. Натисніть, щоб розблокувати.</string>
+    <string name="a11y_status_read_only_off">Файл можна редагувати. Натисніть, щоб заблокувати.</string>
+    <string name="read_only_lock_title">Лише для читання</string>
+    <string name="read_only_locked">Файл заблоковано — редагування вимкнено</string>
+    <string name="read_only_unlocked">Файл розблоковано — редагування увімкнено</string>
+    <string name="read_only_save_blocked">%1$s — лише для читання. Натисніть 🔒, щоб розблокувати й зберегти.</string>
+    <string name="read_only_filesystem">Файлова система позначила файл лише для читання. Змініть його права, щоб редагувати.</string>
+    <string name="read_only_unsaved_message">У файлі є незбережені зміни. Зберегти їх перед блокуванням?</string>
+    <string name="dialog_save_and_lock">Зберегти й заблокувати</string>
+    <string name="read_only_lock_anyway">Заблокувати без збереження</string>
+    <string name="read_only_yes">так</string>
+    <string name="read_only_no">ні</string>
+    <string name="read_only_info_body">%1$s\n\nЗаблоковано вами: %2$s\nЛише для читання на диску: %3$s\n\nНатисніть замок, щоб перемкнути блокування.</string>
+
+    <!-- Hex-редактор -->
+    <string name="hex_title">Hex-редактор</string>
+    <string name="hex_no_file">Файл не вказано</string>
+    <string name="hex_cannot_read">Не вдалося прочитати: %1$s</string>
+    <string name="hex_goto_hint">Зсув у hex, напр. 1A0</string>
+    <string name="hex_column_ascii">ASCII</string>
+    <string name="hex_menu_goto">Перейти до зсуву…</string>
+    <string name="hex_menu_find">Знайти…</string>
+    <string name="hex_menu_undo">Скасувати</string>
+    <string name="hex_menu_redo">Повторити</string>
+    <string name="hex_menu_save">Зберегти</string>
+    <string name="hex_menu_info">Про файл</string>
+    <string name="hex_go">Перейти</string>
+    <string name="hex_more">Більше…</string>
+    <string name="hex_find_next">Знайти далі</string>
+    <string name="hex_truncated">Файл більший за %1$d МБ — показано перші %1$d МБ, лише для читання.</string>
+    <string name="hex_readonly">Цей файл лише для читання.</string>
+    <string name="hex_readonly_truncated">Лише для читання: файл завеликий для безпечного редагування.</string>
+    <string name="hex_nothing_to_save">Немає змін для збереження</string>
+    <string name="hex_nothing_to_undo">Нічого скасовувати</string>
+    <string name="hex_nothing_to_redo">Нічого повторювати</string>
+    <string name="hex_save_confirm">Перезаписати %1$s (%2$d байтів)?</string>
+    <string name="hex_unsaved_title">Незбережені зміни</string>
+    <string name="hex_unsaved_message">Є незбережені зміни байтів. Зберегти перед закриттям?</string>
+    <string name="hex_discard">Відкинути</string>
+    <string name="hex_byte_title">Байт за 0x%1$X</string>
+    <string name="hex_byte_hint">Hex (1F), 0x1F, 31d або \'c\'</string>
+    <string name="hex_byte_info">Зсув %1$d (0x%2$X)\nЗначення %3$d  ·  %4$s  ·  %5$s</string>
+    <string name="hex_invalid_byte">Введіть значення від 00 до FF</string>
+    <string name="hex_invalid_offset">Введіть зсув у hex, напр. 1A0</string>
+    <string name="hex_offset_out_of_range">Зсув за межами файлу</string>
+    <string name="hex_action_insert_before">Вставити 00 перед</string>
+    <string name="hex_action_insert_after">Вставити 00 після</string>
+    <string name="hex_action_delete">Видалити цей байт</string>
+    <string name="hex_action_fill_row">Заповнити рядок значенням…</string>
+    <string name="hex_find_hint">Байти в hex (DE AD BE EF) або текст у лапках ("MZ")</string>
+    <string name="hex_find_placeholder">DE AD BE EF</string>
+    <string name="hex_invalid_pattern">Введіть пари hex-байтів або "текст у лапках"</string>
+    <string name="hex_not_found">Послідовність не знайдено</string>
+    <string name="hex_status_size">%1$d байтів (%2$s)</string>
+    <string name="hex_status_offset">за 0x%1$X = %2$d</string>
+    <string name="hex_info_body">%1$s\n\nРозмір: %2$d байтів (%3$s)\nВизначений тип: %4$s\nДоступ: %5$s</string>
+    <string name="hex_info_readonly">лише читання</string>
+    <string name="hex_info_writable">можна записувати</string>
+
+    <!-- Перегляд зображень -->
+    <string name="image_viewer_title">Перегляд зображень</string>
+    <string name="image_no_file">Зображення не вказано</string>
+    <string name="image_decode_failed">Не вдалося декодувати %1$s</string>
+    <string name="image_no_other_images">У цій папці немає інших зображень</string>
+    <string name="image_animated">анімоване</string>
+    <string name="image_action_previous">Попереднє зображення</string>
+    <string name="image_action_next">Наступне зображення</string>
+    <string name="image_action_fit">Вмістити у вікно</string>
+    <string name="image_action_actual">Справжній розмір</string>
+    <string name="image_action_rotate">Повернути на 90°</string>
+    <string name="image_action_checkerboard">Шахова сітка прозорості</string>
+    <string name="image_action_info">Про зображення</string>
+    <string name="image_open_in_hex">Відкрити в hex</string>
+    <string name="image_info_body">%1$s\n\nРозміри: %2$d × %3$d\nФормат: %4$s\nРозмір файлу: %5$s\nПрозорість: %6$s\nАнімація: %7$s</string>
+    <string name="image_info_yes">так</string>
+    <string name="image_info_no">ні</string>
+
+    <!-- Медіаплеєр -->
+    <string name="media_video_player">Відеоплеєр</string>
+    <string name="media_audio_player">Аудіоплеєр</string>
+    <string name="media_file_not_found">Файл не знайдено</string>
+    <string name="media_play">▶</string>
+    <string name="media_status_ready">Готово</string>
+    <string name="media_status_ready_tap_play">Готово — натисніть «Play»</string>
+    <string name="media_status_playing">Відтворення</string>
+    <string name="media_status_paused">Пауза</string>
+    <string name="media_status_stopped">Зупинено</string>
+    <string name="media_status_finished">Завершено</string>
+    <string name="media_tap_for_details">(натисніть для деталей)</string>
+    <string name="media_track_info">Про доріжки</string>
+    <string name="media_track_video">Відео</string>
+    <string name="media_track_audio">Аудіо</string>
+    <string name="media_info_size">Розмір: %1$s</string>
+    <string name="media_info_duration">Тривалість: %1$s</string>
+    <string name="media_codec_supported">декодер доступний</string>
+    <string name="media_codec_unsupported">на цьому пристрої немає декодера</string>
+    <string name="media_codec_royalty_free">кодек без ліцензійних платежів</string>
+    <string name="media_codec_device_licensed">ліцензовано пристроєм</string>
+    <string name="media_unsupported_title">Кодек не підтримується</string>
+    <string name="media_unsupported_message">На цьому пристрої немає декодера для: %1$s.\n\nФормати без ліцензійних платежів працюють завжди: відео VP8, VP9 та AV1 з аудіо Vorbis, Opus або FLAC у контейнерах WebM чи MKV. Перекодуйте файл у такий формат, щоб відтворити його тут.</string>
+    <string name="media_container_error">Не вдалося прочитати контейнер: %1$s</string>
+    <string name="media_open_error">Не вдалося відкрити: %1$s</string>
+    <string name="media_error_malformed">Файл пошкоджений або обрізаний.</string>
+    <string name="media_error_io">Помилка читання — файл може бути недоступним.</string>
+    <string name="media_error_code">Помилка відтворення (%1$d / %2$d)</string>
+    <string name="media_speed_unsupported">Швидкість відтворення недоступна для цього файлу</string>
+    <string name="a11y_media_speed">Швидкість відтворення</string>
+
+
+    <!-- Раніше неперекладені рядки -->
+    <string name="tab_variables">Змінні</string>
+    <string name="tab_callstack">Стек викликів</string>
+    <string name="tab_watches">Спостереження</string>
+    <string name="toast_no_project_open">Проєкт не відкрито</string>
 </resources>

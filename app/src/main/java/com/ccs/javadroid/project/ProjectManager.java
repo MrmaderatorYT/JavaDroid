@@ -43,6 +43,19 @@ public class ProjectManager {
         return new File(projectRoot, "pom.xml").exists();
     }
 
+    /** True when the project is driven by a Gradle build script. */
+    public boolean isGradleProject() {
+        return com.ccs.javadroid.gradle.GradlePaths.isGradleProject(projectRoot);
+    }
+
+    /**
+     * True when the project follows the {@code src/main/java/<package>} layout —
+     * that is, either build system. Used to decide where new sources go.
+     */
+    public boolean hasStandardLayout() {
+        return isMavenProject() || isGradleProject();
+    }
+
     public List<File> getJavaFiles() {
         return ProjectScanner.listJavaSources(projectRoot);
     }
@@ -56,7 +69,7 @@ public class ProjectManager {
             name += ".java";
         }
         File dir = projectRoot;
-        if (isMavenProject()) {
+        if (hasStandardLayout()) {
             dir = ProjectLayoutHelper.mainJavaPackageDir(projectRoot);
         }
         File file = new File(dir, name);

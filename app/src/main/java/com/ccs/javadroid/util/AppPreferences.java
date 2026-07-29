@@ -22,6 +22,24 @@ import android.graphics.Typeface;
     private static final String K_AUTO_SAVE        = "auto_save";
     private static final String K_FORMAT_ON_SAVE   = "format_on_save";
     private static final String K_MINIMAP          = "minimap_enabled_v2";
+    private static final String K_AST_HIGHLIGHT    = "ast_highlighting";
+    private static final String K_LIVE_PROBLEMS    = "live_problems";
+    private static final String K_AUTO_SEARCH      = "auto_search";
+    private static final String K_PERF_AST         = "perf_ast";
+    private static final String K_PERF_LIVE        = "perf_live_problems";
+    private static final String K_PERF_AUTO_SAVE   = "perf_auto_save";
+    private static final String K_PERF_FORMAT      = "perf_format_on_save";
+    private static final String K_PERF_MINIMAP     = "perf_minimap";
+    private static final String K_PERF_SEARCH      = "perf_auto_search";
+    private static final String K_PERF_VERBOSE     = "perf_verbose_logging";
+    private static final String K_PS_AST           = "ps_ast";
+    private static final String K_PS_LIVE          = "ps_live_problems";
+    private static final String K_PS_AUTO_SAVE     = "ps_auto_save";
+    private static final String K_PS_FORMAT        = "ps_format_on_save";
+    private static final String K_PS_MINIMAP       = "ps_minimap";
+    private static final String K_PS_SEARCH        = "ps_auto_search";
+    private static final String K_PS_VERBOSE       = "ps_verbose_logging";
+    private static final String K_READ_ONLY_FILES  = "read_only_files";
 
     // ── Theme ─────────────────────────────────────────────────
     private static final String K_THEME_ID         = "theme_id";
@@ -108,6 +126,77 @@ import android.graphics.Typeface;
 
     public boolean isMinimap()            { return prefs.getBoolean(K_MINIMAP, false); }
     public void setMinimap(boolean v)     { prefs.edit().putBoolean(K_MINIMAP, v).apply(); }
+
+    public boolean isLiveProblemsEnabled() { return prefs.getBoolean(K_LIVE_PROBLEMS, true); }
+    public void setLiveProblemsEnabled(boolean v) { prefs.edit().putBoolean(K_LIVE_PROBLEMS, v).apply(); }
+
+    public boolean isAutoSearchEnabled()   { return prefs.getBoolean(K_AUTO_SEARCH, true); }
+    public void setAutoSearchEnabled(boolean v) { prefs.edit().putBoolean(K_AUTO_SEARCH, v).apply(); }
+
+    /**
+     * AST-based Java highlighting: resolves each identifier through the scope
+     * tree instead of matching patterns per line. Off falls back to the
+     * line-tokenizer highlighter, which is cheaper on very large files.
+     */
+    public boolean isAstHighlighting()        { return prefs.getBoolean(K_AST_HIGHLIGHT, true); }
+    public void setAstHighlighting(boolean v) { prefs.edit().putBoolean(K_AST_HIGHLIGHT, v).apply(); }
+
+    public boolean isPerfAstHighlighting() { return prefs.getBoolean(K_PERF_AST, true); }
+    public void setPerfAstHighlighting(boolean v) { prefs.edit().putBoolean(K_PERF_AST, v).apply(); }
+    public boolean isPerfLiveProblems() { return prefs.getBoolean(K_PERF_LIVE, true); }
+    public void setPerfLiveProblems(boolean v) { prefs.edit().putBoolean(K_PERF_LIVE, v).apply(); }
+    public boolean isPerfAutoSave() { return prefs.getBoolean(K_PERF_AUTO_SAVE, true); }
+    public void setPerfAutoSave(boolean v) { prefs.edit().putBoolean(K_PERF_AUTO_SAVE, v).apply(); }
+    public boolean isPerfFormatOnSave() { return prefs.getBoolean(K_PERF_FORMAT, true); }
+    public void setPerfFormatOnSave(boolean v) { prefs.edit().putBoolean(K_PERF_FORMAT, v).apply(); }
+    public boolean isPerfMinimap() { return prefs.getBoolean(K_PERF_MINIMAP, true); }
+    public void setPerfMinimap(boolean v) { prefs.edit().putBoolean(K_PERF_MINIMAP, v).apply(); }
+    public boolean isPerfAutoSearch() { return prefs.getBoolean(K_PERF_SEARCH, true); }
+    public void setPerfAutoSearch(boolean v) { prefs.edit().putBoolean(K_PERF_SEARCH, v).apply(); }
+    public boolean isPerfVerboseLogging() { return prefs.getBoolean(K_PERF_VERBOSE, true); }
+    public void setPerfVerboseLogging(boolean v) { prefs.edit().putBoolean(K_PERF_VERBOSE, v).apply(); }
+
+    public boolean isPsAstHighlighting() { return prefs.getBoolean(K_PS_AST, false); }
+    public void setPsAstHighlighting(boolean v) { prefs.edit().putBoolean(K_PS_AST, v).apply(); }
+    public boolean isPsLiveProblems() { return prefs.getBoolean(K_PS_LIVE, false); }
+    public void setPsLiveProblems(boolean v) { prefs.edit().putBoolean(K_PS_LIVE, v).apply(); }
+    public boolean isPsAutoSave() { return prefs.getBoolean(K_PS_AUTO_SAVE, false); }
+    public void setPsAutoSave(boolean v) { prefs.edit().putBoolean(K_PS_AUTO_SAVE, v).apply(); }
+    public boolean isPsFormatOnSave() { return prefs.getBoolean(K_PS_FORMAT, false); }
+    public void setPsFormatOnSave(boolean v) { prefs.edit().putBoolean(K_PS_FORMAT, v).apply(); }
+    public boolean isPsMinimap() { return prefs.getBoolean(K_PS_MINIMAP, false); }
+    public void setPsMinimap(boolean v) { prefs.edit().putBoolean(K_PS_MINIMAP, v).apply(); }
+    public boolean isPsAutoSearch() { return prefs.getBoolean(K_PS_SEARCH, false); }
+    public void setPsAutoSearch(boolean v) { prefs.edit().putBoolean(K_PS_SEARCH, v).apply(); }
+    public boolean isPsVerboseLogging() { return prefs.getBoolean(K_PS_VERBOSE, false); }
+    public void setPsVerboseLogging(boolean v) { prefs.edit().putBoolean(K_PS_VERBOSE, v).apply(); }
+
+    // ── Read-only files ───────────────────────────────────────────────────
+
+    /** Absolute paths the user has locked against editing. */
+    public java.util.Set<String> getReadOnlyFiles() {
+        java.util.Set<String> stored = prefs.getStringSet(K_READ_ONLY_FILES, null);
+        return stored == null ? new java.util.HashSet<>() : new java.util.HashSet<>(stored);
+    }
+
+    public boolean isReadOnly(String absolutePath) {
+        if (absolutePath == null) return false;
+        return getReadOnlyFiles().contains(absolutePath);
+    }
+
+    /**
+     * Marks a file read-only, or clears the mark.
+     *
+     * @return the state that is now stored
+     */
+    public boolean setReadOnly(String absolutePath, boolean readOnly) {
+        if (absolutePath == null) return false;
+        java.util.Set<String> set = getReadOnlyFiles();
+        if (readOnly) set.add(absolutePath);
+        else set.remove(absolutePath);
+        prefs.edit().putStringSet(K_READ_ONLY_FILES, set).apply();
+        return readOnly;
+    }
 
     // ── Theme ─────────────────────────────────────────────────
 

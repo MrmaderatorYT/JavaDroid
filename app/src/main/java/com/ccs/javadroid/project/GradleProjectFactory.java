@@ -48,8 +48,10 @@ public final class GradleProjectFactory {
         new File(root, "src/main/resources").mkdirs();
         new File(root, "src/test/resources").mkdirs();
 
-        // build.gradle
+        // build.gradle — source/target level follows the configured ECJ target so
+        // the on-device compiler and the script agree.
         String mainClass = gid + ".App";
+        String javaVersion = javaVersionConstant(context);
         writeUtf8(new File(root, "build.gradle"),
                 "plugins {\n"
                 + "    id 'java'\n"
@@ -60,8 +62,8 @@ public final class GradleProjectFactory {
                 + "version = '1.0-SNAPSHOT'\n"
                 + "\n"
                 + "java {\n"
-                + "    sourceCompatibility = JavaVersion.VERSION_11\n"
-                + "    targetCompatibility = JavaVersion.VERSION_11\n"
+                + "    sourceCompatibility = JavaVersion." + javaVersion + "\n"
+                + "    targetCompatibility = JavaVersion." + javaVersion + "\n"
                 + "}\n"
                 + "\n"
                 + "application {\n"
@@ -72,13 +74,23 @@ public final class GradleProjectFactory {
                 + "    mavenCentral()\n"
                 + "}\n"
                 + "\n"
+                + "ext {\n"
+                + "    junitVersion = '4.13.2'\n"
+                + "}\n"
+                + "\n"
                 + "dependencies {\n"
-                + "    testImplementation 'junit:junit:4.13.2'\n"
+                + "    testImplementation \"junit:junit:${junitVersion}\"\n"
                 + "}\n");
 
         // settings.gradle
         writeUtf8(new File(root, "settings.gradle"),
                 "rootProject.name = '" + safe + "'\n");
+
+        // gradle.properties
+        writeUtf8(new File(root, "gradle.properties"),
+                "# Project-wide Gradle properties.\n"
+                + "# Values here are also visible to the JavaDroid build script parser.\n"
+                + "org.gradle.jvmargs=-Xmx1g\n");
 
         // App.java
         writeUtf8(new File(mainJavaPkg, "App.java"),
@@ -104,15 +116,36 @@ public final class GradleProjectFactory {
                 + "    }\n"
                 + "}\n");
 
-        // .gitignore
+        // .gitignore — `target/` is listed too because the on-device compiler
+        // writes class output there.
         writeUtf8(new File(root, ".gitignore"),
                 "build/\n"
+                + "target/\n"
                 + ".gradle/\n"
+                + ".javadroid/\n"
                 + "*.class\n"
                 + "*.jar\n"
                 + "!gradle/wrapper/gradle-wrapper.jar\n");
 
         return root;
+    }
+
+    /** Maps the configured ECJ target onto a {@code JavaVersion} constant. */
+    private static String javaVersionConstant(Context context) {
+        String target;
+        try {
+            target = new com.ccs.javadroid.util.AppPreferences(context).getJavaTarget();
+        } catch (Exception e) {
+            target = com.ccs.javadroid.util.AppPreferences.JAVA_8;
+        }
+        if (target == null) return "VERSION_1_8";
+        switch (target) {
+            case com.ccs.javadroid.util.AppPreferences.JAVA_11: return "VERSION_11";
+            case com.ccs.javadroid.util.AppPreferences.JAVA_17: return "VERSION_17";
+            case com.ccs.javadroid.util.AppPreferences.JAVA_21: return "VERSION_21";
+            case com.ccs.javadroid.util.AppPreferences.JAVA_8:
+            default: return "VERSION_1_8";
+        }
     }
 
     private static void writeUtf8(File file, String content) throws IOException {

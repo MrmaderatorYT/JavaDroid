@@ -1034,4 +1034,172 @@
     <string name="lesson_compiling">Compiling Java 8 example…</string>
     <string name="lesson_dexing">Converting example to DEX…</string>
     <string name="lesson_executing">Running example…</string>
+
+    <!-- ══════════════ v1.9.0: Gradle, AST highlighting, hex editor, viewers ══════════════ -->
+
+    <!-- Build system -->
+    <string name="toast_no_build_script">No build script (pom.xml or build.gradle)</string>
+    <string name="toast_build_script_required">pom.xml or build.gradle required</string>
+    <string name="console_sync_build">▶ %1$s: downloading dependencies…</string>
+    <string name="console_build_task">▶ %1$s %2$s…</string>
+    <string name="console_build_run">▶ %1$s: compile + run…</string>
+    <string name="lib_already_present">%1$s is already declared</string>
+
+    <!-- AST highlighting -->
+    <string name="settings_ast_highlighting">AST-based syntax highlighting</string>
+    <string name="settings_ast_highlighting_hint">Resolves each name through the scope tree, so types, methods, fields, parameters and locals get distinct colours. Turn off for faster highlighting in very large files.</string>
+    <string name="settings_ast_highlighting_forced_hint">Always Performance mode forces AST highlighting on. Power saving mode falls back to the lighter JavaDroid highlighter to reduce CPU work and keep typing smoother on weaker devices.</string>
+    <string name="settings_power_saving_highlight_hint">Highlighting changes with power mode: Always Performance keeps AST on, while power saving switches to the lighter highlighter to save battery and reduce background parsing.</string>
+    <string name="settings_power_saving_performance_title">Always Performance presets</string>
+    <string name="settings_power_saving_performance_hint">These switches define the fast path. In Always Performance mode they are treated as fully on and the editor refreshes more aggressively.</string>
+    <string name="settings_power_saving_mode_title">Power saving presets</string>
+    <string name="settings_power_saving_mode_hint">These switches define the battery-saving path. In power saving mode they are treated as fully off and background work is slowed down.</string>
+    <string name="settings_perf_ast">AST highlighting on</string>
+    <string name="settings_perf_live_problems">Live problems on</string>
+    <string name="settings_perf_auto_save">Auto-save on</string>
+    <string name="settings_perf_format_on_save">Format on save on</string>
+    <string name="settings_perf_minimap">Minimap on</string>
+    <string name="settings_perf_auto_search">Auto search on</string>
+    <string name="settings_perf_verbose_logging">Verbose logging on</string>
+    <string name="settings_ps_ast">AST highlighting off</string>
+    <string name="settings_ps_live_problems">Live problems off</string>
+    <string name="settings_ps_auto_save">Auto-save off</string>
+    <string name="settings_ps_format_on_save">Format on save off</string>
+    <string name="settings_ps_minimap">Minimap off</string>
+    <string name="settings_ps_auto_search">Auto search off</string>
+    <string name="settings_ps_verbose_logging">Verbose logging off</string>
+    <string name="settings_profile_performance">Performance</string>
+    <string name="settings_profile_power_saving">Power saving</string>
+    <string name="settings_profile_reset">Reset</string>
+    <string name="settings_profile_reset_performance_confirm">Reset the Performance profile? All its features will be enabled.</string>
+    <string name="settings_profile_reset_saving_confirm">Reset the Power saving profile? Resource-intensive features will be disabled.</string>
+    <string name="settings_profile_reset_done">Profile reset to defaults</string>
+    <string name="settings_profile_ast">AST highlighting</string>
+    <string name="settings_profile_live_problems">Live problems</string>
+    <string name="settings_profile_auto_save">Auto-save</string>
+    <string name="settings_profile_format_on_save">Format on save</string>
+    <string name="settings_profile_minimap">Minimap</string>
+    <string name="settings_profile_auto_search">Automatic search</string>
+    <string name="settings_profile_verbose_logging">Verbose logging</string>
+
+    <!-- Project tree: collapsible folders -->
+    <string name="tree_expand_all">Expand all folders</string>
+    <string name="tree_collapse_all">Collapse all folders</string>
+    <string name="tree_expand_all_in_folder">Expand all inside</string>
+    <string name="tree_collapse_all_in_folder">Collapse all inside</string>
+    <string name="menu_open_in_external">Open in…</string>
+    <string name="menu_open_in_hex">Open in hex editor</string>
+
+    <!-- Read-only lock -->
+    <string name="status_lock_open">🔓</string>
+    <string name="status_lock_closed">🔒</string>
+    <string name="a11y_status_read_only">Read-only lock</string>
+    <string name="a11y_status_read_only_on">File is locked read-only. Tap to unlock.</string>
+    <string name="a11y_status_read_only_off">File is editable. Tap to lock read-only.</string>
+    <string name="read_only_lock_title">Read-only lock</string>
+    <string name="read_only_locked">File locked — editing disabled</string>
+    <string name="read_only_unlocked">File unlocked — editing enabled</string>
+    <string name="read_only_save_blocked">%1$s is read-only. Unlock it with the 🔒 button to save.</string>
+    <string name="read_only_filesystem">The filesystem marks this file read-only. Change its permissions to edit it.</string>
+    <string name="read_only_unsaved_message">This file has unsaved changes. Save them before locking?</string>
+    <string name="dialog_save_and_lock">Save and lock</string>
+    <string name="read_only_lock_anyway">Lock anyway</string>
+    <string name="read_only_yes">yes</string>
+    <string name="read_only_no">no</string>
+    <string name="read_only_info_body">%1$s\n\nLocked by you: %2$s\nRead-only on disk: %3$s\n\nTap the padlock to toggle your lock.</string>
+
+    <!-- Hex editor -->
+    <string name="hex_title">Hex Editor</string>
+    <string name="hex_no_file">No file specified</string>
+    <string name="hex_cannot_read">Cannot read: %1$s</string>
+    <string name="hex_goto_hint">Hex offset, e.g. 1A0</string>
+    <string name="hex_column_ascii">ASCII</string>
+    <string name="hex_menu_goto">Go to offset…</string>
+    <string name="hex_menu_find">Find…</string>
+    <string name="hex_menu_undo">Undo</string>
+    <string name="hex_menu_redo">Redo</string>
+    <string name="hex_menu_save">Save</string>
+    <string name="hex_menu_info">File info</string>
+    <string name="hex_go">Go</string>
+    <string name="hex_more">More…</string>
+    <string name="hex_find_next">Find next</string>
+    <string name="hex_truncated">File is larger than %1$d MB — showing the first %1$d MB, read-only.</string>
+    <string name="hex_readonly">This file is read-only.</string>
+    <string name="hex_readonly_truncated">Read-only: the file is too large to edit safely.</string>
+    <string name="hex_nothing_to_save">No changes to save</string>
+    <string name="hex_nothing_to_undo">Nothing to undo</string>
+    <string name="hex_nothing_to_redo">Nothing to redo</string>
+    <string name="hex_save_confirm">Overwrite %1$s with %2$d bytes?</string>
+    <string name="hex_unsaved_title">Unsaved changes</string>
+    <string name="hex_unsaved_message">You have unsaved byte edits. Save them before closing?</string>
+    <string name="hex_discard">Discard</string>
+    <string name="hex_byte_title">Byte at 0x%1$X</string>
+    <string name="hex_byte_hint">Hex (1F), 0x1F, 31d or \'c\'</string>
+    <string name="hex_byte_info">Offset %1$d (0x%2$X)\nValue %3$d  ·  %4$s  ·  %5$s</string>
+    <string name="hex_invalid_byte">Enter a value from 00 to FF</string>
+    <string name="hex_invalid_offset">Enter a hex offset, e.g. 1A0</string>
+    <string name="hex_offset_out_of_range">Offset is past the end of the file</string>
+    <string name="hex_action_insert_before">Insert 00 before</string>
+    <string name="hex_action_insert_after">Insert 00 after</string>
+    <string name="hex_action_delete">Delete this byte</string>
+    <string name="hex_action_fill_row">Fill this row with…</string>
+    <string name="hex_find_hint">Hex bytes (DE AD BE EF) or text in quotes ("MZ")</string>
+    <string name="hex_find_placeholder">DE AD BE EF</string>
+    <string name="hex_invalid_pattern">Enter hex byte pairs or "quoted text"</string>
+    <string name="hex_not_found">Pattern not found</string>
+    <string name="hex_status_size">%1$d bytes (%2$s)</string>
+    <string name="hex_status_offset">at 0x%1$X = %2$d</string>
+    <string name="hex_info_body">%1$s\n\nSize: %2$d bytes (%3$s)\nDetected type: %4$s\nAccess: %5$s</string>
+    <string name="hex_info_readonly">read-only</string>
+    <string name="hex_info_writable">writable</string>
+
+    <!-- Image viewer -->
+    <string name="image_viewer_title">Image Viewer</string>
+    <string name="image_no_file">No image specified</string>
+    <string name="image_decode_failed">Cannot decode %1$s</string>
+    <string name="image_no_other_images">No other images in this folder</string>
+    <string name="image_animated">animated</string>
+    <string name="image_action_previous">Previous image</string>
+    <string name="image_action_next">Next image</string>
+    <string name="image_action_fit">Fit to window</string>
+    <string name="image_action_actual">Actual size</string>
+    <string name="image_action_rotate">Rotate 90°</string>
+    <string name="image_action_checkerboard">Toggle transparency checkerboard</string>
+    <string name="image_action_info">Image info</string>
+    <string name="image_open_in_hex">Open in hex</string>
+    <string name="image_info_body">%1$s\n\nDimensions: %2$d × %3$d\nFormat: %4$s\nSize: %5$s\nTransparency: %6$s\nAnimated: %7$s</string>
+    <string name="image_info_yes">yes</string>
+    <string name="image_info_no">no</string>
+
+    <!-- Media player -->
+    <string name="media_video_player">Video Player</string>
+    <string name="media_audio_player">Audio Player</string>
+    <string name="media_file_not_found">File not found</string>
+    <string name="media_play">▶</string>
+    <string name="media_status_ready">Ready</string>
+    <string name="media_status_ready_tap_play">Ready — tap Play</string>
+    <string name="media_status_playing">Playing</string>
+    <string name="media_status_paused">Paused</string>
+    <string name="media_status_stopped">Stopped</string>
+    <string name="media_status_finished">Finished</string>
+    <string name="media_tap_for_details">(tap for details)</string>
+    <string name="media_track_info">Track info</string>
+    <string name="media_track_video">Video</string>
+    <string name="media_track_audio">Audio</string>
+    <string name="media_info_size">Size: %1$s</string>
+    <string name="media_info_duration">Duration: %1$s</string>
+    <string name="media_codec_supported">decoder available</string>
+    <string name="media_codec_unsupported">no decoder on this device</string>
+    <string name="media_codec_royalty_free">royalty-free codec</string>
+    <string name="media_codec_device_licensed">licensed by the device</string>
+    <string name="media_unsupported_title">Unsupported codec</string>
+    <string name="media_unsupported_message">This device has no decoder for: %1$s.\n\nRoyalty-free formats always work: VP8, VP9 and AV1 video with Vorbis, Opus or FLAC audio, in WebM or MKV. Re-encode the file to one of those to play it here.</string>
+    <string name="media_container_error">Cannot read container: %1$s</string>
+    <string name="media_open_error">Cannot open: %1$s</string>
+    <string name="media_error_malformed">The file is malformed or truncated.</string>
+    <string name="media_error_io">Read error — the file may be unreadable.</string>
+    <string name="media_error_code">Playback error (%1$d / %2$d)</string>
+    <string name="media_speed_unsupported">Playback speed is not available for this file</string>
+    <string name="a11y_media_speed">Playback speed</string>
+
 </resources>

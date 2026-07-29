@@ -45,6 +45,17 @@ public final class AppTheme {
     public final int editorComment;
     public final int editorNumber;
 
+    /**
+     * Семантичні кольори для AST-підсвітки: типи, методи, поля, анотації,
+     * оператори. Якщо тема їх не задає — виводяться з базових кольорів,
+     * тож будь-яка (в т.ч. користувацька) тема лишається консистентною.
+     */
+    public final int editorType;
+    public final int editorFunction;
+    public final int editorField;
+    public final int editorAnnotation;
+    public final int editorOperator;
+
     private AppTheme(Builder b) {
         this.id = b.id;
         this.dark = b.dark;
@@ -63,6 +74,18 @@ public final class AppTheme {
         this.editorString = b.editorString;
         this.editorComment = b.editorComment;
         this.editorNumber = b.editorNumber;
+        // Unset semantic colours (0) fall back to derivations of the base palette
+        // so every theme — including a user's custom one — stays readable.
+        this.editorType = b.editorType != 0 ? b.editorType
+                : blend(b.accent, b.text, 0.35f);
+        this.editorFunction = b.editorFunction != 0 ? b.editorFunction
+                : blend(b.editorNumber, b.text, 0.30f);
+        this.editorField = b.editorField != 0 ? b.editorField
+                : blend(b.editorNumber, b.accent, 0.40f);
+        this.editorAnnotation = b.editorAnnotation != 0 ? b.editorAnnotation
+                : blend(b.editorKeyword, b.editorComment, 0.40f);
+        this.editorOperator = b.editorOperator != 0 ? b.editorOperator
+                : blend(b.text, b.textDim, 0.35f);
     }
 
     /** Будує EditorColorScheme з огляду на цю тему. */
@@ -95,6 +118,17 @@ public final class AppTheme {
         base.setColor(EditorColorScheme.LITERAL,                 editorString);
         base.setColor(EditorColorScheme.COMMENT,                 editorComment);
         base.setColor(EditorColorScheme.LINE_DIVIDER,            separator);
+        // Semantic slots used by the AST highlighter and the Gradle/properties
+        // languages. Without these the preset scheme's own colours leak through
+        // and clash with a light UI theme.
+        base.setColor(EditorColorScheme.IDENTIFIER_NAME,         editorType);
+        base.setColor(EditorColorScheme.FUNCTION_NAME,           editorFunction);
+        base.setColor(EditorColorScheme.IDENTIFIER_VAR,          editorField);
+        base.setColor(EditorColorScheme.ANNOTATION,              editorAnnotation);
+        base.setColor(EditorColorScheme.OPERATOR,                editorOperator);
+        base.setColor(EditorColorScheme.ATTRIBUTE_NAME,          editorFunction);
+        base.setColor(EditorColorScheme.ATTRIBUTE_VALUE,         editorType);
+        base.setColor(EditorColorScheme.HTML_TAG,                editorKeyword);
         return base;
     }
 
@@ -157,6 +191,7 @@ public final class AppTheme {
                 .errorText(0xFFFF6B6B).successText(0xFF499C54)
                 .editorKeyword(0xFFCC7832).editorString(0xFF6A8759)
                 .editorComment(0xFF808080).editorNumber(0xFF6897BB)
+                .semantic(0xFF4EC9B0, 0xFFFFC66D, 0xFF9876AA, 0xFFBBB529, 0xFFA9B7C6)
                 .build();
     }
 
@@ -168,6 +203,7 @@ public final class AppTheme {
                 .errorText(0xFFD13438).successText(0xFF107C10)
                 .editorKeyword(0xFF0000FF).editorString(0xFFA31515)
                 .editorComment(0xFF008000).editorNumber(0xFF09885A)
+                .semantic(0xFF267F99, 0xFF795E26, 0xFF001080, 0xFF808000, 0xFF000000)
                 .build();
     }
 
@@ -179,6 +215,7 @@ public final class AppTheme {
                 .errorText(0xFFD73A49).successText(0xFF22863A)
                 .editorKeyword(0xFFD73A49).editorString(0xFF032F62)
                 .editorComment(0xFF6A737D).editorNumber(0xFF005CC5)
+                .semantic(0xFF6F42C1, 0xFF6F42C1, 0xFFE36209, 0xFF6A737D, 0xFF24292E)
                 .build();
     }
 
@@ -190,6 +227,7 @@ public final class AppTheme {
                 .errorText(0xFFB00020).successText(0xFF2A8B2A)
                 .editorKeyword(0xFF7F0055).editorString(0xFF2A00FF)
                 .editorComment(0xFF3F7F5F).editorNumber(0xFF000000)
+                .semantic(0xFF2A6CCC, 0xFF3F5FBF, 0xFF0000C0, 0xFF646464, 0xFF000000)
                 .build();
     }
 
@@ -201,6 +239,7 @@ public final class AppTheme {
                 .errorText(0xFFD32F2F).successText(0xFF388E3C)
                 .editorKeyword(0xFF0000FF).editorString(0xFF008080)
                 .editorComment(0xFF008000).editorNumber(0xFFFF8000)
+                .semantic(0xFF8000FF, 0xFF804000, 0xFF0080C0, 0xFF808000, 0xFF000080)
                 .build();
     }
 
@@ -212,6 +251,7 @@ public final class AppTheme {
                 .errorText(0xFFF92672).successText(0xFFA6E22E)
                 .editorKeyword(0xFFF92672).editorString(0xFFE6DB74)
                 .editorComment(0xFF75715E).editorNumber(0xFFAE81FF)
+                .semantic(0xFF66D9EF, 0xFFA6E22E, 0xFFFD971F, 0xFFAE81FF, 0xFFF92672)
                 .build();
     }
 
@@ -223,6 +263,7 @@ public final class AppTheme {
                 .errorText(0xFFDC322F).successText(0xFF859900)
                 .editorKeyword(0xFF859900).editorString(0xFF2AA198)
                 .editorComment(0xFF586E75).editorNumber(0xFFD33682)
+                .semantic(0xFFB58900, 0xFF268BD2, 0xFFCB4B16, 0xFF6C71C4, 0xFF93A1A1)
                 .build();
     }
 
@@ -234,6 +275,7 @@ public final class AppTheme {
                 .errorText(0xFFFF5555).successText(0xFF50FA7B)
                 .editorKeyword(0xFFFF79C6).editorString(0xFFF1FA8C)
                 .editorComment(0xFF6272A4).editorNumber(0xFFBD93F9)
+                .semantic(0xFF8BE9FD, 0xFF50FA7B, 0xFFFFB86C, 0xFFFF79C6, 0xFFF8F8F2)
                 .build();
     }
 
@@ -245,6 +287,7 @@ public final class AppTheme {
                 .errorText(0xFFBF616A).successText(0xFFA3BE8C)
                 .editorKeyword(0xFF81A1C1).editorString(0xFFA3BE8C)
                 .editorComment(0xFF616E88).editorNumber(0xFFB48EAD)
+                .semantic(0xFF8FBCBB, 0xFF88C0D0, 0xFFD08770, 0xFFB48EAD, 0xFFECEFF4)
                 .build();
     }
 
@@ -307,6 +350,7 @@ public final class AppTheme {
         int bg, toolbar, text, textDim, accent, consoleBg, consoleText;
         int separator, statusBar, errorText, successText;
         int editorKeyword, editorString, editorComment, editorNumber;
+        int editorType, editorFunction, editorField, editorAnnotation, editorOperator;
         Builder(String id, boolean dark) { this.id = id; this.dark = dark; }
         Builder bg(int v)            { this.bg = v; return this; }
         Builder toolbar(int v)       { this.toolbar = v; return this; }
@@ -323,6 +367,15 @@ public final class AppTheme {
         Builder editorString(int v)  { this.editorString = v; return this; }
         Builder editorComment(int v) { this.editorComment = v; return this; }
         Builder editorNumber(int v)  { this.editorNumber = v; return this; }
+        /** Semantic colours: types, methods, fields, annotations, operators. */
+        Builder semantic(int type, int function, int field, int annotation, int operator) {
+            this.editorType = type;
+            this.editorFunction = function;
+            this.editorField = field;
+            this.editorAnnotation = annotation;
+            this.editorOperator = operator;
+            return this;
+        }
         AppTheme build() { return new AppTheme(this); }
     }
 }

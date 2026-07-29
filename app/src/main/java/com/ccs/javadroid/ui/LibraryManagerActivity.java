@@ -327,9 +327,9 @@ public class LibraryManagerActivity extends AppCompatActivity {
 
     private void addLibrary(LibItem item) {
         if (projectRoot == null) return;
-        File pomFile = MavenPaths.pomFile(projectRoot);
-        if (!pomFile.exists()) {
-            Toast.makeText(this, R.string.toast_not_maven, Toast.LENGTH_SHORT).show();
+        File pomFile = com.ccs.javadroid.project.BuildSystem.buildScript(projectRoot);
+        if (pomFile == null || !pomFile.exists()) {
+            Toast.makeText(this, R.string.toast_no_build_script, Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -416,13 +416,30 @@ public class LibraryManagerActivity extends AppCompatActivity {
                 .show();
     }
 
+    /**
+     * Writes the dependency into whichever build script the project uses —
+     * {@code pom.xml} via {@link PomWriter}, or a Gradle script via
+     * {@link com.ccs.javadroid.gradle.GradleDependencyWriter}.
+     */
     private void performAddDependency(String groupId, String artifactId, String version, File pomFile) {
         try {
             byte[] bytes = Files.readAllBytes(pomFile.toPath());
             String content = new String(bytes, StandardCharsets.UTF_8);
-            String updated = PomWriter.addDependency(content, groupId, artifactId, version);
+            String name = pomFile.getName();
+            String updated;
+            if (name.equals("pom.xml")) {
+                updated = PomWriter.addDependency(content, groupId, artifactId, version);
+            } else {
+                updated = com.ccs.javadroid.gradle.GradleDependencyWriter.addDependency(
+                        content, groupId, artifactId, version, name.endsWith(".kts"));
+                if (updated.equals(content)) {
+                    Toast.makeText(this, getString(R.string.lib_already_present, artifactId),
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
             Files.write(pomFile.toPath(), updated.getBytes(StandardCharsets.UTF_8));
-            
+
             Toast.makeText(this, getString(R.string.lib_added, artifactId), Toast.LENGTH_SHORT).show();
             setResult(Activity.RESULT_OK);
             finish();

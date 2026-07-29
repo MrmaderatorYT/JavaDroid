@@ -1563,6 +1563,21 @@
                 android:layout_weight="1" />
 
             <TextView
+                android:id="@+id/statusReadOnly"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="@string/status_lock_open"
+                android:textColor="@color/idea_statusbar_text"
+                android:textSize="11sp"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground"
+                android:contentDescription="@string/a11y_status_read_only" />
+
+            <TextView
                 android:id="@+id/statusEncoding"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"

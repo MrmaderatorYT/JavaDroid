@@ -8,16 +8,19 @@ import androidx.annotation.NonNull;
 import com.ccs.javadroid.R;
 import com.ccs.javadroid.analysis.ProblemItem;
 import com.ccs.javadroid.analysis.ProblemsAdapter;
+import com.ccs.javadroid.project.BuildSystem;
 import com.ccs.javadroid.project.ProjectManager;
 import com.ccs.javadroid.tools.compilers.ProjectCompiler;
 import com.ccs.javadroid.maven.MavenDependencyResolver;
-import com.ccs.javadroid.maven.MavenPaths;
 import com.ccs.javadroid.maven.PomModel;
-import com.ccs.javadroid.maven.PomParser;
 import com.ccs.javadroid.util.AppTheme;
 
 import java.util.List;
 
+/**
+ * Drives the build lifecycle for both Maven and Gradle projects — the Gradle
+ * build script is read into the same {@link PomModel} the Maven pipeline uses.
+ */
 public final class MavenActionDelegate {
 
     public interface Callback {
@@ -46,19 +49,22 @@ public final class MavenActionDelegate {
 
     public void syncDependencies() {
         ProjectManager pm = callback.getProjectManager();
-        if (pm == null || !pm.isMavenProject()) {
-            Toast.makeText(callback.getActivity(), R.string.toast_not_maven, Toast.LENGTH_SHORT).show();
+        if (pm == null || !BuildSystem.isBuildable(pm.getProjectDir())) {
+            Toast.makeText(callback.getActivity(), R.string.toast_no_build_script, Toast.LENGTH_SHORT).show();
             return;
         }
         if (syncInProgress) return;
         syncInProgress = true;
         callback.switchBottomPanel(PANEL_RUN);
         callback.setConsoleText("");
-        callback.appendConsole(callback.getActivity().getString(R.string.console_sync_maven), callback.getTheme().textDim);
+        BuildSystem.Kind kind = BuildSystem.detect(pm.getProjectDir());
+        callback.appendConsole(callback.getActivity().getString(
+                R.string.console_sync_build, BuildSystem.displayName(kind)), callback.getTheme().textDim);
         new Thread(() -> {
             try {
-                PomModel pom = PomParser.parse(MavenPaths.pomFile(pm.getProjectDir()));
-                MavenDependencyResolver.resolve(pm.getProjectDir(), pom, line ->
+                BuildSystem.Model model = BuildSystem.model(pm.getProjectDir());
+                reportWarnings(model);
+                MavenDependencyResolver.resolve(pm.getProjectDir(), model.pom, line ->
                         callback.runOnUiThread(() -> callback.appendConsole("   " + line, callback.getTheme().textDim)));
                 callback.runOnUiThread(() -> {
                     syncInProgress = false;
@@ -74,25 +80,40 @@ public final class MavenActionDelegate {
         }, "maven-sync").start();
     }
 
-    public void mavenPackage() { runMavenCommand("package", R.string.console_mvn_package, true); }
-    public void mavenTestCompile() { runMavenCommand("test-compile", R.string.console_mvn_test_compile, true); }
-    public void mavenTestRun() { runMavenCommand("test", R.string.console_mvn_test_run, true); }
-    public void mavenClean() { runMavenCommand("clean", R.string.console_mvn_clean, false); }
-    public void mavenInstall() { runMavenCommand("install", R.string.console_mvn_install, true); }
+    public void mavenPackage() { runMavenCommand("package", "build", true); }
+    public void mavenTestCompile() { runMavenCommand("test-compile", "testClasses", true); }
+    public void mavenTestRun() { runMavenCommand("test", "test", true); }
+    public void mavenClean() { runMavenCommand("clean", "clean", false); }
+    public void mavenInstall() { runMavenCommand("install", "publishToMavenLocal", true); }
 
-    private void runMavenCommand(String cmd, int labelRes, boolean needsPom) {
+    /**
+     * @param cmd         the Maven lifecycle phase, also the internal dispatch key
+     * @param gradleTask  the equivalent Gradle task name, shown when the project uses Gradle
+     * @param needsPom    whether the phase needs a parsed build model
+     */
+    private void runMavenCommand(String cmd, String gradleTask, boolean needsPom) {
         ProjectManager pm = callback.getProjectManager();
-        if (pm == null || !pm.isMavenProject()) {
-            Toast.makeText(callback.getActivity(), R.string.toast_pom_required, Toast.LENGTH_SHORT).show();
+        if (pm == null || !BuildSystem.isBuildable(pm.getProjectDir())) {
+            Toast.makeText(callback.getActivity(), R.string.toast_build_script_required, Toast.LENGTH_SHORT).show();
             return;
         }
         callback.saveCurrentToActiveTab();
         callback.switchBottomPanel(PANEL_RUN);
         callback.setConsoleText("");
-        callback.appendConsole(callback.getActivity().getString(labelRes), callback.getTheme().textDim);
+
+        BuildSystem.Kind kind = BuildSystem.detect(pm.getProjectDir());
+        String tool = kind == BuildSystem.Kind.GRADLE ? "gradle" : "mvn";
+        String task = kind == BuildSystem.Kind.GRADLE ? gradleTask : cmd;
+        callback.appendConsole(callback.getActivity().getString(R.string.console_build_task, tool, task),
+                callback.getTheme().textDim);
 
         try {
-            PomModel pom = needsPom ? PomParser.parse(MavenPaths.pomFile(pm.getProjectDir())) : null;
+            PomModel pom = null;
+            if (needsPom) {
+                BuildSystem.Model model = BuildSystem.model(pm.getProjectDir());
+                reportWarnings(model);
+                pom = model.pom;
+            }
             ProjectCompiler.Callback cc = new ProjectCompiler.Callback() {
                 @Override public void onProgress(String msg) {
                     callback.appendConsole("   " + msg, callback.getTheme().textDim);
@@ -116,6 +137,15 @@ public final class MavenActionDelegate {
             }
         } catch (Exception e) {
             Toast.makeText(callback.getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /** Surfaces anything the Gradle parser had to skip, so it is never silent. */
+    private void reportWarnings(BuildSystem.Model model) {
+        if (model.warnings.isEmpty()) return;
+        for (String w : model.warnings) {
+            callback.runOnUiThread(() ->
+                    callback.appendConsole("   ⚠ " + w, callback.getTheme().errorText));
         }
     }
 }

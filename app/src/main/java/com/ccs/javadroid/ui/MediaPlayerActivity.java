@@ -1,16 +1,18 @@
 package com.ccs.javadroid.ui;
+
 import com.ccs.javadroid.R;
-import com.ccs.javadroid.util.FullScreenHelper;
 import com.ccs.javadroid.util.AppPreferences;
 import com.ccs.javadroid.util.AppTheme;
+import com.ccs.javadroid.util.FullScreenHelper;
+import com.ccs.javadroid.util.MediaCodecProbe;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.graphics.Typeface;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -28,32 +30,55 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import java.io.File;
+import java.util.List;
 import java.util.Locale;
 
 /**
- * Оптимізований медіа-плеєр: аудіо + відео з hardware decoding,
- * керування гучністю, яскравістю, wake lock, landscape для відео.
+ * Audio and video player built on the platform decoders.
+ *
+ * <p>Container and codec support is whatever the device provides, which always
+ * includes the royalty-free set — VP8/VP9/AV1 video and Vorbis/Opus/FLAC audio in
+ * WebM and Matroska. Before playback the file's tracks are probed with
+ * {@link MediaCodecProbe} so an unsupported codec produces a specific message
+ * naming the codec instead of a bare error number.</p>
  */
 public class MediaPlayerActivity extends AppCompatActivity {
 
     private static final String EXTRA_FILE_PATH = "file_path";
+    private static final int SEEK_STEP_MS = 10_000;
+    private static final int SEEK_BAR_RANGE = 1000;
+
+    /** {@code .ts} is deliberately absent — it collides with TypeScript sources. */
+    private static final String[] VIDEO_EXTENSIONS = {
+            ".webm", ".mkv", ".mp4", ".m4v", ".mov", ".3gp", ".avi", ".ogv", ".mpg", ".mpeg"
+    };
+    private static final String[] AUDIO_EXTENSIONS = {
+            ".opus", ".ogg", ".oga", ".flac", ".wav", ".mp3", ".m4a", ".aac", ".mka", ".mid", ".amr"
+    };
 
     private MediaPlayer mediaPlayer;
+    /** The player behind {@link #videoView}, captured in {@code onPrepared}. */
+    private MediaPlayer videoMediaPlayer;
     private VideoView videoView;
     private Handler handler;
     private AudioManager audioManager;
     private PowerManager.WakeLock wakeLock;
-    private boolean isVideo = false;
-    private boolean isPrepared = false;
-    private boolean isUserSeeking = false;
-    private boolean isLandscape = false;
 
-    // UI
+    private File mediaFile;
+    private boolean isVideo;
+    private boolean isPrepared;
+    private boolean isUserSeeking;
+    private boolean isLandscape;
+    private float playbackSpeed = 1f;
+    private MediaCodecProbe.Result probe;
+
+    private AppTheme theme;
+
+    // One control set is built, for whichever mode applies.
     private TextView tvTitle;
     private TextView tvStatus;
     private TextView tvCurrentTime;
@@ -66,18 +91,10 @@ public class MediaPlayerActivity extends AppCompatActivity {
     private TextView btnRew;
     private TextView btnFwd;
     private TextView btnLandscape;
-    private LinearLayout audioControls;
-    private LinearLayout videoControls;
+    private TextView btnSpeed;
+    private LinearLayout controls;
     private FrameLayout videoContainer;
-    private TextView tvVolume;
-    private TextView tvBrightness;
     private ProgressBar bufferProgress;
-
-    private int accentColor = 0xFF4A86C8;
-    private int bgColor = 0xFF2B2B2B;
-    private int toolbarColor = 0xFF3C3F41;
-    private int textColor = 0xFFBBBBBB;
-    private int dimColor = 0xFF808080;
 
     public static void launch(Context context, File mediaFile) {
         Intent i = new Intent(context, MediaPlayerActivity.class);
@@ -85,478 +102,632 @@ public class MediaPlayerActivity extends AppCompatActivity {
         context.startActivity(i);
     }
 
+    /** True when the extension names a video container this player handles. */
+    public static boolean isVideoFile(String name) {
+        return matchesAny(name, VIDEO_EXTENSIONS);
+    }
+
+    /** True when the extension names an audio format this player handles. */
+    public static boolean isAudioFile(String name) {
+        return matchesAny(name, AUDIO_EXTENSIONS);
+    }
+
+    /** True for any media file this player will attempt to open. */
+    public static boolean isMediaFile(String name) {
+        return isVideoFile(name) || isAudioFile(name);
+    }
+
+    private static boolean matchesAny(String name, String[] extensions) {
+        String lower = name.toLowerCase(Locale.ROOT);
+        for (String ext : extensions) {
+            if (lower.endsWith(ext)) return true;
+        }
+        return false;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AppPreferences prefs = new AppPreferences(this);
+        theme = AppTheme.byId(prefs.getThemeId(), prefs);
+        setTheme(theme.dark ? R.style.Theme_JavaDroid : R.style.Theme_JavaDroid_Light);
         super.onCreate(savedInstanceState);
-        applyColors();
+
         handler = new Handler(Looper.getMainLooper());
         audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
 
-        // Wake lock для тривалого відтворення
-        PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
-        wakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK
-                | PowerManager.ON_AFTER_RELEASE, "JavaDroid:Media");
-        wakeLock.acquire(10 * 60 * 1000L); // 10 хвилин
-
         String filePath = getIntent().getStringExtra(EXTRA_FILE_PATH);
         if (filePath == null) { finish(); return; }
-        File mediaFile = new File(filePath);
+        mediaFile = new File(filePath);
         if (!mediaFile.exists()) {
-            Toast.makeText(this, "File not found", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.media_file_not_found, Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
 
-        isVideo = isVideoFile(mediaFile.getName());
+        probe = MediaCodecProbe.probe(mediaFile);
+        // Trust the container over the file extension: an .mkv holding only audio
+        // should open as audio, and a mislabelled file still plays.
+        isVideo = probe.error == null ? probe.hasVideo() : isVideoFile(mediaFile.getName());
 
-        // Відео — fullscreen landscape
+        PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
+        // A video keeps the screen on; audio only needs the CPU.
+        wakeLock = pm.newWakeLock(
+                isVideo ? PowerManager.SCREEN_BRIGHT_WAKE_LOCK : PowerManager.PARTIAL_WAKE_LOCK,
+                "JavaDroid:Media");
+
         if (isVideo) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+            isLandscape = true;
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
 
+        setContentView(buildRoot());
+        FullScreenHelper.enable(this);
+
+        reportUnsupportedTracks();
+        initPlayback();
+    }
+
+    // ─── UI ─────────────────────────────────────────────────────────────────
+
+    private View buildRoot() {
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
-        root.setBackgroundColor(bgColor);
+        root.setBackgroundColor(theme.bg);
 
-        // Toolbar
         Toolbar toolbar = new Toolbar(this);
-        toolbar.setBackgroundColor(toolbarColor);
-        toolbar.setTitle(isVideo ? "Video Player" : "Audio Player");
-        toolbar.setTitleTextColor(textColor);
+        toolbar.setBackgroundColor(theme.toolbar);
+        toolbar.setTitle(isVideo ? R.string.media_video_player : R.string.media_audio_player);
+        toolbar.setTitleTextColor(theme.text);
+        toolbar.setNavigationIcon(androidx.appcompat.R.drawable.abc_ic_ab_back_material);
+        toolbar.setNavigationOnClickListener(v -> finish());
         setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+        root.addView(toolbar);
 
-        // Title
         tvTitle = new TextView(this);
-        tvTitle.setPadding(dp(16), dp(8), dp(16), dp(4));
-        tvTitle.setTextColor(textColor);
+        tvTitle.setPadding(dp(16), dp(8), dp(16), dp(2));
+        tvTitle.setTextColor(theme.text);
         tvTitle.setTextSize(14);
         tvTitle.setMaxLines(1);
         tvTitle.setText(mediaFile.getName());
+        root.addView(tvTitle);
 
-        // Status
         tvStatus = new TextView(this);
         tvStatus.setPadding(dp(16), 0, dp(16), dp(4));
-        tvStatus.setTextColor(dimColor);
-        tvStatus.setTextSize(12);
-        tvStatus.setText("Ready");
+        tvStatus.setTextColor(theme.textDim);
+        tvStatus.setTextSize(11);
+        tvStatus.setText(describeTracks());
+        tvStatus.setOnClickListener(v -> showTrackInfo());
+        root.addView(tvStatus);
 
-        // ═══ Відео-контейнер ═══
+        if (isVideo) {
+            root.addView(buildVideoSurface(), new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f));
+        }
+
+        controls = isVideo ? buildVideoControls() : buildAudioControls();
+        root.addView(controls);
+        return root;
+    }
+
+    private View buildVideoSurface() {
         videoContainer = new FrameLayout(this);
         videoContainer.setBackgroundColor(0xFF000000);
-        videoContainer.setLayoutParams(new LinearLayout.LayoutParams(0, 0, 1));
-        videoContainer.setVisibility(isVideo ? View.VISIBLE : View.GONE);
 
         videoView = new VideoView(this);
         videoContainer.addView(videoView, new FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                Gravity.CENTER));
 
-        // Buffer progress
         bufferProgress = new ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal);
-        bufferProgress.setIndeterminate(false);
-        bufferProgress.setMax(100);
+        bufferProgress.setIndeterminate(true);
+        bufferProgress.setVisibility(View.GONE);
         FrameLayout.LayoutParams bufLp = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, dp(4));
-        bufLp.gravity = android.view.Gravity.BOTTOM;
-        bufferProgress.setLayoutParams(bufLp);
-        videoContainer.addView(bufferProgress);
+        bufLp.gravity = Gravity.BOTTOM;
+        videoContainer.addView(bufferProgress, bufLp);
 
-        // ═══ Відео-контроли (знизу відео) ═══
-        videoControls = new LinearLayout(this);
-        videoControls.setOrientation(LinearLayout.VERTICAL);
-        videoControls.setBackgroundColor(0xCC000000);
-        videoControls.setPadding(dp(12), dp(6), dp(12), dp(6));
-        videoControls.setVisibility(isVideo ? View.VISIBLE : View.GONE);
+        // Tapping the picture hides the controls for a clean full-screen view.
+        videoContainer.setOnClickListener(v ->
+                controls.setVisibility(controls.getVisibility() == View.VISIBLE
+                        ? View.GONE : View.VISIBLE));
+        return videoContainer;
+    }
 
-        // Seek bar для відео
-        LinearLayout videoTimeRow = new LinearLayout(this);
-        videoTimeRow.setOrientation(LinearLayout.HORIZONTAL);
-        videoTimeRow.setGravity(Gravity.CENTER_VERTICAL);
+    private LinearLayout buildVideoControls() {
+        LinearLayout box = new LinearLayout(this);
+        box.setOrientation(LinearLayout.VERTICAL);
+        box.setBackgroundColor(0xCC000000);
+        box.setPadding(dp(12), dp(6), dp(12), dp(6));
 
+        box.addView(buildTimeRow(0xFFFFFFFF));
+        box.addView(buildSeekBar());
+
+        LinearLayout row = new LinearLayout(this);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setGravity(Gravity.CENTER);
+        row.setPadding(0, dp(4), 0, 0);
+
+        btnRew = videoButton("⏪", R.string.a11y_media_rewind);
+        btnPlayPause = videoButton("▶", R.string.a11y_media_play_pause);
+        btnStop = videoButton("⏹", R.string.a11y_media_stop);
+        btnFwd = videoButton("⏩", R.string.a11y_media_forward);
+        btnSpeed = videoButton("1.0×", R.string.a11y_media_speed);
+        btnLandscape = videoButton("⛶", R.string.a11y_media_landscape);
+
+        row.addView(btnRew);
+        row.addView(btnPlayPause);
+        row.addView(btnStop);
+        row.addView(btnFwd);
+        row.addView(btnSpeed);
+        row.addView(btnLandscape);
+        box.addView(row);
+        return box;
+    }
+
+    private LinearLayout buildAudioControls() {
+        LinearLayout box = new LinearLayout(this);
+        box.setOrientation(LinearLayout.VERTICAL);
+        box.setPadding(dp(16), dp(16), dp(16), dp(16));
+
+        box.addView(buildTimeRow(theme.textDim));
+        box.addView(buildSeekBar());
+
+        LinearLayout row = new LinearLayout(this);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setGravity(Gravity.CENTER);
+        LinearLayout.LayoutParams rowLp = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        rowLp.topMargin = dp(12);
+        row.setLayoutParams(rowLp);
+
+        btnRew = audioButton("⏪", R.string.a11y_media_rewind);
+        btnPlayPause = audioButton("▶", R.string.a11y_media_play_pause);
+        btnStop = audioButton("⏹", R.string.a11y_media_stop);
+        btnFwd = audioButton("⏩", R.string.a11y_media_forward);
+        btnSpeed = audioButton("1.0×", R.string.a11y_media_speed);
+
+        row.addView(btnRew);
+        row.addView(btnPlayPause);
+        row.addView(btnStop);
+        row.addView(btnFwd);
+        row.addView(btnSpeed);
+        box.addView(row);
+
+        box.addView(buildVolumeRow());
+        box.addView(buildBrightnessRow());
+        return box;
+    }
+
+    private LinearLayout buildTimeRow(int textColor) {
+        LinearLayout row = new LinearLayout(this);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setGravity(Gravity.CENTER_VERTICAL);
+
+        AppPreferences prefs = new AppPreferences(this);
         tvCurrentTime = new TextView(this);
         tvCurrentTime.setText("00:00");
-        tvCurrentTime.setTextColor(0xFFFFFFFF);
+        tvCurrentTime.setTextColor(textColor);
         tvCurrentTime.setTextSize(11);
-        tvCurrentTime.setTypeface(new AppPreferences(this).resolveTypeface());
+        tvCurrentTime.setTypeface(prefs.resolveTypeface());
 
         tvDuration = new TextView(this);
         tvDuration.setText("00:00");
-        tvDuration.setTextColor(0xFFFFFFFF);
+        tvDuration.setTextColor(textColor);
         tvDuration.setTextSize(11);
-        tvDuration.setTypeface(new AppPreferences(this).resolveTypeface());
+        tvDuration.setTypeface(prefs.resolveTypeface());
         tvDuration.setGravity(Gravity.END);
-        tvDuration.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+        tvDuration.setLayoutParams(new LinearLayout.LayoutParams(
+                0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
 
-        videoTimeRow.addView(tvCurrentTime);
-        videoTimeRow.addView(tvDuration);
+        row.addView(tvCurrentTime);
+        row.addView(tvDuration);
+        return row;
+    }
 
+    private SeekBar buildSeekBar() {
         seekBar = new SeekBar(this);
         seekBar.setContentDescription(getString(R.string.a11y_media_seek));
-        seekBar.setMax(1000);
-        seekBar.getProgressDrawable().setColorFilter(accentColor, android.graphics.PorterDuff.Mode.SRC_IN);
-        seekBar.getThumb().setColorFilter(accentColor, android.graphics.PorterDuff.Mode.SRC_IN);
+        seekBar.setMax(SEEK_BAR_RANGE);
+        tint(seekBar, theme.accent);
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override public void onProgressChanged(SeekBar sb, int progress, boolean fromUser) {
+                if (!fromUser || !isPrepared) return;
+                int duration = durationMs();
+                if (duration > 0) {
+                    tvCurrentTime.setText(formatDuration((int) ((long) progress * duration / SEEK_BAR_RANGE)));
+                }
+            }
+            @Override public void onStartTrackingTouch(SeekBar sb) { isUserSeeking = true; }
+            @Override public void onStopTrackingTouch(SeekBar sb) {
+                isUserSeeking = false;
+                if (!isPrepared) return;
+                int duration = durationMs();
+                if (duration > 0) {
+                    seekTo((int) ((long) sb.getProgress() * duration / SEEK_BAR_RANGE));
+                }
+            }
+        });
+        return seekBar;
+    }
 
-        // Кнопки відео
-        LinearLayout videoBtnRow = new LinearLayout(this);
-        videoBtnRow.setOrientation(LinearLayout.HORIZONTAL);
-        videoBtnRow.setGravity(Gravity.CENTER);
-        videoBtnRow.setPadding(0, dp(4), 0, 0);
+    private LinearLayout buildVolumeRow() {
+        LinearLayout row = new LinearLayout(this);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setGravity(Gravity.CENTER_VERTICAL);
+        row.setPadding(0, dp(12), 0, 0);
 
-        btnRew = createVideoButton("⏪");
-        btnRew.setContentDescription(getString(R.string.a11y_media_rewind));
-        btnPlayPause = createVideoButton("▶");
-        btnPlayPause.setContentDescription(getString(R.string.a11y_media_play_pause));
-        btnFwd = createVideoButton("⏩");
-        btnFwd.setContentDescription(getString(R.string.a11y_media_forward));
-        btnLandscape = createVideoButton("⛶");
-        btnLandscape.setContentDescription(getString(R.string.a11y_media_landscape));
-
-        videoBtnRow.addView(btnRew);
-        videoBtnRow.addView(btnPlayPause);
-        videoBtnRow.addView(btnFwd);
-        videoBtnRow.addView(btnLandscape);
-
-        videoControls.addView(videoTimeRow);
-        videoControls.addView(seekBar);
-        videoControls.addView(videoBtnRow);
-
-        FrameLayout.LayoutParams ctrlLp = new FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        ctrlLp.gravity = android.view.Gravity.BOTTOM;
-        videoControls.setLayoutParams(ctrlLp);
-
-        // ═══ Аудіо-контроли ═══
-        audioControls = new LinearLayout(this);
-        audioControls.setOrientation(LinearLayout.VERTICAL);
-        audioControls.setPadding(dp(16), dp(16), dp(16), dp(16));
-        audioControls.setVisibility(isVideo ? View.GONE : View.VISIBLE);
-
-        // SeekBar для аудіо
-        LinearLayout audioTimeRow = new LinearLayout(this);
-        audioTimeRow.setOrientation(LinearLayout.HORIZONTAL);
-        audioTimeRow.setGravity(Gravity.CENTER_VERTICAL);
-
-        tvCurrentTime = new TextView(this);
-        tvCurrentTime.setText("00:00");
-        tvCurrentTime.setTextColor(dimColor);
-        tvCurrentTime.setTextSize(12);
-        tvCurrentTime.setTypeface(new AppPreferences(this).resolveTypeface());
-
-        tvDuration = new TextView(this);
-        tvDuration.setText("00:00");
-        tvDuration.setTextColor(dimColor);
-        tvDuration.setTextSize(12);
-        tvDuration.setTypeface(new AppPreferences(this).resolveTypeface());
-        tvDuration.setGravity(Gravity.END);
-        tvDuration.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
-
-        audioTimeRow.addView(tvCurrentTime);
-        audioTimeRow.addView(tvDuration);
-
-        seekBar = new SeekBar(this);
-        seekBar.setContentDescription(getString(R.string.a11y_media_seek));
-        seekBar.setMax(1000);
-
-        // Кнопки аудіо
-        LinearLayout audioBtnRow = new LinearLayout(this);
-        audioBtnRow.setOrientation(LinearLayout.HORIZONTAL);
-        audioBtnRow.setGravity(Gravity.CENTER);
-        LinearLayout.LayoutParams abrLp = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        abrLp.topMargin = dp(12);
-        audioBtnRow.setLayoutParams(abrLp);
-
-        btnRew = createButton("⏪ 10s");
-        btnRew.setContentDescription(getString(R.string.a11y_media_rewind));
-        btnPlayPause = createButton("▶  Play");
-        btnPlayPause.setContentDescription(getString(R.string.a11y_media_play_pause));
-        btnFwd = createButton("10s  ⏩");
-        btnFwd.setContentDescription(getString(R.string.a11y_media_forward));
-
-        audioBtnRow.addView(btnRew);
-        audioBtnRow.addView(btnPlayPause);
-        audioBtnRow.addView(btnFwd);
-
-        // Volume control
-        LinearLayout volRow = new LinearLayout(this);
-        volRow.setOrientation(LinearLayout.HORIZONTAL);
-        volRow.setGravity(Gravity.CENTER_VERTICAL);
-        volRow.setPadding(0, dp(12), 0, 0);
-
-        tvVolume = new TextView(this);
-        tvVolume.setText("🔊");
-        tvVolume.setTextSize(14);
+        TextView icon = new TextView(this);
+        icon.setText("🔊");
+        icon.setTextSize(14);
+        row.addView(icon);
 
         volumeBar = new SeekBar(this);
         volumeBar.setMax(100);
         volumeBar.setContentDescription(getString(R.string.a11y_media_volume));
-        volumeBar.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
-        int maxVol = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-        int curVol = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-        volumeBar.setProgress((int) ((long) curVol * 100 / maxVol));
+        volumeBar.setLayoutParams(new LinearLayout.LayoutParams(
+                0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+        tint(volumeBar, theme.accent);
 
+        final int maxVol = Math.max(1, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
+        volumeBar.setProgress(audioManager.getStreamVolume(AudioManager.STREAM_MUSIC) * 100 / maxVol);
         volumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override public void onProgressChanged(SeekBar sb, int progress, boolean fromUser) {
                 if (!fromUser) return;
-                int vol = (int) ((long) progress * maxVol / 100);
-                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, vol, 0);
+                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,
+                        progress * maxVol / 100, 0);
             }
             @Override public void onStartTrackingTouch(SeekBar sb) {}
             @Override public void onStopTrackingTouch(SeekBar sb) {}
         });
+        row.addView(volumeBar);
+        return row;
+    }
 
-        volRow.addView(tvVolume);
-        volRow.addView(volumeBar);
+    private LinearLayout buildBrightnessRow() {
+        LinearLayout row = new LinearLayout(this);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setGravity(Gravity.CENTER_VERTICAL);
+        row.setPadding(0, dp(4), 0, 0);
 
-        // Brightness control
-        LinearLayout brRow = new LinearLayout(this);
-        brRow.setOrientation(LinearLayout.HORIZONTAL);
-        brRow.setGravity(Gravity.CENTER_VERTICAL);
-        brRow.setPadding(0, dp(4), 0, 0);
-
-        tvBrightness = new TextView(this);
-        tvBrightness.setText("☀");
-        tvBrightness.setTextSize(14);
+        TextView icon = new TextView(this);
+        icon.setText("☀");
+        icon.setTextSize(14);
+        row.addView(icon);
 
         brightnessBar = new SeekBar(this);
         brightnessBar.setMax(100);
         brightnessBar.setContentDescription(getString(R.string.a11y_media_brightness));
-        brightnessBar.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+        brightnessBar.setLayoutParams(new LinearLayout.LayoutParams(
+                0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+        tint(brightnessBar, theme.accent);
         try {
-            int brightness = Settings.System.getInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS);
-            brightnessBar.setProgress((int) ((long) brightness * 100 / 255));
+            int brightness = Settings.System.getInt(getContentResolver(),
+                    Settings.System.SCREEN_BRIGHTNESS);
+            brightnessBar.setProgress(brightness * 100 / 255);
         } catch (Settings.SettingNotFoundException e) {
             brightnessBar.setProgress(50);
         }
-
         brightnessBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override public void onProgressChanged(SeekBar sb, int progress, boolean fromUser) {
                 if (!fromUser) return;
                 WindowManager.LayoutParams lp = getWindow().getAttributes();
-                lp.screenBrightness = progress / 100f;
+                // 0 would be fully dark; keep a floor so the screen stays usable.
+                lp.screenBrightness = Math.max(0.02f, progress / 100f);
                 getWindow().setAttributes(lp);
             }
             @Override public void onStartTrackingTouch(SeekBar sb) {}
             @Override public void onStopTrackingTouch(SeekBar sb) {}
         });
+        row.addView(brightnessBar);
+        return row;
+    }
 
-        brRow.addView(tvBrightness);
-        brRow.addView(brightnessBar);
+    private TextView videoButton(String label, int descriptionRes) {
+        return makeButton(label, descriptionRes, 0xFFFFFFFF, 17, dp(12), dp(6));
+    }
 
-        audioControls.addView(audioTimeRow);
-        audioControls.addView(seekBar);
-        audioControls.addView(audioBtnRow);
-        audioControls.addView(volRow);
-        audioControls.addView(brRow);
+    private TextView audioButton(String label, int descriptionRes) {
+        return makeButton(label, descriptionRes, theme.accent, 17, dp(14), dp(10));
+    }
 
-        // ═══ Збірка ═══
-        root.addView(toolbar);
-        root.addView(tvTitle);
-        root.addView(tvStatus);
-        root.addView(videoContainer);
-        root.addView(videoControls);
-        root.addView(audioControls);
-        setContentView(root);
-        FullScreenHelper.enable(this);
-        // Спільний seekbar listener
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override public void onProgressChanged(SeekBar sb, int progress, boolean fromUser) {
-                if (!fromUser || !isPrepared) return;
-                int dur = isVideo ? videoView.getDuration() : mediaPlayer.getDuration();
-                if (dur > 0) {
-                    int pos = (int) ((long) progress * dur / 1000);
-                    if (isVideo) videoView.seekTo(pos);
-                    else mediaPlayer.seekTo(pos);
-                }
+    private TextView makeButton(String label, int descriptionRes, int color,
+                                int textSize, int padH, int padV) {
+        TextView btn = new TextView(this);
+        btn.setText(label);
+        btn.setTextColor(color);
+        btn.setTextSize(textSize);
+        btn.setPadding(padH, padV, padH, padV);
+        btn.setGravity(Gravity.CENTER);
+        btn.setContentDescription(getString(descriptionRes));
+        return btn;
+    }
+
+    private void tint(SeekBar bar, int color) {
+        try {
+            bar.getProgressDrawable().setColorFilter(color, android.graphics.PorterDuff.Mode.SRC_IN);
+            bar.getThumb().setColorFilter(color, android.graphics.PorterDuff.Mode.SRC_IN);
+        } catch (Exception ignored) {
+        }
+    }
+
+    // ─── Codec reporting ────────────────────────────────────────────────────
+
+    private String describeTracks() {
+        if (probe == null || probe.error != null) return getString(R.string.media_status_ready);
+        StringBuilder sb = new StringBuilder();
+        for (MediaCodecProbe.Track t : probe.tracks) {
+            if (sb.length() > 0) sb.append("  ·  ");
+            sb.append(t.describe());
+            if (!t.decodable) sb.append(" ⚠");
+        }
+        if (sb.length() == 0) return getString(R.string.media_status_ready);
+        sb.append("   ").append(getString(R.string.media_tap_for_details));
+        return sb.toString();
+    }
+
+    /** Names any codec this device cannot decode, rather than failing silently. */
+    private void reportUnsupportedTracks() {
+        if (probe == null) return;
+        if (probe.error != null) {
+            tvStatus.setText(getString(R.string.media_container_error, probe.error));
+            return;
+        }
+        List<MediaCodecProbe.Track> missing = probe.undecodableTracks();
+        if (missing.isEmpty()) return;
+
+        StringBuilder names = new StringBuilder();
+        for (MediaCodecProbe.Track t : missing) {
+            if (names.length() > 0) names.append(", ");
+            names.append(MediaCodecProbe.shortCodecName(t.mime));
+        }
+        new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.media_unsupported_title)
+                .setMessage(getString(R.string.media_unsupported_message, names.toString()))
+                .setPositiveButton(android.R.string.ok, null)
+                .setNeutralButton(R.string.media_track_info, (d, w) -> showTrackInfo())
+                .show();
+    }
+
+    private void showTrackInfo() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(mediaFile.getName()).append('\n');
+        sb.append(getString(R.string.media_info_size, humanSize(mediaFile.length()))).append('\n');
+        if (probe != null && probe.error != null) {
+            sb.append('\n').append(getString(R.string.media_container_error, probe.error));
+        } else if (probe != null) {
+            if (probe.durationUs() > 0) {
+                sb.append(getString(R.string.media_info_duration,
+                        formatDuration((int) (probe.durationUs() / 1000)))).append('\n');
             }
-            @Override public void onStartTrackingTouch(SeekBar sb) { isUserSeeking = true; }
-            @Override public void onStopTrackingTouch(SeekBar sb) { isUserSeeking = false; }
-        });
-
-        initMediaPlayer(mediaFile);
+            for (MediaCodecProbe.Track t : probe.tracks) {
+                sb.append('\n')
+                        .append(t.video ? getString(R.string.media_track_video)
+                                : getString(R.string.media_track_audio))
+                        .append(": ").append(t.describe()).append('\n')
+                        .append("   ").append(t.mime).append('\n')
+                        .append("   ").append(t.decodable
+                                ? getString(R.string.media_codec_supported)
+                                : getString(R.string.media_codec_unsupported))
+                        .append(t.royaltyFree
+                                ? ", " + getString(R.string.media_codec_royalty_free)
+                                : ", " + getString(R.string.media_codec_device_licensed))
+                        .append('\n');
+            }
+        }
+        new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.media_track_info)
+                .setMessage(sb.toString())
+                .setPositiveButton(android.R.string.ok, null)
+                .show();
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (isVideo && videoView != null && videoView.isPlaying()) {
-            videoView.pause();
-            btnPlayPause.setText("▶");
-        }
-        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-            mediaPlayer.pause();
-            btnPlayPause.setText("▶  Play");
-        }
-    }
+    // ─── Playback ───────────────────────────────────────────────────────────
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // Відновити гучність
-        int maxVol = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-        int curVol = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-        if (volumeBar != null) volumeBar.setProgress((int) ((long) curVol * 100 / maxVol));
-    }
-
-    private void initMediaPlayer(File file) {
-        Uri uri = Uri.fromFile(file);
-
-        if (isVideo) {
-            initVideoPlayer(uri);
-        } else {
-            initAudioPlayer(uri);
-        }
+    private void initPlayback() {
+        Uri uri = Uri.fromFile(mediaFile);
+        if (isVideo) initVideoPlayer(uri);
+        else initAudioPlayer(uri);
 
         btnPlayPause.setOnClickListener(v -> togglePlayPause());
         btnStop.setOnClickListener(v -> stopPlayback());
-        btnRew.setOnClickListener(v -> seekRelative(-10000));
-        btnFwd.setOnClickListener(v -> seekRelative(10000));
-        if (btnLandscape != null) {
-            btnLandscape.setOnClickListener(v -> toggleOrientation());
-        }
+        btnRew.setOnClickListener(v -> seekRelative(-SEEK_STEP_MS));
+        btnFwd.setOnClickListener(v -> seekRelative(SEEK_STEP_MS));
+        btnSpeed.setOnClickListener(v -> cycleSpeed());
+        if (btnLandscape != null) btnLandscape.setOnClickListener(v -> toggleOrientation());
     }
 
     private void initVideoPlayer(Uri uri) {
         videoView.setVideoURI(uri);
+        if (bufferProgress != null) bufferProgress.setVisibility(View.VISIBLE);
 
         videoView.setOnPreparedListener(mp -> {
             isPrepared = true;
+            videoMediaPlayer = mp;
+            if (bufferProgress != null) bufferProgress.setVisibility(View.GONE);
             mp.setVideoScalingMode(MediaPlayer.VIDEO_SCALING_MODE_SCALE_TO_FIT);
             tvDuration.setText(formatDuration(mp.getDuration()));
+            applySpeed();
             videoView.start();
-            tvStatus.setText("Playing");
+            acquireWakeLock();
+            tvStatus.setText(R.string.media_status_playing);
             btnPlayPause.setText("⏸");
-            startVideoSeekBarUpdate();
+            startProgressUpdates();
         });
 
         videoView.setOnCompletionListener(mp -> {
-            tvStatus.setText("Finished");
+            tvStatus.setText(R.string.media_status_finished);
             btnPlayPause.setText("▶");
             seekBar.setProgress(0);
             tvCurrentTime.setText("00:00");
+            releaseWakeLock();
         });
 
         videoView.setOnErrorListener((mp, what, extra) -> {
-            tvStatus.setText("Error: " + what + " / " + extra);
+            if (bufferProgress != null) bufferProgress.setVisibility(View.GONE);
+            tvStatus.setText(describePlaybackError(what, extra));
             return true;
         });
 
-        // Buffer tracking
         videoView.setOnInfoListener((mp, what, extra) -> {
+            if (bufferProgress == null) return false;
             if (what == MediaPlayer.MEDIA_INFO_BUFFERING_START) {
                 bufferProgress.setVisibility(View.VISIBLE);
-            } else if (what == MediaPlayer.MEDIA_INFO_BUFFERING_END) {
-                bufferProgress.setVisibility(View.GONE);
-            } else if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
+            } else if (what == MediaPlayer.MEDIA_INFO_BUFFERING_END
+                    || what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
                 bufferProgress.setVisibility(View.GONE);
             }
             return false;
         });
-
-        videoView.start();
     }
 
     private void initAudioPlayer(Uri uri) {
         try {
             mediaPlayer = new MediaPlayer();
-            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            mediaPlayer.setAudioAttributes(new android.media.AudioAttributes.Builder()
+                    .setUsage(android.media.AudioAttributes.USAGE_MEDIA)
+                    .setContentType(android.media.AudioAttributes.CONTENT_TYPE_MUSIC)
+                    .build());
             mediaPlayer.setDataSource(this, uri);
             mediaPlayer.setWakeMode(this, PowerManager.PARTIAL_WAKE_LOCK);
 
             mediaPlayer.setOnPreparedListener(mp -> {
                 isPrepared = true;
                 tvDuration.setText(formatDuration(mp.getDuration()));
-                tvStatus.setText("Ready — tap Play");
+                tvStatus.setText(R.string.media_status_ready_tap_play);
             });
 
             mediaPlayer.setOnCompletionListener(mp -> {
-                tvStatus.setText("Finished");
-                btnPlayPause.setText("▶  Play");
+                tvStatus.setText(R.string.media_status_finished);
+                btnPlayPause.setText("▶");
                 seekBar.setProgress(0);
                 tvCurrentTime.setText("00:00");
+                releaseWakeLock();
             });
 
             mediaPlayer.setOnErrorListener((mp, what, extra) -> {
-                tvStatus.setText("Error: " + what);
+                tvStatus.setText(describePlaybackError(what, extra));
                 return true;
             });
 
-            mediaPlayer.setOnBufferingUpdateListener((mp, percent) -> {
-                // SeekBar secondary progress = buffer position
-                seekBar.setSecondaryProgress(percent * 10);
-            });
+            mediaPlayer.setOnBufferingUpdateListener((mp, percent) ->
+                    seekBar.setSecondaryProgress(percent * SEEK_BAR_RANGE / 100));
 
             mediaPlayer.prepareAsync();
         } catch (Exception e) {
-            tvStatus.setText("Error: " + e.getMessage());
+            tvStatus.setText(getString(R.string.media_open_error, e.getMessage()));
         }
     }
 
-    private void togglePlayPause() {
-        if (isVideo) {
-            if (!isPrepared) return;
-            if (videoView.isPlaying()) {
-                videoView.pause();
-                btnPlayPause.setText("▶");
-                tvStatus.setText("Paused");
-            } else {
-                videoView.start();
-                btnPlayPause.setText("⏸");
-                tvStatus.setText("Playing");
+    /**
+     * Turns a MediaPlayer error code into something actionable, preferring the
+     * codec information from the probe when the failure is a format problem.
+     */
+    private String describePlaybackError(int what, int extra) {
+        if (extra == MediaPlayer.MEDIA_ERROR_UNSUPPORTED
+                || what == MediaPlayer.MEDIA_ERROR_UNKNOWN) {
+            List<MediaCodecProbe.Track> missing = probe != null
+                    ? probe.undecodableTracks() : java.util.Collections.emptyList();
+            if (!missing.isEmpty()) {
+                StringBuilder names = new StringBuilder();
+                for (MediaCodecProbe.Track t : missing) {
+                    if (names.length() > 0) names.append(", ");
+                    names.append(MediaCodecProbe.shortCodecName(t.mime));
+                }
+                return getString(R.string.media_unsupported_message, names.toString());
             }
-            return;
         }
+        if (extra == MediaPlayer.MEDIA_ERROR_MALFORMED) {
+            return getString(R.string.media_error_malformed);
+        }
+        if (extra == MediaPlayer.MEDIA_ERROR_IO) {
+            return getString(R.string.media_error_io);
+        }
+        return getString(R.string.media_error_code, what, extra);
+    }
 
-        if (mediaPlayer == null || !isPrepared) return;
-        if (mediaPlayer.isPlaying()) {
-            mediaPlayer.pause();
-            btnPlayPause.setText("▶  Play");
-            tvStatus.setText("Paused");
+    private void togglePlayPause() {
+        if (!isPrepared) return;
+        if (isPlaying()) {
+            pause();
+            btnPlayPause.setText("▶");
+            tvStatus.setText(R.string.media_status_paused);
+            releaseWakeLock();
         } else {
-            mediaPlayer.start();
-            btnPlayPause.setText("❚❚  Pause");
-            tvStatus.setText("Playing");
-            startAudioSeekBarUpdate();
+            play();
+            btnPlayPause.setText("⏸");
+            tvStatus.setText(R.string.media_status_playing);
+            acquireWakeLock();
+            startProgressUpdates();
         }
     }
 
     private void stopPlayback() {
-        if (isVideo) {
-            videoView.stopPlayback();
-            isPrepared = false;
-            tvStatus.setText("Stopped");
-            btnPlayPause.setText("▶");
-            seekBar.setProgress(0);
-            tvCurrentTime.setText("00:00");
-            // Перезапуск для можливості play знову
-            File f = new File(getIntent().getStringExtra(EXTRA_FILE_PATH));
-            initVideoPlayer(Uri.fromFile(f));
-            return;
-        }
-        if (mediaPlayer != null && isPrepared) {
-            mediaPlayer.seekTo(0);
-            mediaPlayer.pause();
-            seekBar.setProgress(0);
-            tvCurrentTime.setText("00:00");
-            btnPlayPause.setText("▶  Play");
-            tvStatus.setText("Stopped");
-        }
+        if (!isPrepared) return;
+        seekTo(0);
+        pause();
+        seekBar.setProgress(0);
+        tvCurrentTime.setText("00:00");
+        btnPlayPause.setText("▶");
+        tvStatus.setText(R.string.media_status_stopped);
+        releaseWakeLock();
     }
 
     private void seekRelative(int deltaMs) {
-        if (isVideo && isPrepared) {
-            int pos = videoView.getCurrentPosition();
-            int dur = videoView.getDuration();
-            int newPos = Math.max(0, Math.min(dur, pos + deltaMs));
-            videoView.seekTo(newPos);
-        } else if (mediaPlayer != null && isPrepared) {
-            int pos = mediaPlayer.getCurrentPosition();
-            int dur = mediaPlayer.getDuration();
-            int newPos = Math.max(0, Math.min(dur, pos + deltaMs));
-            mediaPlayer.seekTo(newPos);
+        if (!isPrepared) return;
+        int duration = durationMs();
+        int target = Math.max(0, Math.min(duration, positionMs() + deltaMs));
+        seekTo(target);
+        tvCurrentTime.setText(formatDuration(target));
+    }
+
+    /** Steps through 0.5× → 1× → 1.25× → 1.5× → 2×. */
+    private void cycleSpeed() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            Toast.makeText(this, R.string.media_speed_unsupported, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        float[] steps = {0.5f, 1f, 1.25f, 1.5f, 2f};
+        int next = 1;
+        for (int i = 0; i < steps.length; i++) {
+            if (Math.abs(steps[i] - playbackSpeed) < 0.01f) {
+                next = (i + 1) % steps.length;
+                break;
+            }
+        }
+        playbackSpeed = steps[next];
+        btnSpeed.setText(formatSpeed(playbackSpeed));
+        applySpeed();
+    }
+
+    /** {@code 0.5×}, {@code 1×}, {@code 1.25×} — no trailing zeros. */
+    private static String formatSpeed(float speed) {
+        if (Math.abs(speed - Math.round(speed)) < 0.001f) {
+            return Math.round(speed) + "×";
+        }
+        return new java.math.BigDecimal(String.valueOf(speed)).stripTrailingZeros()
+                .toPlainString() + "×";
+    }
+
+    /**
+     * Applies the current speed to whichever player is active. The video path
+     * uses the {@link MediaPlayer} handed to {@code onPrepared}, since
+     * {@link VideoView} has no speed setter of its own.
+     */
+    private void applySpeed() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return;
+        MediaPlayer target = isVideo ? videoMediaPlayer : mediaPlayer;
+        if (target == null) return;
+        try {
+            boolean wasPlaying = target.isPlaying();
+            target.setPlaybackParams(new android.media.PlaybackParams().setSpeed(playbackSpeed));
+            // Setting params starts playback on some devices; restore the state.
+            if (!wasPlaying && target.isPlaying()) target.pause();
+        } catch (Exception e) {
+            Toast.makeText(this, R.string.media_speed_unsupported, Toast.LENGTH_SHORT).show();
+            playbackSpeed = 1f;
+            btnSpeed.setText(formatSpeed(1f));
         }
     }
 
@@ -567,124 +738,147 @@ public class MediaPlayerActivity extends AppCompatActivity {
                 : ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
     }
 
-    private void startVideoSeekBarUpdate() {
-        Runnable updater = new Runnable() {
-            @Override
-            public void run() {
-                if (videoView == null || !isPrepared) return;
-                if (!videoView.isPlaying() && !isUserSeeking) {
-                    handler.postDelayed(this, 500);
-                    return;
-                }
-                if (!isUserSeeking) {
-                    int pos = videoView.getCurrentPosition();
-                    int dur = videoView.getDuration();
-                    if (dur > 0) {
-                        seekBar.setProgress((int) ((long) pos * 1000 / dur));
-                    }
-                    tvCurrentTime.setText(formatDuration(pos));
-                }
-                handler.postDelayed(this, 250);
-            }
-        };
-        handler.post(updater);
-    }
+    // ─── Player abstraction over VideoView / MediaPlayer ─────────────────────
 
-    private void startAudioSeekBarUpdate() {
-        Runnable updater = new Runnable() {
-            @Override
-            public void run() {
-                if (mediaPlayer == null || !isPrepared) return;
-                if (!mediaPlayer.isPlaying() && !isUserSeeking) {
-                    handler.postDelayed(this, 500);
-                    return;
-                }
-                if (!isUserSeeking) {
-                    int pos = mediaPlayer.getCurrentPosition();
-                    int dur = mediaPlayer.getDuration();
-                    if (dur > 0) {
-                        seekBar.setProgress((int) ((long) pos * 1000 / dur));
-                    }
-                    tvCurrentTime.setText(formatDuration(pos));
-                }
-                handler.postDelayed(this, 250);
-            }
-        };
-        handler.post(updater);
-    }
-
-    private TextView createButton(String text) {
-        TextView btn = new TextView(this);
-        btn.setText(text);
-        btn.setTextColor(accentColor);
-        btn.setTextSize(14);
-        btn.setPadding(dp(20), dp(10), dp(20), dp(10));
-        btn.setGravity(Gravity.CENTER);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        lp.setMarginEnd(dp(12));
-        btn.setLayoutParams(lp);
-        return btn;
-    }
-
-    private TextView createVideoButton(String text) {
-        TextView btn = new TextView(this);
-        btn.setText(text);
-        btn.setTextColor(0xFFFFFFFF);
-        btn.setTextSize(18);
-        btn.setPadding(dp(16), dp(6), dp(16), dp(6));
-        btn.setGravity(Gravity.CENTER);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        lp.setMarginEnd(dp(8));
-        btn.setLayoutParams(lp);
-        return btn;
-    }
-
-    private String formatDuration(int ms) {
-        int totalSec = ms / 1000;
-        int hours = totalSec / 3600;
-        int min = (totalSec % 3600) / 60;
-        int sec = totalSec % 60;
-        if (hours > 0) {
-            return String.format(Locale.US, "%d:%02d:%02d", hours, min, sec);
+    private boolean isPlaying() {
+        try {
+            return isVideo ? videoView.isPlaying() : mediaPlayer != null && mediaPlayer.isPlaying();
+        } catch (Exception e) {
+            return false;
         }
-        return String.format(Locale.US, "%02d:%02d", min, sec);
     }
 
-    private boolean isVideoFile(String name) {
-        String lower = name.toLowerCase(Locale.ROOT);
-        return lower.endsWith(".mp4") || lower.endsWith(".mkv") || lower.endsWith(".avi")
-                || lower.endsWith(".webm") || lower.endsWith(".3gp") || lower.endsWith(".mov");
+    private void play() {
+        if (isVideo) videoView.start();
+        else if (mediaPlayer != null) mediaPlayer.start();
+    }
+
+    private void pause() {
+        if (isVideo) videoView.pause();
+        else if (mediaPlayer != null) mediaPlayer.pause();
+    }
+
+    private void seekTo(int ms) {
+        try {
+            if (isVideo) videoView.seekTo(ms);
+            else if (mediaPlayer != null) mediaPlayer.seekTo(ms);
+        } catch (Exception ignored) {
+        }
+    }
+
+    private int positionMs() {
+        try {
+            return isVideo ? videoView.getCurrentPosition()
+                    : mediaPlayer != null ? mediaPlayer.getCurrentPosition() : 0;
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    private int durationMs() {
+        try {
+            int duration = isVideo ? videoView.getDuration()
+                    : mediaPlayer != null ? mediaPlayer.getDuration() : 0;
+            return Math.max(0, duration);
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    private void startProgressUpdates() {
+        handler.removeCallbacksAndMessages(null);
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (!isPrepared) return;
+                if (!isUserSeeking) {
+                    int duration = durationMs();
+                    int position = positionMs();
+                    if (duration > 0) {
+                        seekBar.setProgress((int) ((long) position * SEEK_BAR_RANGE / duration));
+                    }
+                    tvCurrentTime.setText(formatDuration(position));
+                }
+                handler.postDelayed(this, isPlaying() ? 250 : 600);
+            }
+        });
+    }
+
+    // ─── Lifecycle ──────────────────────────────────────────────────────────
+
+    private void acquireWakeLock() {
+        try {
+            if (wakeLock != null && !wakeLock.isHeld()) {
+                // Bounded so a forgotten player cannot hold the screen forever.
+                wakeLock.acquire(4 * 60 * 60 * 1000L);
+            }
+        } catch (Exception ignored) {
+        }
+    }
+
+    private void releaseWakeLock() {
+        try {
+            if (wakeLock != null && wakeLock.isHeld()) wakeLock.release();
+        } catch (Exception ignored) {
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (isPlaying()) {
+            pause();
+            btnPlayPause.setText("▶");
+            tvStatus.setText(R.string.media_status_paused);
+        }
+        releaseWakeLock();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (volumeBar != null) {
+            int maxVol = Math.max(1, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
+            volumeBar.setProgress(audioManager.getStreamVolume(AudioManager.STREAM_MUSIC) * 100 / maxVol);
+        }
     }
 
     @Override
     protected void onDestroy() {
-        if (wakeLock != null && wakeLock.isHeld()) wakeLock.release();
+        releaseWakeLock();
+        if (handler != null) handler.removeCallbacksAndMessages(null);
         if (mediaPlayer != null) {
             try {
                 if (mediaPlayer.isPlaying()) mediaPlayer.stop();
                 mediaPlayer.release();
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
             mediaPlayer = null;
         }
         if (videoView != null) {
-            videoView.stopPlayback();
+            try {
+                videoView.stopPlayback();
+            } catch (Exception ignored) {
+            }
         }
-        handler.removeCallbacksAndMessages(null);
         super.onDestroy();
     }
 
-    private void applyColors() {
-        try {
-            AppPreferences prefs = new AppPreferences(this);
-            AppTheme theme = AppTheme.byId(prefs.getThemeId(), prefs);
-            accentColor = theme.accent;
-            bgColor = theme.bg;
-            toolbarColor = theme.toolbar;
-            textColor = theme.text;
-            dimColor = theme.textDim;
-        } catch (Throwable ignored) {}
+    // ─── Formatting ─────────────────────────────────────────────────────────
+
+    private String formatDuration(int ms) {
+        int totalSec = Math.max(0, ms) / 1000;
+        int hours = totalSec / 3600;
+        int min = (totalSec % 3600) / 60;
+        int sec = totalSec % 60;
+        if (hours > 0) return String.format(Locale.US, "%d:%02d:%02d", hours, min, sec);
+        return String.format(Locale.US, "%02d:%02d", min, sec);
+    }
+
+    private static String humanSize(long bytes) {
+        if (bytes < 1024) return bytes + " B";
+        if (bytes < 1024 * 1024) return String.format(Locale.US, "%.1f KB", bytes / 1024.0);
+        return String.format(Locale.US, "%.1f MB", bytes / (1024.0 * 1024.0));
     }
 
     private int dp(int v) {

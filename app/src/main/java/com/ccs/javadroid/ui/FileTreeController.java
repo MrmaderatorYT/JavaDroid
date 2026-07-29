@@ -40,17 +40,70 @@ public final class FileTreeController {
     private final Callback callback;
     private File copiedFile;
     private File pendingArchiveFolder;
+    private com.ccs.javadroid.project.TreeExpansionState expansion;
+    /** Project the current {@link #expansion} belongs to. */
+    private File expansionRoot;
 
     public FileTreeController(Activity activity, Callback callback) {
         this.activity = activity;
         this.callback = callback;
     }
 
+    /**
+     * Expansion state for the open project, recreated when the project changes.
+     *
+     * @return the state, or {@code null} when no project is open
+     */
+    public com.ccs.javadroid.project.TreeExpansionState expansionState() {
+        ProjectManager pm = callback.getProjectManager();
+        if (pm == null || pm.getProjectDir() == null) return null;
+        File root = pm.getProjectDir();
+        if (expansion == null || expansionRoot == null || !expansionRoot.equals(root)) {
+            expansion = new com.ccs.javadroid.project.TreeExpansionState(activity, root);
+            expansionRoot = root;
+        }
+        return expansion;
+    }
+
     public void refreshFileTree() {
         ProjectManager pm = callback.getProjectManager();
-        if (pm != null) {
-            callback.getFileTreeAdapter().setNodes(ProjectScanner.listIdeaStyleTree(pm.getProjectDir()));
-        }
+        if (pm == null) return;
+        com.ccs.javadroid.project.TreeExpansionState state = expansionState();
+        callback.getFileTreeAdapter().setNodes(ProjectScanner.listIdeaStyleTree(
+                pm.getProjectDir(), state != null ? state.expandedPaths() : null));
+    }
+
+    /** Opens or closes a folder in the drawer and redraws the tree. */
+    public void toggleFolder(File folder) {
+        com.ccs.javadroid.project.TreeExpansionState state = expansionState();
+        if (state == null) return;
+        state.toggle(folder);
+        refreshFileTree();
+    }
+
+    /**
+     * Opens every ancestor of {@code file} so it is visible. The tree is only
+     * rebuilt when the expansion actually changed, so opening several files from
+     * the same folder does not redraw repeatedly.
+     */
+    public void revealInTree(File file) {
+        com.ccs.javadroid.project.TreeExpansionState state = expansionState();
+        if (state == null) return;
+        if (state.revealFile(file)) refreshFileTree();
+    }
+
+    public void expandAll() {
+        com.ccs.javadroid.project.TreeExpansionState state = expansionState();
+        if (state == null) return;
+        state.expandAll();
+        refreshFileTree();
+    }
+
+    public void collapseAll() {
+        com.ccs.javadroid.project.TreeExpansionState state = expansionState();
+        if (state == null) return;
+        state.collapseAll();
+        refreshFileTree();
     }
 
     public void showNewFileDialog() {
@@ -71,7 +124,7 @@ public final class FileTreeController {
                     boolean isJava = name.endsWith(".java") || !name.contains(".");
                     String className = name.replace(".java", "");
                     if (isJava) {
-                        if (pm.isMavenProject()) {
+                        if (pm.hasStandardLayout()) {
                             try {
                                 String pkg = com.ccs.javadroid.project.ProjectLayoutHelper.mainPackageName(pm.getProjectDir());
                                 template = "package " + pkg + ";\n\npublic class " + className + " {\n\n}\n";
@@ -102,6 +155,8 @@ public final class FileTreeController {
 
     public void showFolderContextMenu(File folder) {
         List<String> optionsList = new ArrayList<>();
+        optionsList.add(activity.getString(R.string.tree_expand_all_in_folder));
+        optionsList.add(activity.getString(R.string.tree_collapse_all_in_folder));
         optionsList.add(activity.getString(R.string.menu_create_file));
         optionsList.add(activity.getString(R.string.menu_create_folder));
         if (copiedFile != null && copiedFile.exists()) {
@@ -110,14 +165,26 @@ public final class FileTreeController {
         optionsList.add(activity.getString(R.string.dialog_folder_context_archive));
         optionsList.add(activity.getString(R.string.dialog_file_context_rename));
         optionsList.add(activity.getString(R.string.dialog_file_context_delete));
-        optionsList.add("Open In...");
+        optionsList.add(activity.getString(R.string.menu_open_in_external));
 
         String[] options = optionsList.toArray(new String[0]);
         new com.google.android.material.dialog.MaterialAlertDialogBuilder(activity)
                 .setTitle(folder.getName())
                 .setItems(options, (dialog, which) -> {
                     String selected = options[which];
-                    if (selected.equals(activity.getString(R.string.menu_create_file))) {
+                    if (selected.equals(activity.getString(R.string.tree_expand_all_in_folder))) {
+                        com.ccs.javadroid.project.TreeExpansionState state = expansionState();
+                        if (state != null) {
+                            state.expandRecursively(folder);
+                            refreshFileTree();
+                        }
+                    } else if (selected.equals(activity.getString(R.string.tree_collapse_all_in_folder))) {
+                        com.ccs.javadroid.project.TreeExpansionState state = expansionState();
+                        if (state != null) {
+                            state.collapseRecursively(folder);
+                            refreshFileTree();
+                        }
+                    } else if (selected.equals(activity.getString(R.string.menu_create_file))) {
                         showNewFileInFolderDialog(folder);
                     } else if (selected.equals(activity.getString(R.string.menu_create_folder))) {
                         showNewFolderInFolderDialog(folder);
@@ -129,7 +196,7 @@ public final class FileTreeController {
                         showRenameDialog(folder);
                     } else if (selected.equals(activity.getString(R.string.dialog_file_context_delete))) {
                         showDeleteDialog(folder);
-                    } else if (selected.equals("Open In...")) {
+                    } else if (selected.equals(activity.getString(R.string.menu_open_in_external))) {
                         openInExternalApp(folder);
                     }
                 })
@@ -139,20 +206,22 @@ public final class FileTreeController {
     public void showFileContextMenu(File file) {
         String[] options = {
                 activity.getString(R.string.dialog_file_context_open),
+                activity.getString(R.string.menu_open_in_hex),
                 activity.getString(R.string.dialog_file_context_rename),
                 activity.getString(R.string.dialog_file_context_copy),
                 activity.getString(R.string.dialog_file_context_delete),
-                "Open In..."
+                activity.getString(R.string.menu_open_in_external)
         };
         new com.google.android.material.dialog.MaterialAlertDialogBuilder(activity)
                 .setTitle(file.getName())
                 .setItems(options, (dialog, which) -> {
                     switch (which) {
                         case 0: callback.onFileOpened(file); break;
-                        case 1: showRenameDialog(file); break;
-                        case 2: copiedFile = file; Toast.makeText(activity, R.string.toast_file_copied, Toast.LENGTH_SHORT).show(); break;
-                        case 3: showDeleteDialog(file); break;
-                        case 4: openInExternalApp(file); break;
+                        case 1: HexEditorActivity.launch(activity, file); break;
+                        case 2: showRenameDialog(file); break;
+                        case 3: copiedFile = file; Toast.makeText(activity, R.string.toast_file_copied, Toast.LENGTH_SHORT).show(); break;
+                        case 4: showDeleteDialog(file); break;
+                        case 5: openInExternalApp(file); break;
                     }
                 })
                 .show();
@@ -178,7 +247,8 @@ public final class FileTreeController {
 
             intent.setDataAndType(uri, mimeType);
             intent.addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            activity.startActivity(android.content.Intent.createChooser(intent, "Open in..."));
+            activity.startActivity(android.content.Intent.createChooser(
+                    intent, activity.getString(R.string.menu_open_in_external)));
         } catch (Exception e) {
             Toast.makeText(activity, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
@@ -217,7 +287,7 @@ public final class FileTreeController {
                     if (tpl != null) {
                         template = FileTemplates.format(tpl[1], className);
                     }
-                    if (pm != null && pm.isMavenProject() && templateKey.equals(FileTemplates.KEY_CLASS)) {
+                    if (pm != null && pm.hasStandardLayout() && templateKey.equals(FileTemplates.KEY_CLASS)) {
                         try {
                             String pkg = com.ccs.javadroid.project.ProjectLayoutHelper.mainPackageName(pm.getProjectDir());
                             template = "package " + pkg + ";\n\n" + template;
