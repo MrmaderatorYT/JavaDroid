@@ -66,14 +66,14 @@ final class Jdk8BytecodeAdvancedChapters {
                 "ClassNotFoundException означає: клас не знайшли під час явного завантаження "
                 + "(наприклад Class.forName). NoClassDefFoundError часто означає: клас був під час "
                 + "компіляції, але відсутній або не ініціалізувався під час виконання."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Створіть клас зі static field, який викликає static method.",
-                "Подивіться <clinit> через javap -c -v.",
-                "Створіть static block, який кидає RuntimeException, і подивіться ExceptionInInitializerError.",
-                "Створіть public static final int CONST і перевірте, чи клієнт inlines значення.",
-                "Поясніть різницю між loading і initialization."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Class loading: loading, linking, initialization"));
         en.add(LessonBlock.paragraph(
@@ -167,14 +167,14 @@ final class Jdk8BytecodeAdvancedChapters {
         uk.add(LessonBlock.warning(
                 "У bytecode не можна використовувати this як повністю ініціалізований об'єкт до "
                 + "успішного invokespecial <init>. Verifier стежить за uninitializedThis."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Скомпілюйте клас без constructor і знайдіть default <init>.",
-                "Додайте static block і знайдіть <clinit>.",
-                "Через javap -v знайдіть flags класу і методів.",
-                "Порівняйте flags звичайного класу, abstract class та interface.",
-                "Поясніть, чому constructor не має return type у Java, але descriptor має V."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("<init>, <clinit>, access flags"));
         en.add(LessonBlock.paragraph(
@@ -267,14 +267,14 @@ final class Jdk8BytecodeAdvancedChapters {
         uk.add(LessonBlock.warning(
                 "Коли дивитеся javap, не панікуйте через методи, яких не писали. Якщо бачите "
                 + "ACC_BRIDGE або ACC_SYNTHETIC, це часто нормальна робота javac."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Створіть generic interface Box<T> і реалізацію Box<String>.",
-                "Запустіть javap -c -v StringBox і знайдіть ACC_BRIDGE.",
-                "Знайдіть descriptor і Signature для get.",
-                "Створіть приклад covariant return type і подивіться, чи з'явиться bridge.",
-                "Поясніть, як bridge пов'язаний з type erasure."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Bridge and synthetic methods"));
         en.add(LessonBlock.paragraph(
@@ -354,14 +354,14 @@ final class Jdk8BytecodeAdvancedChapters {
         uk.add(LessonBlock.warning(
                 "Неправильний StackMapTable часто дає VerifyError з повідомленнями про bad type "
                 + "on operand stack або inconsistent stackmap frames."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Скомпілюйте метод з if/else і відкрийте javap -v.",
-                "Знайдіть StackMapTable у виводі.",
-                "Скомпілюйте try/catch і подивіться frames для handler.",
-                "Поясніть, чому verifier не може дозволити int на одній гілці і String на іншій перед ireturn.",
-                "Запишіть locals/stack для target label у простому if."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("StackMapTable: type map for verifier"));
         en.add(LessonBlock.paragraph(
@@ -455,14 +455,14 @@ final class Jdk8BytecodeAdvancedChapters {
         uk.add(LessonBlock.warning(
                 "Непарний monitorenter/monitorexit або exception path без monitorexit може зламати "
                 + "коректність синхронізації. Javac генерує захисний handler саме тому."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Скомпілюйте try/finally і знайдіть exception table.",
-                "Скомпілюйте synchronized block і знайдіть monitorenter/monitorexit.",
-                "Скомпілюйте synchronized method і порівняйте: там буде ACC_SYNCHRONIZED flag.",
-                "Поясніть, чому synchronized block складніший за synchronized method у bytecode.",
-                "Знайдіть athrow у bytecode finally-сценарію."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("try/finally and synchronized in bytecode"));
         en.add(LessonBlock.paragraph(
@@ -554,14 +554,14 @@ final class Jdk8BytecodeAdvancedChapters {
         uk.add(LessonBlock.warning(
                 "Lambda не обов'язково означає anonymous inner class. У Java 8 це зазвичай "
                 + "invokedynamic. Тому bytecode lambda дуже відрізняється від старого new Runnable(){...}."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Скомпілюйте non-capturing Runnable lambda і знайдіть BootstrapMethods.",
-                "Скомпілюйте capturing lambda, яка використовує локальну змінну.",
-                "Порівняйте bytecode lambda і anonymous inner class.",
-                "Знайдіть synthetic method lambda$... у javap -p.",
-                "Поясніть, що таке bootstrap method."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("invokedynamic and LambdaMetafactory"));
         en.add(LessonBlock.paragraph(
@@ -634,14 +634,14 @@ final class Jdk8BytecodeAdvancedChapters {
         uk.add(LessonBlock.warning(
                 "Obfuscation може перейменувати класи, методи і поля, а також змінити debug attributes. "
                 + "Для Android це особливо актуально при ProGuard/R8: stack trace без mapping.txt важко читати."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Скомпілюйте клас з -g і знайдіть LineNumberTable.",
-                "Скомпілюйте з -g:none і порівняйте javap -v.",
-                "Киньте RuntimeException і подивіться, чи є номер рядка.",
-                "Знайдіть LocalVariableTable для методу з кількома локальними змінними.",
-                "Поясніть, чому debug attributes не змінюють результат програми."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Debug attributes: LineNumberTable, LocalVariableTable"));
         en.add(LessonBlock.paragraph(
@@ -730,15 +730,14 @@ final class Jdk8BytecodeAdvancedChapters {
         uk.add(LessonBlock.warning(
                 "Не починайте bytecode-розробку з генерації складних класів. Спершу навчіться "
                 + "генерувати і перевіряти маленькі методи: add, max, loop, array access, try/catch."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Зробіть AST для арифметики int.",
-                "Згенеруйте instruction list для 5 різних виразів.",
-                "Напишіть interpreter і перевірте результати.",
-                "Порахуйте maxStack вручну і автоматично.",
-                "Додайте labels для if/else.",
-                "Порівняйте з javap реального Java-методу."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Capstone: tiny compiler to bytecode"));
         en.add(LessonBlock.paragraph(

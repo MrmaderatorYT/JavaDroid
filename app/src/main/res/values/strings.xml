@@ -49,6 +49,14 @@
     <string name="tab_callstack">Call Stack</string>
     <string name="tab_watches">Watches</string>
     <string name="tab_debug_console">Console</string>
+    <string name="tab_call_graph">Graph</string>
+    <string name="tab_bookmarks">★</string>
+    <string name="tab_bookmarks_name">Bookmarks</string>
+    <string name="tab_deps">Deps</string>
+    <string name="tab_profiler">Profile</string>
+    <string name="tab_todo">TODO</string>
+    <string name="tab_console">Console</string>
+    <string name="a11y_tab_console">JShell console tab</string>
     <string name="status_line">Ln %1$d, Col %2$d</string>
     <string name="status_encoding">UTF-8</string>
     <string name="status_language_java">Java</string>
@@ -186,8 +194,17 @@
     <string name="font_dejavu_mono">DejaVu Sans Mono</string>
     <string name="font_roboto_mono">Roboto Mono</string>
 
+    <string name="settings_section_panels">Bottom panels</string>
+    <string name="settings_panels_hint">Order and visibility of the tabs under the editor. Run and Problems always stay, and the debug tabs appear only during a debug session.</string>
+    <string name="settings_panels_reset">Restore the default order</string>
+    <string name="settings_panels_reset_done">Default order restored</string>
+    <string name="settings_panel_visible_a11y">Show the %1$s tab</string>
+    <string name="settings_panel_move_up_a11y">Move %1$s up</string>
+    <string name="settings_panel_move_down_a11y">Move %1$s down</string>
+
     <string name="settings_java_target">Java target</string>
-    <string name="settings_java_hint">Affects ECJ compilation. Higher targets may not run via D8 desugaring.</string>
+    <string name="settings_java_hint">The bundled compiler emits Java %1$s to %2$s. Older releases are compiled at %1$s, and language features still need runtime support from Android.</string>
+    <string name="settings_java_target_maps_to">%1$s — compiled as %2$s</string>
 
     <string name="settings_reset_defaults">Reset to defaults</string>
     <string name="settings_reset_confirm">All UI, font and compiler preferences will be reset. Project files are kept.</string>
@@ -413,6 +430,91 @@
     <string name="welcome_delete_project_message">Are you sure you want to permanently delete %1$s and all its files? This action cannot be undone.</string>
     <string name="welcome_no_projects">No projects inside Documents/JavaDroid yet.</string>
     <string name="welcome_open_folder_title">Open Project Folder</string>
+
+    <!-- Developer tool dialogs -->
+    <string name="tool_regex_title">Regex tester</string>
+    <string name="tool_regex_hint">Regular expression (e.g. \\d+)</string>
+    <string name="tool_regex_text_hint">Test string</string>
+    <string name="tool_regex_match">Match %1$d: [%2$s]</string>
+    <string name="tool_regex_no_match">No matches</string>
+    <string name="tool_regex_invalid">Invalid pattern: %1$s</string>
+    <string name="tool_regex_truncated">… more matches not shown</string>
+    <string name="tool_encoder_title">Encoder / decoder (Base64 and URL)</string>
+    <string name="tool_encoder_input">Input text</string>
+    <string name="tool_encoder_encode">Encode</string>
+    <string name="tool_encoder_decode">Decode</string>
+    <string name="tool_encoder_url_encode">URL enc</string>
+    <string name="tool_encoder_url_decode">URL dec</string>
+    <string name="tool_encoder_invalid">Not valid input: %1$s</string>
+    <string name="tool_encoder_failed">Failed: %1$s</string>
+
+    <!-- Credits -->
+    <string name="welcome_sidebar_projects">Projects</string>
+    <string name="welcome_sidebar_materials">Materials</string>
+    <string name="welcome_sidebar_credits">Credits</string>
+    <string name="a11y_welcome_credits_tab">Credits and licences</string>
+    <string name="credits_title">Credits</string>
+    <string name="credits_version">Version %1$s</string>
+    <string name="credits_section_java">About Java in this app</string>
+    <string name="credits_section_libraries">Open-source libraries</string>
+    <string name="credits_section_thanks">Thanks</string>
+    <string name="credits_libraries_intro">JavaDroid ships the following components. Each is used under its own licence, listed exactly as the project declares it.</string>
+    <string name="credits_name_version">%1$s %2$s</string>
+    <string name="credits_license">Licence: %1$s</string>
+    <string name="credits_no_browser">No app can open this link.</string>
+    <string name="credits_thanks_body">To everyone maintaining the projects above, and to the people who reported bugs, sent translations and asked for the features that ended up in this release. Development happens in the open — issues and pull requests are welcome.</string>
+
+    <string name="credits_group_compiler">Compiling and running code</string>
+    <string name="credits_group_editor">Editor</string>
+    <string name="credits_group_network">Version control and networking</string>
+    <string name="credits_group_formats">Files and formats</string>
+    <string name="credits_group_platform">Speech and platform</string>
+
+    <string name="credits_use_ecj">Compiles Java sources on the device.</string>
+    <string name="credits_use_r8">Converts class files into DEX so Android can run them.</string>
+    <string name="credits_use_kotlin">Compiles Kotlin sources.</string>
+    <string name="credits_use_desugar">Back-ports newer JDK APIs to older Android releases.</string>
+    <string name="credits_use_asm">Reads and writes bytecode for the disassembler.</string>
+    <string name="credits_use_sora">The code editor itself: highlighting, completion, selection.</string>
+    <string name="credits_use_jgit">Git clone, commit, diff and history, with no native binary.</string>
+    <string name="credits_use_okhttp">The built-in HTTP client.</string>
+    <string name="credits_use_slf4j">Logging facade required by JGit.</string>
+    <string name="credits_use_junrar">Reads RAR4 archives on import. Its licence forbids using the code to re-create the RAR compression algorithm; JavaDroid only reads archives.</string>
+    <string name="credits_use_androidsvg">Renders SVG previews.</string>
+    <string name="credits_use_json">JSON parsing in the HTTP client.</string>
+    <string name="credits_use_stax">XML streaming API that the Kotlin compiler expects.</string>
+    <string name="credits_use_stax2">StAX2 extensions used alongside the above.</string>
+    <string name="credits_use_vosk">Offline speech-to-text for voice input.</string>
+    <string name="credits_use_androidx">AppCompat, ConstraintLayout, DocumentFile, Startup, ProfileInstaller and the Material widgets.</string>
+    <string name="credits_use_android_jar">Bundled so your projects can compile against the Android API on the device.</string>
+
+    <string name="credits_java_trademark">Java™ and OpenJDK are trademarks of Oracle and/or its affiliates. JavaDroid is an independent project, neither affiliated with nor endorsed by Oracle.</string>
+    <string name="credits_java_no_jdk">No JDK or JVM is bundled. Sources are compiled by the Eclipse Compiler for Java, converted to DEX by D8, and executed by Android\'s own runtime (ART) — which is why some standard-library behaviour differs from a desktop JVM.</string>
+    <string name="credits_java_android_libs">The class library available to your code is Android\'s, not Java SE. Packages such as java.awt, javax.swing and java.rmi do not exist on Android.</string>
+    <string name="credits_java_target_meaning">The Java target setting controls the source and class-file level passed to the compiler. It does not add runtime support: a language feature that needs a newer runtime still needs that runtime.</string>
+    <string name="credits_java_build_files">Gradle and Maven build files are read, not executed. JavaDroid parses them for dependencies and source layout, then compiles with its own pipeline — no Gradle daemon runs on the device.</string>
+
+    <!-- Opening files handed over by other apps -->
+    <string name="open_with_label">Open in JavaDroid</string>
+    <string name="open_with_no_file">No file was passed to JavaDroid.</string>
+    <string name="open_with_failed">Could not open the file: %1$s</string>
+
+    <!-- Project import -->
+    <string name="welcome_import_entry">➕ Import from archive or folder</string>
+    <string name="import_title">Import Project</string>
+    <string name="import_option_archive">Select archive (ZIP, TAR, TAR.GZ, RAR)</string>
+    <string name="import_option_folder">Select folder</string>
+    <string name="import_stage_reading">Reading archive…</string>
+    <string name="import_stage_extracting">Extracting %1$s…</string>
+    <string name="import_stage_entry">%1$s</string>
+    <string name="import_stage_copying">Copying folder…</string>
+    <string name="import_error_empty">The archive contained no files.</string>
+    <string name="import_error_folder_unreadable">That folder cannot be read.</string>
+    <string name="import_error_unsupported">%1$s archives cannot be opened here. Supported: %2$s</string>
+    <string name="import_error_title">Import failed</string>
+    <string name="import_done_title">Imported</string>
+    <string name="import_done_summary">%1$d files, %2$d folders (%3$s).</string>
+    <string name="import_done_skipped">%1$d entries were skipped:</string>
     <string name="welcome_clone_url_hint">Repository URL (https://…)</string>
     <string name="welcome_clone_name_hint">Project folder name</string>
     <string name="welcome_clone_user_hint">Username (optional, for private repos)</string>
@@ -473,7 +575,7 @@
     <string name="breakpoint_set_button">Set</string>
     <string name="breakpoint_remove_button">Remove</string>
     <string name="breakpoint_unconditional">● Unconditional BP at line %1$d</string>
-    <string name="breakpoint_conditional">● Conditional BP at line %1$d: %1$s</string>
+    <string name="breakpoint_conditional">● Conditional BP at line %1$d: %2$s</string>
 
     <!-- Bookmarks -->
     <string name="bookmark_set">★ Bookmark at line %1$d</string>

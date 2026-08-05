@@ -37,6 +37,15 @@ private static Lesson materialExecutor() {
         "НИКОЛИ не забувайте shutdown() — інакше пул триматиме JVM живою. "
         + "У JDK 8 використовуйте явний finally { pool.shutdown(); }, якщо після "
         + "submit/execute може статися виняток."));
+    uk.add(LessonBlock.heading("Практичне завдання"));
+    uk.add(LessonBlock.paragraph("Створіть пул потоків фіксованого розміру 2. Надішліть 3 завдання, які виводять ім'я потоку. Після цього викличте shutdown()."));
+    uk.add(LessonBlock.heading("Рішення"));
+    uk.add(LessonBlock.code(
+        "ExecutorService pool = Executors.newFixedThreadPool(2);\n"
+        + "for(int i=0; i<3; i++) {\n"
+        + "    pool.submit(() -> System.out.println(Thread.currentThread().getName()));\n"
+        + "}\n"
+        + "pool.shutdown();"));
     List<LessonBlock> en = new ArrayList<>();
     en.add(LessonBlock.heading("ExecutorService — thread pool"));
     en.add(LessonBlock.paragraph(
@@ -77,6 +86,14 @@ private static Lesson materialFuture() {
         + "Integer result = f.get();   // блокує, поки не готово\n"
         + "System.out.println(result);  // 42\n"
         + "pool.shutdown();"));
+    uk.add(LessonBlock.heading("Практичне завдання"));
+    uk.add(LessonBlock.paragraph("Створіть Callable, який повертає суму 10 + 20. Запустіть його через пул потоків та отримайте результат через Future."));
+    uk.add(LessonBlock.heading("Рішення"));
+    uk.add(LessonBlock.code(
+        "ExecutorService pool = Executors.newSingleThreadExecutor();\n"
+        + "Future<Integer> future = pool.submit(() -> 10 + 20);\n"
+        + "System.out.println(\"Сума: \" + future.get());\n"
+        + "pool.shutdown();"));
     List<LessonBlock> en = new ArrayList<>();
     en.add(LessonBlock.heading("Callable and Future"));
     en.add(LessonBlock.paragraph(
@@ -111,6 +128,14 @@ private static Lesson materialConcurrentCollections() {
         + "BlockingQueue<String> q = new ArrayBlockingQueue<>(10);\n"
         + "q.put(\"item\");            // блокує, якщо черга повна\n"
         + "String s = q.take();       // блокує, якщо порожня"));
+    uk.add(LessonBlock.heading("Практичне завдання"));
+    uk.add(LessonBlock.paragraph("Використайте ConcurrentHashMap. Додайте ключ 'counter' зі значенням 1, а потім безпечно збільште його на 1 за допомогою compute."));
+    uk.add(LessonBlock.heading("Рішення"));
+    uk.add(LessonBlock.code(
+        "ConcurrentHashMap<String, Integer> map = new ConcurrentHashMap<>();\n"
+        + "map.put(\"counter\", 1);\n"
+        + "map.compute(\"counter\", (k, v) -> v == null ? 1 : v + 1);\n"
+        + "System.out.println(map.get(\"counter\")); // 2"));
     List<LessonBlock> en = new ArrayList<>();
     en.add(LessonBlock.heading("Concurrent collections"));
     en.add(LessonBlock.paragraph(
@@ -142,6 +167,14 @@ private static Lesson materialCompletableFuture() {
         + "    .thenAccept(System.out::println)              // побічний ефект\n"
         + "    .exceptionally(e -> { e.printStackTrace(); return null; });\n"
         + "// надрукує: HELLO!"));
+    uk.add(LessonBlock.heading("Практичне завдання"));
+    uk.add(LessonBlock.paragraph("Використайте CompletableFuture, щоб асинхронно повернути 'Java', потім додайте ' 21' і виведіть результат."));
+    uk.add(LessonBlock.heading("Рішення"));
+    uk.add(LessonBlock.code(
+        "CompletableFuture.supplyAsync(() -> \"Java\")\n"
+        + "    .thenApply(s -> s + \" 21\")\n"
+        + "    .thenAccept(System.out::println)\n"
+        + "    .join();"));
     List<LessonBlock> en = new ArrayList<>();
     en.add(LessonBlock.heading("CompletableFuture — async chains"));
     en.add(LessonBlock.paragraph(

@@ -239,7 +239,7 @@
     <string name="settings_power_saving_performance">Latiigbaogbogbo iṣẹ</string>
     <string name="settings_power_saving_desc">Lọwọlọwọ: din iṣẹ nipasẹ ti bọtìnì below. Iṣẹ: n ṣiṣẹ gboogbo iṣẹ ni gbogbo igba.</string>
     <string name="sa_empty_file">Fáìlì Ṣín</string>
-    <string name="sa_long_line">Àwọn Ìlànà ga ju ohun èlò púpọ̀ ju (%2$d)</string>
+    <string name="sa_long_line">Ìlà gùn ju àmì %1$d lọ (%2$d)</string>
     <string name="sa_todo">TODO nínú kọ̀dẹ́</string>
     <string name="sa_fixme">FIXME nínú kọ̀dẹ́ — nílò ìtọ́nisọ́nà</string>
     <string name="sa_hack">HACK nínú kọ̀dẹ́ ìṣètò ìgbà</string>

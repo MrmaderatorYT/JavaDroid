@@ -1,4 +1,6 @@
 package com.ccs.javadroid.ui;
+
+import com.ccs.javadroid.util.Colors;
 import com.ccs.javadroid.R;
 import com.ccs.javadroid.util.AppTheme;
 
@@ -92,11 +94,11 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.TabViewHolder>
 
         boolean isActive = position == activeIndex;
         if (theme != null) {
-            int activeBg   = blend(theme.toolbar, theme.bg, 0.4f);
+            int activeBg   = Colors.blend(theme.toolbar, theme.bg, 0.4f);
             int inactiveBg = theme.toolbar;
             holder.itemView.setBackgroundColor(isActive ? activeBg : inactiveBg);
             holder.tabName.setTextColor(isActive ? theme.text : theme.textDim);
-            holder.tabClose.setTextColor(isActive ? theme.textDim : blend(theme.textDim, theme.toolbar, 0.5f));
+            holder.tabClose.setTextColor(isActive ? theme.textDim : Colors.blend(theme.textDim, theme.toolbar, 0.5f));
         } else {
             holder.itemView.setBackgroundColor(isActive ? 0xFF4E5254 : 0xFF3C3F41);
             holder.tabName.setTextColor(isActive ? 0xFFBBBBBB : 0xFF808080);
@@ -111,14 +113,6 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.TabViewHolder>
         });
     }
 
-    private static int blend(int a, int b, float t) {
-        int ar = (a >> 16) & 0xFF, ag = (a >> 8) & 0xFF, ab = a & 0xFF;
-        int br = (b >> 16) & 0xFF, bg = (b >> 8) & 0xFF, bb = b & 0xFF;
-        int r = (int) (ar + (br - ar) * t);
-        int g = (int) (ag + (bg - ag) * t);
-        int bl = (int) (ab + (bb - ab) * t);
-        return 0xFF000000 | (r << 16) | (g << 8) | bl;
-    }
 
     @Override
     public int getItemCount() { return tabs.size(); }

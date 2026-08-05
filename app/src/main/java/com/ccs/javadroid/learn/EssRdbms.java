@@ -33,6 +33,10 @@ private static Lesson materialSql() {
         + "DELETE FROM users WHERE age < 18;\n"
         + "\n"
         + "SELECT name, age FROM users WHERE age >= 18 ORDER BY age DESC;"));
+    uk.add(LessonBlock.heading("Практичне завдання"));
+    uk.add(LessonBlock.paragraph("Напишіть SQL-запит для оновлення віку користувача з іменем 'Іван' на 32 роки."));
+    uk.add(LessonBlock.heading("Рішення"));
+    uk.add(LessonBlock.code("UPDATE users SET age = 32 WHERE name = 'Іван';"));
     List<LessonBlock> en = new ArrayList<>();
     en.add(LessonBlock.heading("SQL basics: DDL and DML"));
     en.add(LessonBlock.code(
@@ -76,6 +80,14 @@ private static Lesson materialJoins() {
     uk.add(LessonBlock.note(
         "GROUP BY групує рядки; HAVING фільтрує групи (на відміну від WHERE, що "
         + "фільтрує рядки до групування)."));
+    uk.add(LessonBlock.heading("Практичне завдання"));
+    uk.add(LessonBlock.paragraph("Напишіть SQL-запит з INNER JOIN для отримання імен користувачів та їх замовлень з total більше 500."));
+    uk.add(LessonBlock.heading("Рішення"));
+    uk.add(LessonBlock.code(
+        "SELECT u.name, o.total\n"
+        + "FROM users u\n"
+        + "INNER JOIN orders o ON u.id = o.user_id\n"
+        + "WHERE o.total > 500;"));
     List<LessonBlock> en = new ArrayList<>();
     en.add(LessonBlock.heading("JOIN — combining tables"));
     en.add(LessonBlock.code(
@@ -117,6 +129,10 @@ private static Lesson materialIndex() {
     uk.add(LessonBlock.warning(
         "Індексуйте колонки з WHERE/JOIN/ORDER BY, але не всі підряд. Зайвий індекс "
         + "= повільніші вставки й марна трата місця."));
+    uk.add(LessonBlock.heading("Практичне завдання"));
+    uk.add(LessonBlock.paragraph("Напишіть SQL-запит для створення індексу для колонки age в таблиці users."));
+    uk.add(LessonBlock.heading("Рішення"));
+    uk.add(LessonBlock.code("CREATE INDEX idx_users_age ON users(age);"));
     List<LessonBlock> en = new ArrayList<>();
     en.add(LessonBlock.heading("Indexes and planning"));
     en.add(LessonBlock.paragraph(

@@ -1,11 +1,15 @@
 package com.ccs.javadroid.ui;
+
+import com.ccs.javadroid.util.Colors;
 import com.ccs.javadroid.R;
 import com.ccs.javadroid.util.AppPreferences;
 import com.ccs.javadroid.util.AppTheme;
 import com.ccs.javadroid.util.FullScreenHelper;
 import com.ccs.javadroid.maven.MavenPaths;
 import com.ccs.javadroid.git.GitManager;
+import com.ccs.javadroid.archive.ArchiveExtractor;
 import com.ccs.javadroid.project.PlaygroundProjectFactory;
+import com.ccs.javadroid.project.ProjectImporter;
 import com.ccs.javadroid.maven.MavenProjectFactory;
 import com.ccs.javadroid.project.GradleProjectFactory;
 import com.ccs.javadroid.tools.bytecode.BytecodeProjectFactory;
@@ -131,7 +135,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
         // Search field
         if (etSearchProjects != null) {
-            etSearchProjects.setBackgroundColor(blend(theme.toolbar, theme.bg, 0.2f));
+            etSearchProjects.setBackgroundColor(Colors.blend(theme.toolbar, theme.bg, 0.2f));
             etSearchProjects.setTextColor(theme.text);
             etSearchProjects.setHintTextColor(theme.textDim);
         }
@@ -162,6 +166,8 @@ public class WelcomeActivity extends AppCompatActivity {
         }
         TextView sidebarMaterials = findViewById(R.id.sidebarMaterials);
         if (sidebarMaterials != null) sidebarMaterials.setTextColor(theme.textDim);
+        TextView sidebarCredits = findViewById(R.id.sidebarCredits);
+        if (sidebarCredits != null) sidebarCredits.setTextColor(theme.textDim);
 
         android.widget.ImageView sidebarSettings = findViewById(R.id.sidebarSettings);
         if (sidebarSettings != null) sidebarSettings.setColorFilter(theme.textDim);
@@ -237,6 +243,12 @@ public class WelcomeActivity extends AppCompatActivity {
                 Intent intent = new Intent(this, LearnActivity.class);
                 startActivity(intent);
             });
+        }
+
+        View sidebarCredits = findViewById(R.id.sidebarCredits);
+        if (sidebarCredits != null) {
+            sidebarCredits.setOnClickListener(v ->
+                    startActivity(new Intent(this, CreditsActivity.class)));
         }
     }
 
@@ -347,113 +359,89 @@ public class WelcomeActivity extends AppCompatActivity {
                 }
             }
         } else if (requestCode == REQUEST_IMPORT_ZIP && resultCode == RESULT_OK && data != null) {
-            importZipResult(data.getData());
+            runImport(data.getData(), true);
         } else if (requestCode == REQUEST_IMPORT_FOLDER && resultCode == RESULT_OK && data != null) {
-            importFolderResult(data.getData());
+            runImport(data.getData(), false);
         }
     }
 
-    private void importZipResult(android.net.Uri uri) {
+    /** Shared progress/reporting shell around {@link ProjectImporter}. */
+    private void runImport(android.net.Uri uri, boolean isArchive) {
+        if (uri == null) return;
         android.app.ProgressDialog pd = new android.app.ProgressDialog(this);
-        pd.setMessage("Extracting ZIP...");
+        pd.setMessage(getString(isArchive
+                ? R.string.import_stage_reading : R.string.import_stage_copying));
         pd.setCancelable(false);
         pd.show();
 
-        new Thread(() -> {
-            try {
-                java.io.InputStream is = getContentResolver().openInputStream(uri);
-                if (is == null) throw new java.io.IOException("Cannot open URI");
-                
-                String fileName = "ImportedProject_" + System.currentTimeMillis();
-                try (android.database.Cursor cursor = getContentResolver().query(uri, null, null, null, null)) {
-                    if (cursor != null && cursor.moveToFirst()) {
-                        int nameIndex = cursor.getColumnIndex(android.provider.OpenableColumns.DISPLAY_NAME);
-                        if (nameIndex != -1) {
-                            fileName = cursor.getString(nameIndex);
-                            if (fileName.toLowerCase().endsWith(".zip")) {
-                                fileName = fileName.substring(0, fileName.length() - 4);
-                            }
-                        }
-                    }
-                }
-                
-                File dest = new File(MavenPaths.getJavaDroidBase(this), fileName);
-                com.ccs.javadroid.utils.ZipUtils.unzip(is, dest);
-                is.close();
-                
-                File[] children = dest.listFiles();
-                if (children != null && children.length == 1 && children[0].isDirectory()) {
-                    dest = children[0];
-                }
-                final String projectPath = dest.getAbsolutePath();
-                
-                runOnUiThread(() -> {
-                    pd.dismiss();
-                    Toast.makeText(WelcomeActivity.this, "Imported successfully", Toast.LENGTH_SHORT).show();
-                    appPrefs.addRecentProject(projectPath);
-                    setupRecentProjects();
-                });
-            } catch (Exception e) {
-                runOnUiThread(() -> {
-                    pd.dismiss();
-                    newRoundedDialog().setTitle("Error").setMessage(e.getMessage()).setPositiveButton(android.R.string.ok, null).show();
-                });
+        ProjectImporter.Callback callback = new ProjectImporter.Callback() {
+            @Override public void onProgress(String message) {
+                if (pd.isShowing()) pd.setMessage(message);
             }
-        }).start();
-    }
 
-    private void importFolderResult(android.net.Uri uri) {
-        android.app.ProgressDialog pd = new android.app.ProgressDialog(this);
-        pd.setMessage("Copying Folder...");
-        pd.setCancelable(false);
-        pd.show();
-
-        new Thread(() -> {
-            try {
-                androidx.documentfile.provider.DocumentFile tree = androidx.documentfile.provider.DocumentFile.fromTreeUri(this, uri);
-                if (tree == null) throw new java.io.IOException("Cannot open folder");
-                
-                String folderName = tree.getName();
-                if (folderName == null) folderName = "ImportedFolder_" + System.currentTimeMillis();
-                
-                File dest = new File(MavenPaths.getJavaDroidBase(this), folderName);
-                if (!dest.exists()) dest.mkdirs();
-                
-                copyDocumentFile(tree, dest);
-                
-                runOnUiThread(() -> {
-                    pd.dismiss();
-                    Toast.makeText(WelcomeActivity.this, "Imported successfully", Toast.LENGTH_SHORT).show();
-                    appPrefs.addRecentProject(dest.getAbsolutePath());
-                    setupRecentProjects();
-                });
-            } catch (Exception e) {
-                runOnUiThread(() -> {
-                    pd.dismiss();
-                    newRoundedDialog().setTitle("Error").setMessage(e.getMessage()).setPositiveButton(android.R.string.ok, null).show();
-                });
+            @Override
+            public void onSuccess(File projectRoot, ArchiveExtractor.Result summary) {
+                dismiss(pd);
+                appPrefs.addRecentProject(projectRoot.getAbsolutePath());
+                setupRecentProjects();
+                showImportSummary(projectRoot, summary);
             }
-        }).start();
-    }
 
-    private void copyDocumentFile(androidx.documentfile.provider.DocumentFile sourceFile, File destDir) throws java.io.IOException {
-        for (androidx.documentfile.provider.DocumentFile file : sourceFile.listFiles()) {
-            if (file.isDirectory()) {
-                File newDir = new File(destDir, file.getName());
-                newDir.mkdirs();
-                copyDocumentFile(file, newDir);
-            } else {
-                File newFile = new File(destDir, file.getName());
-                try (java.io.InputStream in = getContentResolver().openInputStream(file.getUri());
-                     java.io.OutputStream out = new java.io.FileOutputStream(newFile)) {
-                    byte[] buffer = new byte[4096];
-                    int read;
-                    while ((read = in.read(buffer)) != -1) {
-                        out.write(buffer, 0, read);
-                    }
-                }
+            @Override public void onFailure(String message) {
+                dismiss(pd);
+                newRoundedDialog()
+                        .setTitle(R.string.import_error_title)
+                        .setMessage(message)
+                        .setPositiveButton(android.R.string.ok, null)
+                        .show();
             }
+        };
+
+        if (isArchive) {
+            ProjectImporter.importArchive(this, uri, callback);
+        } else {
+            ProjectImporter.importFolder(this, uri, callback);
         }
+    }
+
+    private void dismiss(android.app.ProgressDialog pd) {
+        if (pd.isShowing() && !isFinishing()) {
+            try { pd.dismiss(); } catch (IllegalArgumentException ignored) {}
+        }
+    }
+
+    /**
+     * Reports what landed. Anything the extractor refused (a path escaping the
+     * destination, a symlink) is named here rather than passed over in silence.
+     */
+    private void showImportSummary(File projectRoot, ArchiveExtractor.Result summary) {
+        if (summary == null || summary.skipped.isEmpty()) {
+            Toast.makeText(this, getString(R.string.import_done_title), Toast.LENGTH_SHORT).show();
+            openProject(projectRoot.getAbsolutePath());
+            return;
+        }
+        StringBuilder message = new StringBuilder(getString(R.string.import_done_summary,
+                summary.fileCount, summary.directoryCount, formatSize(summary.bytesWritten)));
+        message.append("\n\n").append(getString(R.string.import_done_skipped, summary.skipped.size()));
+        for (String entry : summary.skipped) {
+            message.append("\n• ").append(entry);
+        }
+        newRoundedDialog()
+                .setTitle(R.string.import_done_title)
+                .setMessage(message.toString())
+                .setPositiveButton(R.string.welcome_project_options_open,
+                        (d, w) -> openProject(projectRoot.getAbsolutePath()))
+                .setNegativeButton(R.string.dialog_cancel, null)
+                .show();
+    }
+
+    private static String formatSize(long bytes) {
+        if (bytes < 1024) return bytes + " B";
+        if (bytes < 1024 * 1024) return String.format(Locale.US, "%.1f KB", bytes / 1024.0);
+        if (bytes < 1024L * 1024 * 1024) {
+            return String.format(Locale.US, "%.1f MB", bytes / (1024.0 * 1024));
+        }
+        return String.format(Locale.US, "%.2f GB", bytes / (1024.0 * 1024 * 1024));
     }
 
     private void filterProjects(String query) {
@@ -525,7 +513,7 @@ public class WelcomeActivity extends AppCompatActivity {
         
         int dirCount = (dirs == null) ? 0 : dirs.length;
         final String[] names = new String[dirCount + 1];
-        names[0] = "➕ Import from ZIP / Folder";
+        names[0] = getString(R.string.welcome_import_entry);
         
         for (int i = 0; i < dirCount; i++) {
             names[i + 1] = dirs[i].getName();
@@ -545,9 +533,12 @@ public class WelcomeActivity extends AppCompatActivity {
     }
 
     private void showImportTypeDialog() {
-        String[] options = {"Select ZIP Archive", "Select Folder"};
+        String[] options = {
+                getString(R.string.import_option_archive),
+                getString(R.string.import_option_folder)
+        };
         newRoundedDialog()
-                .setTitle("Import Project")
+                .setTitle(R.string.import_title)
                 .setItems(options, (dialog, which) -> {
                     if (which == 0) {
                         importZip();
@@ -564,8 +555,17 @@ public class WelcomeActivity extends AppCompatActivity {
 
     private void importZip() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        // Providers disagree wildly on archive MIME types (tar in particular is
+        // often reported as octet-stream), so the filter stays wide and the
+        // format is decided from the file's own header after picking.
         intent.setType("*/*");
-        String[] mimeTypes = {"application/zip", "application/x-zip-compressed"};
+        String[] mimeTypes = {
+                "application/zip", "application/x-zip-compressed", "application/java-archive",
+                "application/x-tar", "application/x-gtar", "application/gzip",
+                "application/x-gzip", "application/x-compressed-tar",
+                "application/vnd.rar", "application/x-rar-compressed",
+                "application/octet-stream"
+        };
         intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
         startActivityForResult(intent, REQUEST_IMPORT_ZIP);
     }
@@ -836,7 +836,7 @@ public class WelcomeActivity extends AppCompatActivity {
         e.setHint(hint);
         e.setHintTextColor(theme.textDim);
         e.setTextColor(theme.text);
-        e.setBackgroundColor(blend(theme.bg, theme.text, 0.05f));
+        e.setBackgroundColor(Colors.blend(theme.bg, theme.text, 0.05f));
         e.setPadding(32, 16, 32, 16);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -850,18 +850,11 @@ public class WelcomeActivity extends AppCompatActivity {
         return (int) (value * getResources().getDisplayMetrics().density);
     }
 
+    /** @see Dialogs#rounded */
     private com.google.android.material.dialog.MaterialAlertDialogBuilder newRoundedDialog() {
-        return new com.google.android.material.dialog.MaterialAlertDialogBuilder(this);
+        return Dialogs.rounded(this);
     }
 
-    private static int blend(int a, int b, float t) {
-        int ar = (a >> 16) & 0xFF, ag = (a >> 8) & 0xFF, ab = a & 0xFF;
-        int br = (b >> 16) & 0xFF, bg = (b >> 8) & 0xFF, bb = b & 0xFF;
-        int r = (int) (ar + (br - ar) * t);
-        int g = (int) (ag + (bg - ag) * t);
-        int bl = (int) (ab + (bb - ab) * t);
-        return 0xFF000000 | (r << 16) | (g << 8) | bl;
-    }
 
     private boolean deleteRecursive(File file) {
         if (file.isDirectory()) {

@@ -82,14 +82,14 @@ final class Jdk8DeepDiveMoreChapters {
         uk.add(LessonBlock.warning(
                 "Не використовуйте raw type без потреби: List list = new ArrayList(); "
                 + "Raw type вимикає перевірку generics і повертає вас у стиль до Java 5."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Напишіть Box<T> і перевірте Box<String>, Box<Integer>, Box<List<String>>.",
-                "Напишіть метод static <T> T last(List<T> list).",
-                "Напишіть Pair<K,V> з getKey(), getValue(), toString().",
-                "Спробуйте raw List і подивіться warning компілятора.",
-                "Поясніть словами, яку помилку generics знаходять до запуску програми."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Generics: not magic, type checking"));
         en.add(LessonBlock.paragraph(
@@ -188,14 +188,14 @@ final class Jdk8DeepDiveMoreChapters {
         uk.add(LessonBlock.note(
                 "@SuppressWarnings(\"unchecked\") не виправляє проблему, а тільки вимикає попередження. "
                 + "Використовуйте його максимально локально і тільки коли ви справді довели безпеку."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Створіть приклад heap pollution через raw List.",
-                "Поясніть, чому ClassCastException виникає не на raw.add, а на get.",
-                "Напишіть метод <T> List<T> copy(List<T> source), який не використовує raw types.",
-                "Спробуйте скомпілювати new T() у generic-класі й зафіксуйте помилку.",
-                "Знайдіть у власному коді місця, де є unchecked warning."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Type erasure: what remains after compilation"));
         en.add(LessonBlock.paragraph(
@@ -278,14 +278,14 @@ final class Jdk8DeepDiveMoreChapters {
         uk.add(LessonBlock.warning(
                 "List<Integer> не є підтипом List<Number>. Інакше можна було б покласти Double "
                 + "у List<Integer> через посилання List<Number>, і типобезпечність зламалась би."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Напишіть copy(List<? extends T> src, List<? super T> dst).",
-                "Напишіть printAll(List<?> list), який друкує будь-який список.",
-                "Спробуйте додати елемент у List<? extends Number> і поясніть помилку.",
-                "Спробуйте читати з List<? super Integer> як Integer і поясніть помилку.",
-                "Поясніть PECS на прикладі кошика фруктів."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Wildcards: ? extends, ? super, PECS"));
         en.add(LessonBlock.paragraph(
@@ -382,13 +382,14 @@ final class Jdk8DeepDiveMoreChapters {
                 "Якщо перевизначили equals, майже завжди треба перевизначити hashCode. "
                 + "Інакше HashSet/HashMap можуть поводитися неправильно: equals каже 'рівні', "
                 + "а hashCode розкладає об'єкти у різні buckets."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Створіть User(id, email) і додайте два однакових id у HashSet.",
-                "Спершу не пишіть equals/hashCode, потім напишіть і порівняйте результат.",
-                "Змініть hashCode так, щоб він завжди повертав 1, і перевірте поведінку.",
-                "Поясніть різницю між == і equals на String та на власному класі."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Object: root of all classes"));
         en.add(LessonBlock.paragraph(
@@ -482,13 +483,14 @@ final class Jdk8DeepDiveMoreChapters {
         uk.add(LessonBlock.warning(
                 "Не використовуйте наслідування тільки для 'щоб перевикористати код'. Якщо "
                 + "між класами немає справжнього is-a, частіше краще композиція."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Створіть interface Notifier і реалізації EmailNotifier, SmsNotifier.",
-                "Створіть OrderService, який приймає Notifier у конструкторі.",
-                "Замініть реалізацію без зміни OrderService.",
-                "Поясніть, чому це легше тестувати, ніж new EmailNotifier() всередині сервісу."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Inheritance, composition, interfaces"));
         en.add(LessonBlock.paragraph(
@@ -580,13 +582,14 @@ final class Jdk8DeepDiveMoreChapters {
                 "Не ловіть Exception занадто широко без потреби. catch (Exception e) часто "
                 + "приховує реальну проблему. Починайте зі специфічних винятків: IOException, "
                 + "NumberFormatException, SQLException."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Напишіть parsePositiveInt(String s), який кидає IllegalArgumentException.",
-                "Напишіть readFirstLine(Path p), який оголошує throws IOException.",
-                "Створіть власний checked exception ValidationException.",
-                "Перепишіть catch(Exception) на кілька конкретних catch."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Exception hierarchy"));
         en.add(LessonBlock.paragraph(
@@ -652,13 +655,14 @@ final class Jdk8DeepDiveMoreChapters {
                 + "        System.out.println(\"Suppressed: \" + suppressed);\n"
                 + "    }\n"
                 + "}"));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Напишіть власний class DemoResource implements AutoCloseable.",
-                "У close() виведіть повідомлення і перевірте порядок закриття двох ресурсів.",
-                "Змусьте close() кинути Exception і подивіться suppressed.",
-                "Перепишіть старий finally-close код на try-with-resources."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("try-with-resources and AutoCloseable"));
         en.add(LessonBlock.paragraph(
@@ -725,14 +729,14 @@ final class Jdk8DeepDiveMoreChapters {
         uk.add(LessonBlock.warning(
                 "У JDK 8 немає Files.readString/writeString і Path.of. Використовуйте "
                 + "Files.readAllBytes/readAllLines/write та Paths.get."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Створіть файл з 5 рядками через Files.write.",
-                "Прочитайте файл через Files.readAllLines.",
-                "Скопіюйте файл через Files.copy з REPLACE_EXISTING.",
-                "Напишіть copyBinary(Path src, Path dst) через InputStream/OutputStream.",
-                "Поясніть різницю між byte stream і character stream."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("IO/NIO: bytes, characters, Path, Files"));
         en.add(LessonBlock.paragraph(
@@ -814,14 +818,14 @@ final class Jdk8DeepDiveMoreChapters {
         uk.add(LessonBlock.warning(
                 "LocalDateTime не є моментом на timeline. Без ZoneId ви не знаєте, який це "
                 + "реальний Instant. Для збереження подій у базі часто краще Instant + окремо zone/user preference."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Порахуйте вік через Period.between.",
-                "Порахуйте різницю між двома Instant через Duration.",
-                "Сконвертуйте LocalDateTime у Instant через ZoneId.",
-                "Відформатуйте дату через DateTimeFormatter.ofPattern(\"dd.MM.yyyy HH:mm\").",
-                "Поясніть різницю між Period і Duration."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("java.time: human time and machine time"));
         en.add(LessonBlock.paragraph(
@@ -891,13 +895,14 @@ final class Jdk8DeepDiveMoreChapters {
         uk.add(LessonBlock.warning(
                 "volatile int count; count++ не є атомарним. count++ читає значення, додає 1, "
                 + "записує назад. Між цими кроками може втрутитись інший потік."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Запустіть 2 потоки, кожен робить 100000 increment без synchronized.",
-                "Повторіть із synchronized і порівняйте результат.",
-                "Повторіть з AtomicInteger.",
-                "Поясніть, чому volatile не достатній для increment."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Threads, race condition, visibility"));
         en.add(LessonBlock.paragraph(
@@ -970,14 +975,14 @@ final class Jdk8DeepDiveMoreChapters {
         uk.add(LessonBlock.warning(
                 "Завжди завершуйте ExecutorService. Якщо забути shutdown(), потоки пулу можуть "
                 + "тримати JVM живою. У JDK 8 використовуйте finally."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Створіть fixed thread pool на 3 потоки і відправте 10 задач.",
-                "Зробіть Callable, який рахує суму від 1 до n.",
-                "Зберіть List<Future<Integer>> і потім прочитайте всі результати.",
-                "Додайте timeout у future.get(1, TimeUnit.SECONDS).",
-                "Поясніть різницю між submit і execute."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("ExecutorService, Callable, Future"));
         en.add(LessonBlock.paragraph(

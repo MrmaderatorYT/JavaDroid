@@ -1,4 +1,6 @@
 package com.ccs.javadroid.ui;
+
+import com.ccs.javadroid.util.Colors;
 import com.ccs.javadroid.R;
 import com.ccs.javadroid.util.AppPreferences;
 import com.ccs.javadroid.util.AppTheme;
@@ -124,7 +126,7 @@ public class LibraryManagerActivity extends AppCompatActivity {
         } catch (Exception ignored) {}
 
         GradientDrawable editBg = new GradientDrawable();
-        editBg.setColor(blend(theme.toolbar, theme.bg, 0.4f));
+        editBg.setColor(Colors.blend(theme.toolbar, theme.bg, 0.4f));
         editBg.setCornerRadius(dp(20)); // rounded pill style input
         editBg.setStroke(dp(1), theme.separator);
         etSearch.setBackground(editBg);
@@ -200,7 +202,7 @@ public class LibraryManagerActivity extends AppCompatActivity {
         ImageView iv = new ImageView(this);
         try {
             Drawable d = getResources().getDrawable(R.drawable.ic_search).mutate();
-            d.setColorFilter(blend(theme.textDim, theme.bg, 0.6f), PorterDuff.Mode.SRC_IN);
+            d.setColorFilter(Colors.blend(theme.textDim, theme.bg, 0.6f), PorterDuff.Mode.SRC_IN);
             iv.setImageDrawable(d);
         } catch (Exception ignored) {}
         LinearLayout.LayoutParams ivLp = new LinearLayout.LayoutParams(dp(72), dp(72));
@@ -448,21 +450,14 @@ public class LibraryManagerActivity extends AppCompatActivity {
         }
     }
 
-    private static int blend(int a, int b, float t) {
-        int ar = (a >> 16) & 0xFF, ag = (a >> 8) & 0xFF, ab = a & 0xFF;
-        int br = (b >> 16) & 0xFF, bg = (b >> 8) & 0xFF, bb = b & 0xFF;
-        int r = (int) (ar + (br - ar) * t);
-        int g = (int) (ag + (bg - ag) * t);
-        int bl = (int) (ab + (bb - ab) * t);
-        return 0xFF000000 | (r << 16) | (g << 8) | bl;
-    }
 
     private int dp(int v) {
         return (int) (v * getResources().getDisplayMetrics().density);
     }
 
+    /** @see Dialogs#rounded */
     private com.google.android.material.dialog.MaterialAlertDialogBuilder newRoundedDialog() {
-        return new com.google.android.material.dialog.MaterialAlertDialogBuilder(this);
+        return Dialogs.rounded(this);
     }
 
     public static void launch(Activity host, File projectPath, int requestCode) {
@@ -512,7 +507,7 @@ public class LibraryManagerActivity extends AppCompatActivity {
             card.setLayoutParams(cardLp);
 
             GradientDrawable cardBg = new GradientDrawable();
-            cardBg.setColor(blend(theme.toolbar, theme.bg, 0.5f));
+            cardBg.setColor(Colors.blend(theme.toolbar, theme.bg, 0.5f));
             cardBg.setCornerRadius(dp(8));
             card.setBackground(cardBg);
 
@@ -572,7 +567,7 @@ public class LibraryManagerActivity extends AppCompatActivity {
             badge.setTextColor(theme.successText);
             
             GradientDrawable badgeBg = new GradientDrawable();
-            badgeBg.setColor(blend(theme.successText, theme.bg, 0.85f));
+            badgeBg.setColor(Colors.blend(theme.successText, theme.bg, 0.85f));
             badgeBg.setCornerRadius(dp(12));
             badge.setBackground(badgeBg);
 

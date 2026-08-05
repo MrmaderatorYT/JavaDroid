@@ -144,13 +144,14 @@ final class Jdk8DeepDiveChapters {
         uk.add(LessonBlock.warning(
                 "Map не наслідує Collection. Це окрема гілка API: у Map немає add(), "
                 + "зате є put(key, value), get(key), containsKey(key), entrySet()."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Створіть List з 5 іменами, де одне ім'я повторюється.",
-                "Перекладіть цей List у HashSet і подивіться, що сталося з дублем.",
-                "Створіть Map ім'я -> кількість появ у списку.",
-                "Поясніть, чому List і Set схожі, але Map має інший контракт."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Collections Framework hierarchy"));
         en.add(LessonBlock.paragraph(
@@ -226,13 +227,14 @@ final class Jdk8DeepDiveChapters {
                 + "\n"
                 + "List<String> mutable = new ArrayList<String>(fixed);\n"
                 + "mutable.add(\"D\");          // OK"));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Напишіть метод swap(List<String> list, int i, int j).",
-                "Напишіть метод removeEverySecond(List<String> list), використовуючи Iterator.",
-                "Створіть власний клас Student і перевірте contains до та після equals/hashCode.",
-                "Перевірте різницю між list.remove(1) і list.remove(Integer.valueOf(1)) для List<Integer>."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("List: contract, indexes, duplicates"));
         en.add(LessonBlock.paragraph(
@@ -312,13 +314,14 @@ final class Jdk8DeepDiveChapters {
                 "Рідко вставляєте або видаляєте з початку/середини.",
                 "Потрібна компактна структура з хорошою локальністю пам'яті.",
                 "Початківцю майже завжди варто починати саме з ArrayList, доки немає причини обрати інше."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Створіть ArrayList на 1000 чисел і виміряйте час додавання в кінець.",
-                "Повторіть, але додавайте кожне число в позицію 0.",
-                "Напишіть метод findMax(List<Integer> list), не використовуючи Collections.max.",
-                "Напишіть метод compact(List<String> list), який видаляє null та порожні рядки."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("ArrayList: array inside"));
         en.add(LessonBlock.paragraph(
@@ -389,13 +392,14 @@ final class Jdk8DeepDiveChapters {
                 "Не використовуйте LinkedList тільки тому, що там 'швидке видалення'. "
                 + "Щоб видалити елемент за індексом, його спершу треба знайти, а це O(n). "
                 + "У реальних задачах ArrayList часто швидший через кеш процесора і менше об'єктів."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Реалізуйте стек через ArrayDeque: push, pop, peek.",
-                "Реалізуйте чергу через ArrayDeque: offer, poll, peek.",
-                "Створіть LinkedList і спробуйте addFirst/removeFirst.",
-                "Поясніть, чому Stack вважається legacy, хоча він досі працює."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("LinkedList, Vector, Stack"));
         en.add(LessonBlock.paragraph(
@@ -486,14 +490,14 @@ final class Jdk8DeepDiveChapters {
                 + "метод remove() або set() працює з щойно повернутим елементом. Метод add(x) "
                 + "вставляє x перед елементом, який повернув би next(), і після елемента, який "
                 + "повернув би previous(). Це звучить складно, тому треба тренувати руками."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Обійдіть Vector через Enumeration і перепишіть той самий код через Iterator.",
-                "Видаліть усі парні числа з List<Integer> через Iterator.remove().",
-                "Через ListIterator вставте \"middle\" між \"left\" і \"right\".",
-                "Спробуйте викликати iterator.remove() до next() і зафіксуйте виняток.",
-                "Поясніть різницю між fail-fast і потокобезпечністю."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Enumeration, Iterator, ListIterator"));
         en.add(LessonBlock.paragraph(
@@ -597,14 +601,14 @@ final class Jdk8DeepDiveChapters {
         uk.add(LessonBlock.warning(
                 "Якщо об'єкт змінюється після додавання в HashSet так, що змінюється hashCode, "
                 + "елемент може 'загубитися': він є всередині, але contains/remove більше не знаходять його."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Створіть клас Student(id, name). Додайте двох студентів з однаковим id у HashSet.",
-                "Спочатку не перевизначайте equals/hashCode і подивіться розмір Set.",
-                "Потім перевизначте equals/hashCode тільки за id і повторіть.",
-                "Перевірте HashSet, LinkedHashSet і TreeSet на одному наборі рядків.",
-                "Поясніть, чому TreeSet потребує Comparable або Comparator."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Set: uniqueness through equals/hashCode"));
         en.add(LessonBlock.paragraph(
@@ -685,13 +689,14 @@ final class Jdk8DeepDiveChapters {
                 "У JDK 8 при великій кількості колізій bucket може перетворитися з linked list "
                 + "на tree bin. Це захищає від дуже поганого O(n), але нормальний equals/hashCode "
                 + "все одно обов'язковий."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Порахуйте частоти слів у реченні через HashMap.",
-                "Виведіть Map через entrySet(), keySet() і values().",
-                "Перевірте різницю між get(k) == null і containsKey(k), якщо значення null.",
-                "Створіть клас User як ключ і перевірте поведінку без equals/hashCode."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("HashMap: keys, buckets, hash"));
         en.add(LessonBlock.paragraph(
@@ -779,13 +784,14 @@ final class Jdk8DeepDiveChapters {
         uk.add(LessonBlock.warning(
                 "Hashtable синхронізує окремі методи, але це не робить складні сценарії автоматично безпечними. "
                 + "Для нового коду частіше використовуйте ConcurrentHashMap або зовнішню синхронізацію."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Створіть LinkedHashMap і покажіть, що порядок вставки зберігається.",
-                "Створіть TreeMap з ключами Integer і виведіть firstKey/lastKey.",
-                "Спробуйте покласти null key у TreeMap і зафіксуйте виняток.",
-                "Зробіть Properties з трьома налаштуваннями і прочитайте значення з default."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("LinkedHashMap, TreeMap, Hashtable, Properties"));
         en.add(LessonBlock.paragraph(
@@ -886,13 +892,14 @@ final class Jdk8DeepDiveChapters {
         uk.add(LessonBlock.warning(
                 "binarySearch працює правильно тільки на відсортованому списку і з тим самим "
                 + "Comparator, яким ви сортували. Інакше результат не має сенсу."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Відсортуйте студентів за name, age, grade.",
-                "Зробіть comparator: grade desc, потім name asc.",
-                "Перевірте binarySearch до сортування і після сортування.",
-                "Напишіть метод top3(List<Student>) без Stream API, тільки Collections.sort."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Collections algorithms"));
         en.add(LessonBlock.paragraph(
@@ -976,13 +983,14 @@ final class Jdk8DeepDiveChapters {
         uk.add(LessonBlock.warning(
                 "Stream можна використати тільки один раз. Після термінальної операції pipeline "
                 + "закритий. Якщо треба повторити обробку, створіть новий stream з колекції."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "З List<Integer> отримайте квадрати тільки парних чисел.",
-                "З List<String> знайдіть перше слово довше 6 символів через findFirst.",
-                "З List<Student> згрупуйте студентів за віком через Collectors.groupingBy.",
-                "Перепишіть один Stream pipeline у звичайний for-loop і порівняйте читабельність."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Stream API: pipeline over a collection"));
         en.add(LessonBlock.paragraph(
@@ -1060,14 +1068,14 @@ final class Jdk8DeepDiveChapters {
         uk.add(LessonBlock.warning(
                 "Collections.synchronizedList синхронізує окремі методи, але ітерація — це "
                 + "послідовність багатьох дій. Тому обхід треба обгорнути synchronized(list)."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Навмисно отримайте ConcurrentModificationException у ArrayList.",
-                "Виправте код через Iterator.remove().",
-                "Створіть synchronizedList і правильно обійдіть його у synchronized-блоці.",
-                "Створіть ConcurrentHashMap і порахуйте частоти слів через merge.",
-                "Поясніть, коли CopyOnWriteArrayList може бути доречним."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Fail-fast and concurrent collections"));
         en.add(LessonBlock.paragraph(

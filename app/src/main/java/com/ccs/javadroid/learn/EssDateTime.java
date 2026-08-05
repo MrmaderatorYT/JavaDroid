@@ -34,6 +34,14 @@ private static Lesson materialTimeline() {
     uk.add(LessonBlock.note(
             "Instant не залежить від часового поясу — це абсолютна точка в часі. "
             + "Ідеально для timestamp-ів, логів і метрик."));
+    uk.add(LessonBlock.heading("Практичне завдання"));
+    uk.add(LessonBlock.paragraph("Отримайте поточний Instant. Додайте до нього 1 годину. Знайдіть тривалість у хвилинах між ними."));
+    uk.add(LessonBlock.heading("Рішення"));
+    uk.add(LessonBlock.code(
+        "Instant now = Instant.now();\n"
+        + "Instant later = now.plus(Duration.ofHours(1));\n"
+        + "long mins = Duration.between(now, later).toMinutes();\n"
+        + "System.out.println(mins); // 60"));
     List<LessonBlock> en = new ArrayList<>();
     en.add(LessonBlock.heading("Timeline: Instant"));
     en.add(LessonBlock.paragraph(
@@ -71,6 +79,13 @@ private static Lesson materialLocal() {
     uk.add(LessonBlock.warning(
         "Local-типи не можна змішувати з Instant напряму — потрібен часовий пояс: "
         + "localDateTime.atZone(ZoneId.of(\"Europe/Kyiv\")).toInstant()."));
+    uk.add(LessonBlock.heading("Практичне завдання"));
+    uk.add(LessonBlock.paragraph("Отримайте поточну локальну дату (LocalDate.now()), додайте 7 днів і виведіть її."));
+    uk.add(LessonBlock.heading("Рішення"));
+    uk.add(LessonBlock.code(
+        "LocalDate today = LocalDate.now();\n"
+        + "LocalDate nextWeek = today.plusDays(7);\n"
+        + "System.out.println(nextWeek);"));
     List<LessonBlock> en = new ArrayList<>();
     en.add(LessonBlock.heading("LocalDate / LocalTime / LocalDateTime"));
     en.add(LessonBlock.paragraph(
@@ -105,6 +120,13 @@ private static Lesson materialZoned() {
     uk.add(LessonBlock.note(
         "Список усіх ZoneId — ZoneId.getAvailableZoneIds(). Використовуйте імена з "
         + "бази IANA (\"Europe/Kyiv\"), а не скорочення (\"EET\")."));
+    uk.add(LessonBlock.heading("Практичне завдання"));
+    uk.add(LessonBlock.paragraph("Створіть ZonedDateTime для поточного моменту в зоні 'Europe/London' і виведіть."));
+    uk.add(LessonBlock.heading("Рішення"));
+    uk.add(LessonBlock.code(
+        "ZoneId london = ZoneId.of(\"Europe/London\");\n"
+        + "ZonedDateTime nowInLondon = ZonedDateTime.now(london);\n"
+        + "System.out.println(nowInLondon);"));
     List<LessonBlock> en = new ArrayList<>();
     en.add(LessonBlock.heading("ZonedDateTime"));
     en.add(LessonBlock.paragraph(
@@ -141,6 +163,13 @@ private static Lesson materialFormat() {
     uk.add(LessonBlock.warning(
         "LocalDateTime.parse за замовчуванням вимагає ISO-8601 (\"2026-06-15T14:30\"). "
         + "Для іншого формату обов'язково передайте DateTimeFormatter."));
+    uk.add(LessonBlock.heading("Практичне завдання"));
+    uk.add(LessonBlock.paragraph("Розпарсіть рядок '31/12/2026' у LocalDate за допомогою DateTimeFormatter."));
+    uk.add(LessonBlock.heading("Рішення"));
+    uk.add(LessonBlock.code(
+        "DateTimeFormatter fmt = DateTimeFormatter.ofPattern(\"dd/MM/yyyy\");\n"
+        + "LocalDate date = LocalDate.parse(\"31/12/2026\", fmt);\n"
+        + "System.out.println(date.getYear()); // 2026"));
     List<LessonBlock> en = new ArrayList<>();
     en.add(LessonBlock.heading("Formatting & parsing"));
     en.add(LessonBlock.paragraph(

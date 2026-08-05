@@ -38,6 +38,17 @@ private static Lesson materialServlet() {
     uk.add(LessonBlock.warning(
         "Життєвий цикл: init() → service(doGet/doPost...) → destroy(). Один сервлет "
         + "обслуговує багато потоків одночасно — поля НЕ для стану запиту."));
+    uk.add(LessonBlock.heading("Практичне завдання"));
+    uk.add(LessonBlock.paragraph("Створіть базовий сервлет, який обробляє POST-запит і повертає статус 200 OK."));
+    uk.add(LessonBlock.heading("Рішення"));
+    uk.add(LessonBlock.code(
+        "@WebServlet(\"/submit\")\n"
+        + "public class SubmitServlet extends HttpServlet {\n"
+        + "    @Override\n"
+        + "    protected void doPost(HttpServletRequest req, HttpServletResponse resp) {\n"
+        + "        resp.setStatus(HttpServletResponse.SC_OK);\n"
+        + "    }\n"
+        + "}"));
     List<LessonBlock> en = new ArrayList<>();
     en.add(LessonBlock.heading("Servlet"));
     en.add(LessonBlock.paragraph(
@@ -81,6 +92,10 @@ private static Lesson materialJsp() {
         + "\n"
         + "<%-- EL-вираз --%>\n"
         + "<p>Всього користувачів: ${users.size()}</p>"));
+    uk.add(LessonBlock.heading("Практичне завдання"));
+    uk.add(LessonBlock.paragraph("Напишіть скриптлет JSP для виведення поточного часу за допомогою java.util.Date."));
+    uk.add(LessonBlock.heading("Рішення"));
+    uk.add(LessonBlock.code("<p>Поточний час: <%= new java.util.Date() %></p>"));
     List<LessonBlock> en = new ArrayList<>();
     en.add(LessonBlock.heading("JSP"));
     en.add(LessonBlock.paragraph(

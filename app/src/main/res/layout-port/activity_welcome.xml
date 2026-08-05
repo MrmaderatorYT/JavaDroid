@@ -61,7 +61,7 @@
                     android:gravity="center_vertical"
                     android:paddingStart="10dp"
                     android:paddingEnd="10dp"
-                    android:text="Projects"
+                    android:text="@string/welcome_sidebar_projects"
                     android:textColor="#FFFFFF"
                     android:textSize="11sp"
                     android:textStyle="bold"
@@ -77,13 +77,28 @@
                     android:gravity="center_vertical"
                     android:paddingStart="10dp"
                     android:paddingEnd="10dp"
-                    android:text="Materials"
+                    android:text="@string/welcome_sidebar_materials"
                     android:textColor="#DFE1E5"
                     android:textSize="11sp"
                     android:background="?attr/selectableItemBackground"
                     android:clickable="true"
                     android:focusable="true"
                     android:contentDescription="@string/a11y_welcome_materials_tab" />
+
+                <TextView
+                    android:id="@+id/sidebarCredits"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:gravity="center_vertical"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:text="@string/welcome_sidebar_credits"
+                    android:textColor="#DFE1E5"
+                    android:textSize="11sp"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:contentDescription="@string/a11y_welcome_credits_tab" />
 
             </LinearLayout>
         </HorizontalScrollView>

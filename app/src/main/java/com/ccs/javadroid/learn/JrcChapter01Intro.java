@@ -159,6 +159,19 @@ final class JrcChapter01Intro {
                 "javac HelloWorld.java   # створить HelloWorld.class\n"
                 + "java HelloWorld         # виконає програму\n"
                 + "# Виведе: Привіт, світ!"));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph(
+                "Напишіть програму (клас Greeting), яка виводить на екран два рядки:\n"
+                + "1) Ваше ім'я\n"
+                + "2) «Я вивчаю Java!»"));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code(
+                "public class Greeting {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Олександр\");\n"
+                + "        System.out.println(\"Я вивчаю Java!\");\n"
+                + "    }\n"
+                + "}"));
 
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Your first program"));
@@ -218,6 +231,23 @@ final class JrcChapter01Intro {
         uk.add(LessonBlock.warning(
                 "Літерали типу float треба писати з суфіксом f (3.14f), інакше 3.14 трактується як double. "
                 + "Літерали long мають суфікс L: 1_000_000L."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph(
+                "Створіть змінні для зберігання вашого віку (int), зросту в метрах (double) "
+                + "та першої літери імені (char). Виведіть їх значення на екран."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code(
+                "public class Profile {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        int age = 25;\n"
+                + "        double height = 1.82;\n"
+                + "        char initial = 'О';\n"
+                + "\n"
+                + "        System.out.println(\"Вік: \" + age);\n"
+                + "        System.out.println(\"Зріст: \" + height);\n"
+                + "        System.out.println(\"Ініціал: \" + initial);\n"
+                + "    }\n"
+                + "}"));
 
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Variables and types"));

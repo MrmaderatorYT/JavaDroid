@@ -21,8 +21,8 @@ android {
         applicationId 'com.ccs.javadroid'
         minSdk 26
         targetSdk 36
-        versionCode 17
-        versionName '1.9.0'
+        versionCode 18
+        versionName '1.9.1'
 
         ndk {
             abiFilters 'arm64-v8a', 'armeabi-v7a', 'x86_64', 'x86'
@@ -103,9 +103,14 @@ dependencies {
     implementation files("$buildDir/intermediates/patched-ecj/ecj-patched.jar") {
         builtBy 'patchEcjJar'
     }
-    implementation 'com.android.tools:r8:8.7.18'
+    // D8 reads class files up to major 69 (Java 25) from 8.13 on; 8.7 stopped at 67.
+    implementation 'com.android.tools:r8:8.13.19'
 
     implementation 'androidx.documentfile:documentfile:1.0.1'
+
+    // RAR reading for project import. Pure Java, RAR4 only — RAR5 is refused
+    // with an explanation rather than a stack trace (see RarSupport).
+    implementation 'com.github.junrar:junrar:7.5.5'
 
     // JVM bytecode disassembly (javap-style text, like Recaf)
     implementation 'org.ow2.asm:asm:9.6'
@@ -154,39 +159,26 @@ android.applicationVariants.all { variant ->
     variant.registerJavaGeneratingTask(patchEcjSource, file("$buildDir/generated/source/patched-ecj"))
 }
 
-task patchEcjJar(type: Jar) {
-    def ecjConfiguration = configurations.detachedConfiguration(dependencies.create('org.eclipse.jdt:ecj:3.38.0'))
-    dependsOn ecjConfiguration
-    
-    from zipTree(ecjConfiguration.singleFile)
-    exclude 'org/eclipse/jdt/internal/compiler/util/Util*.class'
-    
-    destinationDirectory = file("$buildDir/intermediates/patched-ecj")
-    archiveFileName = 'ecj-patched.jar'
-}
+// ── Bundled batch compiler ───────────────────────────────────────────────────
+// ECJ is shipped inside the APK and runs on the device, so it may only call
+// APIs that exist on minSdk. A handful of its sources use JDK 9+ methods that
+// Android gained much later (or never), and those are recompiled from patched
+// sources below. Two rules keep this honest:
+//   * every anchor is asserted — a silent no-op replacement would ship an APK
+//     that crashes on older devices instead of failing the build here;
+//   * the original .class files are excluded from the jar so the patched
+//     sources are what actually loads.
+// 3.46 raises the ceiling to -source 25 (3.38 stopped at 22) and drops
+// everything below 1.8, which JavaVersions.MIN_COMPILABLE mirrors.
+ext.ecjVersion = '3.46.0'
 
-task patchEcjSource {
-    def ecjSourcesConfiguration = configurations.detachedConfiguration(
-        dependencies.create('org.eclipse.jdt:ecj:3.38.0:sources')
-    )
-    inputs.files(ecjSourcesConfiguration)
-    def outputDir = file("$buildDir/generated/source/patched-ecj")
-    outputs.dir(outputDir)
-    
-    doLast {
-        def sourcesJar = ecjSourcesConfiguration.singleFile
-        outputDir.mkdirs()
-        
-        zipTree(sourcesJar).visit { FileVisitDetails details ->
-            if (details.relativePath.pathString == 'org/eclipse/jdt/internal/compiler/util/Util.java') {
-                def content = details.file.text
-                
-                // Normalize line endings to Unix style for reliable replacement
-                content = content.replace("\r\n", "\n")
-                
-                // Replace getInputStreamAsByteArray
-                def oldGetByteArray = "public static byte[] getInputStreamAsByteArray(InputStream input) throws IOException {\n\t\treturn input.readAllBytes(); // will have even slighly better performance as of JDK17+ see JDK-8264777\n\t}"
-                def newGetByteArray = """public static byte[] getInputStreamAsByteArray(InputStream input) throws IOException {
+// path → [ [why, exact text to find, replacement], … ]
+ext.ecjPatches = [
+    'org/eclipse/jdt/internal/compiler/util/Util.java': [
+        [
+            'InputStream.readAllBytes() is API 33; minSdk is 26',
+            "public static byte[] getInputStreamAsByteArray(InputStream input) throws IOException {\n\t\treturn input.readAllBytes(); // will have even slighly better performance as of JDK17+ see JDK-8264777\n\t}",
+            """public static byte[] getInputStreamAsByteArray(InputStream input) throws IOException {
 		java.io.ByteArrayOutputStream buffer = new java.io.ByteArrayOutputStream();
 		int nRead;
 		byte[] data = new byte[4096];
@@ -195,11 +187,11 @@ task patchEcjSource {
 		}
 		return buffer.toByteArray();
 	}"""
-                content = content.replace(oldGetByteArray, newGetByteArray)
-                
-                // Replace readNBytes
-                def oldReadNBytes = "public static byte[] readNBytes(InputStream input, int byteLength) throws IOException {\n\t\treturn input.readNBytes(byteLength);\n\t}"
-                def newReadNBytes = """public static byte[] readNBytes(InputStream input, int byteLength) throws IOException {
+        ],
+        [
+            'InputStream.readNBytes(int) is API 33; minSdk is 26',
+            "public static byte[] readNBytes(InputStream input, int byteLength) throws IOException {\n\t\treturn input.readNBytes(byteLength);\n\t}",
+            """public static byte[] readNBytes(InputStream input, int byteLength) throws IOException {
 		byte[] result = new byte[byteLength];
 		int bytesRead = 0;
 		while (bytesRead < byteLength) {
@@ -214,13 +206,105 @@ task patchEcjSource {
 		}
 		return result;
 	}"""
-                content = content.replace(oldReadNBytes, newReadNBytes)
-                
-                def outputFile = file("$outputDir/org/eclipse/jdt/internal/compiler/util/Util.java")
-                outputFile.parentFile.mkdirs()
-                outputFile.text = content
-                println "Generated patched Util.java at: " + outputFile.absolutePath
+        ],
+        [
+            // Reached for every class read out of a dependency jar, so this one
+            // fires on any project that has libraries, not just exotic setups.
+            'readAllBytes() again, on the zip-entry path',
+            "\t\t\treturn inputStream.readAllBytes();\n",
+            "\t\t\treturn getInputStreamAsByteArray(inputStream);\n"
+        ]
+    ],
+    'org/eclipse/jdt/internal/compiler/parser/Parser.java': [
+        [
+            // Android has no java.lang.Runtime.Version at any API level. ECJ
+            // only uses it to warn that -source is newer than it understands,
+            // which its own option validation already rejects before parsing.
+            'java.lang.Runtime.Version does not exist on Android',
+            """		if (this.problemReporter != null && this.options != null && this.options.requestedSourceVersion != null && !this.options.requestedSourceVersion.isBlank()) {
+			try {
+				var requestedVersion = Version.parse(this.options.requestedSourceVersion);
+				var latestVersion = Version.parse(CompilerOptions.getLatestVersion());
+				if (requestedVersion.compareTo(latestVersion) > 0) {
+					this.problemReporter.tooRecentJavaVersion(requestedVersion.toString(), latestVersion.toString());
+				}
+			} catch (Exception ex) {
+				this.problemReporter.abortDueToInternalError(ex.getMessage());
+			}
+		}
+""",
+            "\t\t// PATCHED OUT: see ecjPatches in app/build.gradle.\n"
+        ],
+        [
+            'the import goes with it',
+            "import java.lang.Runtime.Version;\n",
+            ""
+        ]
+    ]
+]
+
+task patchEcjJar(type: Jar) {
+    def ecjConfiguration = configurations.detachedConfiguration(
+        dependencies.create("org.eclipse.jdt:ecj:${ecjVersion}")
+    )
+    dependsOn ecjConfiguration
+
+    from zipTree(ecjConfiguration.singleFile)
+    // Drop exactly the types rebuilt from patched sources — ParserBasicInformation
+    // and friends live in the same packages and must survive.
+    exclude 'org/eclipse/jdt/internal/compiler/util/Util.class'
+    exclude 'org/eclipse/jdt/internal/compiler/util/Util$*.class'
+    exclude 'org/eclipse/jdt/internal/compiler/parser/Parser.class'
+    exclude 'org/eclipse/jdt/internal/compiler/parser/Parser$*.class'
+
+    destinationDirectory = file("$buildDir/intermediates/patched-ecj")
+    archiveFileName = 'ecj-patched.jar'
+}
+
+task patchEcjSource {
+    def ecjSourcesConfiguration = configurations.detachedConfiguration(
+        dependencies.create("org.eclipse.jdt:ecj:${ecjVersion}:sources")
+    )
+    inputs.files(ecjSourcesConfiguration)
+    inputs.property('patches', ecjPatches.toString())
+    def outputDir = file("$buildDir/generated/source/patched-ecj")
+    outputs.dir(outputDir)
+
+    doLast {
+        def sourcesJar = ecjSourcesConfiguration.singleFile
+        outputDir.mkdirs()
+
+        def patched = [] as Set
+        zipTree(sourcesJar).visit { FileVisitDetails details ->
+            def path = details.relativePath.pathString
+            def edits = ecjPatches[path]
+            if (edits == null) return
+
+            // Sources ship with CRLF; the anchors below are written with LF.
+            def content = details.file.getText('UTF-8').replace("\r\n", "\n")
+            edits.each { why, find, replace ->
+                if (!content.contains(find)) {
+                    throw new GradleException(
+                        "ECJ ${ecjVersion}: patch anchor not found in ${path} (${why}).\n" +
+                        "Upstream changed this code. Re-check the source and update " +
+                        "ext.ecjPatches in app/build.gradle before releasing — shipping " +
+                        "the unpatched class crashes on devices below API 33.")
+                }
+                content = content.replace(find, replace)
             }
+
+            def outputFile = file("$outputDir/$path")
+            outputFile.parentFile.mkdirs()
+            outputFile.setText(content, 'UTF-8')
+            patched << path
+            println "Patched ECJ source: ${path} (${edits.size()} edits)"
+        }
+
+        def missing = ecjPatches.keySet() - patched
+        if (!missing.isEmpty()) {
+            throw new GradleException(
+                "ECJ ${ecjVersion}: sources jar has no ${missing.join(', ')}. " +
+                "Update ext.ecjPatches in app/build.gradle.")
         }
     }
 }

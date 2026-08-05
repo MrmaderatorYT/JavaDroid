@@ -138,14 +138,7 @@ public final class GradleProjectFactory {
         } catch (Exception e) {
             target = com.ccs.javadroid.util.AppPreferences.JAVA_8;
         }
-        if (target == null) return "VERSION_1_8";
-        switch (target) {
-            case com.ccs.javadroid.util.AppPreferences.JAVA_11: return "VERSION_11";
-            case com.ccs.javadroid.util.AppPreferences.JAVA_17: return "VERSION_17";
-            case com.ccs.javadroid.util.AppPreferences.JAVA_21: return "VERSION_21";
-            case com.ccs.javadroid.util.AppPreferences.JAVA_8:
-            default: return "VERSION_1_8";
-        }
+        return com.ccs.javadroid.tools.compilers.JavaVersions.gradleConstant(target);
     }
 
     private static void writeUtf8(File file, String content) throws IOException {

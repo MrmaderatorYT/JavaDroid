@@ -41,6 +41,10 @@ import android.graphics.Typeface;
     private static final String K_PS_VERBOSE       = "ps_verbose_logging";
     private static final String K_READ_ONLY_FILES  = "read_only_files";
 
+    // ── Bottom panel tabs ─────────────────────────────────────
+    private static final String K_PANEL_ORDER      = "panel_order";
+    private static final String K_PANEL_HIDDEN     = "panel_hidden";
+
     // ── Theme ─────────────────────────────────────────────────
     private static final String K_THEME_ID         = "theme_id";
     private static final String K_CUSTOM_BG        = "custom_bg";
@@ -75,7 +79,8 @@ import android.graphics.Typeface;
     public static final int FONT_DEJAVU_MONO   = 7;
     public static final int FONT_ROBOTO_MONO   = 8;
 
-    // Java target constants (передаємо як ECJ -1.8 / -11)
+    // Java target constants (передаємо як ECJ -1.8 / -11).
+    // Повний перелік випусків — у JavaVersions; тут лише ті, на які посилається код.
     public static final String JAVA_8  = "1.8";
     public static final String JAVA_11 = "11";
     public static final String JAVA_17 = "17";
@@ -196,6 +201,56 @@ import android.graphics.Typeface;
         else set.remove(absolutePath);
         prefs.edit().putStringSet(K_READ_ONLY_FILES, set).apply();
         return readOnly;
+    }
+
+    // ── Bottom panel tabs ─────────────────────────────────────
+
+    /**
+     * Saved tab order as a list of {@code BottomPanel} keys.
+     *
+     * <p>Stored as one delimited string rather than a {@code StringSet},
+     * because a set has no order — which is the entire point here.</p>
+     *
+     * @return the stored order, or an empty list to mean "factory order"
+     */
+    public java.util.List<String> getPanelOrder() {
+        String raw = prefs.getString(K_PANEL_ORDER, null);
+        if (raw == null || raw.isEmpty()) return new java.util.ArrayList<>();
+        java.util.List<String> out = new java.util.ArrayList<>();
+        for (String key : raw.split(",")) {
+            String trimmed = key.trim();
+            if (!trimmed.isEmpty()) out.add(trimmed);
+        }
+        return out;
+    }
+
+    public void setPanelOrder(java.util.List<String> keys) {
+        if (keys == null || keys.isEmpty()) {
+            prefs.edit().remove(K_PANEL_ORDER).apply();
+            return;
+        }
+        StringBuilder sb = new StringBuilder();
+        for (String key : keys) {
+            if (sb.length() > 0) sb.append(',');
+            sb.append(key);
+        }
+        prefs.edit().putString(K_PANEL_ORDER, sb.toString()).apply();
+    }
+
+    /** Keys of panels the user switched off. */
+    public java.util.Set<String> getHiddenPanels() {
+        java.util.Set<String> stored = prefs.getStringSet(K_PANEL_HIDDEN, null);
+        return stored == null ? new java.util.HashSet<>() : new java.util.HashSet<>(stored);
+    }
+
+    public void setHiddenPanels(java.util.Set<String> keys) {
+        prefs.edit().putStringSet(K_PANEL_HIDDEN,
+                keys == null ? new java.util.HashSet<>() : new java.util.HashSet<>(keys)).apply();
+    }
+
+    /** Drops any customisation, returning the tab strip to factory order. */
+    public void resetPanelLayout() {
+        prefs.edit().remove(K_PANEL_ORDER).remove(K_PANEL_HIDDEN).apply();
     }
 
     // ── Theme ─────────────────────────────────────────────────

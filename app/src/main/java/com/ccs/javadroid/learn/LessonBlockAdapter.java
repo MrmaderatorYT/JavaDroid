@@ -1,5 +1,7 @@
 package com.ccs.javadroid.learn;
 
+import com.ccs.javadroid.util.Colors;
+
 import android.text.SpannableString;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -90,7 +92,7 @@ public class LessonBlockAdapter extends RecyclerView.Adapter<LessonBlockAdapter.
                 h.code.setText(ss);
                 // фон код-блоку: злегка затемнена консоль
                 h.code.setBackgroundColor(theme != null
-                        ? blend(theme.consoleBg, theme.bg, 0.5f)
+                        ? Colors.blend(theme.consoleBg, theme.bg, 0.5f)
                         : 0xFF2B2B2B);
                 h.code.setTextColor(theme != null ? theme.consoleText : 0xFFA9B7C6);
                 bindRunnableCode(h, b);
@@ -150,7 +152,7 @@ public class LessonBlockAdapter extends RecyclerView.Adapter<LessonBlockAdapter.
     }
 
     private void bindRunnableCode(VH h, LessonBlock block) {
-        int toolbarBg = theme != null ? blend(theme.consoleBg, theme.toolbar, 0.35f) : 0xFF252526;
+        int toolbarBg = theme != null ? Colors.blend(theme.consoleBg, theme.toolbar, 0.35f) : 0xFF252526;
         int consoleBg = theme != null ? theme.consoleBg : 0xFF1E1E1E;
         int dim = theme != null ? theme.textDim : 0xFF8A8A8A;
         int accent = theme != null ? theme.accent : 0xFF4A86C8;
@@ -241,14 +243,6 @@ public class LessonBlockAdapter extends RecyclerView.Adapter<LessonBlockAdapter.
                 || output.startsWith("Error:");
     }
 
-    private static int blend(int a, int b, float t) {
-        int ar = (a >> 16) & 0xFF, ag = (a >> 8) & 0xFF, ab = a & 0xFF;
-        int br = (b >> 16) & 0xFF, bg = (b >> 8) & 0xFF, bb = b & 0xFF;
-        int r = (int) (ar + (br - ar) * t);
-        int g = (int) (ag + (bg - ag) * t);
-        int bl = (int) (ab + (bb - ab) * t);
-        return 0xFF000000 | (r << 16) | (g << 8) | bl;
-    }
 
     static final class VH extends RecyclerView.ViewHolder {
         final TextView heading;

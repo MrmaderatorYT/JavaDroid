@@ -49,11 +49,90 @@
             android:windowSoftInputMode="adjustResize"
             android:theme="@style/Theme.JavaDroid.Fullscreen" />
 
+        <!--
+            Handler for files opened from other apps. Invisible: it resolves the
+            incoming URI, works out which project it belongs to and hands over
+            to MainActivity, so it never shows or lands in the back stack.
+
+            Three filters are needed because providers describe the same file in
+            incompatible ways:
+              1. specific MIME types, which a well-behaved provider reports;
+              2. filename patterns, for the far more common case of a generic
+                 octet-stream or text/plain with the extension in the path;
+              3. a share-sheet filter, so "Send to" works from mail and chat.
+            An extension-only filter would miss providers that hide the name;
+            a MIME-only filter would miss nearly every file manager.
+        -->
+        <activity
+            android:name=".ui.FileOpenActivity"
+            android:exported="true"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:label="@string/open_with_label"
+            android:theme="@android:style/Theme.NoDisplay">
+
+            <intent-filter android:label="@string/open_with_label">
+                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.EDIT" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:mimeType="text/x-java" />
+                <data android:mimeType="text/x-java-source" />
+                <data android:mimeType="text/x-kotlin" />
+                <data android:mimeType="application/java" />
+                <data android:mimeType="application/java-archive" />
+                <data android:mimeType="application/x-java-archive" />
+                <data android:mimeType="application/x-java-class" />
+                <data android:mimeType="application/x-jar" />
+            </intent-filter>
+
+            <intent-filter android:label="@string/open_with_label">
+                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.EDIT" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="file" />
+                <data android:scheme="content" />
+                <data android:host="*" />
+                <data android:mimeType="*/*" />
+                <data android:pathPattern=".*\\.java" />
+                <data android:pathPattern=".*\\..*\\.java" />
+                <data android:pathPattern=".*\\..*\\..*\\.java" />
+                <data android:pathPattern=".*\\.kt" />
+                <data android:pathPattern=".*\\..*\\.kt" />
+                <data android:pathPattern=".*\\..*\\..*\\.kt" />
+                <data android:pathPattern=".*\\.kts" />
+                <data android:pathPattern=".*\\..*\\.kts" />
+                <data android:pathPattern=".*\\.jar" />
+                <data android:pathPattern=".*\\..*\\.jar" />
+                <data android:pathPattern=".*\\..*\\..*\\.jar" />
+                <data android:pathPattern=".*\\.class" />
+                <data android:pathPattern=".*\\..*\\.class" />
+                <data android:pathPattern=".*\\.gradle" />
+                <data android:pathPattern=".*\\..*\\.gradle" />
+            </intent-filter>
+
+            <intent-filter android:label="@string/open_with_label">
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/x-java" />
+                <data android:mimeType="text/x-java-source" />
+                <data android:mimeType="text/x-kotlin" />
+                <data android:mimeType="application/java-archive" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".ui.SettingsActivity"
             android:exported="false"
             android:label="@string/menu_settings"
             android:parentActivityName=".ui.MainActivity" />
+
+        <activity
+            android:name=".ui.CreditsActivity"
+            android:exported="false"
+            android:label="@string/credits_title"
+            android:parentActivityName=".ui.WelcomeActivity" />
 
         <activity
             android:name=".git.GitActivity"

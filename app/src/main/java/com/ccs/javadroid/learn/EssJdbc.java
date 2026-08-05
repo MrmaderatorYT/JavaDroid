@@ -37,6 +37,14 @@ private static Lesson materialJdbc() {
     uk.add(LessonBlock.warning(
         "Уникайте конкатенації значень безпосередньо у рядок SQL-запиту, оскільки це створює критичну вразливість перед SQL-ін'єкціями. "
         + "Завжди використовуйте PreparedStatement із параметризованими запитами."));
+    uk.add(LessonBlock.heading("Практичне завдання"));
+    uk.add(LessonBlock.paragraph("Створіть таблицю 'students' з колонками (id INTEGER, name TEXT) через JDBC."));
+    uk.add(LessonBlock.heading("Рішення"));
+    uk.add(LessonBlock.code(
+        "try (Connection con = DriverManager.getConnection(\"jdbc:sqlite:test.db\");\n"
+        + "     Statement st = con.createStatement()) {\n"
+        + "    st.execute(\"CREATE TABLE IF NOT EXISTS students(id INTEGER, name TEXT)\");\n"
+        + "}"));
     List<LessonBlock> en = new ArrayList<>();
     en.add(LessonBlock.heading("Connecting via JDBC"));
     en.add(LessonBlock.paragraph(
@@ -77,6 +85,16 @@ private static Lesson materialPrepared() {
     uk.add(LessonBlock.note(
         "PreparedStatement: (1) захищає від ін'єкцій, (2) кешується драйвером — "
         + "швидше при повторних викликах, (3) правильно серіалізує дати й бінар."));
+    uk.add(LessonBlock.heading("Практичне завдання"));
+    uk.add(LessonBlock.paragraph("Додайте рядок (1, 'Іван') у таблицю 'students' через PreparedStatement."));
+    uk.add(LessonBlock.heading("Рішення"));
+    uk.add(LessonBlock.code(
+        "try (Connection con = DriverManager.getConnection(\"jdbc:sqlite:test.db\");\n"
+        + "     PreparedStatement ps = con.prepareStatement(\"INSERT INTO students VALUES(?, ?)\")) {\n"
+        + "    ps.setInt(1, 1);\n"
+        + "    ps.setString(2, \"Іван\");\n"
+        + "    ps.executeUpdate();\n"
+        + "}"));
     List<LessonBlock> en = new ArrayList<>();
     en.add(LessonBlock.heading("PreparedStatement — safe and fast"));
     en.add(LessonBlock.code(
@@ -128,6 +146,13 @@ private static Lesson materialDao() {
         + "        return new User(rs.getInt(\"id\"), rs.getString(\"name\"), rs.getString(\"email\"));\n"
         + "    }\n"
         + "    // ... інші методи\n"
+        + "}"));
+    uk.add(LessonBlock.heading("Практичне завдання"));
+    uk.add(LessonBlock.paragraph("Створіть інтерфейс StudentDao з методом findByName(String name)."));
+    uk.add(LessonBlock.heading("Рішення"));
+    uk.add(LessonBlock.code(
+        "interface StudentDao {\n"
+        + "    Student findByName(String name);\n"
         + "}"));
     List<LessonBlock> en = new ArrayList<>();
     en.add(LessonBlock.heading("DAO (Data Access Object) pattern"));

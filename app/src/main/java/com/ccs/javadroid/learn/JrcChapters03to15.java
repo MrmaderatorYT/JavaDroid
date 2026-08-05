@@ -44,18 +44,22 @@ final class JrcChapters03to15 {
         uk.add(LessonBlock.heading("Класи та об'єкти"));
         uk.add(LessonBlock.paragraph(
                 "Клас — це шаблон (наче креслення), за яким створюються об'єкти. "
-                + "Уявіть клас як «рецепт тістечка», а об'єкт — саме тістечко, "
-                + "зварене за цим рецептом. Один рецепт — багато тістечок."));
+                + "Уявіть клас як архітектурний план будинку, а об'єкт — це конкретний будинок, "
+                + "побудований за цим планом. Один план (клас) дозволяє побудувати "
+                + "цілу вулицю однакових будинків (об'єктів), але кожен з них може бути "
+                + "пофарбований у свій колір і мати своїх мешканців."));
         uk.add(LessonBlock.paragraph(
-                "Клас об'єднує стан (поля — «що клас знає») та поведінку "
-                + "(методи — «що клас може робити»). Об'єкт створюється оператором new."));
+                "Клас об'єднує стан (поля — «що клас знає про себе») та поведінку "
+                + "(методи — «що клас може робити»). Об'єкт (або екземпляр класу) "
+                + "створюється за допомогою ключового слова new, яке виділяє пам'ять для нового об'єкта."));
         uk.add(LessonBlock.code(
                 "class Person {\n"
-                + "    // Поля (стан) — кожен об'єкт має СВОЇ копії\n"
+                + "    // Поля (стан) — кожен об'єкт має СВОЇ власні копії цих змінних\n"
                 + "    String name;\n"
                 + "    int age;\n"
                 + "\n"
-                + "    // Метод (поведінка) — спільний для всіх об'єктів\n"
+                + "    // Метод (поведінка) — інструкція, спільна для всіх об'єктів,\n"
+                + "    // але працює з даними конкретного об'єкта, який її викликав\n"
                 + "    void sayHello() {\n"
                 + "        System.out.println(\"Привіт, я \" + name + \", мені \" + age);\n"
                 + "    }\n"
@@ -63,16 +67,25 @@ final class JrcChapters03to15 {
                 + "\n"
                 + "// Створюємо два різних об'єкти з одного класу\n"
                 + "Person ivan = new Person();\n"
-                + "ivan.name = \"Іван\";\n"
+                + "ivan.name = \"Іван\"; // Задаємо стан першого об'єкта\n"
                 + "ivan.age = 25;\n"
                 + "\n"
                 + "Person olena = new Person();\n"
-                + "olena.name = \"Олена\";\n"
+                + "olena.name = \"Олена\"; // Задаємо стан другого об'єкта\n"
                 + "olena.age = 30;\n"
                 + "\n"
-                + "ivan.sayHello();   // Привіт, я Іван, мені 25\n"
-                + "olena.sayHello();  // Привіт, я Олена, мені 30"));
+                + "ivan.sayHello();   // Виведе: Привіт, я Іван, мені 25\n"
+                + "olena.sayHello();  // Виведе: Привіт, я Олена, мені 30"));
+        uk.add(LessonBlock.paragraph(
+                "У наведеному коді ми створили клас Person. Коли ми пишемо new Person(), "
+                + "в пам'яті виділяється місце для зберігання імені та віку. Змінна ivan "
+                + "просто вказує (посилається) на це місце в пам'яті. Змінна olena вказує на "
+                + "інше місце. Тому їхні дані не перетинаються."));
         uk.add(LessonBlock.heading("Типи даних у Java"));
+        uk.add(LessonBlock.paragraph(
+                "Java є строго типізованою мовою. Це означає, що кожна змінна повинна мати "
+                + "заздалегідь визначений тип. Типи поділяються на примітивні (базові числа, "
+                + "символи) та посилальні (об'єкти, масиви)."));
         uk.add(LessonBlock.table(
                 "Тип\tРозмір\tДіапазон\tПриклад",
                 Arrays.asList(
@@ -85,9 +98,38 @@ final class JrcChapters03to15 {
                     "char\t2 байти\t0..65535\tchar c = 'A';",
                     "boolean\t1 bit\ttrue/false\tboolean ok = true;")));
         uk.add(LessonBlock.warning(
-                "Локальні змінні посилального типу (String, тощо) за замовчуванням НЕ "
-                + "ініціалізуються — компілятор видасть помилку. Поля класу ініціалізуються "
+                "Локальні змінні посилального типу (наприклад, String всередині методу) "
+                + "за замовчуванням НЕ ініціалізуються — компілятор видасть помилку, якщо "
+                + "спробувати їх використати. Натомість, поля класу ініціалізуються "
                 + "автоматично: 0 для чисел, false для boolean, null для посилань."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph(
+                "Створіть клас Car, який має два поля: марка (brand типу String) та "
+                + "рік випуску (year типу int). Додайте метод startEngine(), який виводить "
+                + "на екран повідомлення виду: 'Двигун авто Toyota (2020) запущено'. "
+                + "Потім створіть два різні об'єкти цього класу і викличте для них цей метод."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code(
+                "class Car {\n"
+                + "    String brand;\n"
+                + "    int year;\n"
+                + "\n"
+                + "    void startEngine() {\n"
+                + "        System.out.println(\"Двигун авто \" + brand + \" (\" + year + \") запущено\");\n"
+                + "    }\n"
+                + "}\n"
+                + "\n"
+                + "// В іншому методі (наприклад, main):\n"
+                + "Car myCar = new Car();\n"
+                + "myCar.brand = \"Toyota\";\n"
+                + "myCar.year = 2020;\n"
+                + "\n"
+                + "Car yourCar = new Car();\n"
+                + "yourCar.brand = \"BMW\";\n"
+                + "yourCar.year = 2022;\n"
+                + "\n"
+                + "myCar.startEngine();\n"
+                + "yourCar.startEngine();"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Classes and objects"));
         en.add(LessonBlock.paragraph(
@@ -143,48 +185,58 @@ final class JrcChapters03to15 {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Методи: як класи \"діють\""));
         uk.add(LessonBlock.paragraph(
-                "Метод — це блок коду з ім'ям, який виконує певну дію. Може приймати "
-                + "параметри (вхідні дані) та повертати результат."));
+                "Метод — це іменований блок коду, який виконує певну дію. Він допомагає уникнути "
+                + "дублювання коду, групуючи інструкції. Метод може приймати "
+                + "параметри (вхідні дані), обробляти їх та повертати результат. "
+                + "Якщо метод не повертає нічого, використовується ключове слово void."));
         uk.add(LessonBlock.code(
                 "class Calc {\n"
                 + "    // Метод з параметрами й результатом\n"
                 + "    int add(int a, int b) {\n"
-                + "        return a + b;\n"
+                + "        return a + b; // Ключове слово return повертає результат\n"
                 + "    }\n"
                 + "\n"
                 + "    // Метод без результату (void)\n"
                 + "    void printResult(int a, int b) {\n"
+                + "        // Викликаємо інший метод add всередині printResult\n"
                 + "        System.out.println(a + \" + \" + b + \" = \" + add(a, b));\n"
                 + "    }\n"
                 + "\n"
                 + "    // Перевантаження (overloading) — одне ім'я, різні параметри\n"
+                + "    // Java розрізняє їх за типами переданих аргументів\n"
                 + "    double add(double a, double b) {\n"
                 + "        return a + b;\n"
                 + "    }\n"
                 + "\n"
-                + "    // Статичний метод — викликається через назву класу\n"
+                + "    // Статичний метод — викликається через назву класу, не потребує об'єкта\n"
                 + "    static int square(int x) { return x * x; }\n"
                 + "}\n"
                 + "\n"
                 + "Calc c = new Calc();\n"
-                + "System.out.println(c.add(2, 3));       // 5\n"
-                + "System.out.println(c.add(2.5, 3.5));   // 6.0\n"
-                + "System.out.println(Calc.square(4));    // 16"));
+                + "System.out.println(c.add(2, 3));       // Виведе: 5 (викличеться int-версія)\n"
+                + "System.out.println(c.add(2.5, 3.5));   // Виведе: 6.0 (викличеться double-версія)\n"
+                + "System.out.println(Calc.square(4));    // Виведе: 16"));
+        uk.add(LessonBlock.paragraph(
+                "Як ви помітили, метод add зустрічається двічі. Це називається перевантаженням "
+                + "(overloading). Компілятор автоматично визначає, який метод викликати, "
+                + "залежно від того, які типи даних ви туди передаєте."));
         uk.add(LessonBlock.heading("Передавання параметрів"));
         uk.add(LessonBlock.paragraph(
-                "В Java параметри завжди передаються за ЗНАЧЕННЯМ (pass-by-value). "
-                + "Для примітивів — копіюється значення. Для об'єктів — копіюється "
-                + "ПОСИЛАННЯ (сам об'єкт НЕ дублюється)."));
+                "У Java параметри завжди передаються за ЗНАЧЕННЯМ (pass-by-value). "
+                + "Для примітивних типів (int, boolean тощо) створюється повна копія значення. "
+                + "Для об'єктів — копіюється ПОСИЛАННЯ. Тобто, якщо ви зміните сам об'єкт "
+                + "всередині методу, ці зміни будуть видимі ззовні, але ви не зможете "
+                + "змусити оригінальне посилання вказувати на інший об'єкт."));
         uk.add(LessonBlock.code(
                 "class Box { int value; }\n"
                 + "\n"
                 + "void changePrimitive(int x) {\n"
-                + "    x = 999;  // змінює лише локальну копію\n"
+                + "    x = 999;  // Змінює лише ЛОКАЛЬНУ копію, оригінал не постраждає\n"
                 + "}\n"
                 + "\n"
                 + "void changeObject(Box b) {\n"
-                + "    b.value = 999;  // змінює ОБ'ЄКТ, на який вказує посилання\n"
-                + "    b = null;       // обнулює лише локальну копію посилання!\n"
+                + "    b.value = 999;  // Змінює ДАНІ ОБ'ЄКТА за посиланням\n"
+                + "    b = null;       // Обнулює лише локальну копію посилання!\n"
                 + "}\n"
                 + "\n"
                 + "int num = 10;\n"
@@ -194,10 +246,36 @@ final class JrcChapters03to15 {
                 + "Box box = new Box();\n"
                 + "box.value = 42;\n"
                 + "changeObject(box);\n"
-                + "System.out.println(box.value);  // 999 (змінилося!)"));
+                + "System.out.println(box.value);  // 999 (змінилося, бо це той самий об'єкт!)"));
         uk.add(LessonBlock.note(
                 "Порада: щоб \"повернути\" кілька значень з методу, створіть клас-контейнер "
                 + "або використайте масив. Для JDK 8 це найзрозуміліший і найсумісніший варіант."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph(
+                "Напишіть клас Rectangle з полями width та height. Додайте два методи: "
+                + "1) getArea(), який повертає площу (ширина * висота), та 2) isSquare(), "
+                + "який повертає true, якщо ширина дорівнює висоті, і false інакше."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code(
+                "class Rectangle {\n"
+                + "    int width;\n"
+                + "    int height;\n"
+                + "\n"
+                + "    int getArea() {\n"
+                + "        return width * height;\n"
+                + "    }\n"
+                + "\n"
+                + "    boolean isSquare() {\n"
+                + "        return width == height;\n"
+                + "    }\n"
+                + "}\n"
+                + "\n"
+                + "// Використання:\n"
+                + "Rectangle rect = new Rectangle();\n"
+                + "rect.width = 10;\n"
+                + "rect.height = 10;\n"
+                + "System.out.println(\"Площа: \" + rect.getArea()); // 100\n"
+                + "System.out.println(\"Квадрат? \" + rect.isSquare()); // true"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Methods: how classes \"act\""));
         en.add(LessonBlock.paragraph(
@@ -263,20 +341,25 @@ final class JrcChapters03to15 {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Конструктори: створення об'єктів"));
         uk.add(LessonBlock.paragraph(
-                "Конструктор — це спеціальний метод, який викликається при створенні об'єкта "
-                + "(new). Має таке ж ім'я, що й клас, і НЕ повертає значення навіть void."));
+                "Конструктор — це спеціальний метод, який викликається автоматично "
+                + "під час створення об'єкта за допомогою ключового слова new. "
+                + "Він має таке ж ім'я, що й сам клас, і, на відміну від звичайних методів, "
+                + "НЕ повертає жодного значення (навіть void)."));
+        uk.add(LessonBlock.paragraph(
+                "Конструктори використовуються для ініціалізації об'єкта, тобто для "
+                + "надання початкових значень його полям перед тим, як об'єкт почне використовуватися."));
         uk.add(LessonBlock.code(
                 "class Point {\n"
                 + "    int x, y;\n"
                 + "\n"
-                + "    // Конструктор за замовчуванням\n"
+                + "    // Конструктор за замовчуванням (без параметрів)\n"
                 + "    Point() {\n"
-                + "        this(0, 0);   // виклик іншого конструктора через this\n"
+                + "        this(0, 0);   // Виклик іншого конструктора через this\n"
                 + "    }\n"
                 + "\n"
                 + "    // Конструктор з параметрами\n"
                 + "    Point(int x, int y) {\n"
-                + "        this.x = x;   // this розрізняє поле й параметр\n"
+                + "        this.x = x;   // this допомагає розрізнити поле класу і параметр методу\n"
                 + "        this.y = y;\n"
                 + "    }\n"
                 + "\n"
@@ -291,32 +374,37 @@ final class JrcChapters03to15 {
                 + "    }\n"
                 + "}\n"
                 + "\n"
-                + "Point a = new Point();      // (0, 0)\n"
-                + "Point b = new Point(3, 4);  // (3, 4)\n"
-                + "Point c = new Point(b);     // (3, 4) — копія"));
+                + "Point a = new Point();      // Викличе конструктор без параметрів, результат: (0, 0)\n"
+                + "Point b = new Point(3, 4);  // Викличе конструктор з параметрами, результат: (3, 4)\n"
+                + "Point c = new Point(b);     // Створить копію об'єкта b, результат: (3, 4)"));
         uk.add(LessonBlock.note(
-                "Якщо не оголосити жодного конструктора — компілятор згенерує порожній "
-                + "конструктор за замовчуванням. Якщо є хоч один — автоматичний зникає, "
-                + "тому треба оголосити порожній явно, якщо він потрібен."));
+                "Важливе правило: Якщо ви не оголосили ЖОДНОГО конструктора у вашому класі, "
+                + "компілятор автоматично згенерує порожній \"конструктор за замовчуванням\". "
+                + "Але якщо ви додали хоча б один власний конструктор (наприклад, з параметрами), "
+                + "автоматичний конструктор зникає. Тому, якщо він вам потрібен, доведеться "
+                + "оголосити його явно."));
         uk.add(LessonBlock.heading("Приватні поля + геттери/сеттери (інкапсуляція)"));
         uk.add(LessonBlock.paragraph(
-                "Не залишайте поля публічними! Приховуйте їх через private та надавайте "
-                + "доступ через геттери та сеттери — це дозволить контролювати дані."));
+                "Інкапсуляція — це приховування внутрішнього стану об'єкта від прямого втручання. "
+                + "Замість того, щоб залишати поля публічними (public), ми робимо їх приватними (private), "
+                + "а доступ до них надаємо через спеціальні методи — геттери (для читання) "
+                + "та сеттери (для запису). Це дозволяє нам контролювати, які дані записуються в об'єкт."));
         uk.add(LessonBlock.code(
                 "class BankAccount {\n"
-                + "    private double balance;   // приватне поле\n"
+                + "    private double balance;   // Приховане поле (доступне тільки всередині класу)\n"
                 + "    private String owner;\n"
                 + "\n"
                 + "    BankAccount(String owner, double initial) {\n"
                 + "        this.owner = owner;\n"
-                + "        this.balance = Math.max(0, initial);  // не дозволимо від'ємний баланс\n"
+                + "        // Не дозволяємо створити рахунок з від'ємним балансом\n"
+                + "        this.balance = Math.max(0, initial);\n"
                 + "    }\n"
                 + "\n"
-                + "    // Геттер — читання\n"
+                + "    // Геттери — для безпечного читання\n"
                 + "    public double getBalance() { return balance; }\n"
                 + "    public String getOwner() { return owner; }\n"
                 + "\n"
-                + "    // Бізнес-метод з валідацією\n"
+                + "    // Бізнес-метод з валідацією (замість прямого сеттера)\n"
                 + "    public boolean withdraw(double amount) {\n"
                 + "        if (amount <= 0) {\n"
                 + "            System.out.println(\"Сума має бути позитивною!\");\n"
@@ -336,10 +424,45 @@ final class JrcChapters03to15 {
                 + "}\n"
                 + "\n"
                 + "BankAccount acc = new BankAccount(\"Іван\", 1000);\n"
-                + "acc.withdraw(300);      // OK, balance = 700\n"
-                + "acc.withdraw(5000);     // Недостатньо коштів!\n"
-                + "acc.deposit(-100);      // ігнорується\n"
+                + "acc.withdraw(300);      // Успішно, balance стає 700\n"
+                + "acc.withdraw(5000);     // Помилка: Недостатньо коштів!\n"
+                + "acc.deposit(-100);      // Ігнорується, баланс не змінюється\n"
                 + "System.out.println(acc.getBalance());  // 700"));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph(
+                "Створіть клас Book з приватними полями title (назва), author (автор) "
+                + "та pages (кількість сторінок). Додайте конструктор для ініціалізації "
+                + "всіх трьох полів. Додайте геттери для всіх полів. Напишіть метод "
+                + "printInfo(), який виводить інформацію про книгу. "
+                + "У разі спроби передати в конструктор від'ємну кількість сторінок, встановлюйте 1."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code(
+                "class Book {\n"
+                + "    private String title;\n"
+                + "    private String author;\n"
+                + "    private int pages;\n"
+                + "\n"
+                + "    Book(String title, String author, int pages) {\n"
+                + "        this.title = title;\n"
+                + "        this.author = author;\n"
+                + "        if (pages > 0) {\n"
+                + "            this.pages = pages;\n"
+                + "        } else {\n"
+                + "            this.pages = 1; // Захист від некоректних даних\n"
+                + "        }\n"
+                + "    }\n"
+                + "\n"
+                + "    public String getTitle() { return title; }\n"
+                + "    public String getAuthor() { return author; }\n"
+                + "    public int getPages() { return pages; }\n"
+                + "\n"
+                + "    public void printInfo() {\n"
+                + "        System.out.println(\"Книга: \" + title + \", Автор: \" + author + \", Сторінок: \" + pages);\n"
+                + "    }\n"
+                + "}\n"
+                + "\n"
+                + "Book b = new Book(\"Java\", \"Schildt\", -50);\n"
+                + "b.printInfo(); // Виведе кількість сторінок: 1"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Constructors: creating objects"));
         en.add(LessonBlock.paragraph(
@@ -426,40 +549,83 @@ final class JrcChapters03to15 {
     private static Lesson materialThisAndStatic() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("this та static"));
+        uk.add(LessonBlock.paragraph(
+                "У Java є два важливих ключових слова, які визначають, до чого належить змінна чи метод. "
+                + "Ключове слово this завжди вказує на поточний екземпляр об'єкта (на «себе»). "
+                + "Ключове слово static вказує, що поле або метод належить самому КЛАСУ, а не його "
+                + "окремим об'єктам. Статичні елементи є спільними для всіх об'єктів цього класу."));
         uk.add(LessonBlock.code(
                 "class Config {\n"
-                + "    private String name;\n"
-                + "    private static int count = 0;   // спільний для ВСІХ об'єктів\n"
+                + "    private String name;            // Звичайне поле (у кожного об'єкта своє)\n"
+                + "    private static int count = 0;   // Статичне поле (ОДНЕ спільне на всіх)\n"
                 + "\n"
                 + "    Config(String name) {\n"
-                + "        this.name = name;   // this = поточний об'єкт\n"
-                + "        count++;             // збільшуємо лічильник\n"
+                + "        this.name = name;   // this.name — поле об'єкта, name — параметр методу\n"
+                + "        count++;            // Збільшуємо спільний лічильник при кожному створенні\n"
                 + "    }\n"
                 + "\n"
+                + "    // Статичний метод. Не має доступу до this, бо він викликається від імені класу\n"
                 + "    static int getCount() { return count; }\n"
+                + "    \n"
                 + "    String getName() { return name; }\n"
                 + "}\n"
                 + "\n"
                 + "new Config(\"A\");\n"
                 + "new Config(\"B\");\n"
                 + "new Config(\"C\");\n"
-                + "System.out.println(Config.getCount());  // 3"));
+                + "// Звертаємося до статичного методу через назву класу, а не через об'єкт\n"
+                + "System.out.println(Config.getCount());  // Виведе: 3"));
         uk.add(LessonBlock.note(
-                "static поле — ОДНЕ на весь клас (не на кожен об'єкт). static метод "
-                + "не має доступу до this і може викликати лише static поля/методи. "
-                + "Виклик: ClassName.staticMethod() або ClassName.staticField."));
+                "Пам'ятайте: static метод не може використовувати this або звертатися "
+                + "до нестатичних полів напряму, оскільки він не знає, до якого саме "
+                + "екземпляра об'єкта вони належать. Він може працювати лише зі static даними."));
         uk.add(LessonBlock.heading("final — незмінність"));
+        uk.add(LessonBlock.paragraph(
+                "Ключове слово final використовується для створення констант, або сутностей, "
+                + "які не можуть бути змінені після ініціалізації. Якщо це змінна — її значення "
+                + "фіксується. Якщо це клас — від нього не можна успадковуватися. "
+                + "Якщо метод — його не можна перевизначити (override)."));
         uk.add(LessonBlock.code(
-                "final int MAX = 100;      // константа (не можна змінити)\n"
+                "final int MAX = 100;      // константа (заведено писати великими літерами)\n"
                 + "// MAX = 200;             // помилка компіляції!\n"
                 + "\n"
                 + "class ImmutablePoint {\n"
-                + "    final int x, y;   // задається тільки в конструкторі\n"
-                + "    ImmutablePoint(int x, int y) { this.x = x; this.y = y; }\n"
-                + "    // сеттерів немає — об'єкт незмінний\n"
+                + "    final int x, y;   // Задається тільки один раз у конструкторі\n"
+                + "    \n"
+                + "    ImmutablePoint(int x, int y) { \n"
+                + "        this.x = x; \n"
+                + "        this.y = y; \n"
+                + "    }\n"
+                + "    // Оскільки поля final і немає сеттерів, об'єкт є повністю незмінним (immutable)\n"
                 + "}\n"
                 + "\n"
-                + "final class MathHelper { }   // final клас не можна успадкувати"));
+                + "final class MathHelper { }   // final клас не можна успадкувати (extends)"));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph(
+                "Створіть клас Counter. Додайте в нього статичне поле globalCount і "
+                + "нестатичне поле localCount (обидва типу int, початкове значення 0). "
+                + "В конструкторі класу збільшуйте обидва поля на 1. "
+                + "Створіть 3 об'єкти класу Counter. Після цього виведіть значення "
+                + "localCount одного з об'єктів, та значення globalCount."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code(
+                "class Counter {\n"
+                + "    static int globalCount = 0;\n"
+                + "    int localCount = 0;\n"
+                + "\n"
+                + "    Counter() {\n"
+                + "        globalCount++;\n"
+                + "        localCount++;\n"
+                + "    }\n"
+                + "}\n"
+                + "\n"
+                + "// Використання:\n"
+                + "Counter c1 = new Counter();\n"
+                + "Counter c2 = new Counter();\n"
+                + "Counter c3 = new Counter();\n"
+                + "\n"
+                + "System.out.println(\"Local: \" + c3.localCount);   // Виведе: 1 (свій лічильник)\n"
+                + "System.out.println(\"Global: \" + Counter.globalCount); // Виведе: 3 (спільний)"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("this and static"));
         en.add(LessonBlock.code(
@@ -517,21 +683,22 @@ final class JrcChapters03to15 {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Успадкування: extends"));
         uk.add(LessonBlock.paragraph(
-                "Успадкування дозволяє створювати новий клас на основі існуючого. "
-                + "Дочірній клас (нащадок) отримує ВСІ public/protected поля й методи "
-                + "батьківського класу та може додавати свої."));
+                "Успадкування — це механізм, який дозволяє створювати новий клас на основі вже існуючого. "
+                + "Новий клас (нащадок або дочірній) автоматично отримує всі публічні та захищені (protected) "
+                + "поля і методи свого батька (суперкласу). Це дозволяє уникнути дублювання коду."));
+        uk.add(LessonBlock.paragraph(
+                "Наприклад, якщо у нас є загальний клас Animal, ми можемо створити класи Dog та Cat, "
+                + "які успадкують його характеристики, але додадуть свої специфічні особливості."));
         uk.add(LessonBlock.code(
                 "class Animal {\n"
                 + "    String name;\n"
                 + "\n"
-                + "    Animal(String name) { this.name = name; }\n"
+                + "    Animal(String name) { \n"
+                + "        this.name = name; \n"
+                + "    }\n"
                 + "\n"
                 + "    void eat() {\n"
                 + "        System.out.println(name + \" їсть\");\n"
-                + "    }\n"
-                + "\n"
-                + "    void info() {\n"
-                + "        System.out.println(\"Тварина: \" + name);\n"
                 + "    }\n"
                 + "}\n"
                 + "\n"
@@ -539,7 +706,7 @@ final class JrcChapters03to15 {
                 + "    private String breed;\n"
                 + "\n"
                 + "    Dog(String name, String breed) {\n"
-                + "        super(name);       // виклик конструктора батька\n"
+                + "        super(name);       // Виклик конструктора батьківського класу\n"
                 + "        this.breed = breed;\n"
                 + "    }\n"
                 + "\n"
@@ -549,31 +716,58 @@ final class JrcChapters03to15 {
                 + "\n"
                 + "    @Override\n"
                 + "    void eat() {\n"
-                + "        System.out.println(name + \" жує кістку\");\n"
+                + "        System.out.println(name + \" гризе кістку\");\n"
                 + "    }\n"
                 + "}\n"
                 + "\n"
-                + "class Cat extends Animal {\n"
-                + "    Cat(String name) { super(name); }\n"
-                + "\n"
-                + "    void purr() {\n"
-                + "        System.out.println(name + \" мурчить\");\n"
-                + "    }\n"
-                + "\n"
-                + "    @Override\n"
-                + "    void eat() {\n"
-                + "        System.out.println(name + \" лизькає молоко\");\n"
-                + "    }\n"
-                + "}"));
+                + "Dog myDog = new Dog(\"Рекс\", \"Вівчарка\");\n"
+                + "myDog.eat();  // Викличе перевизначений метод (гризе кістку)\n"
+                + "myDog.bark(); // Викличе власний метод"));
         uk.add(LessonBlock.heading("Ключове слово super"));
+        uk.add(LessonBlock.paragraph(
+                "Слово super використовується для звернення до елементів батьківського класу зсередини нащадка. "
+                + "Воно має три основні застосування:"));
         uk.add(LessonBlock.list(
-                "super() — виклик конструктора батьківського класу (має бути ПЕРШим рядком!)",
-                "super.метод() — виклик методу батька (корисно при перевизначенні)",
-                "super.поле — доступ до прихованого батьківського поля"));
+                "super() — виклик конструктора батька. Це має бути ПЕРШИЙ рядок у конструкторі нащадка.",
+                "super.метод() — виклик методу батька. Дуже корисно, коли ви перевизначаєте метод, але хочете зберегти стару логіку.",
+                "super.поле — доступ до прихованого поля батька (якщо нащадок оголосив поле з таким самим ім'ям)."));
         uk.add(LessonBlock.warning(
-                "super() обов'язково має бути першим рядком конструктора! "
-                + "Якщо не викликати super() явно, Java автоматично додасть super() без аргументів. "
-                + "Але якщо батьківський клас не має конструктора без параметрів — буде помилка."));
+                "Важливе правило: Якщо ви не викликаєте super() явно, Java автоматично вставляє виклик super() "
+                + "без аргументів. Але якщо батьківський клас має лише конструктори з параметрами і не має "
+                + "конструктора за замовчуванням, програма не скомпілюється!"));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph(
+                "Створіть базовий клас Vehicle з полем brand (марка) та методом start(), який виводить "
+                + "назву марки та слово \"заводиться\". Створіть клас-нащадок Car, який додає поле "
+                + "doors (кількість дверей). У класі Car перевизначте метод start() так, щоб він спочатку "
+                + "викликав батьківський метод, а потім виводив \"У машині X дверей\"."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code(
+                "class Vehicle {\n"
+                + "    String brand;\n"
+                + "    Vehicle(String brand) {\n"
+                + "        this.brand = brand;\n"
+                + "    }\n"
+                + "    void start() {\n"
+                + "        System.out.println(brand + \" заводиться.\");\n"
+                + "    }\n"
+                + "}\n"
+                + "\n"
+                + "class Car extends Vehicle {\n"
+                + "    int doors;\n"
+                + "    Car(String brand, int doors) {\n"
+                + "        super(brand); // Виклик конструктора Vehicle\n"
+                + "        this.doors = doors;\n"
+                + "    }\n"
+                + "    @Override\n"
+                + "    void start() {\n"
+                + "        super.start(); // Виклик методу Vehicle.start()\n"
+                + "        System.out.println(\"У машині \" + doors + \" дверей.\");\n"
+                + "    }\n"
+                + "}\n"
+                + "\n"
+                + "Car c = new Car(\"Toyota\", 4);\n"
+                + "c.start();"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Inheritance: extends"));
         en.add(LessonBlock.paragraph(
@@ -588,10 +782,6 @@ final class JrcChapters03to15 {
                 + "\n"
                 + "    void eat() {\n"
                 + "        System.out.println(name + \" is eating\");\n"
-                + "    }\n"
-                + "\n"
-                + "    void info() {\n"
-                + "        System.out.println(\"Animal: \" + name);\n"
                 + "    }\n"
                 + "}\n"
                 + "\n"
@@ -611,19 +801,6 @@ final class JrcChapters03to15 {
                 + "    void eat() {\n"
                 + "        System.out.println(name + \" chews a bone\");\n"
                 + "    }\n"
-                + "}\n"
-                + "\n"
-                + "class Cat extends Animal {\n"
-                + "    Cat(String name) { super(name); }\n"
-                + "\n"
-                + "    void purr() {\n"
-                + "        System.out.println(name + \" purrs\");\n"
-                + "    }\n"
-                + "\n"
-                + "    @Override\n"
-                + "    void eat() {\n"
-                + "        System.out.println(name + \" laps milk\");\n"
-                + "    }\n"
                 + "}"));
         en.add(LessonBlock.heading("The super keyword"));
         en.add(LessonBlock.list(
@@ -641,46 +818,78 @@ final class JrcChapters03to15 {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Поліморфізм: один тип — багато форм"));
         uk.add(LessonBlock.paragraph(
-                "Поліморфізм (від грецького «багато форм») — об'єкт може "
-                + "використовуватися як тип батьківського класу, але викликатиметься "
-                + "ЙОГО власний метод (динамічна диспетчеризація)."));
+                "Поліморфізм (від грецького «багато форм») — це здатність об'єкта поводитись "
+                + "як об'єкт свого батьківського типу, але при цьому зберігати власну реалізацію методів. "
+                + "Це називається динамічною диспетчеризацією."));
+        uk.add(LessonBlock.paragraph(
+                "Завдяки поліморфізму ми можемо створити масив типу Animal, додати туди "
+                + "котів і собак, і в циклі викликати метод eat() для кожного. Кожна тварина "
+                + "їстиме по-своєму, хоча тип змінної у нас загальний."));
         uk.add(LessonBlock.code(
-                "// Використовуємо класи Animal, Dog, Cat з попереднього прикладу\n"
-                + "\n"
+                "// Використовуємо класи Animal, Dog, Cat\n"
                 + "Animal a1 = new Dog(\"Рекс\", \"лабрадор\");\n"
                 + "Animal a2 = new Cat(\"Мурчик\");\n"
-                + "Animal a3 = new Animal(\"Тварина\");\n"
                 + "\n"
-                + "// Кожен викликає СВОЇЙ eat() — завдяки поліморфізму!\n"
-                + "a1.eat();  // Рекс жує кістку  (Dog.eat)\n"
+                + "// Кожен викликає СВІЙ метод eat()\n"
+                + "a1.eat();  // Рекс гризе кістку (Dog.eat)\n"
                 + "a2.eat();  // Мурчик лизькає молоко (Cat.eat)\n"
-                + "a3.eat();  // Тварина їсть (Animal.eat)\n"
                 + "\n"
-                + "// a1.bark();  // ПОМИЛКА! Animal не знає метод bark()\n"
-                + "// Треба приведення типу:\n"
+                + "// a1.bark();  // ПОМИЛКА! Animal не знає методу bark()\n"
+                + "// Щоб викликати bark, треба привести тип назад до Dog:\n"
                 + "Dog dog = (Dog) a1;\n"
-                + "dog.bark();  // OK"));
-        uk.add(LessonBlock.heading("instanceof — перевірка типу"));
+                + "dog.bark();  // Працює успішно"));
+        uk.add(LessonBlock.heading("instanceof — безпечне приведення типів"));
+        uk.add(LessonBlock.paragraph(
+                "Коли ми працюємо зі змінною батьківського типу, ми можемо перевірити, "
+                + "яким саме об'єктом вона є насправді, використовуючи оператор instanceof."));
         uk.add(LessonBlock.code(
                 "Animal a = new Dog(\"Рекс\", \"лабрадор\");\n"
                 + "\n"
                 + "if (a instanceof Dog) {\n"
-                + "    Dog d = (Dog) a;      // safe downcast\n"
+                + "    Dog d = (Dog) a;      // безпечне приведення типу\n"
+                + "    d.bark();\n"
+                + "}\n"
+                + "\n"
+                + "// З Java 16 можна писати коротше (Pattern Matching):\n"
+                + "if (a instanceof Dog d) {\n"
                 + "    d.bark();\n"
                 + "}"));
         uk.add(LessonBlock.note(
-                "Завжди перевіряйте instanceof перед приведенням типу! Інакше отримаєте "
-                + "ClassCastException. Поліморфізм працює лише з методами, НЕ з полями — "
-                + "поля визначаються типом змінної (статичний зв'язок)."));
+                "Пам'ятайте: поліморфізм працює лише для методів. Він НЕ працює для полів. "
+                + "Якщо ви звертаєтеся до поля a.name, то буде використано поле класу Animal, "
+                + "а не Dog. Тому поля завжди краще робити private."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph(
+                "Створіть масив типу Vehicle з двох об'єктів: Car (створений раніше) та Motorcycle. "
+                + "Клас Motorcycle повинен наслідувати Vehicle та перевизначати метод start(), "
+                + "щоб він виводив \"Мотоцикл заводиться швидко\". Пройдіться по масиву "
+                + "циклом і викличте start() для кожного елемента."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code(
+                "class Motorcycle extends Vehicle {\n"
+                + "    Motorcycle(String brand) {\n"
+                + "        super(brand);\n"
+                + "    }\n"
+                + "    @Override\n"
+                + "    void start() {\n"
+                + "        System.out.println(brand + \" заводиться швидко.\");\n"
+                + "    }\n"
+                + "}\n"
+                + "\n"
+                + "Vehicle[] fleet = new Vehicle[2];\n"
+                + "fleet[0] = new Car(\"Toyota\", 4);\n"
+                + "fleet[1] = new Motorcycle(\"Yamaha\");\n"
+                + "\n"
+                + "for (Vehicle v : fleet) {\n"
+                + "    v.start(); // Для машини викличеться Car.start(), для мотоцикла Motorcycle.start()\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Polymorphism: one type, many forms"));
         en.add(LessonBlock.paragraph(
                 "Polymorphism (from Greek \"many forms\") — an object can be used as its "
                 + "parent type, but ITS OWN method will be called (dynamic dispatch)."));
         en.add(LessonBlock.code(
-                "// Using Animal, Dog, Cat from the previous example\n"
-                + "\n"
-                + "Animal a1 = new Dog(\"Rex\", \"labrador\");\n"
+                "Animal a1 = new Dog(\"Rex\", \"labrador\");\n"
                 + "Animal a2 = new Cat(\"Whiskers\");\n"
                 + "Animal a3 = new Animal(\"Generic\");\n"
                 + "\n"
@@ -710,55 +919,92 @@ final class JrcChapters03to15 {
 
     private static Lesson materialAbstractClasses() {
         List<LessonBlock> uk = new ArrayList<>();
-        uk.add(LessonBlock.heading("Абстрактні класи та інтерфейси"));
+        uk.add(LessonBlock.heading("Абстрактні класи"));
         uk.add(LessonBlock.paragraph(
-                "Абстрактний клас — клас, який НЕ можна створити напряму (new не працює). "
-                + "Він служить загальним шаблоном для нащадків. Містить абстрактні методи "
-                + "(без тіла), які нащадки зобов'язані реалізувати."));
+                "Іноді батьківський клас служить лише як концепція, базовий шаблон, "
+                + "а не як конкретна сутність, яку варто створювати. Для цього існують "
+                + "абстрактні класи. Їх не можна створити напряму (за допомогою new)."));
+        uk.add(LessonBlock.paragraph(
+                "Абстрактний клас може містити абстрактні методи — методи без тіла (лише сигнатура). "
+                + "Всі класи-нащадки ЗОБОВ'ЯЗАНІ реалізувати ці методи (або самі стати абстрактними). "
+                + "Абстрактний клас також може мати звичайні методи та поля."));
         uk.add(LessonBlock.code(
                 "abstract class Shape {\n"
                 + "    String color;\n"
                 + "\n"
                 + "    Shape(String color) { this.color = color; }\n"
                 + "\n"
-                + "    // Абстрактний метод — без тіла, нащадки ЗОБОВ'ЯЗАНІ реалізувати\n"
+                + "    // Абстрактні методи (лише оголошення)\n"
                 + "    abstract double area();\n"
                 + "    abstract double perimeter();\n"
                 + "\n"
-                + "    // Звичайний метод — спільний для всіх\n"
+                + "    // Звичайний метод з реалізацією\n"
                 + "    void printInfo() {\n"
-                + "        System.out.println(color + \" фігура: площа=\"\n"
-                + "            + area() + \", периметр=\" + perimeter());\n"
+                + "        System.out.println(\"Колір фігури: \" + color);\n"
                 + "    }\n"
                 + "}\n"
                 + "\n"
                 + "class Circle extends Shape {\n"
                 + "    double radius;\n"
-                + "    Circle(String color, double r) { super(color); this.radius = r; }\n"
-                + "\n"
-                + "    @Override double area() { return Math.PI * radius * radius; }\n"
-                + "    @Override double perimeter() { return 2 * Math.PI * radius; }\n"
-                + "}\n"
-                + "\n"
-                + "class Rectangle extends Shape {\n"
-                + "    double width, height;\n"
-                + "    Rectangle(String color, double w, double h) {\n"
-                + "        super(color); this.width = w; this.height = h;\n"
+                + "    Circle(String color, double r) {\n"
+                + "        super(color);\n"
+                + "        this.radius = r;\n"
                 + "    }\n"
                 + "\n"
-                + "    @Override double area() { return width * height; }\n"
-                + "    @Override double perimeter() { return 2 * (width + height); }\n"
+                + "    // Ми зобов'язані реалізувати ці методи:\n"
+                + "    @Override \n"
+                + "    double area() { return Math.PI * radius * radius; }\n"
+                + "    \n"
+                + "    @Override \n"
+                + "    double perimeter() { return 2 * Math.PI * radius; }\n"
                 + "}\n"
                 + "\n"
-                + "// Shape s = new Shape(\"чорний\");  // ПОМИЛКА! абстрактний\n"
-                + "Circle c = new Circle(\"червоний\", 5);\n"
-                + "Rectangle r = new Rectangle(\"синій\", 4, 6);\n"
-                + "c.printInfo();   // червоний фігура: площа=78.54, периметр=31.42\n"
-                + "r.printInfo();   // синій фігура: площа=24.0, периметр=20.0"));
-        uk.add(LessonBlock.note(
-                "Абстрактний клас vs інтерфейс: клас може успадкувати лише ОДИН абстрактний "
-                + "клас, але реалізувати БАГАТО інтерфейсів. Абстрактний клас може мати "
-                + "поля, конструктори; інтерфейс — ні (до Java 8)."));
+                + "// Shape s = new Shape(\"чорний\"); // ПОМИЛКА: не можна створити екземпляр абстрактного класу\n"
+                + "Shape c = new Circle(\"червоний\", 5);\n"
+                + "c.printInfo();"));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph(
+                "Створіть абстрактний клас Employee з полем name та абстрактним методом calculateSalary(). "
+                + "Створіть два класи-нащадки: FullTimeEmployee, який має поле monthlySalary (його і повертає), "
+                + "та ContractEmployee, який має поля hourlyRate та hoursWorked (повертає їх добуток). "
+                + "Створіть масив Employee та виведіть зарплату кожного."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code(
+                "abstract class Employee {\n"
+                + "    String name;\n"
+                + "    Employee(String name) { this.name = name; }\n"
+                + "    abstract double calculateSalary();\n"
+                + "}\n"
+                + "\n"
+                + "class FullTimeEmployee extends Employee {\n"
+                + "    double monthlySalary;\n"
+                + "    FullTimeEmployee(String name, double salary) {\n"
+                + "        super(name);\n"
+                + "        this.monthlySalary = salary;\n"
+                + "    }\n"
+                + "    @Override\n"
+                + "    double calculateSalary() { return monthlySalary; }\n"
+                + "}\n"
+                + "\n"
+                + "class ContractEmployee extends Employee {\n"
+                + "    double hourlyRate;\n"
+                + "    int hoursWorked;\n"
+                + "    ContractEmployee(String name, double rate, int hours) {\n"
+                + "        super(name);\n"
+                + "        this.hourlyRate = rate;\n"
+                + "        this.hoursWorked = hours;\n"
+                + "    }\n"
+                + "    @Override\n"
+                + "    double calculateSalary() { return hourlyRate * hoursWorked; }\n"
+                + "}\n"
+                + "\n"
+                + "Employee[] staff = {\n"
+                + "    new FullTimeEmployee(\"Марія\", 3000),\n"
+                + "    new ContractEmployee(\"Олег\", 15, 100)\n"
+                + "};\n"
+                + "for (Employee e : staff) {\n"
+                + "    System.out.println(e.name + \": \" + e.calculateSalary());\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Abstract classes"));
         en.add(LessonBlock.paragraph(
@@ -814,32 +1060,45 @@ final class JrcChapters03to15 {
 
     private static Lesson materialObjectMethods() {
         List<LessonBlock> uk = new ArrayList<>();
-        uk.add(LessonBlock.heading("Методи Object: toString, equals, hashCode"));
+        uk.add(LessonBlock.heading("Методи класу Object"));
         uk.add(LessonBlock.paragraph(
-                "Кожен клас в Java наслідує java.lang.Object. Тому кожен об'єкт має "
-                + "методи toString(), equals(), hashCode(). За замовчуванням вони "
-                + "некорисні — їх треба перевизначати."));
+                "Всі класи в Java неявно (автоматично) успадковуються від класу java.lang.Object. "
+                + "Це означає, що кожен об'єкт має набір стандартних методів, найважливіші з яких: "
+                + "toString(), equals() та hashCode()."));
+        uk.add(LessonBlock.paragraph(
+                "Метод toString() викликається, коли ви намагаєтесь вивести об'єкт на екран. "
+                + "За замовчуванням він виводить ім'я класу і якусь незрозумілу адресу в пам'яті. "
+                + "Тому його завжди варто перевизначати."));
+        uk.add(LessonBlock.paragraph(
+                "Метод equals() порівнює об'єкти. За замовчуванням він використовує оператор == "
+                + "і перевіряє, чи це один і той самий об'єкт у пам'яті. Щоб порівнювати об'єкти за їх даними, "
+                + "його також треба перевизначити."));
         uk.add(LessonBlock.code(
                 "class Student {\n"
                 + "    String name;\n"
                 + "    int age;\n"
                 + "\n"
-                + "    Student(String name, int age) { this.name = name; this.age = age; }\n"
+                + "    Student(String name, int age) { \n"
+                + "        this.name = name; \n"
+                + "        this.age = age; \n"
+                + "    }\n"
                 + "\n"
+                + "    // Робимо вивід зрозумілим\n"
                 + "    @Override\n"
                 + "    public String toString() {\n"
-                + "        return \"Student{name='\" + name + \"', age=\" + age + \"}\";\n"
+                + "        return \"Студент [\" + name + \", \" + age + \" років]\";\n"
                 + "    }\n"
                 + "\n"
+                + "    // Порівнюємо студентів за даними\n"
                 + "    @Override\n"
                 + "    public boolean equals(Object o) {\n"
-                + "        if (this == o) return true;              // той самий об'єкт\n"
-                + "        if (!(o instanceof Student)) return false; // інший тип\n"
-                + "        Student s = (Student) o;\n"
-                + "        return age == s.age\n"
-                + "            && name.equals(s.name);              // порівняння полів\n"
+                + "        if (this == o) return true;                  // Це один і той самий об'єкт\n"
+                + "        if (!(o instanceof Student)) return false;   // Це взагалі не студент\n"
+                + "        Student s = (Student) o;                     // Безпечно приводимо тип\n"
+                + "        return this.age == s.age && this.name.equals(s.name);\n"
                 + "    }\n"
                 + "\n"
+                + "    // Хеш-код — обов'язкова пара для equals\n"
                 + "    @Override\n"
                 + "    public int hashCode() {\n"
                 + "        return 31 * name.hashCode() + age;\n"
@@ -849,13 +1108,47 @@ final class JrcChapters03to15 {
                 + "Student a = new Student(\"Іван\", 20);\n"
                 + "Student b = new Student(\"Іван\", 20);\n"
                 + "\n"
-                + "System.out.println(a.toString());  // Student{name='Іван', age=20}\n"
-                + "System.out.println(a.equals(b));   // true (однакові дані)\n"
-                + "System.out.println(a == b);         // false (різні об'єкти в пам'яті!)"));
+                + "System.out.println(a.toString()); // Студент [Іван, 20 років]\n"
+                + "System.out.println(a.equals(b));  // true (дані однакові)\n"
+                + "System.out.println(a == b);       // false (в пам'яті це різні об'єкти)"));
         uk.add(LessonBlock.warning(
-                "Правило: ЯКЩО ви перевизначили equals(), ОБОВ'ЯЗКОВО перевизначте "
-                + "і hashCode()! Інакше колекції (HashMap, HashSet) працюватимуть "
-                + "неправильно — два об'єкти з однаковим equals() матимуть різний hashCode()."));
+                "Золоте правило Java: Якщо ви перевизначили метод equals(), ви ЗОБОВ'ЯЗАНІ "
+                + "перевизначити і метод hashCode()! Якщо цього не зробити, колекції на зразок "
+                + "HashMap та HashSet не зможуть правильно знаходити ваші об'єкти."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph(
+                "Створіть клас Point з полями x та y (типу int). Перевизначте метод toString(), "
+                + "щоб він повертав рядок у форматі \"(x, y)\". Перевизначте equals(), "
+                + "щоб дві точки вважалися рівними, якщо їхні координати збігаються. "
+                + "Створіть дві однакові точки і перевірте їх порівняння."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code(
+                "class Point {\n"
+                + "    int x, y;\n"
+                + "    Point(int x, int y) {\n"
+                + "        this.x = x;\n"
+                + "        this.y = y;\n"
+                + "    }\n"
+                + "    @Override\n"
+                + "    public String toString() {\n"
+                + "        return \"(\" + x + \", \" + y + \")\";\n"
+                + "    }\n"
+                + "    @Override\n"
+                + "    public boolean equals(Object o) {\n"
+                + "        if (this == o) return true;\n"
+                + "        if (!(o instanceof Point)) return false;\n"
+                + "        Point p = (Point) o;\n"
+                + "        return this.x == p.x && this.y == p.y;\n"
+                + "    }\n"
+                + "    @Override\n"
+                + "    public int hashCode() {\n"
+                + "        return 31 * x + y;\n"
+                + "    }\n"
+                + "}\n"
+                + "\n"
+                + "Point p1 = new Point(5, 10);\n"
+                + "Point p2 = new Point(5, 10);\n"
+                + "System.out.println(p1.equals(p2)); // true"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Object methods: toString, equals, hashCode"));
         en.add(LessonBlock.paragraph(
@@ -918,20 +1211,19 @@ final class JrcChapters03to15 {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Інтерфейси: контракт для класів"));
         uk.add(LessonBlock.paragraph(
-                "Інтерфейс — це контракт (обіцянка): «хто реалізує мене — зобов'язаний "
-                + "мати ці методи». Клас реалізує інтерфейс через implements і може "
-                + "реалізувати кілька інтерфейсів одночасно."));
+                "Інтерфейс — це суворий контракт або набір правил. Він каже: «Будь-який клас, "
+                + "який мене реалізує, зобов'язаний мати ці методи». На відміну від абстрактних "
+                + "класів, один клас може реалізувати (implements) одразу багато інтерфейсів."));
         uk.add(LessonBlock.code(
                 "interface Drawable {\n"
-                + "    void draw();  // абстрактний метод (як в abstract класі)\n"
+                + "    void draw();  // Метод без тіла. За замовчуванням він public abstract\n"
                 + "}\n"
                 + "\n"
                 + "interface Resizable {\n"
                 + "    void resize(double factor);\n"
-                + "    double getScale();\n"
                 + "}\n"
                 + "\n"
-                + "// Клас може реалізувати КІЛЬКА інтерфейсів\n"
+                + "// Клас реалізує одразу ДВА інтерфейси\n"
                 + "class Widget implements Drawable, Resizable {\n"
                 + "    private double scale = 1.0;\n"
                 + "\n"
@@ -941,25 +1233,57 @@ final class JrcChapters03to15 {
                 + "    }\n"
                 + "\n"
                 + "    @Override\n"
-                + "    public void resize(double factor) { scale *= factor; }\n"
-                + "\n"
-                + "    @Override\n"
-                + "    public double getScale() { return scale; }\n"
+                + "    public void resize(double factor) { \n"
+                + "        scale *= factor; \n"
+                + "    }\n"
                 + "}\n"
                 + "\n"
-                + "// Поліморфізм через інтерфейси\n"
-                + "Drawable d = new Widget();  // можна використовувати як Drawable\n"
+                + "// Використовуємо поліморфізм\n"
+                + "Drawable d = new Widget();\n"
                 + "d.draw();\n"
-                + "// d.resize(2.0);  // ПОМИЛКА! тип Drawable не знає resize()"));
+                + "// d.resize(2.0); // ПОМИЛКА: Тип Drawable знає тільки про draw()\n"
+                + "\n"
+                + "Resizable r = (Resizable) d; // Приводимо тип\n"
+                + "r.resize(2.0);"));
         uk.add(LessonBlock.heading("Що може містити інтерфейс"));
         uk.add(LessonBlock.table(
                 "Елемент\tІнтерфейс\tАбстрактний клас",
                 Arrays.asList(
-                    "Абстрактні методи\tТак\tТак",
-                    "Поля\tТільки public static final\tБудь-які",
+                    "Абстрактні методи\tТак (за замовчуванням)\tТак",
+                    "Звичайні методи\tТак (через ключове слово default)\tТак",
+                    "Поля\tТільки константи (public static final)\tБудь-які",
                     "Конструктори\tНі\tТак",
-                    "Наслідування\textends (багато)\nextends (один)",
-                    "Реалізація\timplements (багато)\nextends (один)")));
+                    "Множинність\tМожна імплементувати багато\tМожна успадкувати лише один")));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph(
+                "Створіть інтерфейс Playable з методом play(). Створіть класи MusicPlayer та VideoPlayer, "
+                + "які реалізують цей інтерфейс (кожен по-своєму). Створіть масив типу Playable, "
+                + "покладіть туди обидва плеєри і викличте play() для кожного."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code(
+                "interface Playable {\n"
+                + "    void play();\n"
+                + "}\n"
+                + "\n"
+                + "class MusicPlayer implements Playable {\n"
+                + "    @Override\n"
+                + "    public void play() {\n"
+                + "        System.out.println(\"Грає музика...\");\n"
+                + "    }\n"
+                + "}\n"
+                + "\n"
+                + "class VideoPlayer implements Playable {\n"
+                + "    @Override\n"
+                + "    public void play() {\n"
+                + "        System.out.println(\"Відтворюється відео...\");\n"
+                + "    }\n"
+                + "}\n"
+                + "\n"
+                + "// Використання:\n"
+                + "Playable[] devices = { new MusicPlayer(), new VideoPlayer() };\n"
+                + "for (Playable device : devices) {\n"
+                + "    device.play();\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Interfaces: a contract for classes"));
         en.add(LessonBlock.paragraph(
@@ -1012,43 +1336,45 @@ final class JrcChapters03to15 {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Default та static методи (Java 8+)"));
         uk.add(LessonBlock.paragraph(
-                "З Java 8 інтерфейси можуть мати default методи (з тілом) та static методи. "
-                + "Це дозволило додавати нові методи без злому існуючого коду."));
+                "У старих версіях Java додавання нового методу до інтерфейсу ламало всі класи, "
+                + "які його реалізували, бо вони мали одразу реалізувати цей новий метод. "
+                + "Тому у Java 8 додали можливість писати методи з тілом прямо в інтерфейсі (default-методи)."));
+        uk.add(LessonBlock.paragraph(
+                "Також додали можливість створювати static методи. Вони належать самому інтерфейсу "
+                + "і використовуються як допоміжні функції."));
         uk.add(LessonBlock.code(
                 "interface Logger {\n"
-                + "    // Звичайний абстрактний метод\n"
+                + "    // Обов'язковий метод для реалізації\n"
                 + "    void log(String message);\n"
                 + "\n"
-                + "    // Default метод — вже має реалізацію\n"
+                + "    // Default метод — вже має готове тіло\n"
                 + "    default void warn(String message) {\n"
-                + "        log(\"[WARN] \" + message);\n"
+                + "        log(\"[УВАГА] \" + message);\n"
                 + "    }\n"
                 + "\n"
-                + "    // Static метод — викликається через назву інтерфейсу\n"
+                + "    // Static метод — викликається через Logger.consoleLogger()\n"
                 + "    static Logger consoleLogger() {\n"
-                + "        return msg -> System.out.println(msg);\n"
+                + "        // Використовуємо лямбду для швидкої реалізації\n"
+                + "        return msg -> System.out.println(\"Консоль: \" + msg);\n"
                 + "    }\n"
                 + "}\n"
                 + "\n"
                 + "class FileLogger implements Logger {\n"
                 + "    @Override\n"
                 + "    public void log(String message) {\n"
-                + "        System.out.println(\"FILE: \" + message);\n"
+                + "        System.out.println(\"ФАЙЛ: \" + message);\n"
                 + "    }\n"
-                + "    // warn() не перевизначений — використовується default-версія\n"
+                + "    // Метод warn() ми не реалізовуємо, він береться з інтерфейсу\n"
                 + "}\n"
                 + "\n"
                 + "FileLogger fl = new FileLogger();\n"
-                + "fl.log(\"Помилка\");          // FILE: Помилка\n"
-                + "fl.warn(\"Увага!\");           // FILE: [WARN] Увага!\n"
-                + "\n"
-                + "// Виклик static методу\n"
-                + "Logger cl = Logger.consoleLogger();\n"
-                + "cl.log(\"Hi\");"));
+                + "fl.log(\"Система стартує\");  // ФАЙЛ: Система стартує\n"
+                + "fl.warn(\"Мало пам'яті\");    // ФАЙЛ: [УВАГА] Мало пам'яті"));
         uk.add(LessonBlock.heading("Проблема «діаманта»"));
         uk.add(LessonBlock.paragraph(
-                "Якщо клас реалізує два інтерфейси з однаковим default-методом — "
-                + "компілятор не знає, який обрати. Треба перевизначити метод явно:"));
+                "Оскільки клас може реалізувати багато інтерфейсів, що станеться, якщо два з них "
+                + "мають default-метод з однаковим ім'ям? Компілятор видасть помилку. "
+                + "Вам доведеться вручну перевизначити цей метод і вказати, чий саме код викликати."));
         uk.add(LessonBlock.code(
                 "interface A { default void hello() { System.out.println(\"A\"); } }\n"
                 + "interface B { default void hello() { System.out.println(\"B\"); } }\n"
@@ -1056,9 +1382,33 @@ final class JrcChapters03to15 {
                 + "class C implements A, B {\n"
                 + "    @Override\n"
                 + "    public void hello() {\n"
-                + "        A.super.hello();  // явний вибір: викликати A.hello()\n"
+                + "        A.super.hello();  // Явно вказуємо, що хочемо логіку з інтерфейсу A\n"
                 + "    }\n"
                 + "}"));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph(
+                "Створіть інтерфейс Greeter з абстрактним методом greet(String name) та default методом "
+                + "greetGuest(), який викликає greet(\"Гість\"). Реалізуйте цей інтерфейс у класі FriendlyGreeter, "
+                + "перевизначивши лише метод greet(). Створіть об'єкт і викличте обидва методи."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code(
+                "interface Greeter {\n"
+                + "    void greet(String name);\n"
+                + "    default void greetGuest() {\n"
+                + "        greet(\"Гість\");\n"
+                + "    }\n"
+                + "}\n"
+                + "\n"
+                + "class FriendlyGreeter implements Greeter {\n"
+                + "    @Override\n"
+                + "    public void greet(String name) {\n"
+                + "        System.out.println(\"Привіт, \" + name + \"! Раді бачити!\");\n"
+                + "    }\n"
+                + "}\n"
+                + "\n"
+                + "FriendlyGreeter fg = new FriendlyGreeter();\n"
+                + "fg.greet(\"Олена\"); // Привіт, Олена! Раді бачити!\n"
+                + "fg.greetGuest();     // Привіт, Гість! Раді бачити!"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Default and static methods (Java 8+)"));
         en.add(LessonBlock.paragraph(
@@ -1110,36 +1460,54 @@ final class JrcChapters03to15 {
 
     private static Lesson materialFunctionalInterfaces() {
         List<LessonBlock> uk = new ArrayList<>();
-        uk.add(LessonBlock.heading("Функціональні інтерфейси та lambda"));
+        uk.add(LessonBlock.heading("Функціональні інтерфейси та Лямбда-вирази"));
         uk.add(LessonBlock.paragraph(
-                "Функціональний інтерфейс — інтерфейс з ОДНИМ абстрактним методом. "
-                + "Позначається анотацією @FunctionalInterface. До нього можна застосувати "
-                + "лямбда-вираз замість анонімного класу."));
+                "Функціональний інтерфейс — це інтерфейс, який має РІВНО ОДИН абстрактний метод. "
+                + "Їх спеціально позначають анотацією @FunctionalInterface (хоча це не обов'язково). "
+                + "Саме такі інтерфейси можна реалізовувати за допомогою лямбда-виразів — "
+                + "короткого синтаксису, який замінює громіздкі анонімні класи."));
         uk.add(LessonBlock.code(
                 "@FunctionalInterface\n"
-                + "interface Transformer {\n"
-                + "    String transform(String input);\n"
+                + "interface MathOperation {\n"
+                + "    int operate(int a, int b);\n"
                 + "}\n"
                 + "\n"
-                + "// До Java 8 — анонімний клас (багато зайвого коду)\n"
-                + "Transformer upper = new Transformer() {\n"
+                + "// Старий спосіб: Анонімний клас\n"
+                + "MathOperation addition = new MathOperation() {\n"
                 + "    @Override\n"
-                + "    public String transform(String input) {\n"
-                + "        return input.toUpperCase();\n"
+                + "    public int operate(int a, int b) {\n"
+                + "        return a + b;\n"
                 + "    }\n"
                 + "};\n"
                 + "\n"
-                + "// З Java 8 — lambda (один рядок!)\n"
-                + "Transformer lower = input -> input.toLowerCase();\n"
-                + "Transformer reverser = input -> new StringBuilder(input).reverse().toString();\n"
+                + "// Новий спосіб: Лямбда-вираз\n"
+                + "MathOperation subtraction = (a, b) -> a - b;\n"
+                + "MathOperation multiplication = (a, b) -> a * b;\n"
                 + "\n"
-                + "System.out.println(upper.transform(\"hello\"));   // HELLO\n"
-                + "System.out.println(lower.transform(\"HELLO\"));   // hello\n"
-                + "System.out.println(reverser.transform(\"abc\"));  // cba"));
+                + "System.out.println(addition.operate(10, 5));       // 15\n"
+                + "System.out.println(subtraction.operate(10, 5));    // 5\n"
+                + "System.out.println(multiplication.operate(10, 5)); // 50"));
         uk.add(LessonBlock.note(
-                "Java вже має готові функціональні інтерфейси в java.util.function: "
-                + "Predicate<T> (boolean test), Function<T,R> (R apply), "
-                + "Consumer<T> (void accept), Supplier<T> (T get)."));
+                "Вам не потрібно створювати функціональні інтерфейси на кожен випадок. Java вже має "
+                + "великий набір готових у пакеті java.util.function: Predicate (перевірка умови), "
+                + "Function (перетворення даних), Consumer (споживання даних), Supplier (постачання даних)."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph(
+                "Створіть функціональний інтерфейс StringValidator з одним абстрактним методом "
+                + "boolean isValid(String s). Створіть змінну типу StringValidator, присвойте їй "
+                + "лямбда-вираз, який перевіряє, чи довжина рядка більше 5. Протестуйте її."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code(
+                "@FunctionalInterface\n"
+                + "interface StringValidator {\n"
+                + "    boolean isValid(String s);\n"
+                + "}\n"
+                + "\n"
+                + "// Використання:\n"
+                + "StringValidator lengthCheck = s -> s != null && s.length() > 5;\n"
+                + "\n"
+                + "System.out.println(lengthCheck.isValid(\"Java\"));       // false\n"
+                + "System.out.println(lengthCheck.isValid(\"Інтерфейс\"));  // true"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Functional interfaces and lambda"));
         en.add(LessonBlock.paragraph(
@@ -1190,8 +1558,9 @@ final class JrcChapters03to15 {
         uk.add(LessonBlock.heading("Модифікатори доступу"));
         uk.add(LessonBlock.paragraph(
                 "Модифікатори доступу визначають, ХТО може бачити клас, поле чи метод. "
-                + "Це як замки на дверях: відкриті для всіх, для своїх, для близьких, "
-                + "або тільки для себе."));
+                + "Це як рівні секретності для даних у вашій програмі. "
+                + "Правильно налаштовані модифікатори допомагають приховати внутрішню реалізацію "
+                + "(інкапсуляція) та уникнути випадкових змін."));
         uk.add(LessonBlock.table(
                 "Модифікатор\tКлас\tПакет\tНащадки\tСвіт",
                 Arrays.asList(
@@ -1203,10 +1572,10 @@ final class JrcChapters03to15 {
                 "package com.example;\n"
                 + "\n"
                 + "public class User {\n"
-                + "    public String name;           // видно всюди\n"
-                + "    protected int age;            // пакет + нащадки\n"
-                + "    String email;                 // default — тільки пакет\n"
-                + "    private String password;      // тільки всередині User\n"
+                + "    public String name;           // Видно всім\n"
+                + "    protected int age;            // Видно в пакеті та спадкоємцям\n"
+                + "    String email;                 // Видно ТІЛЬКИ в пакеті com.example\n"
+                + "    private String password;      // Видно ТІЛЬКИ всередині класу User\n"
                 + "\n"
                 + "    public void printPublic() { System.out.println(name); }\n"
                 + "    protected void printProtected() { System.out.println(age); }\n"
@@ -1214,9 +1583,36 @@ final class JrcChapters03to15 {
                 + "    private void printPrivate() { System.out.println(password); }\n"
                 + "}"));
         uk.add(LessonBlock.note(
-                "Порада для початківців: за замовчуванням робіть все private. "
-                + "Відкривайте доступ (public/protected) тільки коли це дійсно потрібно. "
-                + "Це називається «мінімальні привілеї» (principle of least privilege)."));
+                "Порада для початківців: за замовчуванням робіть усі поля private, а методи — "
+                + "public (тільки ті, що дійсно потрібні іншим). "
+                + "Це називається «принципом мінімальних привілеїв» (principle of least privilege)."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph(
+                "Створіть клас BankAccount. Зробіть поле balance типу double приватним (private). "
+                + "Створіть публічний метод deposit(double amount), який збільшує баланс, "
+                + "і публічний метод getBalance(), який повертає його значення. "
+                + "Спробуйте з іншого класу змінити balance напряму. Що станеться?"));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code(
+                "class BankAccount {\n"
+                + "    private double balance = 0.0;\n"
+                + "\n"
+                + "    public void deposit(double amount) {\n"
+                + "        if (amount > 0) {\n"
+                + "            balance += amount;\n"
+                + "        }\n"
+                + "    }\n"
+                + "\n"
+                + "    public double getBalance() {\n"
+                + "        return balance;\n"
+                + "    }\n"
+                + "}\n"
+                + "\n"
+                + "// Використання:\n"
+                + "BankAccount acc = new BankAccount();\n"
+                + "acc.deposit(100);\n"
+                + "System.out.println(\"Баланс: \" + acc.getBalance()); // 100.0\n"
+                + "// acc.balance = 5000; // ПОМИЛКА КОМПІЛЯЦІЇ: поле balance є private"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Access modifiers"));
         en.add(LessonBlock.paragraph(
@@ -1254,31 +1650,54 @@ final class JrcChapters03to15 {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Пакети та імпорти"));
         uk.add(LessonBlock.paragraph(
-                "Пакет — це папка для класів. Організує код та уникає конфліктів імен. "
-                + "Правило: назва пакету відповідає структурі папок (com.example → com/example/)."));
+                "Пакет — це просто папка на диску, в якій лежать ваші класи. "
+                + "Вони потрібні для логічного групування коду та уникнення конфліктів імен "
+                + "(може бути два класи User, якщо вони в різних пакетах). "
+                + "Назва пакету обов'язково повинна відповідати структурі папок (наприклад, "
+                + "пакет com.example знаходиться у папці com/example/)."));
         uk.add(LessonBlock.code(
-                "// Оголошення пакету — перший рядок файлу\n"
+                "// Оголошення пакету — завжди перший рядок коду у файлі\n"
                 + "package com.example.util;\n"
                 + "\n"
-                + "// Імпорт — щоб не писати повний шлях\n"
-                + "import java.util.ArrayList;       // один клас\n"
-                + "import java.util.*;                // всі класи з пакету\n"
-                + "import static java.lang.Math.PI;   // static поле\n"
-                + "import static java.lang.Math.*;    // всі static елементи\n"
+                + "// Імпорт потрібен, щоб не писати довге повне ім'я класу кожного разу\n"
+                + "import java.util.ArrayList;       // Імпорт одного конкретного класу\n"
+                + "import java.util.*;               // Імпорт всіх класів з пакету java.util\n"
+                + "import static java.lang.Math.PI;  // Імпорт стат. поля (Java 5+)\n"
+                + "import static java.lang.Math.*;   // Імпорт всіх стат. елементів\n"
                 + "\n"
                 + "class App {\n"
                 + "    void run() {\n"
-                + "        ArrayList<String> list = new ArrayList<>();\n"
-                + "        System.out.println(PI);      // завдяки import static\n"
-                + "        System.out.println(sqrt(16)); // завдяки import static Math.*\n"
+                + "        ArrayList<String> list = new ArrayList<>(); // Без імпорту було б java.util.ArrayList\n"
+                + "        System.out.println(PI);                     // завдяки import static\n"
+                + "        System.out.println(sqrt(16));               // завдяки import static Math.*\n"
                 + "    }\n"
                 + "}"));
         uk.add(LessonBlock.list(
+                "Основні пакети Java:",
                 "java.lang — імпортується автоматично (String, System, Math)",
-                "java.util — колекції, дати, random",
-                "java.io — ввід/вивід, файли",
-                "java.sql — робота з БД",
-                "java.time — Date/Time API (Java 8+)"));
+                "java.util — колекції (List, Map), дати, random",
+                "java.io / java.nio — робота з вводом-виводом та файлами",
+                "java.time — сучасне API для дат і часу (Java 8+)",
+                "java.net — мережеві операції"));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph(
+                "Створіть клас, імпортуйте клас Scanner з пакету java.util та "
+                + "клас Date з пакету java.util. Напишіть код, який створює об'єкт Date "
+                + "і виводить його на екран. Зверніть увагу на те, як імпорти роблять код чистішим."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code(
+                "import java.util.Scanner;\n"
+                + "import java.util.Date;\n"
+                + "\n"
+                + "public class Main {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        // Без імпорту довелося б писати java.util.Date date = new java.util.Date();\n"
+                + "        Date currentDate = new Date();\n"
+                + "        System.out.println(\"Поточна дата: \" + currentDate);\n"
+                + "        \n"
+                + "        // Scanner scan = new Scanner(System.in);\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Packages and imports"));
         en.add(LessonBlock.paragraph(
@@ -1329,29 +1748,36 @@ final class JrcChapters03to15 {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Ієрархія винятків"));
         uk.add(LessonBlock.paragraph(
-                "Винятки в Java — це об'єкти, що сигналізують про помилку. Є дві "
-                + "основні гілки: Checked (перевіряємі) та Unchecked (неперевіряємі)."));
+                "Винятки (Exceptions) в Java — це об'єкти, що сигналізують про помилку під час "
+                + "виконання програми. Всі вони походять від класу Throwable. "
+                + "Є дві основні гілки винятків: Checked (перевіряємі компілятором) та "
+                + "Unchecked (неперевіряємі)."));
         uk.add(LessonBlock.code(
                 "Throwable\n"
                 + "├── Error (системні помилки — OutOfMemoryError, StackOverflow)\n"
-                + "│   └── НЕ ловимо, бо це проблема JVM, а не нашого коду\n"
+                + "│   └── НЕ ловимо, бо це проблема JVM, програма не зможе відновитись\n"
                 + "└── Exception\n"
-                + "    ├── RuntimeException (UNCHECKED — не вимагає try/catch)\n"
-                + "    │   ├── NullPointerException\n"
-                + "    │   ├── ArrayIndexOutOfBoundsException\n"
+                + "    ├── RuntimeException (UNCHECKED — компілятор не вимагає try/catch)\n"
+                + "    │   ├── NullPointerException (виклик методу у null)\n"
+                + "    │   ├── ArrayIndexOutOfBoundsException (неіснуючий індекс масиву)\n"
                 + "    │   ├── ArithmeticException (ділення на 0)\n"
-                + "    │   ├── ClassCastException\n"
-                + "    │   ├── IllegalArgumentException\n"
-                + "    │   └── NumberFormatException\n"
-                + "    └── Checked (вимагає try/catch або throws)\n"
-                + "        ├── IOException\n"
-                + "        ├── SQLException\n"
-                + "        ├── FileNotFoundException\n"
-                + "        └── ClassNotFoundException"));
+                + "    │   └── IllegalArgumentException (неправильний аргумент)\n"
+                + "    └── Checked Exceptions (CHECKED — вимагають try/catch або throws)\n"
+                + "        ├── IOException (проблеми з файлами або мережею)\n"
+                + "        └── SQLException (проблеми з базою даних)"));
         uk.add(LessonBlock.warning(
-                "Checked винятки — компілятор змусить вас їх обробити. "
-                + "Unchecked винятки — можна ігнорувати (але не варто!). "
-                + "Error — ніколи не ловіть, це проблема платформи."));
+                "Checked винятки — це ті ситуації, які ви можете і повинні передбачити (наприклад, "
+                + "файлу не існує). Unchecked — це помилки у логіці коду (наприклад, звернення до null)."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph(
+                "Подумайте і дайте відповідь: якщо ви пишете метод, який читає дані з файлу, "
+                + "який тип винятку він найімовірніше згенерує, і чи потрібно його обов'язково "
+                + "обробляти (Checked чи Unchecked)?"));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.paragraph(
+                "Метод читання з файлу може згенерувати FileNotFoundException або IOException. "
+                + "Це Checked винятки, тому компілятор змусить вас обробити їх за допомогою "
+                + "блоку try-catch, або додати ключове слово throws до сигнатури методу."));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Exception hierarchy"));
         en.add(LessonBlock.paragraph(
@@ -1383,36 +1809,47 @@ final class JrcChapters03to15 {
 
     private static Lesson materialTryCatchFinally() {
         List<LessonBlock> uk = new ArrayList<>();
-        uk.add(LessonBlock.heading("try / catch / finally"));
+        uk.add(LessonBlock.heading("Блоки try, catch та finally"));
+        uk.add(LessonBlock.paragraph(
+                "Щоб програма не «падала» при помилках, використовують конструкцію try-catch. "
+                + "У блоці try ми пишемо небезпечний код. Якщо стається помилка, виконання переходить "
+                + "до блоку catch. Блок finally виконується ЗАВЖДИ, незалежно від того, була помилка чи ні."));
         uk.add(LessonBlock.code(
                 "try {\n"
-                + "    int result = 10 / 0;        // ArithmeticException!\n"
-                + "    String s = null;\n"
-                + "    s.length();                  // NullPointerException!\n"
+                + "    int result = 10 / 0;             // Викличе ArithmeticException\n"
+                + "    System.out.println(\"Цей рядок не виконається\");\n"
                 + "} catch (ArithmeticException e) {\n"
-                + "    System.out.println(\"Ділення на нуль: \" + e.getMessage());\n"
-                + "} catch (NullPointerException e) {\n"
-                + "    System.out.println(\"Посилання null: \" + e.getMessage());\n"
+                + "    System.out.println(\"Помилка: Ділення на нуль!\");\n"
                 + "} catch (Exception e) {\n"
-                + "    System.out.println(\"Будь-яка інша помилка: \" + e.getMessage());\n"
+                + "    System.out.println(\"Обробка будь-яких інших помилок\");\n"
                 + "} finally {\n"
-                + "    System.out.println(\"ЗАВЖДИ виконується!\");\n"
+                + "    System.out.println(\"finally: Я виконаюся в будь-якому випадку!\");\n"
                 + "}"));
         uk.add(LessonBlock.heading("Multi-catch (Java 7+)"));
+        uk.add(LessonBlock.paragraph(
+                "Якщо кілька різних винятків обробляються абсолютно однаково, їх можна "
+                + "об'єднати в одному блоці catch через символ | (або)."));
         uk.add(LessonBlock.code(
-                "// Якщо обробка однакова для кількох винятків\n"
-                + "try {\n"
+                "try {\n"
                 + "    String s = \"abc\";\n"
                 + "    int n = Integer.parseInt(s);  // NumberFormatException\n"
                 + "} catch (NumberFormatException | NullPointerException e) {\n"
-                + "    System.out.println(\"Погане значення: \" + e.getMessage());\n"
+                + "    System.out.println(\"Помилка формату або null: \" + e.getMessage());\n"
                 + "}"));
-        uk.add(LessonBlock.heading("Рекомендації з розробки"));
-        uk.add(LessonBlock.list(
-                "Ловіть найконкретніший виняток (наприклад, ArithmeticException замість базового Exception)",
-                "Не ігноруйте винятки: порожній блок catch (Exception e) {} є антипатерном",
-                "Завжди записуйте винятки в лог: catch (Exception e) { logger.error(\"...\", e); }",
-                "Не використовуйте механізм винятків для керування логічним потоком програми (це знижує продуктивність)"));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph(
+                "Напишіть метод, який приймає масив цілих чисел і виводить елемент під індексом 5. "
+                + "Обгорніть цей код у try-catch, який ловить ArrayIndexOutOfBoundsException "
+                + "і виводить повідомлення «Індекс за межами масиву»."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code(
+                "public void printFifthElement(int[] arr) {\n"
+                + "    try {\n"
+                + "        System.out.println(\"Елемент: \" + arr[5]);\n"
+                + "    } catch (ArrayIndexOutOfBoundsException e) {\n"
+                + "        System.out.println(\"Індекс за межами масиву\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("try / catch / finally"));
         en.add(LessonBlock.code(
@@ -1449,37 +1886,60 @@ final class JrcChapters03to15 {
 
     private static Lesson materialTryWithResources() {
         List<LessonBlock> uk = new ArrayList<>();
-        uk.add(LessonBlock.heading("try-with-resources (AutoCloseable)"));
+        uk.add(LessonBlock.heading("try-with-resources"));
         uk.add(LessonBlock.paragraph(
-                "try-with-resources автоматично закриває ресурси (файли, з'єднання, потоки) "
-                + "навіть якщо сталася помилка. Клас має реалізовувати AutoCloseable."));
+                "Робота з файлами чи базою даних вимагає обов'язкового закриття ресурсу "
+                + "(метод close()). Якщо забути, станеться витік пам'яті. "
+                + "try-with-resources (починаючи з Java 7) вирішує цю проблему: він сам закриває "
+                + "ресурси, що реалізують інтерфейс AutoCloseable."));
         uk.add(LessonBlock.code(
-                "import java.io.*;\n"
-                + "\n"
-                + "// З Java 7+ — try-with-resources\n"
-                + "try (BufferedReader br = new BufferedReader(\n"
-                + "        new FileReader(\"file.txt\"))) {\n"
+                "// Замість того, щоб писати finally { br.close(); }\n"
+                + "try (BufferedReader br = new BufferedReader(new FileReader(\"test.txt\"))) {\n"
                 + "    String line;\n"
                 + "    while ((line = br.readLine()) != null) {\n"
                 + "        System.out.println(line);\n"
                 + "    }\n"
                 + "} catch (IOException e) {\n"
-                + "    System.out.println(\"Помилка читання: \" + e.getMessage());\n"
+                + "    System.out.println(\"Помилка читання файлу\");\n"
                 + "}\n"
-                + "// br закрито автоматично навіть при винятку!"));
-        uk.add(LessonBlock.heading("Кілька ресурсів одночасно"));
+                + "// Файл гарантовано закрито!"));
+        uk.add(LessonBlock.paragraph(
+                "Можна відкривати одразу кілька ресурсів, розділяючи їх крапкою з комою (;). "
+                + "Вони будуть закриті у зворотному порядку (від останнього до першого)."));
         uk.add(LessonBlock.code(
                 "try (FileInputStream in = new FileInputStream(\"in.txt\");\n"
                 + "     FileOutputStream out = new FileOutputStream(\"out.txt\")) {\n"
-                + "    byte[] buffer = new byte[4096];\n"
-                + "    int count;\n"
-                + "    while ((count = in.read(buffer)) != -1) {\n"
-                + "        out.write(buffer, 0, count);\n"
+                + "    \n"
+                + "    int data = in.read();\n"
+                + "    out.write(data);\n"
+                + "} catch (IOException e) {\n"
+                + "    e.printStackTrace();\n"
+                + "}"));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph(
+                "Створіть власний клас MyResource, який реалізує інтерфейс AutoCloseable. "
+                + "У методі close() виведіть \"Ресурс закрито!\". "
+                + "Використайте цей клас у блоці try-with-resources."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code(
+                "class MyResource implements AutoCloseable {\n"
+                + "    public void doWork() {\n"
+                + "        System.out.println(\"Працюємо з ресурсом\");\n"
                 + "    }\n"
-                + "}  // обидва закриються у зворотному порядку"));
-        uk.add(LessonBlock.note(
-                "У JDK 8 вказуйте тип ресурсу явно: FileInputStream, FileOutputStream, "
-                + "BufferedReader тощо. Ресурси закриваються у зворотному порядку створення."));
+                + "\n"
+                + "    @Override\n"
+                + "    public void close() {\n"
+                + "        System.out.println(\"Ресурс закрито!\");\n"
+                + "    }\n"
+                + "}\n"
+                + "\n"
+                + "// Використання:\n"
+                + "try (MyResource res = new MyResource()) {\n"
+                + "    res.doWork();\n"
+                + "} \n"
+                + "// Вивід буде:\n"
+                + "// Працюємо з ресурсом\n"
+                + "// Ресурс закрито!"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("try-with-resources (AutoCloseable)"));
         en.add(LessonBlock.paragraph(
@@ -1517,36 +1977,63 @@ final class JrcChapters03to15 {
 
     private static Lesson materialCustomExceptions() {
         List<LessonBlock> uk = new ArrayList<>();
-        uk.add(LessonBlock.heading("Власні винятки"));
+        uk.add(LessonBlock.heading("Власні винятки (Custom Exceptions)"));
+        uk.add(LessonBlock.paragraph(
+                "Іноді стандартних винятків Java недостатньо для бізнес-логіки. "
+                + "Наприклад, ви хочете обробити ситуацію «Недостатньо коштів на рахунку». "
+                + "Для цього ви можете створити свій клас, успадкувавши його від Exception "
+                + "(буде Checked) або від RuntimeException (буде Unchecked)."));
         uk.add(LessonBlock.code(
-                "// Checked виняток — компілятор змусить обробити\n"
+                "// Створюємо Checked виняток\n"
                 + "class InsufficientFundsException extends Exception {\n"
-                + "    private final double deficit;\n"
+                + "    private double deficit;\n"
                 + "\n"
-                + "    InsufficientFundsException(double deficit) {\n"
+                + "    public InsufficientFundsException(double deficit) {\n"
                 + "        super(\"Недостатньо коштів. Бракує: \" + deficit);\n"
                 + "        this.deficit = deficit;\n"
                 + "    }\n"
-                + "\n"
-                + "    double getDeficit() { return deficit; }\n"
+                + "    public double getDeficit() { return deficit; }\n"
                 + "}\n"
                 + "\n"
-                + "// Unchecked виняток — компілятор НЕ змусить обробити\n"
-                + "class InvalidDataException extends RuntimeException {\n"
-                + "    InvalidDataException(String msg) { super(msg); }\n"
-                + "}\n"
+                + "class BankAccount {\n"
+                + "    private double balance = 100.0;\n"
                 + "\n"
-                + "// Використання\n"
-                + "void withdraw(double amount) throws InsufficientFundsException {\n"
-                + "    if (amount > balance)\n"
-                + "        throw new InsufficientFundsException(amount - balance);\n"
-                + "    balance -= amount;\n"
+                + "    // Ключове слово throws вказує, що метод МОЖЕ кинути цей виняток\n"
+                + "    public void withdraw(double amount) throws InsufficientFundsException {\n"
+                + "        if (amount > balance) {\n"
+                + "            // Ключове слово throw ВИКИДАЄ сам об'єкт винятку\n"
+                + "            throw new InsufficientFundsException(amount - balance);\n"
+                + "        }\n"
+                + "        balance -= amount;\n"
+                + "    }\n"
                 + "}"));
-        uk.add(LessonBlock.list(
-                "Checked (extends Exception) — для відновлюваних помилок (нема файлу, нема з'єднання)",
-                "Unchecked (extends RuntimeException) — для помилок програміста (null, індекс за межами)",
-                "Використовуйте throws у сигнатурі методу для checked-винятків",
-                "throw створює новий об'єкт винятку і «кидає» його"));
+        uk.add(LessonBlock.note(
+                "Різниця між throw і throws: throw використовується ВЕРЕДИНІ методу, "
+                + "щоб фактично згенерувати помилку. throws пишеться в ОГОЛОШЕННІ методу, "
+                + "попереджаючи інших, що метод небезпечний."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph(
+                "Створіть свій Unchecked виняток InvalidAgeException (успадкуйте від RuntimeException). "
+                + "Напишіть метод setAge(int age). Якщо age < 0 або age > 150, "
+                + "метод повинен кинути цей виняток через throw."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code(
+                "class InvalidAgeException extends RuntimeException {\n"
+                + "    public InvalidAgeException(String message) {\n"
+                + "        super(message);\n"
+                + "    }\n"
+                + "}\n"
+                + "\n"
+                + "class Person {\n"
+                + "    public void setAge(int age) {\n"
+                + "        if (age < 0 || age > 150) {\n"
+                + "            throw new InvalidAgeException(\"Некоректний вік: \" + age);\n"
+                + "        }\n"
+                + "        System.out.println(\"Вік встановлено: \" + age);\n"
+                + "    }\n"
+                + "}\n"
+                + "\n"
+                + "// Виклик Person.setAge(-5) призведе до завершення програми з вашою помилкою."));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Custom exceptions"));
         en.add(LessonBlock.code(
@@ -1597,27 +2084,39 @@ final class JrcChapters03to15 {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("String: незмінність (immutability)"));
         uk.add(LessonBlock.paragraph(
-                "String в Java — НЕЗМІННИЙ (immutable). Коли ви \"змінюєте\" рядок, "
-                + "створюється НОВИЙ об'єкт, а старий залишається в пам'яті. "
-                + "Це важливо знати для продуктивності!"));
+                "Клас String в Java є НЕЗМІННИМ (immutable). Це означає, що після "
+                + "створення об'єкта String його зміст неможливо змінити. Коли ви викликаєте "
+                + "методи, які нібито «змінюють» рядок (наприклад, конкатенація чи заміна), "
+                + "насправді створюється НОВИЙ об'єкт String, а старий залишається в пам'яті."));
         uk.add(LessonBlock.code(
                 "String s1 = \"Hello\";\n"
                 + "String s2 = s1.concat(\" World\");  // створює НОВИЙ рядок\n"
-                + "System.out.println(s1);   // Hello (не змінилося!)\n"
-                + "System.out.println(s2);   // Hello World\n"
+                + "System.out.println(s1);           // Hello (залишився без змін!)\n"
+                + "System.out.println(s2);           // Hello World\n"
                 + "\n"
-                + "// === Інтернування рядків (String Pool) ===\n"
+                + "// === String Pool (Пул рядків) ===\n"
+                + "// Для економії пам'яті Java зберігає літерали в пулі рядків.\n"
                 + "String a = \"hello\";\n"
                 + "String b = \"hello\";\n"
-                + "System.out.println(a == b);  // true — посилаються на той самий об'єкт!\n"
+                + "System.out.println(a == b);       // true — посилаються на той самий об'єкт у пулі!\n"
                 + "\n"
                 + "String c = new String(\"hello\");\n"
-                + "System.out.println(a == c);   // false — new завжди створює новий об'єкт\n"
-                + "System.out.println(a.equals(c));  // true — порівнює зміст"));
+                + "System.out.println(a == c);       // false — ключове слово new ЗАВЖДИ створює новий об'єкт\n"
+                + "System.out.println(a.equals(c));  // true — метод equals порівнює ЗМІСТ рядків"));
         uk.add(LessonBlock.warning(
-                "Порівнюйте рядки через equals(), а НЕ через ==. "
-                + "== перевіряє чи це той самий об'єкт у пам'яті, а equals — "
-                + "чи однаковий зміст. Для рядків завжди хочете перевірити зміст."));
+                "ЗАВЖДИ порівнюйте рядки через метод equals(), а НЕ через оператор ==. "
+                + "Оператор == перевіряє, чи це одне й те саме посилання у пам'яті, "
+                + "а метод equals() перевіряє, чи однакові символи всередині."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph(
+                "Створіть рядок String word = \"Java\". "
+                + "Викличте метод word.toUpperCase();. "
+                + "Потім виведіть змінну word на екран. Який буде результат і чому?"));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.paragraph(
+                "Результат буде \"Java\" (а не \"JAVA\"). Оскільки String є незмінним, метод "
+                + "toUpperCase() повертає новий рядок \"JAVA\", але ми не зберегли його в жодну змінну. "
+                + "Щоб зберегти результат, потрібно написати: word = word.toUpperCase();"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("String: immutability"));
         en.add(LessonBlock.paragraph(
@@ -1647,35 +2146,51 @@ final class JrcChapters03to15 {
 
     private static Lesson materialStringMethods() {
         List<LessonBlock> uk = new ArrayList<>();
-        uk.add(LessonBlock.heading("Корисні методи String"));
+        uk.add(LessonBlock.heading("Корисні методи класу String"));
+        uk.add(LessonBlock.paragraph(
+                "Клас String має величезну кількість вбудованих методів для "
+                + "маніпуляції текстом. Ось найпопулярніші з них:"));
         uk.add(LessonBlock.code(
                 "String s = \"  Hello, Java World!  \";\n"
                 + "\n"
-                + "// Довжина та доступ до символів\n"
-                + "s.length();                  // 22 (з пробілами)\n"
-                + "s.charAt(2);                 // 'H'\n"
+                + "// 1. Довжина та доступ до символів\n"
+                + "int len = s.length();             // 22 (включно з пробілами)\n"
+                + "char ch = s.charAt(2);            // 'H' (індексація починається з 0)\n"
                 + "\n"
-                + "// Пошук\n"
-                + "s.indexOf(\"Java\");          // 9\n"
-                + "s.contains(\"Java\");         // true\n"
-                + "s.startsWith(\"  Hello\");    // true\n"
-                + "s.endsWith(\"!\");            // true\n"
+                + "// 2. Пошук підрядка\n"
+                + "int index = s.indexOf(\"Java\");    // 9 (повертає індекс початку, або -1 якщо не знайдено)\n"
+                + "boolean has = s.contains(\"Java\"); // true\n"
+                + "boolean start = s.startsWith(\"  Hello\"); // true\n"
+                + "boolean end = s.endsWith(\"!\");    // false (закінчується пробілами)\n"
                 + "\n"
-                + "// Зріз та трансформація\n"
-                + "s.trim();                    // \"Hello, Java World!\"\n"
-                + "s.substring(9, 13);          // \"Java\"\n"
-                + "s.toUpperCase();             // \"  HELLO, JAVA WORLD!  \"\n"
-                + "s.toLowerCase();             // \"  hello, java world!  \"\n"
+                + "// 3. Зріз (підрядок) та трансформація\n"
+                + "String trimmed = s.trim();        // \"Hello, Java World!\" (видаляє пробіли по краях)\n"
+                + "String sub = s.substring(9, 13);  // \"Java\" (від 9 індексу включно до 13 виключно)\n"
+                + "String upper = s.toUpperCase();   // \"  HELLO, JAVA WORLD!  \"\n"
+                + "String lower = s.toLowerCase();   // \"  hello, java world!  \"\n"
                 + "\n"
-                + "// Заміна та розділення\n"
-                + "\"a-b-c\".replace('-', '_');  // \"a_b_c\"\n"
-                + "\"one,two,three\".split(\",\"); // [\"one\", \"two\", \"three\"]\n"
+                + "// 4. Заміна та розділення\n"
+                + "String replaced = \"a-b-c\".replace('-', '_'); // \"a_b_c\"\n"
+                + "String[] parts = \"one,two,three\".split(\",\"); // [\"one\", \"two\", \"three\"]\n"
                 + "\n"
-                + "// Перевірка та конвертація\n"
-                + "\"\".isEmpty();                // true\n"
-                + "Integer.parseInt(\"42\");      // 42\n"
-                + "String.valueOf(3.14);        // \"3.14\"\n"
-                + "String.join(\" \", \"a\", \"b\"); // \"a b\""));
+                + "// 5. Перевірка та конвертація\n"
+                + "boolean empty = \"\".isEmpty();     // true\n"
+                + "int num = Integer.parseInt(\"42\"); // 42 (перетворення рядка в число)\n"
+                + "String strNum = String.valueOf(3.14); // \"3.14\" (перетворення числа в рядок)"));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph(
+                "Є рядок String text = \" apple, banana , orange \". "
+                + "Напишіть код, який видалить пробіли по краях, розіб'є рядок по комі, "
+                + "і виведе назву другого фрукта (banana) у верхньому регістрі (BANANA)."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code(
+                "String text = \" apple, banana , orange \";\n"
+                + "String cleanText = text.trim();\n"
+                + "String[] fruits = cleanText.split(\",\");\n"
+                + "\n"
+                + "// Звертаємось до другого елемента (індекс 1), видаляємо його зайві пробіли і робимо великими літерами\n"
+                + "String secondFruit = fruits[1].trim().toUpperCase();\n"
+                + "System.out.println(secondFruit); // BANANA"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Useful String methods"));
         en.add(LessonBlock.code(
@@ -1713,25 +2228,29 @@ final class JrcChapters03to15 {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("StringBuilder та StringBuffer"));
         uk.add(LessonBlock.paragraph(
-                "StringBuilder — змінний (mutable) рядок. Не створює нові об'єкти "
-                + "при кожній зміні, тому значно ШВИДШИЙ за конкатенацію String у циклах."));
+                "Оскільки String є незмінним (immutable), операція конкатенації "
+                + "(з'єднання рядків через +) у циклі дуже неефективна, адже щоразу створюється "
+                + "новий об'єкт. Для частої зміни тексту використовують класи "
+                + "StringBuilder (для одного потоку) або StringBuffer (для багатопоточності)."));
         uk.add(LessonBlock.code(
                 "StringBuilder sb = new StringBuilder(\"Hello\");\n"
-                + "sb.append(\" World\");         // Hello World\n"
-                + "sb.insert(5, \",\");           // Hello, World\n"
-                + "sb.replace(6, 11, \"Java\");   // Hello, Java\n"
-                + "sb.delete(5, 6);              // Hello Java\n"
-                + "sb.reverse();                 // avaJ olleH\n"
+                + "sb.append(\" World\");           // Додає в кінець (Hello World)\n"
+                + "sb.insert(5, \",\");             // Вставляє на позицію 5 (Hello, World)\n"
+                + "sb.replace(7, 12, \"Java\");     // Замінює частину (Hello, Java)\n"
+                + "sb.deleteCharAt(5);            // Видаляє кому (Hello Java)\n"
+                + "sb.reverse();                  // Перевертає рядок (avaJ olleH)\n"
+                + "\n"
+                + "// Коли закінчили формувати текст, перетворюємо назад у String\n"
                 + "String result = sb.toString(); // avaJ olleH"));
         uk.add(LessonBlock.heading("Порівняння продуктивності"));
         uk.add(LessonBlock.code(
-                "// ПОГАНО — створює тисячі проміжних об'єктів String\n"
+                "// ❌ ПОГАНО — створює тисячі проміжних об'єктів String у пам'яті\n"
                 + "String bad = \"\";\n"
                 + "for (int i = 0; i < 10000; i++) {\n"
                 + "    bad += i;  // кожна ітерація = new String!\n"
                 + "}\n"
                 + "\n"
-                + "// ДОБРЕ — один об'єкт StringBuilder\n"
+                + "// ✅ ДОБРЕ — один об'єкт StringBuilder, який просто розширює свій масив\n"
                 + "StringBuilder good = new StringBuilder();\n"
                 + "for (int i = 0; i < 10000; i++) {\n"
                 + "    good.append(i);\n"
@@ -1740,9 +2259,26 @@ final class JrcChapters03to15 {
         uk.add(LessonBlock.table(
                 "Клас\tЗмінність\tПотокобезпечність\tКоли використовувати",
                 Arrays.asList(
-                    "String\tНі (immutable)\tТак (немає змін)\tКороткі рядки, константи",
-                    "StringBuilder\tТак\tНі\tОднопоточні операції з рядками",
-                    "StringBuffer\tТак\tТак (synchronized)\tБагатопоточні операції")));
+                    "String\tНі (immutable)\tТак (немає змін)\tКороткі рядки, незмінні тексти",
+                    "StringBuilder\tТак\tНі\tФормування складного тексту (1 потік)",
+                    "StringBuffer\tТак\tТак (synchronized)\tФормування тексту (кілька потоків)")));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph(
+                "Створіть метод, який приймає масив слів (наприклад, {\"I\", \"love\", \"Java\"}) "
+                + "і повертає єдиний рядок, де слова розділені пробілом. Використайте StringBuilder."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code(
+                "public String joinWords(String[] words) {\n"
+                + "    StringBuilder sb = new StringBuilder();\n"
+                + "    for (int i = 0; i < words.length; i++) {\n"
+                + "        sb.append(words[i]);\n"
+                + "        // Додаємо пробіл після всіх слів, крім останнього\n"
+                + "        if (i < words.length - 1) {\n"
+                + "            sb.append(\" \");\n"
+                + "        }\n"
+                + "    }\n"
+                + "    return sb.toString();\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("StringBuilder and StringBuffer"));
         en.add(LessonBlock.paragraph(
@@ -1794,10 +2330,12 @@ final class JrcChapters03to15 {
 
     private static Lesson materialList() {
         List<LessonBlock> uk = new ArrayList<>();
-        uk.add(LessonBlock.heading("List: ArrayList та LinkedList"));
+        uk.add(LessonBlock.heading("List: Інтерфейс списку"));
         uk.add(LessonBlock.paragraph(
-                "List — впорядкована колекція, що дозволяє дублікати. Дві основні "
-                + "реалізації: ArrayList (на основі динамічного масиву) та LinkedList (на основі двозв'язного списку)."));
+                "List (список) — це впорядкована колекція елементів, яка дозволяє зберігати "
+                + "дублікати. Кожен елемент має свій порядковий номер (індекс), починаючи з 0. "
+                + "Основними реалізаціями є ArrayList (на основі масиву, що збільшується) та "
+                + "LinkedList (на основі двонаправленого списку зв'язаних вузлів)."));
         uk.add(LessonBlock.code(
                 "List<String> names = new ArrayList<>();\n"
                 + "\n"
@@ -1809,23 +2347,39 @@ final class JrcChapters03to15 {
                 + "System.out.println(names);  // [Іван, Марія, Олена, Андрій]\n"
                 + "\n"
                 + "// Доступ\n"
-                + "names.get(0);              // Іван\n"
-                + "names.size();              // 4\n"
-                + "names.contains(\"Олена\");  // true\n"
-                + "names.indexOf(\"Андрій\"); // 3\n"
+                + "String first = names.get(0); // Іван\n"
+                + "int size = names.size();     // 4\n"
+                + "boolean has = names.contains(\"Олена\"); // true\n"
+                + "int pos = names.indexOf(\"Андрій\"); // 3\n"
                 + "\n"
                 + "// Видалення та зміна\n"
                 + "names.remove(\"Марія\");    // видалити за значенням\n"
                 + "names.remove(0);           // видалити за індексом\n"
                 + "names.set(0, \"Богдан\");   // замінити елемент\n"
                 + "\n"
-                + "// Сортування\n"
+                + "// Сортування (Java 8+)\n"
                 + "names.sort(Comparator.naturalOrder());"));
         uk.add(LessonBlock.note(
-                "ArrayList — швидкий доступ по індексу O(1), повільне видалення з "
-                + "середини O(n). LinkedList — навпаки: швидке вставляння/видалення "
-                + "O(1) при наявності ітератора, але повільний доступ O(n). "
-                + "На практиці ArrayList кращий у 95% випадків."));
+                "ArrayList — швидкий доступ за індексом O(1), але повільне додавання/видалення з "
+                + "середини списку O(n). LinkedList — навпаки: швидке вставляння/видалення "
+                + "O(1) (якщо ви вже на правильній позиції), але повільний доступ за індексом O(n). "
+                + "На практиці ArrayList використовується у 95% випадків."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph(
+                "Створіть ArrayList з цілих чисел (тип Integer). Додайте числа 10, 20, 30. "
+                + "Потім замініть число 20 на 25 за допомогою методу set(). "
+                + "Як вивести оновлений список на екран?"));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code(
+                "List<Integer> numbers = new ArrayList<>();\n"
+                + "numbers.add(10);\n"
+                + "numbers.add(20);\n"
+                + "numbers.add(30);\n"
+                + "\n"
+                + "// Замінюємо елемент за індексом 1 (це число 20)\n"
+                + "numbers.set(1, 25);\n"
+                + "\n"
+                + "System.out.println(numbers); // [10, 25, 30]"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("List: ArrayList and LinkedList"));
         en.add(LessonBlock.paragraph(
@@ -1863,26 +2417,43 @@ final class JrcChapters03to15 {
 
     private static Lesson materialSet() {
         List<LessonBlock> uk = new ArrayList<>();
-        uk.add(LessonBlock.heading("Set: унікальні елементи"));
+        uk.add(LessonBlock.heading("Set: Множина унікальних елементів"));
+        uk.add(LessonBlock.paragraph(
+                "Set (множина) — це колекція, яка НЕ дозволяє зберігати дублікати. "
+                + "Якщо ви спробуєте додати існуючий елемент, колекція просто проігнорує його. "
+                + "Тут немає індексів (не можна зробити get(0))."));
         uk.add(LessonBlock.code(
-                "// HashSet — швидкий, без порядку\n"
+                "// HashSet — швидкий, але не гарантує жодного порядку елементів\n"
                 + "Set<String> set = new HashSet<>(Arrays.asList(\"b\", \"a\", \"c\", \"a\"));\n"
-                + "System.out.println(set);  // [a, b, c] — дублікат \"a\" відкинутий\n"
+                + "System.out.println(set);  // [a, b, c] — дублікат \"a\" відкинутий (порядок може бути будь-який)\n"
                 + "\n"
-                + "// TreeSet — відсортований (через Comparable)\n"
+                + "// TreeSet — елементи автоматично сортуються за зростанням (потребує Comparable)\n"
                 + "TreeSet<Integer> sorted = new TreeSet<>(Arrays.asList(5, 1, 3, 1));\n"
-                + "System.out.println(sorted);       // [1, 3, 5]\n"
+                + "System.out.println(sorted);          // [1, 3, 5]\n"
                 + "System.out.println(sorted.first());  // 1\n"
                 + "System.out.println(sorted.last());   // 5\n"
                 + "\n"
-                + "// LinkedHashSet — зберігає порядок вставки\n"
+                + "// LinkedHashSet — зберігає порядок додавання елементів\n"
                 + "LinkedHashSet<String> ordered = new LinkedHashSet<>();\n"
                 + "ordered.add(\"c\"); ordered.add(\"a\"); ordered.add(\"b\");\n"
-                + "System.out.println(ordered);  // [c, a, b] — порядок збережено"));
+                + "System.out.println(ordered);  // [c, a, b] — порядок додавання збережено"));
         uk.add(LessonBlock.warning(
-                "HashSet використовує hashCode() + equals(). Якщо ваш клас НЕ "
-                + "перевизначає ці методи — два різних об'єкти з однаковим станом "
-                + "будуть вважатися різними елементами Set!"));
+                "Увага! HashSet та LinkedHashSet використовують методи hashCode() та equals() об'єктів "
+                + "для визначення унікальності. Якщо ви створюєте свій клас (наприклад, User) і "
+                + "хочете зберігати його в Set, ви ОБОВ'ЯЗКОВО повинні перевизначити ці методи, "
+                + "інакше Set не зможе правильно розпізнавати однакові об'єкти."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph(
+                "У вас є список імен з дублікатами: List<String> names = Arrays.asList(\"Анна\", \"Олег\", \"Анна\"); "
+                + "Як найшвидше отримати колекцію тільки унікальних імен?"));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code(
+                "List<String> names = Arrays.asList(\"Анна\", \"Олег\", \"Анна\");\n"
+                + "\n"
+                + "// Найшвидший спосіб — просто передати список у конструктор HashSet\n"
+                + "Set<String> uniqueNames = new HashSet<>(names);\n"
+                + "\n"
+                + "System.out.println(uniqueNames); // [Анна, Олег]"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Set: unique elements"));
         en.add(LessonBlock.code(
@@ -1909,41 +2480,53 @@ final class JrcChapters03to15 {
 
     private static Lesson materialMap() {
         List<LessonBlock> uk = new ArrayList<>();
-        uk.add(LessonBlock.heading("Map: ключ-значення"));
+        uk.add(LessonBlock.heading("Map: Словник (Ключ-Значення)"));
+        uk.add(LessonBlock.paragraph(
+                "Map (карта, словник) — це структура даних, що зберігає пари «Ключ - Значення». "
+                + "Кожен ключ має бути унікальним. Наприклад, ви можете використовувати номер "
+                + "телефону як ключ, а ім'я власника — як значення. Map НЕ успадковується від Collection."));
         uk.add(LessonBlock.code(
                 "Map<String, Integer> ages = new HashMap<>();\n"
                 + "\n"
-                + "// Додавання та оновлення\n"
+                + "// Додавання та оновлення (метод put)\n"
                 + "ages.put(\"Іван\", 30);\n"
                 + "ages.put(\"Олена\", 25);\n"
-                + "ages.put(\"Іван\", 31);  // оновлення існуючого ключа\n"
+                + "ages.put(\"Іван\", 31);  // Ключ \"Іван\" вже існує, тому старе значення заміниться на 31\n"
                 + "\n"
-                + "// Отримання\n"
-                + "ages.get(\"Іван\");          // 31\n"
-                + "ages.getOrDefault(\"Богдан\", 0);  // 0 (ключа немає)\n"
+                + "// Отримання значень за ключем (метод get)\n"
+                + "System.out.println(ages.get(\"Іван\"));          // 31\n"
+                + "System.out.println(ages.get(\"Богдан\"));        // null (такого ключа немає)\n"
+                + "System.out.println(ages.getOrDefault(\"Богдан\", 0)); // 0 (безпечне отримання зі значенням за замовчуванням)\n"
                 + "\n"
-                + "// Перевірка\n"
-                + "ages.containsKey(\"Олена\");  // true\n"
-                + "ages.containsValue(25);      // true\n"
-                + "ages.size();                 // 2\n"
+                + "// Перевірки\n"
+                + "boolean hasKey = ages.containsKey(\"Олена\");  // true\n"
+                + "boolean hasVal = ages.containsValue(25);      // true\n"
+                + "int size = ages.size();                       // 2\n"
                 + "\n"
-                + "// Безпечне оновлення\n"
-                + "ages.putIfAbsent(\"Богдан\", 22);  // додає, якщо ключа немає\n"
-                + "ages.merge(\"Іван\", 1, Integer::sum);  // 31+1=32\n"
-                + "\n"
-                + "// Ітерація\n"
+                + "// Ітерація (Java 8+)\n"
                 + "ages.forEach((name, age) ->\n"
                 + "    System.out.println(name + \": \" + age));\n"
                 + "\n"
-                + "// Ключі, значення, записи\n"
-                + "ages.keySet();       // Set<String>\n"
-                + "ages.values();       // Collection<Integer>\n"
-                + "ages.entrySet();     // Set<Map.Entry<String, Integer>>"));
+                + "// Робота з множинами ключів та значень\n"
+                + "Set<String> keys = ages.keySet();             // Отримати всі ключі\n"
+                + "Collection<Integer> values = ages.values();   // Отримати всі значення"));
         uk.add(LessonBlock.note(
-                "HashMap — швидкий (O(1)), без порядку ключів. TreeMap — ключі "
-                + "відсортовані (O(log n)). LinkedHashMap — зберігає порядок вставки. "
-                + "Для використання ключів у HashMap обов'язково перевизначте "
-                + "hashCode() та equals()."));
+                "Як і з Set, існують три основні реалізації: HashMap (швидкий, без порядку), "
+                + "TreeMap (ключі автоматично відсортовані) та LinkedHashMap (зберігає порядок додавання "
+                + "пар). Для ключів у HashMap обов'язково потрібні методи hashCode() та equals()."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph(
+                "Створіть HashMap з ключем типу String (назва товару) та значенням типу Double (ціна). "
+                + "Додайте товар \"Молоко\" з ціною 35.5. Потім перевірте, якщо ціна на \"Молоко\" існує, "
+                + "виведіть її."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code(
+                "Map<String, Double> prices = new HashMap<>();\n"
+                + "prices.put(\"Молоко\", 35.5);\n"
+                + "\n"
+                + "if (prices.containsKey(\"Молоко\")) {\n"
+                + "    System.out.println(\"Ціна молока: \" + prices.get(\"Молоко\"));\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Map: key-value pairs"));
         en.add(LessonBlock.code(
@@ -1984,38 +2567,44 @@ final class JrcChapters03to15 {
 
     private static Lesson materialIterator() {
         List<LessonBlock> uk = new ArrayList<>();
-        uk.add(LessonBlock.heading("Iterator та for-each"));
+        uk.add(LessonBlock.heading("Ітератор (Iterator) та цикли для колекцій"));
+        uk.add(LessonBlock.paragraph(
+                "Обходити колекції можна різними способами. Найпопулярніший — цикл for-each. "
+                + "Проте, якщо вам потрібно ВИДАЛИТИ елемент прямо під час обходу, звичайний цикл "
+                + "спричинить помилку. Для цього потрібен Iterator або метод removeIf()."));
         uk.add(LessonBlock.code(
-                "List<String> list = Arrays.asList(\"A\", \"B\", \"C\", \"D\");\n"
+                "List<String> list = new ArrayList<>(Arrays.asList(\"A\", \"B\", \"C\", \"D\"));\n"
                 + "\n"
-                + "// Enhanced for — простий та зрозумілий\n"
+                + "// 1. Enhanced for (for-each) — простий та зрозумілий, підходить для читання\n"
                 + "for (String s : list) {\n"
-                + "    System.out.println(s);\n"
+                + "    System.out.print(s + \" \"); // Виведе A B C D\n"
                 + "}\n"
                 + "\n"
-                + "// for з індексом\n"
-                + "for (int i = 0; i < list.size(); i++) {\n"
-                + "    System.out.println(i + \": \" + list.get(i));\n"
-                + "}\n"
-                + "\n"
-                + "// Iterator — для безпечного видалення під час обходу\n"
+                + "// 2. Iterator — для БЕЗПЕЧНОГО видалення під час обходу колекції\n"
                 + "Iterator<String> it = list.iterator();\n"
                 + "while (it.hasNext()) {\n"
-                + "    String s = it.next();\n"
+                + "    String s = it.next();  // Отримуємо наступний елемент\n"
                 + "    if (s.equals(\"B\")) {\n"
-                + "        it.remove();  // безпечне видалення\n"
+                + "        it.remove();       // БЕЗПЕЧНО видаляємо елемент \"B\"\n"
                 + "    }\n"
                 + "}\n"
                 + "System.out.println(list);  // [A, C, D]"));
         uk.add(LessonBlock.warning(
-                "Не видаляйте елементи під час enhanced-for циклу! "
-                + "list.remove(s) усередині for-each спричинить "
-                + "ConcurrentModificationException. Використовуйте Iterator "
-                + "або removeIf() (Java 8+)."));
-        uk.add(LessonBlock.heading("removeIf (Java 8+)"));
+                "Ніколи не використовуйте метод list.remove(s) всередині циклу for-each! "
+                + "Це призведе до помилки ConcurrentModificationException. Колекція «зрозуміє», "
+                + "що її модифікували ззовні циклу, і перерве роботу."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph(
+                "Використовуючи метод removeIf() з Java 8, який приймає лямбда-вираз, видаліть "
+                + "усі слова з колекції List<String> words, які починаються на букву \"X\"."));
+        uk.add(LessonBlock.heading("Рішення"));
         uk.add(LessonBlock.code(
-                "list.removeIf(s -> s.equals(\"A\"));  // видалити \"A\"\n"
-                + "// Найпростіший спосіб безпечного видалення!"));
+                "List<String> words = new ArrayList<>(Arrays.asList(\"Apple\", \"X-ray\", \"Banana\", \"Xenon\"));\n"
+                + "\n"
+                + "// s -> s.startsWith(\"X\") є умовою видалення.\n"
+                + "words.removeIf(s -> s.startsWith(\"X\"));\n"
+                + "\n"
+                + "System.out.println(words); // [Apple, Banana]"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Iterator and for-each"));
         en.add(LessonBlock.code(
@@ -2067,53 +2656,60 @@ final class JrcChapters03to15 {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Робота з файлами (NIO.2)"));
         uk.add(LessonBlock.paragraph(
-                "java.nio.file (NIO.2, Java 7+) — сучасний спосіб роботи з файлами. "
-                + "Простіший та безпечніший за старий java.io.File."));
+                "Пакет java.nio.file (NIO.2, доступний з Java 7) — це сучасний, швидкий та "
+                + "безпечний спосіб роботи з файловою системою. Він замінює старий і не завжди "
+                + "зручний клас java.io.File. Основні класи тут: Path (шлях до файлу/папки) та "
+                + "Files (утиліта для виконання операцій)."));
         uk.add(LessonBlock.code(
                 "import java.nio.file.*;\n"
                 + "import java.nio.charset.StandardCharsets;\n"
                 + "import java.io.IOException;\n"
-                + "import java.io.BufferedReader;\n"
                 + "import java.util.Arrays;\n"
                 + "import java.util.List;\n"
+                + "import java.util.Collections;\n"
                 + "\n"
-                + "// Створення шляху\n"
-                + "Path p = Paths.get(\"data\", \"users.txt\");\n"
-                + "Path absolute = Paths.get(\"/home/user/file.txt\");\n"
+                + "// 1. Створення шляху (Path)\n"
+                + "Path p = Paths.get(\"data\", \"users.txt\"); // Відносний шлях: data/users.txt\n"
+                + "Path absolute = Paths.get(\"C:\\\\data\\\\file.txt\"); // Абсолютний шлях (Windows)\n"
                 + "\n"
-                + "// Запис\n"
-                + "Files.write(p,\n"
-                + "        Arrays.asList(\"Привіт, світ!\", \"Рядок 2\"),\n"
-                + "        StandardCharsets.UTF_8);\n"
+                + "// 2. Запис у файл (з перетиранням старого вмісту)\n"
+                + "try {\n"
+                + "    Files.write(p,\n"
+                + "            Arrays.asList(\"Привіт, світ!\", \"Рядок 2\"),\n"
+                + "            StandardCharsets.UTF_8);\n"
+                + "} catch (IOException e) {\n"
+                + "    e.printStackTrace();\n"
+                + "}\n"
                 + "\n"
-                + "// Читання всього файлу\n"
-                + "byte[] bytes = Files.readAllBytes(p);\n"
-                + "String content = new String(bytes, StandardCharsets.UTF_8);\n"
-                + "System.out.println(content);\n"
+                + "// 3. Читання всього файлу (якщо файл не надто великий)\n"
+                + "try {\n"
+                + "    // Читання відразу у список рядків\n"
+                + "    List<String> lines = Files.readAllLines(p, StandardCharsets.UTF_8);\n"
+                + "    lines.forEach(System.out::println);\n"
+                + "} catch (IOException e) {\n"
+                + "    e.printStackTrace();\n"
+                + "}\n"
                 + "\n"
-                + "// Читання по рядках\n"
-                + "List<String> lines = Files.readAllLines(p, StandardCharsets.UTF_8);\n"
-                + "lines.forEach(System.out::println);\n"
-                + "\n"
-                + "// Перевірка існування\n"
-                + "Files.exists(p);          // true\n"
-                + "Files.isRegularFile(p);   // true\n"
-                + "Files.isDirectory(Paths.get(\"data\"));  // true\n"
-                + "\n"
-                + "// Копіювання та переміщення\n"
-                + "Files.copy(p, Paths.get(\"backup.txt\"), StandardCopyOption.REPLACE_EXISTING);\n"
-                + "Files.move(p, Paths.get(\"archive.txt\"));\n"
-                + "\n"
-                + "// Видалення\n"
-                + "Files.delete(p);"));
-        uk.add(LessonBlock.heading("try-with-resources для великих файлів"));
+                + "// 4. Інші корисні операції\n"
+                + "boolean exists = Files.exists(p);          // Чи існує файл?\n"
+                + "boolean isFile = Files.isRegularFile(p);   // Це файл чи папка?\n"
+                + "Files.deleteIfExists(p);                   // Видалити, якщо існує"));
+        uk.add(LessonBlock.note(
+                "Методи Files.readAllLines() та Files.readAllBytes() завантажують "
+                + "ВЕСЬ файл в оперативну пам'ять (RAM). Якщо файл має розмір кілька гігабайт, "
+                + "програма впаде з помилкою OutOfMemoryError. Для великих файлів використовуйте BufferedReader."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph(
+                "У вас є шлях до файлу: Path file = Paths.get(\"hello.txt\"); "
+                + "Як за допомогою класу Files записати туди один рядок \"Java 2026\"?"));
+        uk.add(LessonBlock.heading("Рішення"));
         uk.add(LessonBlock.code(
-                "// Для великих файлів — читання по рядках (не все в пам'яті)\n"
-                + "try (BufferedReader reader = Files.newBufferedReader(p, StandardCharsets.UTF_8)) {\n"
-                + "    String line;\n"
-                + "    while ((line = reader.readLine()) != null) {\n"
-                + "        System.out.println(line);\n"
-                + "    }\n"
+                "Path file = Paths.get(\"hello.txt\");\n"
+                + "try {\n"
+                + "    // Collections.singletonList створює список з одного елемента\n"
+                + "    Files.write(file, Collections.singletonList(\"Java 2026\"), StandardCharsets.UTF_8);\n"
+                + "} catch (IOException e) {\n"
+                + "    e.printStackTrace();\n"
                 + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("File operations (NIO.2)"));
@@ -2173,39 +2769,55 @@ final class JrcChapters03to15 {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Потоки: байтові та символьні"));
         uk.add(LessonBlock.paragraph(
-                "Потік (stream) — послідовність даних. Байтові потоки (InputStream/OutputStream) "
-                + "працюють з бінарними даними. Символьні (Reader/Writer) — з текстом."));
+                "Потік (stream) — це послідовність даних. У Java I/O є два основних типи потоків:\n"
+                + "1. Байтові (InputStream / OutputStream) — читають/пишуть сирі байти (картинки, відео, аудіо).\n"
+                + "2. Символьні (Reader / Writer) — працюють із текстом (String, char), враховуючи кодування (UTF-8)."));
         uk.add(LessonBlock.code(
                 "import java.io.*;\n"
                 + "import java.nio.charset.StandardCharsets;\n"
                 + "\n"
-                + "// Копіювання файлу через байтові потоки\n"
+                + "// 1. Байтові потоки: копіювання зображення\n"
                 + "try (FileInputStream in = new FileInputStream(\"source.jpg\");\n"
                 + "     FileOutputStream out = new FileOutputStream(\"copy.jpg\")) {\n"
-                + "    byte[] buffer = new byte[8192];\n"
+                + "    byte[] buffer = new byte[8192]; // Читаємо по 8 КБ за раз\n"
                 + "    int bytesRead;\n"
                 + "    while ((bytesRead = in.read(buffer)) != -1) {\n"
                 + "        out.write(buffer, 0, bytesRead);\n"
                 + "    }\n"
+                + "} catch (IOException e) {\n"
+                + "    e.printStackTrace();\n"
                 + "}\n"
                 + "\n"
-                + "// Buffered — краща продуктивність\n"
-                + "try (BufferedReader br = new BufferedReader(\n"
-                + "        new InputStreamReader(\n"
-                + "            new FileInputStream(\"data.txt\"), StandardCharsets.UTF_8));\n"
-                + "     BufferedWriter bw = new BufferedWriter(\n"
-                + "         new OutputStreamWriter(\n"
-                + "             new FileOutputStream(\"out.txt\"), StandardCharsets.UTF_8))) {\n"
+                + "// 2. Символьні потоки з буферизацією (читання великого тексту по рядках)\n"
+                + "try (BufferedReader br = new BufferedReader(new FileReader(\"data.txt\", StandardCharsets.UTF_8));\n"
+                + "     BufferedWriter bw = new BufferedWriter(new FileWriter(\"out.txt\", StandardCharsets.UTF_8))) {\n"
                 + "    String line;\n"
                 + "    while ((line = br.readLine()) != null) {\n"
                 + "        bw.write(line);\n"
-                + "        bw.newLine();\n"
+                + "        bw.newLine(); // Додає перехід на новий рядок\n"
                 + "    }\n"
+                + "} catch (IOException e) {\n"
+                + "    e.printStackTrace();\n"
                 + "}"));
-        uk.add(LessonBlock.note(
-                "Зазвичай NIO.2 (Files.readAllLines, Files.write) — "
-                + "найпростіший вибір для файлів. Старі потоки (InputStream/OutputStream) "
-                + "потрібні для бінарних даних, мережевих з'єднань або великих файлів."));
+        uk.add(LessonBlock.warning(
+                "Блок try-with-resources (круглі дужки після слова try) АВТОМАТИЧНО закриває "
+                + "потоки після використання (викликає метод close()). Завжди використовуйте його, "
+                + "щоб уникнути витоку пам'яті (memory leak) та блокування файлів в ОС!"));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph(
+                "Як правильно відкрити файл \"log.txt\" для ДОПИСУВАННЯ (append), а не перетирання "
+                + "за допомогою FileWriter?"));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code(
+                "// Передаємо параметр true (append = true) у конструктор FileWriter\n"
+                + "try (FileWriter fw = new FileWriter(\"log.txt\", StandardCharsets.UTF_8, true);\n"
+                + "     BufferedWriter bw = new BufferedWriter(fw)) {\n"
+                + "    \n"
+                + "    bw.write(\"Новий запис у лог\");\n"
+                + "    bw.newLine();\n"
+                + "} catch (IOException e) {\n"
+                + "    e.printStackTrace();\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Streams: byte and character"));
         en.add(LessonBlock.paragraph(
@@ -2260,36 +2872,57 @@ final class JrcChapters03to15 {
 
     private static Lesson materialThreadsCreation() {
         List<LessonBlock> uk = new ArrayList<>();
-        uk.add(LessonBlock.heading("Створення потоків"));
+        uk.add(LessonBlock.heading("Створення потоків (Threads)"));
         uk.add(LessonBlock.paragraph(
-                "Потік (thread) — окремий потік виконання. Java підтримує "
-                + "багатопоточність на рівні мови. Є два способи створити потік: "
-                + "через Thread та через Runnable."));
+                "Багатопоточність дозволяє вашій програмі виконувати кілька завдань ОДНОЧАСНО. "
+                + "Наприклад, поки один потік завантажує файл з інтернету, інший — "
+                + "малює анімацію на екрані. У Java є два основних способи створити потік: "
+                + "успадкувати клас Thread або реалізувати інтерфейс Runnable."));
         uk.add(LessonBlock.code(
-                "// Спосіб 1: lambda + Thread (найпростіший)\n"
+                "// Спосіб 1: Створення потоку за допомогою лямбда-виразу (Runnable)\n"
                 + "Thread t1 = new Thread(() -> {\n"
                 + "    for (int i = 0; i < 5; i++) {\n"
-                + "        System.out.println(\"Потік 1: \" + i);\n"
+                + "        System.out.println(\"Потік 1 працює: \" + i);\n"
+                + "        try {\n"
+                + "            Thread.sleep(100); // Пауза на 100 мілісекунд\n"
+                + "        } catch (InterruptedException e) {\n"
+                + "            e.printStackTrace();\n"
+                + "        }\n"
                 + "    }\n"
                 + "});\n"
                 + "\n"
-                + "// Спосіб 2: Runnable (краще для тестування та переиспользования)\n"
+                + "// Спосіб 2: Створення об'єкта Runnable (краще для тестування)\n"
                 + "Runnable task = () -> {\n"
                 + "    for (int i = 0; i < 5; i++) {\n"
-                + "        System.out.println(\"Потік 2: \" + i);\n"
+                + "        System.out.println(\"Потік 2 працює: \" + i);\n"
                 + "    }\n"
                 + "};\n"
-                + "Thread t2 = new Thread(task, \"worker-2\");\n"
+                + "Thread t2 = new Thread(task, \"Мій-Потік-2\");\n"
                 + "\n"
-                + "t1.start();  // ЗАПУСКАЄ новий потік!\n"
-                + "t2.start();  // run() — просто викликає метод у поточному потоці!\n"
+                + "// ЗАПУСК потоків\n"
+                + "t1.start();  // Метод start() створює новий потік та викликає в ньому run()\n"
+                + "t2.start();\n"
                 + "\n"
-                + "t1.join();  // головний потік ЧЕКАЄ завершення t1\n"
-                + "t2.join();  // головний потік ЧЕКАЄ завершення t2\n"
-                + "System.out.println(\"Обидва потоки завершились!\");"));
+                + "try {\n"
+                + "    t1.join();  // Головний потік чекає, поки t1 завершиться\n"
+                + "    t2.join();  // Головний потік чекає, поки t2 завершиться\n"
+                + "} catch (InterruptedException e) {\n"
+                + "    e.printStackTrace();\n"
+                + "}\n"
+                + "System.out.println(\"Обидва потоки завершили свою роботу!\");"));
         uk.add(LessonBlock.warning(
-                "start() — запускає НОВИЙ потік. run() — просто викликає метод у "
-                + "ПОТОЧНОМУ потоці (не створює новий)! Майже завжди використовуйте start()."));
+                "Найчастіша помилка новачків: викликати метод run() замість start(). "
+                + "Метод start() каже Java створити новий потік. Якщо ви викличете run(), "
+                + "код просто виконається у поточному потоці, і ніякої багатопоточності не буде!"));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph(
+                "Створіть потік за допомогою Runnable, який просто виводить у консоль \"Привіт з потоку!\". "
+                + "Не забудьте запустити його."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code(
+                "Runnable myTask = () -> System.out.println(\"Привіт з потоку!\");\n"
+                + "Thread myThread = new Thread(myTask);\n"
+                + "myThread.start();"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Creating threads"));
         en.add(LessonBlock.paragraph(
@@ -2326,45 +2959,76 @@ final class JrcChapters03to15 {
 
     private static Lesson materialSynchronization() {
         List<LessonBlock> uk = new ArrayList<>();
-        uk.add(LessonBlock.heading("Синхронізація та race condition"));
+        uk.add(LessonBlock.heading("Синхронізація та Race Condition"));
         uk.add(LessonBlock.paragraph(
-                "Race condition — коли два потоки одночасно змінюють одні дані, "
-                + "і результат залежить від порядку виконання. Синхронізація — "
-                + "захист від цього."));
+                "Race condition (стан гонитви) — це помилка, яка виникає, коли два потоки "
+                + "одночасно намагаються змінити одну й ту саму змінну. Оскільки операція типу "
+                + "count++ складається з трьох кроків (прочитати, додати 1, записати), потоки "
+                + "можуть «перебити» один одного, і ви втратите дані. Щоб цього уникнути, "
+                + "використовується синхронізація."));
         uk.add(LessonBlock.code(
-                "// БЕЗ синхронізації — race condition!\n"
+                "// БЕЗ синхронізації (погана ідея!)\n"
                 + "class UnsafeCounter {\n"
                 + "    private int count = 0;\n"
-                + "    void inc() { count++; }  // count++ = read + increment + write\n"
+                + "    void inc() { count++; }\n"
                 + "    int get() { return count; }\n"
                 + "}\n"
-                + "// Результат непередбачуваний: менше 2000!\n"
                 + "\n"
-                + "// З синхронізацією — правильно\n"
+                + "// З СИНХРОНІЗАЦІЄЮ (правильний підхід)\n"
                 + "class SafeCounter {\n"
                 + "    private int count = 0;\n"
-                + "    synchronized void inc() { count++; }\n"
-                + "    int get() { return count; }\n"
+                + "    \n"
+                + "    // synchronized гарантує, що сюди зможе зайти тільки один потік одночасно\n"
+                + "    synchronized void inc() {\n"
+                + "        count++;\n"
+                + "    }\n"
+                + "    \n"
+                + "    int get() {\n"
+                + "        return count;\n"
+                + "    }\n"
                 + "}\n"
                 + "\n"
-                + "SafeCounter c = new SafeCounter();\n"
-                + "Runnable r = () -> { for (int i = 0; i < 1000; i++) c.inc(); };\n"
-                + "Thread t1 = new Thread(r), t2 = new Thread(r);\n"
-                + "t1.start(); t2.start(); t1.join(); t2.join();\n"
-                + "System.out.println(c.get());  // завжди 2000"));
-        uk.add(LessonBlock.heading("volatile та AtomicInteger"));
-        uk.add(LessonBlock.code(
-                "// volatile — гарантує видимість між потоками (але НЕ атомарність)\n"
-                + "private volatile boolean running = true;\n"
+                + "SafeCounter counter = new SafeCounter();\n"
                 + "\n"
-                + "// AtomicInteger — атомарні операції без synchronized\n"
-                + "import java.util.concurrent.atomic.*;\n"
-                + "AtomicInteger counter = new AtomicInteger(0);\n"
-                + "counter.incrementAndGet();  // атомарний i++"));
+                + "// Два потоки додають по 1000\n"
+                + "Runnable r = () -> { \n"
+                + "    for (int i = 0; i < 1000; i++) counter.inc(); \n"
+                + "};\n"
+                + "\n"
+                + "Thread t1 = new Thread(r);\n"
+                + "Thread t2 = new Thread(r);\n"
+                + "t1.start(); \n"
+                + "t2.start();\n"
+                + "// Зачекаємо їх ... (тут потрібен join)\n"
+                + "System.out.println(counter.get());  // Завжди буде 2000"));
+        uk.add(LessonBlock.heading("Атомарні змінні (java.util.concurrent.atomic)"));
+        uk.add(LessonBlock.paragraph(
+                "Слово synchronized сповільнює програму (один потік працює, інші чекають в черзі). "
+                + "Для простих чисел краще використовувати класи на кшталт AtomicInteger, які "
+                + "виконують операції безпечно на рівні процесора, без блокування."));
+        uk.add(LessonBlock.code(
+                "import java.util.concurrent.atomic.AtomicInteger;\n"
+                + "\n"
+                + "AtomicInteger atomicCount = new AtomicInteger(0);\n"
+                + "\n"
+                + "// Безпечно додає 1 з будь-якого потоку\n"
+                + "atomicCount.incrementAndGet();\n"
+                + "\n"
+                + "System.out.println(atomicCount.get());"));
         uk.add(LessonBlock.note(
-                "synchronized блокує весь об'єкт — обмежує паралелізм. "
-                + "Для простих лічильників AtomicInteger ефективніший. "
-                + "Для складних операцій — ReentrantLock (java.util.concurrent)."));
+                "Ключове слово volatile гарантує, що зміни змінної відразу будуть видимі "
+                + "для всіх інших потоків (відключає кешування процесора), але воно НЕ ЗАХИЩАЄ "
+                + "від race condition при зміні (наприклад, при count++)."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph(
+                "У вас є змінна-лічильник AtomicInteger score = new AtomicInteger(10);. "
+                + "Як безпечно додати до неї значення 5?"));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code(
+                "AtomicInteger score = new AtomicInteger(10);\n"
+                + "// Метод addAndGet безпечно додає число\n"
+                + "score.addAndGet(5);\n"
+                + "System.out.println(score.get()); // 15"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Synchronization and race conditions"));
         en.add(LessonBlock.paragraph(
@@ -2410,43 +3074,64 @@ final class JrcChapters03to15 {
 
     private static Lesson materialExecutorService() {
         List<LessonBlock> uk = new ArrayList<>();
-        uk.add(LessonBlock.heading("ExecutorService: пул потоків"));
+        uk.add(LessonBlock.heading("ExecutorService: Пул потоків"));
         uk.add(LessonBlock.paragraph(
-                "Створювати Thread вручну для кожної задачі — погана практика. "
-                + "ExecutorService керує пулом потоків: створює один раз, "
-                + "відправляєш задачі — він сам розподіляє."));
+                "Створення нового об'єкта Thread для кожної задачі — це дуже «дорого» для системи. "
+                + "Краще створити кілька потоків один раз (пул потоків) і передавати їм нові "
+                + "завдання по мірі їх надходження. За це в Java відповідає інтерфейс ExecutorService."));
         uk.add(LessonBlock.code(
                 "import java.util.concurrent.*;\n"
                 + "\n"
-                + "// Створюємо пул з 4 потоків\n"
+                + "// Створюємо пул з 4 потоків, які будуть працювати весь час\n"
                 + "ExecutorService pool = Executors.newFixedThreadPool(4);\n"
                 + "\n"
-                + "// Відправляємо 10 задач\n"
+                + "// Відправляємо пулу 10 задач\n"
                 + "for (int i = 0; i < 10; i++) {\n"
-                + "    final int task = i;\n"
+                + "    final int taskNumber = i;\n"
                 + "    pool.submit(() -> {\n"
-                + "        System.out.println(\"Задача \" + task\n"
-                + "            + \" на \" + Thread.currentThread().getName());\n"
+                + "        System.out.println(\"Виконується задача \" + taskNumber \n"
+                + "            + \" у потоці \" + Thread.currentThread().getName());\n"
                 + "    });\n"
                 + "}\n"
                 + "\n"
-                + "pool.shutdown();  // завершити після виконання всіх задач\n"
-                + "pool.awaitTermination(5, TimeUnit.SECONDS);"));
-        uk.add(LessonBlock.heading("Future — результат задачі"));
+                + "// Обов'язково закриваємо пул, інакше програма не завершиться!\n"
+                + "pool.shutdown();"));
+        uk.add(LessonBlock.heading("Future: отримання результату з потоку"));
+        uk.add(LessonBlock.paragraph(
+                "Runnable не може повертати результат. Якщо ви хочете, щоб потік обчислив і повернув "
+                + "якесь значення, використовуйте інтерфейс Callable та об'єкт Future."));
         uk.add(LessonBlock.code(
                 "ExecutorService pool = Executors.newSingleThreadExecutor();\n"
+                + "\n"
+                + "// Callable повертає значення (у цьому випадку Integer)\n"
                 + "Future<Integer> future = pool.submit(() -> {\n"
-                + "    Thread.sleep(1000);\n"
+                + "    Thread.sleep(2000); // Симуляція довгої роботи (2 секунди)\n"
                 + "    return 42;\n"
                 + "});\n"
                 + "\n"
-                + "System.out.println(\"Робимо інше...\");\n"
-                + "Integer result = future.get();  // БЛОКУЄ до завершення\n"
-                + "System.out.println(\"Результат: \" + result);  // 42\n"
+                + "System.out.println(\"Тут ми можемо робити інші справи...\");\n"
+                + "\n"
+                + "try {\n"
+                + "    // Метод get() БЛОКУЄ головний потік, поки результат не буде готовий!\n"
+                + "    Integer result = future.get();\n"
+                + "    System.out.println(\"Результат обчислення: \" + result); // 42\n"
+                + "} catch (Exception e) {\n"
+                + "    e.printStackTrace();\n"
+                + "}\n"
                 + "pool.shutdown();"));
         uk.add(LessonBlock.warning(
-                "Обов'язково викликайте метод shutdown() для завершення роботи пулу потоків, оскільки "
-                + "інакше активний пул перешкоджатиме завершенню процесу JVM. Використовуйте try-with-resources або блок finally."));
+                "Завжди викликайте shutdown() (завершує роботу після виконання поточних задач) або "
+                + "shutdownNow() (намагається зупинити все негайно). Активний пул не дасть "
+                + "вашій програмі закритися."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph(
+                "Створіть Executors.newSingleThreadExecutor(). Надішліть йому задачу, яка виведе "
+                + "\"Hello Executor!\". Після цього правильно закрийте пул."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code(
+                "ExecutorService executor = Executors.newSingleThreadExecutor();\n"
+                + "executor.submit(() -> System.out.println(\"Hello Executor!\"));\n"
+                + "executor.shutdown();"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("ExecutorService: thread pool"));
         en.add(LessonBlock.paragraph(
@@ -2505,35 +3190,48 @@ final class JrcChapters03to15 {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Лямбда-вирази: анонімні функції"));
         uk.add(LessonBlock.paragraph(
-                "Лямбда — короткий запис для функціонального інтерфейсу "
-                + "(з одним методом). Замінює громіздкі анонімні класи."));
+                "Лямбда-вираз — це короткий та зручний спосіб запису анонімних класів, що реалізують "
+                + "функціональний інтерфейс (інтерфейс, який має ТІЛЬКИ ОДИН абстрактний метод). "
+                + "Вони дозволяють передавати логіку (код) як параметр у методи."));
         uk.add(LessonBlock.code(
-                "// До Java 8\n"
+                "// ДО Java 8: анонімний клас (багато зайвого коду)\n"
                 + "Runnable r1 = new Runnable() {\n"
                 + "    @Override\n"
-                + "    public void run() { System.out.println(\"Hello\"); }\n"
+                + "    public void run() { \n"
+                + "        System.out.println(\"Hello\"); \n"
+                + "    }\n"
                 + "};\n"
                 + "\n"
-                + "// З Java 8 — те саме, один рядок!\n"
+                + "// З Java 8: лямбда-вираз — те саме, але в один рядок!\n"
                 + "Runnable r2 = () -> System.out.println(\"Hello\");\n"
                 + "\n"
-                + "// З параметрами\n"
+                + "// З параметрами (типи параметрів компілятор вгадує сам)\n"
                 + "Comparator<String> cmp = (a, b) -> a.length() - b.length();\n"
                 + "\n"
-                + "// Тіло з кількома рядками\n"
+                + "// Тіло з кількома рядками коду (потрібні фігурні дужки {})\n"
                 + "Function<String, Integer> parser = s -> {\n"
                 + "    s = s.trim();\n"
                 + "    return Integer.parseInt(s);\n"
                 + "};\n"
                 + "\n"
-                + "// Method reference (найкоротше)\n"
-                + "Function<String, Integer> len = String::length;\n"
-                + "Consumer<String> printer = System.out::println;"));
+                + "// Method reference (посилання на метод) — найкоротший запис\n"
+                + "Function<String, Integer> len = String::length; // Замість s -> s.length()\n"
+                + "Consumer<String> printer = System.out::println; // Замість s -> System.out.println(s)"));
         uk.add(LessonBlock.list(
-                "(x, y) -> x + y           — два параметри",
-                "x -> x * x                — один параметр без дужок",
+                "(x, y) -> x + y           — два параметри, неявно повертає результат",
+                "x -> x * x                — один параметр (дужки можна не писати)",
                 "() -> System.out.println() — без параметрів",
-                "x -> { return x * 2; }    — явний return"));
+                "x -> { return x * 2; }    — тіло в фігурних дужках вимагає слова return"));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph(
+                "Напишіть лямбда-вираз для інтерфейсу Consumer<Integer>, який приймає число x "
+                + "і виводить на екран його квадрат (x * x)."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code(
+                "// Consumer приймає аргумент, але нічого не повертає (void)\n"
+                + "Consumer<Integer> printSquare = x -> System.out.println(x * x);\n"
+                + "\n"
+                + "printSquare.accept(5); // Виведе 25"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Lambda expressions: anonymous functions"));
         en.add(LessonBlock.paragraph(
@@ -2571,39 +3269,56 @@ final class JrcChapters03to15 {
 
     private static Lesson materialStreamPipeline() {
         List<LessonBlock> uk = new ArrayList<>();
-        uk.add(LessonBlock.heading("Stream API: конвеєр обробки даних"));
+        uk.add(LessonBlock.heading("Stream API: Конвеєр обробки даних"));
         uk.add(LessonBlock.paragraph(
-                "Stream — це «конвеєр» для обробки колекцій. Фільтруєте, "
-                + "трансформуєте, збираєте результат — ланцюжком операцій."));
+                "Stream (потік даних) — це «конвеєр» для обробки елементів колекції або масиву. "
+                + "Замість того, щоб писати цикли for і багато if, ви описуєте ЩО хочете зробити: "
+                + "відфільтрувати, змінити, відсортувати, зібрати."));
         uk.add(LessonBlock.code(
                 "List<String> names = Arrays.asList(\n"
                 + "    \"Іван\", \"Олена\", \"Андрій\", \"Марія\", \"Богдан\");\n"
                 + "\n"
-                + "// filter → map → sorted → collect\n"
-                + "List<String> result = names.stream()\n"
-                + "    .filter(n -> n.length() > 4)          // залишити довгі\n"
-                + "    .map(String::toUpperCase)              // у верхній регістр\n"
-                + "    .sorted()                              // відсортувати\n"
-                + "    .toList();                             // зібрати у List\n"
-                + "// [ОЛЕНА, АНДРІЙ, МАРІЯ, БОГДАН]\n"
+                + "// Ланцюжок: filter → map → sorted → collect\n"
+                + "List<String> result = names.stream()                   // 1. Створюємо стрім\n"
+                + "    .filter(n -> n.length() > 4)          // 2. Залишаємо імена довші за 4 літери\n"
+                + "    .map(String::toUpperCase)             // 3. Переводимо всі літери у верхній регістр\n"
+                + "    .sorted()                             // 4. Сортуємо за алфавітом\n"
+                + "    .toList();                            // 5. Збираємо назад у список (з Java 16)\n"
+                + "// Результат: [АНДРІЙ, БОГДАН, МАРІЯ, ОЛЕНА]\n"
                 + "\n"
-                + "// sum — підрахунок\n"
-                + "int sum = IntStream.rangeClosed(1, 100)\n"
-                + "    .reduce(0, Integer::sum);  // 5050\n"
+                + "// Підрахунок суми чисел\n"
+                + "int sum = IntStream.rangeClosed(1, 100)   // Числа від 1 до 100 включно\n"
+                + "    .sum();                               // Результат: 5050\n"
                 + "\n"
-                + "// anyMatch — чи є хоч один?\n"
+                + "// Перевірки (чи є хоч один такий елемент?)\n"
                 + "boolean hasLong = names.stream()\n"
-                + "    .anyMatch(n -> n.length() > 6);  // true\n"
+                + "    .anyMatch(n -> n.length() > 6);       // true (наприклад, \"Богдан\" має 6)\n"
                 + "\n"
-                + "// flatMap — розгортання вбудованих колекцій\n"
-                + "List<String> words = Arrays.asList(\"hello world\", \"java stream\");\n"
-                + "List<String> allWords = words.stream()\n"
-                + "    .flatMap(w -> Arrays.stream(w.split(\" \")))\n"
+                + "// flatMap — розгортання вкладених колекцій/масивів\n"
+                + "List<String> sentences = Arrays.asList(\"hello world\", \"java stream\");\n"
+                + "List<String> words = sentences.stream()\n"
+                + "    .flatMap(s -> Arrays.stream(s.split(\" \")))\n"
                 + "    .toList();\n"
                 + "// [hello, world, java, stream]"));
         uk.add(LessonBlock.list(
-                "Проміжні: filter, map, flatMap, sorted, distinct, peek, limit, skip",
-                "Термінальні: collect, toList, forEach, reduce, count, anyMatch, findFirst"));
+                "Проміжні операції (повертають новий Stream): filter, map, flatMap, sorted, distinct, limit, skip.",
+                "Термінальні операції (запускають конвеєр і повертають результат): collect, toList, forEach, sum, count, anyMatch, findFirst."));
+        uk.add(LessonBlock.warning(
+                "Стрім виконується ЛІНИВО (lazy)! Якщо ви напишете проміжні операції, але "
+                + "не викличете термінальну (наприклад, collect або forEach), жоден елемент "
+                + "не буде оброблено. Стрім також можна використати лише один раз!"));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph(
+                "У вас є список чисел: Arrays.asList(1, 2, 3, 4, 5, 6). "
+                + "За допомогою Stream API відфільтруйте лише парні числа (x % 2 == 0) та "
+                + "порахуйте їхню кількість за допомогою методу count()."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code(
+                "List<Integer> nums = Arrays.asList(1, 2, 3, 4, 5, 6);\n"
+                + "long evenCount = nums.stream()\n"
+                + "    .filter(x -> x % 2 == 0)\n"
+                + "    .count();\n"
+                + "System.out.println(evenCount); // 3 (це числа 2, 4, 6)"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Stream API: data processing pipeline"));
         en.add(LessonBlock.paragraph(
@@ -2643,32 +3358,51 @@ final class JrcChapters03to15 {
 
     private static Lesson materialCollectors() {
         List<LessonBlock> uk = new ArrayList<>();
-        uk.add(LessonBlock.heading("Collectors: збирання результатів"));
+        uk.add(LessonBlock.heading("Collectors: Збирання результатів"));
+        uk.add(LessonBlock.paragraph(
+                "Метод collect() — це термінальна операція, яка перетворює Stream у "
+                + "іншу структуру даних (List, Set, Map) або об'єднує елементи (String). "
+                + "Для цього використовується клас-утиліта Collectors."));
         uk.add(LessonBlock.code(
                 "List<String> names = Arrays.asList(\"Іван\", \"Олена\", \"Андрій\", \"Марія\");\n"
                 + "\n"
-                + "// З'єднання рядків\n"
+                + "// 1. З'єднання рядків (joining)\n"
                 + "String csv = names.stream().collect(Collectors.joining(\", \"));\n"
-                + "// \"Іван, Олена, Андрій, Марія\"\n"
+                + "// Результат: \"Іван, Олена, Андрій, Марія\"\n"
                 + "\n"
-                + "// Групування\n"
+                + "// 2. Збирання у множину (Set) для видалення дублікатів\n"
+                + "Set<String> uniqueNames = names.stream().collect(Collectors.toSet());\n"
+                + "\n"
+                + "// 3. Групування елементів (groupingBy)\n"
+                + "// Групуємо імена за їх довжиною\n"
                 + "Map<Integer, List<String>> byLength = names.stream()\n"
                 + "    .collect(Collectors.groupingBy(String::length));\n"
-                + "// {4=[Іван, Марія], 5=[Олена], 6=[Андрій]}\n"
+                + "// Результат: {4=[Іван, Марія], 5=[Олена], 6=[Андрій]}\n"
                 + "\n"
-                + "// Поділ на дві групи\n"
+                + "// 4. Поділ на дві групи (partitioningBy)\n"
+                + "// Завжди створює Map з двома ключами: true та false\n"
                 + "Map<Boolean, List<String>> parts = names.stream()\n"
                 + "    .collect(Collectors.partitioningBy(n -> n.length() > 4));\n"
-                + "// {false=[Іван], true=[Олена, Андрій, Марія]}\n"
+                + "// Результат: {false=[Іван], true=[Олена, Андрій, Марія]}\n"
                 + "\n"
-                + "// Підрахунок\n"
-                + "Map<String, Integer> nameLen = names.stream()\n"
+                + "// 5. Перетворення на словник (toMap)\n"
+                + "Map<String, Integer> nameLengths = names.stream()\n"
                 + "    .collect(Collectors.toMap(n -> n, String::length));\n"
-                + "// {Іван=4, Олена=5, Андрій=6, Марія=5}"));
+                + "// Результат: {Іван=4, Олена=5, Андрій=6, Марія=5}"));
         uk.add(LessonBlock.note(
-                "Collectors — потужний інструмент. groupingBy + downstream collector "
-                + "дозволяє робити складні агрегації: "
+                "Клас Collectors дуже потужний. Метод groupingBy можна комбінувати. Наприклад, "
+                + "якщо вам потрібен не список імен, а просто КІЛЬКІСТЬ імен певної довжини: "
                 + "Collectors.groupingBy(String::length, Collectors.counting())."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph(
+                "У вас є список слів. Як за допомогою Collectors.joining() з'єднати їх в один рядок, "
+                + "щоб вони були розділені дефісом \"-\"?"));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code(
+                "List<String> words = Arrays.asList(\"Java\", \"is\", \"awesome\");\n"
+                + "String result = words.stream()\n"
+                + "    .collect(Collectors.joining(\"-\"));\n"
+                + "System.out.println(result); // \"Java-is-awesome\""));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Collectors: gathering results"));
         en.add(LessonBlock.code(
@@ -2713,38 +3447,62 @@ final class JrcChapters03to15 {
 
     private static Lesson materialGenericBasics() {
         List<LessonBlock> uk = new ArrayList<>();
-        uk.add(LessonBlock.heading("Generics: типобезпечність"));
+        uk.add(LessonBlock.heading("Generics: Типобезпечність"));
         uk.add(LessonBlock.paragraph(
-                "Generics дозволяють створювати класи/методи з параметрами типу. "
-                + "Компілятор перевіряє типи на етапі компіляції — вам НЕ потрібно "
-                + "писати приведення типу (cast)."));
+                "Узагальнення (Generics) дозволяють створювати класи, інтерфейси або методи, "
+                + "які можуть працювати з будь-якими типами даних. Головна перевага: "
+                + "компілятор сам перевіряє типи під час написання коду, "
+                + "запобігаючи виникненню помилки ClassCastException."));
         uk.add(LessonBlock.code(
-                "// Без generics — ризик ClassCastException\n"
+                "// ДО Generics (як було в старих версіях Java)\n"
                 + "class OldBox {\n"
-                + "    Object value;\n"
+                + "    Object value; // Може зберігати будь-що\n"
                 + "    void set(Object v) { value = v; }\n"
                 + "    Object get() { return value; }\n"
                 + "}\n"
-                + "OldBox box = new OldBox();\n"
-                + "box.set(\"Hello\");\n"
-                + "String s = (String) box.get();  // cast — ризик!\n"
-                + "Integer n = (Integer) box.get(); // ClassCastException!\n"
                 + "\n"
-                + "// З generics — безпечніше\n"
+                + "OldBox box = new OldBox();\n"
+                + "box.set(\"Привіт\");\n"
+                + "String s = (String) box.get();  // Необхідно робити приведення (кастинг) типу!\n"
+                + "// Integer n = (Integer) box.get(); // Викличе ПОМИЛКУ під час роботи програми (ClassCastException)\n"
+                + "\n"
+                + "// З Generics — набагато безпечніше\n"
+                + "// <T> — це \"параметр типу\", який ми вкажемо при створенні об'єкта\n"
                 + "class Box<T> {\n"
                 + "    private T value;\n"
                 + "    void set(T v) { value = v; }\n"
                 + "    T get() { return value; }\n"
                 + "}\n"
                 + "\n"
-                + "Box<String> sb = new Box<>();\n"
-                + "sb.set(\"Hello\");\n"
-                + "String s = sb.get();   // без кастингу!\n"
-                + "// sb.set(42);         // ПОМИЛКА компіляції!\n"
+                + "Box<String> stringBox = new Box<>();\n"
+                + "stringBox.set(\"Привіт\");\n"
+                + "String s2 = stringBox.get();   // Кастинг більше не потрібен!\n"
+                + "// stringBox.set(42);          // Помилка ще на етапі КОМПІЛЯЦІЇ (це добре!)"));
+        uk.add(LessonBlock.note(
+                "Букви-маркери, які зазвичай використовують у Generics: "
+                + "T (Type), E (Element, використовується в колекціях), "
+                + "K (Key) та V (Value, для мап), N (Number). Це просто домовленість."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph(
+                "Напишіть клас Pair<K, V>, який може зберігати два значення різних типів: "
+                + "перше (first) типу K, друге (second) типу V. Напишіть для них конструктор та гетери."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code(
+                "class Pair<K, V> {\n"
+                + "    private K first;\n"
+                + "    private V second;\n"
+                + "    \n"
+                + "    public Pair(K first, V second) {\n"
+                + "        this.first = first;\n"
+                + "        this.second = second;\n"
+                + "    }\n"
+                + "    \n"
+                + "    public K getFirst() { return first; }\n"
+                + "    public V getSecond() { return second; }\n"
+                + "}\n"
                 + "\n"
-                + "Box<Integer> ib = new Box<>();\n"
-                + "ib.set(42);\n"
-                + "int n = ib.get();      // автобоксинг: Integer → int"));
+                + "// Використання:\n"
+                + "Pair<String, Integer> p = new Pair<>(\"Вік\", 25);"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Generics: type safety"));
         en.add(LessonBlock.paragraph(
@@ -2783,24 +3541,48 @@ final class JrcChapters03to15 {
 
     private static Lesson materialBoundedTypes() {
         List<LessonBlock> uk = new ArrayList<>();
-        uk.add(LessonBlock.heading("Обмеження типів (bounds)"));
+        uk.add(LessonBlock.heading("Обмеження типів (Bounds)"));
+        uk.add(LessonBlock.paragraph(
+                "Іноді ви хочете вказати, що параметр типу <T> може бути не абсолютно будь-яким, "
+                + "а лише таким, що успадковує певний клас або реалізує певний інтерфейс. "
+                + "Для цього використовується ключове слово extends."));
         uk.add(LessonBlock.code(
-                "// T extends Comparable — T має бути Comparable\n"
-                + "public static <T extends Comparable<T>> T max(T a, T b) {\n"
-                + "    return a.compareTo(b) >= 0 ? a : b;\n"
+                "// Метод, який працює тільки з числами (класами, які успадковують Number)\n"
+                + "public static <T extends Number> double sum(T num1, T num2) {\n"
+                + "    return num1.doubleValue() + num2.doubleValue();\n"
                 + "}\n"
                 + "\n"
-                + "max(3, 5);          // 5 (Integer implements Comparable)\n"
-                + "max(\"a\", \"z\");      // \"z\"\n"
-                + "// max(new Object(), new Object());  // помилка компіляції!\n"
+                + "// Використання:\n"
+                + "System.out.println(sum(10, 20.5)); // 30.5\n"
+                + "// sum(\"A\", \"B\"); // Помилка компіляції: String не є нащадком Number\n"
                 + "\n"
-                + "// Множинні обмеження\n"
-                + "public static <T extends Comparable<T> & Serializable> void save(T obj) {\n"
-                + "    // T одночасно Comparable й Serializable\n"
-                + "}"));
+                + "// Можна обмежувати і інтерфейсами (наприклад, Comparable)\n"
+                + "// Це дозволить передавати лише об'єкти, які можна порівнювати\n"
+                + "public static <T extends Comparable<T>> T findMax(T a, T b) {\n"
+                + "    if (a.compareTo(b) >= 0) {\n"
+                + "        return a;\n"
+                + "    }\n"
+                + "    return b;\n"
+                + "}\n"
+                + "\n"
+                + "System.out.println(findMax(3, 5));      // 5\n"
+                + "System.out.println(findMax(\"a\", \"z\"));  // \"z\""));
         uk.add(LessonBlock.note(
-                "extends для generics означує «є підтипом» (а не тільки клас). "
-                + "Для інтерфейсів можна вказати кілька через &: <T extends A & B>."));
+                "У Generics слово extends використовується як для класів, так і для інтерфейсів "
+                + "(слово implements тут не застосовується). Якщо вам потрібно кілька обмежень "
+                + "одночасно, використовуйте символ &: <T extends Number & Comparable<T>>."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph(
+                "Напишіть узагальнений метод printNumber(T item), який приймає лише об'єкти типу Number "
+                + "і просто виводить їх на екран."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code(
+                "public static <T extends Number> void printNumber(T item) {\n"
+                + "    System.out.println(\"Число: \" + item);\n"
+                + "}\n"
+                + "\n"
+                + "printNumber(42);   // int (автобоксинг у Integer)\n"
+                + "printNumber(3.14); // double (Double)"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Type bounds"));
         en.add(LessonBlock.code(
@@ -2825,32 +3607,46 @@ final class JrcChapters03to15 {
 
     private static Lesson materialWildcards() {
         List<LessonBlock> uk = new ArrayList<>();
-        uk.add(LessonBlock.heading("Wildcards: ? extends та ? super"));
+        uk.add(LessonBlock.heading("Wildcards (Символи підстановки)"));
+        uk.add(LessonBlock.paragraph(
+                "У Generics типи інваріантні. Це означає, що List<Integer> НЕ є нащадком List<Number>. "
+                + "Щоб метод міг приймати списки різних, але пов'язаних типів, використовують wildcards (?)."));
         uk.add(LessonBlock.code(
-                "// ? extends Number — приймає List<Integer>, List<Double>...\n"
-                + "double sum(List<? extends Number> list) {\n"
+                "// ? extends Number — \"Тільки читання\"\n"
+                + "// Метод приймає List будь-яких об'єктів, які є нащадками Number (Integer, Double...)\n"
+                + "static double sum(List<? extends Number> list) {\n"
                 + "    double total = 0;\n"
-                + "    for (Number n : list) total += n.doubleValue();\n"
+                + "    for (Number n : list) { // Ми можемо БЕЗПЕЧНО читати як Number\n"
+                + "        total += n.doubleValue();\n"
+                + "    }\n"
+                + "    // list.add(10); // ПОМИЛКА! Невідомо, який саме там тип (може це List<Double>)\n"
                 + "    return total;\n"
                 + "}\n"
-                + "sum(Arrays.asList(1, 2, 3));      // 6.0\n"
-                + "sum(Arrays.asList(1.5, 2.5));     // 4.0\n"
-                + "// sum(Arrays.asList(\"a\"));       // помилка компіляції!\n"
                 + "\n"
-                + "// ? super Integer — приймає List<Integer>, List<Number>, List<Object>\n"
-                + "void addNumbers(List<? super Integer> list) {\n"
-                + "    list.add(1); list.add(2); list.add(3);\n"
-                + "}\n"
-                + "addNumbers(new ArrayList<Number>());  // OK\n"
-                + "addNumbers(new ArrayList<Object>());  // OK"));
-        uk.add(LessonBlock.heading("PECS: Producer Extends, Consumer Super"));
+                + "// ? super Integer — \"Запис дозволено\"\n"
+                + "// Метод приймає List об'єктів типу Integer або БУДЬ-ЯКОГО його предка (Number, Object)\n"
+                + "static void addNumbers(List<? super Integer> list) {\n"
+                + "    list.add(1);\n"
+                + "    list.add(2);\n"
+                + "    // Ми можемо БЕЗПЕЧНО додавати Integer, бо всі \"предки\" його підтримують\n"
+                + "    // Number n = list.get(0); // ПОМИЛКА! При читанні гарантовано лише Object\n"
+                + "}"));
+        uk.add(LessonBlock.heading("Принцип PECS"));
         uk.add(LessonBlock.paragraph(
-                "Правило PECS (Effective Java, Joshua Bloch): "
-                + "якщо структура ВИРОБЛЯЄ дані — use extends; "
-                + "якщо СПОЖИВАЄ — use super."));
-        uk.add(LessonBlock.warning(
-                "Після запису через ? super компілятор не дозволить читати крім Object. "
-                + "Після читання через ? extends не дозволить запис. Обирайте напрямок!"));
+                "Щоб не плутатися, використовуйте правило PECS (Producer Extends, Consumer Super): "
+                + "Якщо колекція ПРОДЮСЕР (ви тільки читаєте з неї) — використовуйте ? extends T. "
+                + "Якщо колекція СПОЖИВАЧ (ви тільки записуєте в неї) — використовуйте ? super T."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph(
+                "Напишіть метод copy(List<? extends Number> source, List<? super Number> destination), "
+                + "який копіює всі елементи з колекції-джерела (source) у колекцію-призначення (destination)."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code(
+                "public static void copy(List<? extends Number> source, List<? super Number> destination) {\n"
+                + "    for (Number num : source) { // Читаємо з extends\n"
+                + "        destination.add(num);   // Пишемо в super\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Wildcards: ? extends and ? super"));
         en.add(LessonBlock.code(
@@ -2894,35 +3690,53 @@ final class JrcChapters03to15 {
 
     private static Lesson materialEnumBasics() {
         List<LessonBlock> uk = new ArrayList<>();
-        uk.add(LessonBlock.heading("enum: обмежений набір значень"));
+        uk.add(LessonBlock.heading("enum: Перерахування (Обмежений набір значень)"));
         uk.add(LessonBlock.paragraph(
-                "enum — це клас, що має фіксований набір констант. "
-                + "Набагато безпечніший за int-константи (неможливо створити \"випадкове\" "
-                + "значення)."));
+                "Перерахування (enum) — це спеціальний клас, який представляє собою групу "
+                + "фіксованих констант (незмінних змінних). Наприклад, дні тижня, пори року "
+                + "або стани замовлення (нове, в обробці, доставлене). Це робить ваш код "
+                + "безпечнішим, оскільки ви не зможете передати туди якесь випадкове число чи рядок."));
         uk.add(LessonBlock.code(
-                "enum Day {\n"
+                "// Оголошення enum (зазвичай робиться в окремому файлі, як клас)\n"
+                + "enum Day {\n"
                 + "    MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY,\n"
-                + "    SATURDAY, SUNDAY\n"
+                + "    SATURDAY, SUNDAY // Заведено писати ВЕЛИКИМИ літерами\n"
                 + "}\n"
                 + "\n"
                 + "Day today = Day.WEDNESDAY;\n"
                 + "\n"
-                + "// switch — ідеально для enum\n"
+                + "// switch ідеально працює з enum (без ризику помилитися у написанні рядка)\n"
                 + "switch (today) {\n"
-                + "    case SATURDAY: case SUNDAY:\n"
-                + "        System.out.println(\"Вихідний!\"); break;\n"
+                + "    case SATURDAY: \n"
+                + "    case SUNDAY:\n"
+                + "        System.out.println(\"Вихідний!\"); \n"
+                + "        break;\n"
                 + "    default:\n"
                 + "        System.out.println(\"Робочий день\");\n"
                 + "}\n"
                 + "\n"
-                + "// Корисні методи\n"
-                + "today.name();           // \"WEDNESDAY\" (рядок)\n"
-                + "today.ordinal();        // 2 (порядковий номер від 0)\n"
-                + "Day.valueOf(\"MONDAY\"); // enum з рядка\n"
+                + "// Корисні вбудовані методи\n"
+                + "System.out.println(today.name());           // Виведе \"WEDNESDAY\" (як рядок)\n"
+                + "System.out.println(today.ordinal());        // Виведе 2 (порядковий номер, починається з 0)\n"
                 + "\n"
-                + "// Перебір ВСІХ значень\n"
+                + "// Перетворення рядка в об'єкт enum\n"
+                + "Day monday = Day.valueOf(\"MONDAY\"); \n"
+                + "\n"
+                + "// Перебір ВСІХ можливих значень\n"
                 + "for (Day d : Day.values()) {\n"
                 + "    System.out.println(d.ordinal() + \": \" + d.name());\n"
+                + "}"));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph(
+                "Створіть enum Color з трьома значеннями: RED, GREEN, BLUE. "
+                + "Використовуючи цикл foreach і метод values(), виведіть їх усі на екран."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code(
+                "enum Color { RED, GREEN, BLUE }\n"
+                + "\n"
+                + "// ... у методі main:\n"
+                + "for (Color c : Color.values()) {\n"
+                + "    System.out.println(c);\n"
                 + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("enum: limited set of values"));
@@ -2960,39 +3774,70 @@ final class JrcChapters03to15 {
     private static Lesson materialEnumWithFields() {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("enum з полями та методами"));
+        uk.add(LessonBlock.paragraph(
+                "У Java enum — це повноцінний клас. Це означає, що константи можуть "
+                + "мати свої власні поля (змінні), конструктори та методи. Це неймовірно потужний інструмент "
+                + "для зв'язування даних зі значеннями."));
         uk.add(LessonBlock.code(
                 "enum Season {\n"
-                + "    WINTER(\"зима\", -5),\n"
-                + "    SPRING(\"весна\", 15),\n"
-                + "    SUMMER(\"літо\", 30),\n"
-                + "    AUTUMN(\"осінь\", 10);\n"
+                + "    WINTER(\"Зима\", -5),\n"
+                + "    SPRING(\"Весна\", 15),\n"
+                + "    SUMMER(\"Літо\", 30),\n"
+                + "    AUTUMN(\"Осінь\", 10);\n"
                 + "\n"
-                + "    private final String nameUk;\n"
-                + "    private final int avgTemp;\n"
+                + "    // Поля для кожної константи (краще робити їх final)\n"
+                + "    private final String ukrainianName;\n"
+                + "    private final int averageTemp;\n"
                 + "\n"
-                + "    Season(String nameUk, int avgTemp) {\n"
-                + "        this.nameUk = nameUk;\n"
-                + "        this.avgTemp = avgTemp;\n"
+                + "    // Конструктор enum ЗАВЖДИ private (компілятор робить це сам).\n"
+                + "    // Ви не можете створити Season через оператор new.\n"
+                + "    Season(String ukrainianName, int averageTemp) {\n"
+                + "        this.ukrainianName = ukrainianName;\n"
+                + "        this.averageTemp = averageTemp;\n"
                 + "    }\n"
                 + "\n"
-                + "    public String getNameUk() { return nameUk; }\n"
-                + "    public int getAvgTemp() { return avgTemp; }\n"
+                + "    // Звичайні гетери\n"
+                + "    public String getUkrainianName() { return ukrainianName; }\n"
+                + "    public int getAverageTemp() { return averageTemp; }\n"
                 + "\n"
-                + "    public boolean isCold() { return avgTemp < 0; }\n"
+                + "    // Звичайний метод\n"
+                + "    public boolean isCold() { return averageTemp <= 0; }\n"
                 + "}\n"
                 + "\n"
+                + "// Використання:\n"
                 + "for (Season s : Season.values()) {\n"
-                + "    System.out.println(s.getNameUk() + \": \" + s.getAvgTemp() + \"°C\"\n"
-                + "        + (s.isCold() ? \" (холодно!)\" : \"\"));\n"
+                + "    System.out.print(s.getUkrainianName() + \": \" + s.getAverageTemp() + \"°C\");\n"
+                + "    if (s.isCold()) {\n"
+                + "        System.out.print(\" (холодно!)\");\n"
+                + "    }\n"
+                + "    System.out.println();\n"
                 + "}\n"
-                + "// зима: -5°C (холодно!)\n"
-                + "// весна: 15°C\n"
-                + "// літо: 30°C\n"
-                + "// осінь: 10°C"));
+                + "// Зима: -5°C (холодно!)\n"
+                + "// Весна: 15°C\n"
+                + "// Літо: 30°C\n"
+                + "// Осінь: 10°C"));
         uk.add(LessonBlock.note(
-                "enum може реалізовувати інтерфейси (але не наслідувати класи — "
-                + "всі enum наслідують java.lang.Enum). enum не можна створити "
-                + "через new — конструктор викликається автоматично."));
+                "Хоча enum є класом, він НЕ МОЖЕ успадковувати інші класи (бо він вже "
+                + "неявно успадковує клас java.lang.Enum). Проте він МОЖЕ реалізовувати інтерфейси."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph(
+                "Додайте до вашого enum Color (RED, GREEN, BLUE) поле String hexCode (наприклад, \"#FF0000\" для RED), "
+                + "конструктор та метод getHexCode()."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code(
+                "enum Color {\n"
+                + "    RED(\"#FF0000\"), GREEN(\"#00FF00\"), BLUE(\"#0000FF\");\n"
+                + "    \n"
+                + "    private final String hex;\n"
+                + "    \n"
+                + "    Color(String hex) {\n"
+                + "        this.hex = hex;\n"
+                + "    }\n"
+                + "    \n"
+                + "    public String getHex() { return hex; }\n"
+                + "}\n"
+                + "\n"
+                + "System.out.println(Color.RED.getHex()); // #FF0000"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("enum with fields and methods"));
         en.add(LessonBlock.code(
@@ -3046,29 +3891,58 @@ final class JrcChapters03to15 {
         List<LessonBlock> uk = new ArrayList<>();
         uk.add(LessonBlock.heading("Стандартні анотації"));
         uk.add(LessonBlock.paragraph(
-                "Анотація — метадані над класом/методом/полем. Починаються з @. "
-                + "Компілятор або фреймворк читають їх та діють відповідно."));
+                "Анотація — це спеціальні метадані (мітки), які ви можете додавати до класів, "
+                + "методів, змінних або параметрів. Вони починаються з символу @. Самі по собі "
+                + "анотації нічого не робять, але компілятор або різні фреймворки (як Spring чи Hibernate) "
+                + "читають їх та змінюють поведінку програми відповідно."));
         uk.add(LessonBlock.code(
-                "// @Override — «я перевизначаю метод батьківського класу»\n"
+                "// @Override — найпопулярніша анотація.\n"
+                + "// Вона каже компілятору: \"я планую перевизначити метод батьківського класу\".\n"
                 + "class Animal {\n"
                 + "    String sound() { return \"...\"; }\n"
                 + "}\n"
                 + "class Dog extends Animal {\n"
                 + "    @Override\n"
-                + "    String sound() { return \"Гав!\"; }  // компілятор перевірить правильність\n"
-                + "    // без @Override помилка підписання НЕ помітиться!\n"
+                + "    String sound() { return \"Гав!\"; }  // Все добре\n"
+                + "    \n"
+                + "    // @Override\n"
+                + "    // String soudn() { return \"Гав!\"; } // ПОМИЛКА КОМПІЛЯЦІЇ (описка в назві)!\n"
+                + "    // Без @Override описка б не помітилася, і це був би просто новий метод.\n"
                 + "}\n"
                 + "\n"
-                + "// @Deprecated — «цей метод застарів, не використовуйте»\n"
+                + "// @Deprecated — попереджає програмістів, що метод застарів, \n"
+                + "// містить баги, або є краща альтернатива, і його не варто використовувати.\n"
                 + "@Deprecated\n"
                 + "void oldMethod() { }\n"
                 + "\n"
-                + "// @SuppressWarnings — «приглушити попередження компілятора»\n"
+                + "// @SuppressWarnings — просить компілятор не показувати певні попередження.\n"
                 + "@SuppressWarnings(\"unchecked\")\n"
                 + "List<String> list = (List<String>) rawList;\n"
                 + "\n"
-                + "// @Override + @Override = помилка (анотацію не можна використати двічі)\n"
-                + "// @FunctionalInterface — «цей інтерфейс має бути з одним методом»"));
+                + "// @FunctionalInterface — гарантує, що інтерфейс має рівно один абстрактний метод \n"
+                + "// (ідеально для лямбда-виразів).\n"
+                + "@FunctionalInterface\n"
+                + "interface MathOperation {\n"
+                + "    int operate(int a, int b);\n"
+                + "}"));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph(
+                "Створіть інтерфейс Worker з одним методом void work(). "
+                + "Позначте його анотацією @FunctionalInterface. Потім створіть клас Builder, "
+                + "який імплементує Worker, і позначте метод work() анотацією @Override."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code(
+                "@FunctionalInterface\n"
+                + "interface Worker {\n"
+                + "    void work();\n"
+                + "}\n"
+                + "\n"
+                + "class Builder implements Worker {\n"
+                + "    @Override\n"
+                + "    public void work() {\n"
+                + "        System.out.println(\"Будівельник працює.\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Standard annotations"));
         en.add(LessonBlock.paragraph(
@@ -3099,39 +3973,64 @@ final class JrcChapters03to15 {
 
     private static Lesson materialCustomAnnotations() {
         List<LessonBlock> uk = new ArrayList<>();
-        uk.add(LessonBlock.heading("Власні анотації та рефлексія"));
+        uk.add(LessonBlock.heading("Власні анотації та Рефлексія"));
+        uk.add(LessonBlock.paragraph(
+                "Ви можете створювати власні анотації за допомогою ключового слова @interface. "
+                + "Щоб вказати, де саме можна застосувати вашу анотацію, та як довго вона має жити, "
+                + "використовують мета-анотації @Target та @Retention."));
         uk.add(LessonBlock.code(
-                "// Оголошення власної анотації\n"
-                + "@Retention(RetentionPolicy.RUNTIME)  // доступна в рантаймі\n"
-                + "@Target(ElementType.METHOD)            // тільки для методів\n"
-                + "@interface LogExecutionTime { }\n"
-                + "\n"
-                + "// Використання\n"
-                + "class Service {\n"
-                + "    @LogExecutionTime\n"
-                + "    void processData() {\n"
-                + "        // ... довга операція\n"
-                + "    }\n"
+                "// 1. Оголошення власної анотації\n"
+                + "@Retention(RetentionPolicy.RUNTIME)    // Живе під час виконання програми (щоб можна було прочитати)\n"
+                + "@Target(ElementType.METHOD)            // Можна ставити ТІЛЬКИ над методами\n"
+                + "@interface LogExecutionTime { \n"
+                + "    // Анотація може мати параметри (як методи без тіла)\n"
+                + "    // String value() default \"Info\";\n"
                 + "}\n"
                 + "\n"
-                + "// Читання анотації через рефлексію\n"
-                + "Method m = Service.class.getMethod(\"processData\");\n"
-                + "if (m.isAnnotationPresent(LogExecutionTime.class)) {\n"
-                + "    long start = System.nanoTime();\n"
-                + "    m.invoke(serviceInstance);\n"
-                + "    long elapsed = System.nanoTime() - start;\n"
-                + "    System.out.println(\"Execution: \" + elapsed + \" ns\");\n"
+                + "// 2. Використання\n"
+                + "class Service {\n"
+                + "    @LogExecutionTime\n"
+                + "    public void processData() {\n"
+                + "        System.out.println(\"Обробка даних...\");\n"
+                + "    }\n"
                 + "}"));
-        uk.add(LessonBlock.list(
-                "@Retention(RUNTIME) — зберігається під час виконання (рефлексія)",
-                "@Retention(CLASS) — у .class файлі, але не в рантаймі (за замовчуванням)",
-                "@Retention(SOURCE) — тільки під час компіляції (@Override)",
-                "@Target(METHOD) — анотація може бути тільки над методом",
-                "@Target(TYPE) — над класом/інтерфейсом/enum",
-                "@Target(FIELD) — над полем"));
+        uk.add(LessonBlock.heading("Магія Рефлексії (Reflection)"));
+        uk.add(LessonBlock.paragraph(
+                "Рефлексія — це механізм Java, який дозволяє програмі \"дивитися на себе\" "
+                + "під час виконання: дізнаватися, які є класи, методи, поля, та які анотації на них висять."));
+        uk.add(LessonBlock.code(
+                "// 3. Читання анотації через рефлексію в рантаймі\n"
+                + "Service service = new Service();\n"
+                + "// Отримуємо об'єкт класу, потім дістаємо інформацію про метод\n"
+                + "Method method = Service.class.getMethod(\"processData\");\n"
+                + "\n"
+                + "// Перевіряємо, чи висить над методом наша анотація\n"
+                + "if (method.isAnnotationPresent(LogExecutionTime.class)) {\n"
+                + "    long start = System.nanoTime();\n"
+                + "    \n"
+                + "    // Викликаємо метод через рефлексію!\n"
+                + "    method.invoke(service);\n"
+                + "    \n"
+                + "    long elapsed = System.nanoTime() - start;\n"
+                + "    System.out.println(\"Час виконання: \" + elapsed + \" наносекунд\");\n"
+                + "}"));
         uk.add(LessonBlock.note(
-                "Рефлексія (Class, Method, Field) дозволяє аналізувати код в рантаймі. "
-                + "Саме на ній побудовані Spring, Jackson, JUnit та інші фреймворки."));
+                "Життєвий цикл (@Retention): SOURCE (видаляється компілятором, наприклад @Override), "
+                + "CLASS (зберігається в байт-коді, але недоступна в рантаймі - за замовчуванням), "
+                + "RUNTIME (доступна в рантаймі через рефлексію)."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph(
+                "Створіть анотацію @Important, яка діє в RUNTIME і може застосовуватися до TYPE (класів). "
+                + "Створіть порожній клас MyClass і позначте його цією анотацією."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code(
+                "@Retention(RetentionPolicy.RUNTIME)\n"
+                + "@Target(ElementType.TYPE)\n"
+                + "@interface Important {}\n"
+                + "\n"
+                + "@Important\n"
+                + "class MyClass {\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Custom annotations and reflection"));
         en.add(LessonBlock.code(

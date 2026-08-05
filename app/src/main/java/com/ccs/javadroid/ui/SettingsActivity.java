@@ -4,6 +4,8 @@ import com.ccs.javadroid.util.AppPreferences;
 import com.ccs.javadroid.util.AppTheme;
 import com.ccs.javadroid.util.PowerSavingManager;
 import com.ccs.javadroid.util.FullScreenHelper;
+import com.ccs.javadroid.tools.compilers.JavaVersions;
+import com.ccs.javadroid.ui.panels.PanelLayoutEditor;
 import com.ccs.javadroid.tools.compilers.NdkManager;
 
 import android.app.Activity;
@@ -34,6 +36,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import java.util.List;
 import java.util.Locale;
 import java.io.File;
 
@@ -193,6 +196,7 @@ public class SettingsActivity extends AppCompatActivity {
         content.addView(buildAppearanceSection());
         content.addView(buildCustomColorsSection());
         content.addView(buildEditorSection());
+        content.addView(buildPanelLayoutSection());
         content.addView(buildCompilerSection());
         content.addView(buildPowerSavingSection());
         content.addView(buildResetButton());
@@ -674,24 +678,59 @@ public class SettingsActivity extends AppCompatActivity {
         return hint;
     }
 
+    // ── Bottom panel layout ───────────────────────────────────
+
+    /** Order and visibility of the Run / Problems / Bytecode / … tab strip. */
+    private View buildPanelLayoutSection() {
+        LinearLayout section = newSection(getString(R.string.settings_section_panels));
+        section.addView(buildHint(getString(R.string.settings_panels_hint)));
+
+        PanelLayoutEditor editor = new PanelLayoutEditor(this, theme, prefs);
+        section.addView(editor.getView());
+
+        TextView reset = new TextView(this);
+        reset.setText(R.string.settings_panels_reset);
+        reset.setTextColor(theme.accent);
+        reset.setTextSize(13);
+        reset.setPadding(dp(4), dp(10), dp(4), dp(4));
+        reset.setOnClickListener(v -> {
+            editor.reset();
+            Toast.makeText(this, R.string.settings_panels_reset_done, Toast.LENGTH_SHORT).show();
+        });
+        section.addView(reset);
+
+        return section;
+    }
+
     // ── Compiler ──────────────────────────────────────────────
 
     private View buildCompilerSection() {
         LinearLayout section = newSection(getString(R.string.settings_section_compiler));
 
         section.addView(label(getString(R.string.settings_java_target)));
-        final String[] codes = { AppPreferences.JAVA_8, AppPreferences.JAVA_11, AppPreferences.JAVA_17, AppPreferences.JAVA_21 };
-        String[] labels = {
-                "Java 8",
-                "Java 11",
-                "Java 17",
-                "Java 21"
-        };
+
+        // Every release is listed, including those the bundled toolchain cannot
+        // emit — a project may already declare one. Those carry the level they
+        // actually compile at in their label so the setting never lies.
+        final List<JavaVersions.Release> releases = JavaVersions.all();
+        final String[] codes = new String[releases.size()];
+        String[] labels = new String[releases.size()];
+        for (int i = 0; i < releases.size(); i++) {
+            JavaVersions.Release r = releases.get(i);
+            codes[i] = r.code;
+            JavaVersions.Release actual = JavaVersions.byCode(JavaVersions.effective(r.code));
+            labels[i] = r.isCompilable()
+                    ? r.label
+                    : getString(R.string.settings_java_target_maps_to,
+                                r.label, actual == null ? JavaVersions.effective(r.code) : actual.label);
+        }
+
         Spinner sp = newSpinner(labels);
         sp.setContentDescription(getString(R.string.a11y_settings_java_target));
+        String current = JavaVersions.normalize(prefs.getJavaTarget());
         int sel = 0;
         for (int i = 0; i < codes.length; i++) {
-            if (codes[i].equals(prefs.getJavaTarget())) { sel = i; break; }
+            if (codes[i].equals(current)) { sel = i; break; }
         }
         sp.setSelection(sel);
         sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -703,7 +742,8 @@ public class SettingsActivity extends AppCompatActivity {
         section.addView(sp);
 
         TextView hint = new TextView(this);
-        hint.setText(getString(R.string.settings_java_hint));
+        hint.setText(getString(R.string.settings_java_hint,
+                JavaVersions.MIN_COMPILABLE, JavaVersions.MAX_COMPILABLE));
         hint.setTextColor(theme.textDim);
         hint.setTextSize(11);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
@@ -1168,8 +1208,9 @@ public class SettingsActivity extends AppCompatActivity {
         return (int) (v * getResources().getDisplayMetrics().density);
     }
 
+    /** @see Dialogs#rounded */
     private com.google.android.material.dialog.MaterialAlertDialogBuilder newRoundedDialog() {
-        return new com.google.android.material.dialog.MaterialAlertDialogBuilder(this);
+        return Dialogs.rounded(this);
     }
 
     public static void launch(Activity host, int requestCode) {

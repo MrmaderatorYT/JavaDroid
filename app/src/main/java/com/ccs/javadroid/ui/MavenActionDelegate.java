@@ -10,6 +10,7 @@ import com.ccs.javadroid.analysis.ProblemItem;
 import com.ccs.javadroid.analysis.ProblemsAdapter;
 import com.ccs.javadroid.project.BuildSystem;
 import com.ccs.javadroid.project.ProjectManager;
+import com.ccs.javadroid.ui.panels.BottomPanel;
 import com.ccs.javadroid.tools.compilers.ProjectCompiler;
 import com.ccs.javadroid.maven.MavenDependencyResolver;
 import com.ccs.javadroid.maven.PomModel;
@@ -35,8 +36,9 @@ public final class MavenActionDelegate {
         Activity getActivity();
     }
 
-    private static final int PANEL_RUN = 0;
-    private static final int PANEL_PROBLEMS = 1;
+    // Panel ids come from BottomPanel; they used to be copied here as 0 and 1.
+    private static final int PANEL_RUN = BottomPanel.RUN.mode;
+    private static final int PANEL_PROBLEMS = BottomPanel.PROBLEMS.mode;
 
     private final Callback callback;
     private volatile boolean syncInProgress = false;

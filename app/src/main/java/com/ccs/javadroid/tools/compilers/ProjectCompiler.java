@@ -1310,8 +1310,11 @@ public final class ProjectCompiler {
 
     /** Повертає ECJ опції для версії Java: "-source X -target X". */
     private static String[] ecjVersionFlags(String javaTarget) {
-        if (javaTarget == null || javaTarget.isEmpty()) javaTarget = "1.8";
-        return new String[]{"-source", javaTarget, "-target", javaTarget};
+        // A project may ask for a level the bundled compiler cannot emit (say 1.4,
+        // or a release newer than the dexer reads); JavaVersions maps it onto the
+        // nearest level that works rather than letting ECJ abort.
+        String level = JavaVersions.effective(javaTarget);
+        return new String[]{"-source", level, "-target", level};
     }
 
     private static String classpath(List<File> jars) {

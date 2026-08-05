@@ -30,6 +30,21 @@ private static Lesson materialAreas() {
     uk.add(LessonBlock.note(
         "Heap — загальна для всіх потоків. Stack — окремий на потік (за замовчуванням "
         + "512KB, -Xss). Метасpace росте автоматично з Java 8."));
+    uk.add(LessonBlock.heading("Практичне завдання"));
+    uk.add(LessonBlock.paragraph("Напишіть код, який гарантовано викличе OutOfMemoryError в Heap."));
+    uk.add(LessonBlock.heading("Рішення"));
+    uk.add(LessonBlock.code(
+        "import java.util.ArrayList;\n"
+        + "import java.util.List;\n"
+        + "\n"
+        + "public class OOMExample {\n"
+        + "    public static void main(String[] args) {\n"
+        + "        List<byte[]> list = new ArrayList<>();\n"
+        + "        while (true) {\n"
+        + "            list.add(new byte[1024 * 1024]); // 1MB\n"
+        + "        }\n"
+        + "    }\n"
+        + "}"));
     List<LessonBlock> en = new ArrayList<>();
     en.add(LessonBlock.heading("JVM memory areas"));
     en.add(LessonBlock.paragraph("JVM memory is divided into areas:"));
@@ -60,6 +75,18 @@ private static Lesson materialGc() {
         "Meta­space — метадані класів, не чиститься GC у класичному сенсі."));
     uk.add(LessonBlock.paragraph(
         "Явно «попросити» GC: System.gc() — лише рекомендація, не гарантує збірку."));
+    uk.add(LessonBlock.heading("Практичне завдання"));
+    uk.add(LessonBlock.paragraph("Напишіть код, який створює об'єкти та рекомендує JVM запустити Garbage Collector."));
+    uk.add(LessonBlock.heading("Рішення"));
+    uk.add(LessonBlock.code(
+        "public class GCExample {\n"
+        + "    public static void main(String[] args) {\n"
+        + "        for (int i = 0; i < 10000; i++) {\n"
+        + "            new Object();\n"
+        + "        }\n"
+        + "        System.gc(); // Рекомендуємо зібрати сміття\n"
+        + "    }\n"
+        + "}"));
     List<LessonBlock> en = new ArrayList<>();
     en.add(LessonBlock.heading("Garbage Collector"));
     en.add(LessonBlock.paragraph(
@@ -91,6 +118,17 @@ private static Lesson materialLeaks() {
     uk.add(LessonBlock.note(
         "Слабкі посилання: WeakReference / WeakHashMap дозволяють GC зібрати ключі. "
         + "Try-with-resources гарантує закриття Closeable."));
+    uk.add(LessonBlock.heading("Практичне завдання"));
+    uk.add(LessonBlock.paragraph("Перепишіть приклад Cache з використанням WeakHashMap для запобігання витоку пам'яті."));
+    uk.add(LessonBlock.heading("Рішення"));
+    uk.add(LessonBlock.code(
+        "import java.util.Map;\n"
+        + "import java.util.WeakHashMap;\n"
+        + "\n"
+        + "public class Cache {\n"
+        + "    private static final Map<Object, Object> MAP = new WeakHashMap<>();\n"
+        + "    public static void put(Object k, Object v) { MAP.put(k, v); }\n"
+        + "}"));
     List<LessonBlock> en = new ArrayList<>();
     en.add(LessonBlock.heading("Memory leaks"));
     en.add(LessonBlock.paragraph(

@@ -69,14 +69,14 @@ final class Jdk8DeepDiveAdvancedChapters {
         uk.add(LessonBlock.warning(
                 "Lambda може читати локальні змінні ззовні тільки якщо вони final або effectively final. "
                 + "Тобто змінна після ініціалізації більше не змінюється."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Напишіть Predicate<Integer> для парних чисел.",
-                "Напишіть Function<String,String>, яка trim + lowercase.",
-                "Напишіть Consumer<List<String>>, який друкує кожен елемент.",
-                "Напишіть Supplier<String>, який повертає UUID.randomUUID().toString().",
-                "Створіть власний @FunctionalInterface Validator<T>."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Functional interface: one abstract method"));
         en.add(LessonBlock.paragraph(
@@ -163,13 +163,14 @@ final class Jdk8DeepDiveAdvancedChapters {
         uk.add(LessonBlock.warning(
                 "Default method — не заміна абстрактному класу. Інтерфейс усе ще не повинен "
                 + "перетворюватися на місце для складного стану і важкої бізнес-логіки."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Перепишіть 5 lambda-виразів на method references.",
-                "Створіть interface Identifiable з default method hasSameId.",
-                "Додайте static method в інтерфейс і викличте його через InterfaceName.method().",
-                "Поясніть, що буде, якщо клас реалізує два інтерфейси з однаковим default method."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Method references and default methods"));
         en.add(LessonBlock.paragraph(
@@ -247,13 +248,14 @@ final class Jdk8DeepDiveAdvancedChapters {
         uk.add(LessonBlock.warning(
                 "Не використовуйте Optional як поле entity/model класу без сильної причини. "
                 + "Типовий JDK 8 стиль: Optional як return type для методу, який може нічого не знайти."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Напишіть Optional<User> findUserByEmail(String email).",
-                "Перепишіть код if (x != null) на Optional map/filter/orElse.",
-                "Порівняйте orElse(expensive()) і orElseGet(() -> expensive()).",
-                "Створіть метод, який кидає NoSuchElementException через orElseThrow."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Optional: explicit missing value"));
         en.add(LessonBlock.paragraph(
@@ -328,13 +330,14 @@ final class Jdk8DeepDiveAdvancedChapters {
         uk.add(LessonBlock.warning(
                 "matches() перевіряє весь рядок, find() шукає входження всередині рядка. "
                 + "Це одна з найчастіших помилок у regex-початківців."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Перевірте телефон у форматі +380XXXXXXXXX.",
-                "Витягніть усі числа з рядка через Matcher.find().",
-                "Замініть кілька пробілів на один через replaceAll(\"\\\\s+\", \" \").",
-                "Напишіть regex для простого username: 3-16 символів, letters/digits/_ only."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Regex in JDK 8: Pattern and Matcher"));
         en.add(LessonBlock.paragraph(
@@ -427,13 +430,14 @@ final class Jdk8DeepDiveAdvancedChapters {
         uk.add(LessonBlock.warning(
                 "Reflection потужна, але повільніша і небезпечніша за прямий виклик. "
                 + "Не використовуйте reflection там, де звичайний інтерфейс вирішує задачу простіше."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Створіть @Route(path=\"/users\") для методів.",
-                "Знайдіть усі методи класу з цією анотацією.",
-                "Викличте метод через reflection.",
-                "Створіть @NotNull для полів і напишіть простий валідатор."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Annotations + Reflection"));
         en.add(LessonBlock.paragraph(
@@ -523,13 +527,14 @@ final class Jdk8DeepDiveAdvancedChapters {
         uk.add(LessonBlock.warning(
                 "Не десеріалізуйте неперевірені дані з інтернету. Java deserialization історично "
                 + "була джерелом серйозних security-вразливостей. Для обміну даними частіше краще JSON."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Серіалізуйте User у файл і прочитайте назад.",
-                "Позначте password як transient і перевірте, що після читання він null.",
-                "Змініть serialVersionUID і подивіться, що станеться зі старим файлом.",
-                "Поясніть, чому Serializable — marker interface."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Serialization in JDK 8"));
         en.add(LessonBlock.paragraph(
@@ -624,14 +629,14 @@ final class Jdk8DeepDiveAdvancedChapters {
         uk.add(LessonBlock.warning(
                 "Назва package має відповідати структурі папок. Якщо package com.example, "
                 + "то клас зазвичай лежить у com/example/Main.java, а запуск — com.example.Main."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Створіть пакет com.training і клас Main.",
-                "Скомпілюйте через javac -d out.",
-                "Запустіть через java -cp out com.training.Main.",
-                "Зберіть runnable jar через jar cfe.",
-                "Навмисно зламайте classpath і прочитайте помилку."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Classpath and JAR"));
         en.add(LessonBlock.paragraph(
@@ -703,13 +708,14 @@ final class Jdk8DeepDiveAdvancedChapters {
         uk.add(LessonBlock.warning(
                 "Не гугліть тільки перший рядок винятку. Завжди знайдіть перший frame вашого "
                 + "коду і подивіться, які дані прийшли в цей метод."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Навмисно киньте NumberFormatException і прочитайте stack trace.",
-                "Навмисно киньте NullPointerException і знайдіть рядок вашого коду.",
-                "Створіть cause: throw new RuntimeException(\"wrap\", original).",
-                "Запустіть нескінченний sleep і знайдіть процес через jps."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Stack trace: read top or bottom?"));
         en.add(LessonBlock.paragraph(

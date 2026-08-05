@@ -53,6 +53,10 @@ final class Chapters16to23 {
         uk.add(LessonBlock.note(
                 "Instant не залежить від часового поясу — це абсолютна точка в часі. "
                 + "Ідеально для timestamp-ів, логів і метрик."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Отримайте поточний момент часу та додайте до нього 10 секунд."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("Instant now = Instant.now();\nInstant later = now.plusSeconds(10);"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Timeline: Instant"));
         en.add(LessonBlock.paragraph(
@@ -90,6 +94,10 @@ final class Chapters16to23 {
         uk.add(LessonBlock.warning(
                 "Local-типи не можна змішувати з Instant напряму — потрібен часовий пояс: "
                 + "localDateTime.atZone(ZoneId.of(\"Europe/Kyiv\")).toInstant()."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Створіть об'єкт LocalDate для дати 1 січня 2030 року."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("LocalDate date = LocalDate.of(2030, 1, 1);"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("LocalDate / LocalTime / LocalDateTime"));
         en.add(LessonBlock.paragraph(
@@ -124,6 +132,10 @@ final class Chapters16to23 {
         uk.add(LessonBlock.note(
                 "Список усіх ZoneId — ZoneId.getAvailableZoneIds(). Використовуйте імена з "
                 + "бази IANA (\"Europe/Kyiv\"), а не скорочення (\"EET\")."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Створіть об'єкт ZonedDateTime для поточного часу в часовому поясі 'Europe/Kyiv'."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("ZonedDateTime kyivTime = ZonedDateTime.now(ZoneId.of(\"Europe/Kyiv\"));"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("ZonedDateTime"));
         en.add(LessonBlock.paragraph(
@@ -160,6 +172,10 @@ final class Chapters16to23 {
         uk.add(LessonBlock.warning(
                 "LocalDateTime.parse за замовчуванням вимагає ISO-8601 (\"2026-06-15T14:30\"). "
                 + "Для іншого формату обов'язково передайте DateTimeFormatter."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Відформатуйте поточний LocalDateTime у рядок за шаблоном 'yyyy-MM-dd'."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("DateTimeFormatter fmt = DateTimeFormatter.ofPattern(\"yyyy-MM-dd\");\nString s = LocalDateTime.now().format(fmt);"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Formatting & parsing"));
         en.add(LessonBlock.paragraph(
@@ -211,6 +227,10 @@ final class Chapters16to23 {
         uk.add(LessonBlock.note(
                 "Пріоритет потоку лише рекомендація для планувальника ОС. На практиці краще "
                 + "не покладатися на пріоритети для коректності."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Створіть і запустіть новий потік, який виводить 'Привіт' у консоль."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("Thread t = new Thread(() -> System.out.println(\"Привіт\"));\nt.start();"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Creating threads"));
         en.add(LessonBlock.paragraph(
@@ -252,6 +272,10 @@ final class Chapters16to23 {
                 "synchronized на методі блокує весь об'єкт. Якщо розділяєте незалежні "
                 + "структури даних — використовуйте окремі об'єкти-монітори або "
                 + "java.util.concurrent.locks."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Створіть метод, який безпечно для потоків збільшує лічильник на 1."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public synchronized void increment() {\n    count++;\n}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Synchronization: synchronized"));
         en.add(LessonBlock.paragraph(
@@ -295,6 +319,10 @@ final class Chapters16to23 {
         uk.add(LessonBlock.warning(
                 "volatile не замінює синхронізацію для складених операцій. Для лічильників "
                 + "використовуйте AtomicInteger."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Оголосіть змінну-прапорець, значення якої завжди буде актуальним для всіх потоків."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("private volatile boolean isActive = true;"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("volatile — visibility across threads"));
         en.add(LessonBlock.paragraph(
@@ -338,6 +366,10 @@ final class Chapters16to23 {
                 "CAS: «прочитати → обчислити нове → перевірити, чи ніхто не змінив → записати». "
                 + "Якщо не вдалося — повторити. Набагато швидше за synchronized за відсутності "
                 + "конфліктів."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Використайте AtomicInteger для інкременту без використання synchronized."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("AtomicInteger counter = new AtomicInteger(0);\ncounter.incrementAndGet();"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Atomic classes (lock-free)"));
         en.add(LessonBlock.paragraph(
@@ -394,6 +426,10 @@ final class Chapters16to23 {
                 "Необхідно викликати метод shutdown() для завершення роботи пулу потоків, оскільки "
                 + "інакше активний пул перешкоджатиме завершенню процесу JVM. "
                 + "У JDK 8 використовуйте блок finally, якщо після submit/execute може статися виняток."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Створіть пул з двох потоків і передайте туди задачу на виконання."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("ExecutorService pool = Executors.newFixedThreadPool(2);\npool.submit(() -> System.out.println(\"Виконано\"));\npool.shutdown();"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("ExecutorService — thread pool"));
         en.add(LessonBlock.paragraph(
@@ -437,6 +473,10 @@ final class Chapters16to23 {
         uk.add(LessonBlock.note(
                 "f.get(timeout, unit) кидає TimeoutException, якщо результат не з'явився вчасно. "
                 + "f.cancel(true) перериває задачу."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Створіть Callable, що повертає число 5, і отримайте результат через Future."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("ExecutorService pool = Executors.newSingleThreadExecutor();\nFuture<Integer> f = pool.submit(() -> 5);\nInteger res = f.get();\npool.shutdown();"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Callable and Future"));
         en.add(LessonBlock.paragraph(
@@ -478,6 +518,10 @@ final class Chapters16to23 {
                 "ConcurrentHashMap використовує segment locking (замість блокування всієї мапи) — "
                 + "кілька потоків пишуть одночасно. CopyOnWriteArrayList оптимізований для частого "
                 + "читання й рідкісного запису."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Створіть потокобезпечну мапу і додайте туди елемент."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("ConcurrentMap<String, String> map = new ConcurrentHashMap<>();\nmap.put(\"ключ\", \"значення\");"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Concurrent collections"));
         en.add(LessonBlock.paragraph(
@@ -516,6 +560,10 @@ final class Chapters16to23 {
         uk.add(LessonBlock.note(
                 "Усі then*-операції за замовчуванням виконуються у ForkJoinPool.commonPool(). "
                 + "Для I/O-задач передавайте свій Executor у перевантажені методи."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Створіть асинхронну задачу, яка повертає рядок 'ОК', і виведіть його."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("CompletableFuture.supplyAsync(() -> \"ОК\")\n    .thenAccept(System.out::println);"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("CompletableFuture — async chains"));
         en.add(LessonBlock.paragraph(
@@ -561,6 +609,10 @@ final class Chapters16to23 {
         uk.add(LessonBlock.note(
                 "Heap — загальна для всіх потоків. Stack — окремий на потік (за замовчуванням "
                 + "512KB, -Xss). Метасpace росте автоматично з Java 8."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Виведіть об'єм вільної пам'яті в JVM у байтах."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("long freeMem = Runtime.getRuntime().freeMemory();\nSystem.out.println(freeMem);"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("JVM memory areas"));
         en.add(LessonBlock.paragraph("JVM memory is divided into areas:"));
@@ -591,6 +643,10 @@ final class Chapters16to23 {
                 "Meta­space — метадані класів, не чиститься GC у класичному сенсі."));
         uk.add(LessonBlock.paragraph(
                 "Явно «попросити» GC: System.gc() — лише рекомендація, не гарантує збірку."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Попросіть JVM виконати збірку сміття (нагадуємо, це лише підказка)."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("System.gc();"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Garbage Collector"));
         en.add(LessonBlock.paragraph(
@@ -622,6 +678,10 @@ final class Chapters16to23 {
         uk.add(LessonBlock.note(
                 "Слабкі посилання: WeakReference / WeakHashMap дозволяють GC зібрати ключі. "
                 + "Try-with-resources гарантує закриття Closeable."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Використайте try-with-resources для безпечного закриття FileInputStream."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("try (FileInputStream fis = new FileInputStream(\"file.txt\")) {\n    // робота з файлом\n} catch (IOException e) {\n    e.printStackTrace();\n}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Memory leaks"));
         en.add(LessonBlock.paragraph(
@@ -676,6 +736,10 @@ final class Chapters16to23 {
         uk.add(LessonBlock.note(
                 "Обмеження (constraints): PRIMARY KEY, FOREIGN KEY, UNIQUE, NOT NULL, CHECK, "
                 + "DEFAULT. Вони гарантують цілісність даних на рівні БД."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть SQL-запит для вибору всіх колонок з таблиці користувачів."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("SELECT * FROM users;"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("SQL basics: DDL and DML"));
         en.add(LessonBlock.paragraph(
@@ -728,6 +792,10 @@ final class Chapters16to23 {
         uk.add(LessonBlock.note(
                 "GROUP BY групує рядки; HAVING фільтрує групи (на відміну від WHERE, що "
                 + "фільтрує рядки до групування). Агрегати: COUNT, SUM, AVG, MIN, MAX."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть запит, що об'єднує таблиці users та orders (INNER JOIN) за user_id."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("SELECT u.name, o.id FROM users u INNER JOIN orders o ON u.id = o.user_id;"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("JOIN — combining tables"));
         en.add(LessonBlock.paragraph(
@@ -772,6 +840,10 @@ final class Chapters16to23 {
         uk.add(LessonBlock.warning(
                 "Індексуйте колонки з WHERE/JOIN/ORDER BY, але не всі підряд. Зайвий індекс "
                 + "= повільніші вставки й марна трата місця."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Створіть індекс для стовпця email у таблиці users."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("CREATE INDEX idx_users_email ON users(email);"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Indexes and planning"));
         en.add(LessonBlock.paragraph(
@@ -824,6 +896,10 @@ final class Chapters16to23 {
         uk.add(LessonBlock.warning(
                 "Уникайте конкатенації значень безпосередньо у рядок SQL-запиту, оскільки це створює критичну вразливість перед SQL-ін'єкціями. "
                 + "Завжди використовуйте PreparedStatement із параметризованими запитами."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Встановіть з'єднання з базою даних через DriverManager."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("Connection conn = DriverManager.getConnection(\"jdbc:sqlite:test.db\");"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Connecting via JDBC"));
         en.add(LessonBlock.paragraph(
@@ -867,6 +943,10 @@ final class Chapters16to23 {
         uk.add(LessonBlock.note(
                 "PreparedStatement: (1) захищає від ін'єкцій, (2) кешується драйвером — "
                 + "швидше при повторних викликах, (3) правильно серіалізує дати й бінар."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Використайте PreparedStatement для вставки імені в таблицю."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("PreparedStatement pstmt = conn.prepareStatement(\"INSERT INTO users(name) VALUES(?)\");\npstmt.setString(1, \"Іван\");\npstmt.executeUpdate();"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("PreparedStatement — safe and fast"));
         en.add(LessonBlock.paragraph(
@@ -925,6 +1005,10 @@ final class Chapters16to23 {
         uk.add(LessonBlock.note(
                 "Хоча сучасні фреймворки (Spring JDBC, JPA, Hibernate) реалізують шар доступу до даних автоматично, "
                 + "розуміння базового JDBC необхідне для усвідомлення процесів низького рівня."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Оголосіть інтерфейс UserDao з методом збереження користувача."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public interface UserDao {\n    void save(User user);\n}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("DAO (Data Access Object) pattern"));
         en.add(LessonBlock.paragraph(
@@ -1003,6 +1087,10 @@ final class Chapters16to23 {
         uk.add(LessonBlock.note(
                 "HTTP без стану (stateless): кожен запит незалежний. Стани сесій підтримуються "
                 + "через cookies/JWT/oauth-токени."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Створіть HttpClient і виконайте простий GET запит (Java 11+)."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("HttpClient client = HttpClient.newHttpClient();\nHttpRequest request = HttpRequest.newBuilder(URI.create(\"http://example.com\")).build();\nHttpResponse<String> response = client.send(request, BodyHandlers.ofString());"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("HTTP basics"));
         en.add(LessonBlock.paragraph(
@@ -1075,6 +1163,10 @@ final class Chapters16to23 {
         uk.add(LessonBlock.note(
                 "На Android мережевий запит не можна виконувати в головному UI-потоці. "
                 + "Додайте permission INTERNET і запускайте запит у фоновому потоці."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Створіть об'єкт URL та відкрийте з'єднання HttpURLConnection."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("URL url = new URL(\"http://example.com\");\nHttpURLConnection con = (HttpURLConnection) url.openConnection();\ncon.setRequestMethod(\"GET\");"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("URL and URI"));
         en.add(LessonBlock.paragraph(
@@ -1155,6 +1247,10 @@ final class Chapters16to23 {
         uk.add(LessonBlock.warning(
                 "Життєвий цикл: init() → service(doGet/doPost...) → destroy(). Один сервлет "
                 + "обслуговує багато потоків одночасно — поля НЕ для стану запиту."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Створіть клас сервлета, який наслідує HttpServlet і перевизначає doGet."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("@WebServlet(\"/hello\")\npublic class HelloServlet extends HttpServlet {\n    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {\n        // ...\n    }\n}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Servlet"));
         en.add(LessonBlock.paragraph(
@@ -1201,6 +1297,10 @@ final class Chapters16to23 {
         uk.add(LessonBlock.note(
                 "JSP-скриптлети <% %> сьогодні вважаються антипатерном — MVC-фреймворки "
                 + "(Spring MVC) винесли логіку в контролери, а представлення — у Thymeleaf."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть скриптлет JSP для виводу поточного часу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("<%= new java.util.Date() %>"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("JSP"));
         en.add(LessonBlock.paragraph(

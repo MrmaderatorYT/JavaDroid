@@ -68,13 +68,14 @@ final class Jdk8BytecodeChapters {
                 "JDK сам по собі не має офіційного текстового assembler для .class. Для навчання "
                 + "часто використовують Jasmin-style синтаксис або бібліотеки на кшталт ASM. "
                 + "У цьому розділі приклади bytecode даються як навчальна assembly-форма і як javap-вивід."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Створіть Hello.java і скомпілюйте через javac.",
-                "Запустіть javap -c Hello і знайдіть getstatic, ldc, invokevirtual, return.",
-                "Запустіть javap -v Hello і знайдіть major version. Для Java 8 це 52.",
-                "Поясніть, чому System.out.println у bytecode — це не одна інструкція."));
-
+        uk.add(LessonBlock.heading("Практичне завдання "));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("What \"writing bytecode\" means"));
         en.add(LessonBlock.paragraph(
@@ -164,14 +165,14 @@ final class Jdk8BytecodeChapters {
         uk.add(LessonBlock.note(
                 "Constant pool економить місце і робить bytecode посилальним: інструкція "
                 + "invokevirtual не містить повний текст методу, а посилається на індекс у constant pool."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Скомпілюйте Tiny.java і відкрийте javap -v Tiny.",
-                "Знайдіть у constant pool ім'я класу Tiny.",
-                "Знайдіть descriptor методу add.",
-                "Знайдіть Methodref для java/lang/Object.<init>.",
-                "Поясніть, навіщо constant pool потрібен замість дублювання рядків у кожній інструкції."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading(".class file and constant pool"));
         en.add(LessonBlock.paragraph(
@@ -265,14 +266,14 @@ final class Jdk8BytecodeChapters {
         uk.add(LessonBlock.warning(
                 "Помилка в descriptor майже завжди означає, що JVM не знайде метод: "
                 + "NoSuchMethodError або VerifyError. Для bytecode-розробки descriptors треба читати автоматично."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Запишіть descriptor для void main(String[] args).",
-                "Запишіть descriptor для int[][] make(int size).",
-                "Запишіть descriptor для boolean contains(String s, char c).",
-                "Через javap -s подивіться descriptors методів свого класу.",
-                "Поясніть, чому long має символ J, а не L."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Descriptors: bytecode type language"));
         en.add(LessonBlock.paragraph(
@@ -364,13 +365,14 @@ final class Jdk8BytecodeChapters {
                 "Тип return має відповідати значенню на stack. Якщо метод має descriptor ()I, "
                 + "перед ireturn на stack має лежати int. Для reference використовується areturn, "
                 + "для void — return без значення."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Скомпілюйте метод int square(int x) і розпишіть stack після кожної інструкції.",
-                "Скомпілюйте static int add(int a, int b) і порівняйте local indexes з instance методом.",
-                "Скомпілюйте метод long sum(long a, long b) і подивіться, як long займає слоти.",
-                "Поясніть різницю між iload_1 і aload_1."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Operand stack and local variables"));
         en.add(LessonBlock.paragraph(
@@ -459,13 +461,14 @@ final class Jdk8BytecodeChapters {
         uk.add(LessonBlock.warning(
                 "У bytecode немає 'for' або 'while' як окремих високорівневих конструкцій. "
                 + "Є переходи. Тому нескінченний цикл — це просто goto назад без правильної умови виходу."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Скомпілюйте max(int,int) і знайдіть if_icmp* інструкцію.",
-                "Скомпілюйте abs(int x) і розпишіть гілки.",
-                "Скомпілюйте for-loop і знайдіть goto назад.",
-                "Скомпілюйте switch над int і порівняйте tableswitch/lookupswitch."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Instructions: arithmetic and control flow"));
         en.add(LessonBlock.paragraph(
@@ -559,13 +562,14 @@ final class Jdk8BytecodeChapters {
         uk.add(LessonBlock.warning(
                 "Найчастіші bytecode-помилки при викликах: неправильний descriptor, неправильний owner "
                 + "класу, забутий object reference на stack, або використання invokevirtual там, де треба invokestatic."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Скомпілюйте new ArrayList<String>() і знайдіть new/dup/invokespecial.",
-                "Скомпілюйте Math.max(a,b) і знайдіть invokestatic.",
-                "Скомпілюйте list.size() через List reference і знайдіть invokeinterface.",
-                "Скомпілюйте private метод і подивіться invokespecial."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Objects, fields, invoke*"));
         en.add(LessonBlock.paragraph(
@@ -652,13 +656,14 @@ final class Jdk8BytecodeChapters {
         uk.add(LessonBlock.warning(
                 "VerifyError означає: .class формально завантажився, але bytecode не пройшов перевірку. "
                 + "Часто причина — неправильний stack state на різних гілках control flow."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Скомпілюйте int[] create(int n) і знайдіть newarray.",
-                "Скомпілюйте String[] і знайдіть anewarray.",
-                "Скомпілюйте try/catch і подивіться Exception table у javap -v.",
-                "Поясніть, чому verifier повинен знати типи на stack у кожній точці переходу."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Arrays, exceptions, verifier"));
         en.add(LessonBlock.paragraph(
@@ -749,14 +754,14 @@ final class Jdk8BytecodeChapters {
         uk.add(LessonBlock.warning(
                 ".limit stack і .limit locals мають відповідати реальному коду. Якщо stack limit "
                 + "замалий або locals не вистачає, class не пройде складання або verification."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Перепишіть Java метод int add(int,int) у Jasmin-style форму.",
-                "Напишіть Jasmin-style метод static int square(int x).",
-                "Для HelloBytecode порахуйте максимальну stack depth вручну.",
-                "Змініть println(String) на println(int) і виправте descriptor.",
-                "Поясніть, чому main має descriptor ([Ljava/lang/String;)V."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Jasmin-style bytecode: educational assembly form"));
         en.add(LessonBlock.paragraph(
@@ -858,14 +863,14 @@ final class Jdk8BytecodeChapters {
         uk.add(LessonBlock.note(
                 "checkcast після Iterator.next з'являється через generics erasure: Iterator у runtime "
                 + "повертає Object, а компілятор вставляє cast до String."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Скомпілюйте lambda Runnable і знайдіть invokedynamic.",
-                "Скомпілюйте enhanced for по List<String> і знайдіть Iterator calls.",
-                "Скомпілюйте String concat у JDK 8 і знайдіть StringBuilder.",
-                "Скомпілюйте try-with-resources і знайдіть close та suppressed handling.",
-                "Скомпілюйте List<String>.get(0) і знайдіть checkcast."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Java 8 patterns in bytecode"));
         en.add(LessonBlock.paragraph(

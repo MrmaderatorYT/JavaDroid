@@ -77,15 +77,15 @@ public final class AppTheme {
         // Unset semantic colours (0) fall back to derivations of the base palette
         // so every theme — including a user's custom one — stays readable.
         this.editorType = b.editorType != 0 ? b.editorType
-                : blend(b.accent, b.text, 0.35f);
+                : Colors.blend(b.accent, b.text, 0.35f);
         this.editorFunction = b.editorFunction != 0 ? b.editorFunction
-                : blend(b.editorNumber, b.text, 0.30f);
+                : Colors.blend(b.editorNumber, b.text, 0.30f);
         this.editorField = b.editorField != 0 ? b.editorField
-                : blend(b.editorNumber, b.accent, 0.40f);
+                : Colors.blend(b.editorNumber, b.accent, 0.40f);
         this.editorAnnotation = b.editorAnnotation != 0 ? b.editorAnnotation
-                : blend(b.editorKeyword, b.editorComment, 0.40f);
+                : Colors.blend(b.editorKeyword, b.editorComment, 0.40f);
         this.editorOperator = b.editorOperator != 0 ? b.editorOperator
-                : blend(b.text, b.textDim, 0.35f);
+                : Colors.blend(b.text, b.textDim, 0.35f);
     }
 
     /** Будує EditorColorScheme з огляду на цю тему. */
@@ -298,11 +298,11 @@ public final class AppTheme {
                 .bg(bg)
                 .toolbar(prefs.getCustomToolbar())
                 .text(prefs.getCustomFg())
-                .textDim(blend(prefs.getCustomFg(), bg, 0.45f))
+                .textDim(Colors.blend(prefs.getCustomFg(), bg, 0.45f))
                 .accent(prefs.getCustomAccent())
                 .consoleBg(prefs.getCustomConsoleBg())
                 .consoleText(prefs.getCustomFg())
-                .separator(blend(prefs.getCustomFg(), bg, 0.65f))
+                .separator(Colors.blend(prefs.getCustomFg(), bg, 0.65f))
                 .statusBar(prefs.getCustomToolbar())
                 .errorText(0xFFFF6B6B).successText(0xFF499C54)
                 .editorKeyword(prefs.getCustomKeyword())
@@ -320,14 +320,6 @@ public final class AppTheme {
         return l < 0.5;
     }
 
-    private static int blend(int a, int b, float t) {
-        int ar = (a >> 16) & 0xFF, ag = (a >> 8) & 0xFF, ab = a & 0xFF;
-        int br = (b >> 16) & 0xFF, bg = (b >> 8) & 0xFF, bb = b & 0xFF;
-        int r = (int) (ar + (br - ar) * t);
-        int g = (int) (ag + (bg - ag) * t);
-        int bl = (int) (ab + (bb - ab) * t);
-        return 0xFF000000 | (r << 16) | (g << 8) | bl;
-    }
 
     public static String displayName(String id) {
         switch (id) {

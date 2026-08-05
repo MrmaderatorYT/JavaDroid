@@ -429,7 +429,8 @@ public class DatabaseInspectorActivity extends AppCompatActivity {
         return (int) (value * getResources().getDisplayMetrics().density);
     }
 
+    /** @see Dialogs#rounded */
     private com.google.android.material.dialog.MaterialAlertDialogBuilder newRoundedDialog() {
-        return new com.google.android.material.dialog.MaterialAlertDialogBuilder(this);
+        return Dialogs.rounded(this);
     }
 }

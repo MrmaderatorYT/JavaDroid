@@ -73,14 +73,14 @@ final class Jdk8BytecodeCookbookChapters {
         uk.add(LessonBlock.warning(
                 "Stack category matters: int/reference/float займають category 1, long/double — "
                 + "category 2. Тому pop2/dup2 існують не випадково."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Скомпілюйте int y = 5, 100, 1000 і порівняйте iconst/bipush/sipush/ldc.",
-                "Скомпілюйте String s = \"abc\" і знайдіть ldc.",
-                "Скомпілюйте long x = 1L і знайдіть lconst_1 або ldc2_w.",
-                "Розпишіть stack state для new Object().",
-                "Поясніть, чому long/double займають два local slots."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Constants, loads, stores, stack manipulation"));
         en.add(LessonBlock.paragraph(
@@ -177,14 +177,14 @@ final class Jdk8BytecodeCookbookChapters {
         uk.add(LessonBlock.warning(
                 "byte, short і char в арифметиці зазвичай піднімаються до int. Тому bytecode "
                 + "часто працює з int навіть тоді, коли source має byte або short."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Скомпілюйте int -> long, int -> double, double -> int і знайдіть conversion інструкції.",
-                "Скомпілюйте порівняння long і знайдіть lcmp.",
-                "Скомпілюйте порівняння double і знайдіть dcmpg або dcmpl.",
-                "Скомпілюйте byte a=1,b=2; byte c=(byte)(a+b); і поясніть casts.",
-                "Поясніть, чому для int немає icmp інструкції, а є if_icmp*."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Numeric conversions and comparisons"));
         en.add(LessonBlock.paragraph(
@@ -276,14 +276,14 @@ final class Jdk8BytecodeCookbookChapters {
         uk.add(LessonBlock.warning(
                 "String switch завжди має враховувати hash collisions. Тому javap-вивід може "
                 + "виглядати значно складніше, ніж source."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Скомпілюйте switch з case 1,2,3,4 і знайдіть tableswitch.",
-                "Скомпілюйте switch з case 1,100,1000 і знайдіть lookupswitch.",
-                "Скомпілюйте String switch і знайдіть hashCode та equals.",
-                "Зробіть if/else chain і порівняйте з switch.",
-                "Поясніть, чому default потрібен на bytecode-рівні."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Branches, tableswitch, lookupswitch, String switch"));
         en.add(LessonBlock.paragraph(
@@ -364,14 +364,14 @@ final class Jdk8BytecodeCookbookChapters {
         uk.add(LessonBlock.warning(
                 "volatile не змінює opcode getfield/putfield на щось інше у javap-виводі. "
                 + "Семантика volatile закладена у field access rules JVM і memory model."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Створіть поля static/final/volatile/transient і відкрийте javap -v.",
-                "Знайдіть ConstantValue для static final int.",
-                "Знайдіть putfield final поля у constructor.",
-                "Поясніть, чому transient видно у class file, хоча це про serialization.",
-                "Поясніть, чому volatile важливий, навіть якщо opcode виглядає як звичайний getfield."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Fields: static, final, volatile, transient"));
         en.add(LessonBlock.paragraph(
@@ -449,14 +449,14 @@ final class Jdk8BytecodeCookbookChapters {
         uk.add(LessonBlock.warning(
                 "Не дивуйтеся файлам Outer$1.class або synthetic access$000 методам у старому Java 8 bytecode. "
                 + "Це normal compiler lowering для inner/anonymous доступу."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Створіть static nested і non-static inner class, порівняйте .class файли.",
-                "Через javap -v знайдіть InnerClasses attribute.",
-                "Створіть anonymous Runnable і знайдіть Outer$1.class.",
-                "Скомпілюйте enum і знайдіть values/valueOf.",
-                "Знайдіть synthetic поле this$0 у non-static inner class."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Inner classes, anonymous classes, enum bytecode"));
         en.add(LessonBlock.paragraph(
@@ -533,14 +533,14 @@ final class Jdk8BytecodeCookbookChapters {
         uk.add(LessonBlock.warning(
                 "MethodHandle throws Throwable, не тільки Exception. У навчальних прикладах це часто "
                 + "означає, що main доведеться оголосити throws Throwable."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Знайдіть MethodHandle для static Math.abs(int).",
-                "Знайдіть MethodHandle для instance String.substring(int).",
-                "Порівняйте invokeExact і invoke.",
-                "Навмисно передайте неправильний тип і прочитайте WrongMethodTypeException.",
-                "Поясніть, як MethodHandle пов'язаний з invokedynamic."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("java.lang.invoke in Java 8"));
         en.add(LessonBlock.paragraph(
@@ -611,14 +611,14 @@ final class Jdk8BytecodeCookbookChapters {
         uk.add(LessonBlock.warning(
                 "Annotation default values зберігаються в annotation interface class file, а не "
                 + "дублюються всюди. Reflection підставляє default, якщо значення не задане."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Створіть SOURCE, CLASS і RUNTIME анотації та порівняйте javap -v.",
-                "Додайте annotation field value() і default.",
-                "Додайте annotation на method parameter і знайдіть parameter annotations.",
-                "Через reflection прочитайте тільки RUNTIME annotation.",
-                "Поясніть різницю між visible і invisible annotation attributes."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Annotations as class file attributes"));
         en.add(LessonBlock.paragraph(
@@ -700,14 +700,14 @@ final class Jdk8BytecodeCookbookChapters {
         uk.add(LessonBlock.warning(
                 "constant_pool індексується з 1, не з 0. Long і Double займають два entries. "
                 + "Це класична пастка при написанні власного class parser."));
-        uk.add(LessonBlock.heading("Вправа"));
-        uk.add(LessonBlock.list(
-                "Прочитайте magic/major/minor з власного .class.",
-                "Перевірте, що Java 8 class має major 52.",
-                "Прочитайте constant_pool_count.",
-                "Додайте парсинг тільки CONSTANT_Utf8 entries.",
-                "Поясніть, чому byte треба маскувати через & 0xFF."));
-
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть код, що демонструє поточну тему, і перевірте його роботу."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code("public class Practice {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"Success\");\n"
+                + "    }\n"
+                + "}"));
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Reading raw .class bytes"));
         en.add(LessonBlock.paragraph(

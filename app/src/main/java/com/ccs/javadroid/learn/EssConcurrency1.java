@@ -33,6 +33,20 @@ private static Lesson materialThreads() {
     uk.add(LessonBlock.note(
         "Пріоритет потоку лише рекомендація для планувальника ОС. На практиці краще "
         + "не покладатися на пріоритети для коректності."));
+    uk.add(LessonBlock.heading("Практичне завдання"));
+    uk.add(LessonBlock.paragraph("Створіть і запустіть два потоки. Один потік має вивести числа від 1 до 5, а інший - від 6 до 10. Дочекайтеся завершення обох."));
+    uk.add(LessonBlock.heading("Рішення"));
+    uk.add(LessonBlock.code(
+        "Runnable task1 = () -> {\n"
+        + "    for(int i=1; i<=5; i++) System.out.println(i);\n"
+        + "};\n"
+        + "Runnable task2 = () -> {\n"
+        + "    for(int i=6; i<=10; i++) System.out.println(i);\n"
+        + "};\n"
+        + "Thread t1 = new Thread(task1);\n"
+        + "Thread t2 = new Thread(task2);\n"
+        + "t1.start(); t2.start();\n"
+        + "t1.join(); t2.join();"));
     List<LessonBlock> en = new ArrayList<>();
     en.add(LessonBlock.heading("Creating threads"));
     en.add(LessonBlock.paragraph(
@@ -74,6 +88,19 @@ private static Lesson materialSync() {
         "synchronized на методі блокує весь об'єкт. Якщо розділяєте незалежні "
         + "структури даних — використовуйте окремі об'єкти-монітори або "
         + "java.util.concurrent.locks."));
+    uk.add(LessonBlock.heading("Практичне завдання"));
+    uk.add(LessonBlock.paragraph("Напишіть клас BankAccount із потокобезпечними методами deposit() та getBalance(), використовуючи synchronized."));
+    uk.add(LessonBlock.heading("Рішення"));
+    uk.add(LessonBlock.code(
+        "class BankAccount {\n"
+        + "    private int balance = 0;\n"
+        + "    public synchronized void deposit(int amount) {\n"
+        + "        balance += amount;\n"
+        + "    }\n"
+        + "    public synchronized int getBalance() {\n"
+        + "        return balance;\n"
+        + "    }\n"
+        + "}"));
     List<LessonBlock> en = new ArrayList<>();
     en.add(LessonBlock.heading("Synchronization: synchronized"));
     en.add(LessonBlock.paragraph(
@@ -117,6 +144,19 @@ private static Lesson materialVolatile() {
     uk.add(LessonBlock.warning(
         "volatile не замінює синхронізацію для складених операцій. Для лічильників "
         + "використовуйте AtomicInteger."));
+    uk.add(LessonBlock.heading("Практичне завдання"));
+    uk.add(LessonBlock.paragraph("Створіть клас з volatile-змінною isReady. Один потік змінює її на true, інший чекає в циклі, поки вона не стане true."));
+    uk.add(LessonBlock.heading("Рішення"));
+    uk.add(LessonBlock.code(
+        "class SharedState {\n"
+        + "    volatile boolean isReady = false;\n"
+        + "}\n"
+        + "SharedState state = new SharedState();\n"
+        + "new Thread(() -> { state.isReady = true; }).start();\n"
+        + "new Thread(() -> {\n"
+        + "    while(!state.isReady) {}\n"
+        + "    System.out.println(\"Ready!\");\n"
+        + "}).start();"));
     List<LessonBlock> en = new ArrayList<>();
     en.add(LessonBlock.heading("volatile — visibility across threads"));
     en.add(LessonBlock.paragraph(
@@ -156,6 +196,17 @@ private static Lesson materialAtomic() {
         + "Thread t1 = new Thread(r), t2 = new Thread(r);\n"
         + "t1.start(); t2.start(); t1.join(); t2.join();\n"
         + "System.out.println(counter.get());   // 2000"));
+    uk.add(LessonBlock.heading("Практичне завдання"));
+    uk.add(LessonBlock.paragraph("Використайте AtomicLong для безпечного збільшення лічильника з двох потоків по 500 разів."));
+    uk.add(LessonBlock.heading("Рішення"));
+    uk.add(LessonBlock.code(
+        "AtomicLong counter = new AtomicLong(0);\n"
+        + "Runnable task = () -> {\n"
+        + "    for(int i=0; i<500; i++) counter.incrementAndGet();\n"
+        + "};\n"
+        + "Thread t1 = new Thread(task); Thread t2 = new Thread(task);\n"
+        + "t1.start(); t2.start(); t1.join(); t2.join();\n"
+        + "System.out.println(counter.get()); // 1000"));
     List<LessonBlock> en = new ArrayList<>();
     en.add(LessonBlock.heading("Atomic classes (lock-free)"));
     en.add(LessonBlock.paragraph(

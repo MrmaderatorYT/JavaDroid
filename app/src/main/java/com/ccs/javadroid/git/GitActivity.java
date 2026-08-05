@@ -1,4 +1,6 @@
 package com.ccs.javadroid.git;
+
+import com.ccs.javadroid.util.Colors;
 import com.ccs.javadroid.R;
 import com.ccs.javadroid.util.AppPreferences;
 import com.ccs.javadroid.util.AppTheme;
@@ -186,7 +188,7 @@ public class GitActivity extends AppCompatActivity {
 
     private void switchTab(int id) {
         activeTab = id;
-        int active   = blend(theme.toolbar, theme.bg, 0.4f);
+        int active   = Colors.blend(theme.toolbar, theme.bg, 0.4f);
         int inactive = theme.toolbar;
         tStatus.setBackgroundColor(id == TAB_STATUS ? active : inactive);
         tCommit.setBackgroundColor(id == TAB_COMMIT ? active : inactive);
@@ -572,7 +574,7 @@ public class GitActivity extends AppCompatActivity {
         msg.setHint(R.string.git_commit_hint);
         msg.setHintTextColor(theme.textDim);
         msg.setTextColor(theme.text);
-        msg.setBackgroundColor(blend(theme.bg, theme.toolbar, 0.5f));
+        msg.setBackgroundColor(Colors.blend(theme.bg, theme.toolbar, 0.5f));
         msg.setPadding(dp(8), dp(8), dp(8), dp(8));
         msg.setMinLines(3);
         msg.setGravity(Gravity.TOP | Gravity.START);
@@ -1088,7 +1090,7 @@ public class GitActivity extends AppCompatActivity {
         e.setHint(hint);
         e.setHintTextColor(theme.textDim);
         e.setTextColor(theme.text);
-        e.setBackgroundColor(blend(theme.bg, theme.toolbar, 0.5f));
+        e.setBackgroundColor(Colors.blend(theme.bg, theme.toolbar, 0.5f));
         e.setPadding(dp(8), dp(8), dp(8), dp(8));
         e.setSingleLine(true);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
@@ -1144,14 +1146,6 @@ public class GitActivity extends AppCompatActivity {
         return v;
     }
 
-    private static int blend(int a, int b, float t) {
-        int ar = (a >> 16) & 0xFF, ag = (a >> 8) & 0xFF, ab = a & 0xFF;
-        int br = (b >> 16) & 0xFF, bg = (b >> 8) & 0xFF, bb = b & 0xFF;
-        int r = (int) (ar + (br - ar) * t);
-        int g = (int) (ag + (bg - ag) * t);
-        int bl = (int) (ab + (bb - ab) * t);
-        return 0xFF000000 | (r << 16) | (g << 8) | bl;
-    }
 
     private int dp(int v) {
         return (int) (v * getResources().getDisplayMetrics().density);

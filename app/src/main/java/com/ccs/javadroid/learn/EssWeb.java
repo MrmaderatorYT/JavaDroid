@@ -38,6 +38,10 @@ private static Lesson materialHttp() {
             "403\tForbidden (є, але заборонено)",
             "404\tNot Found",
             "500\tInternal Server Error")));
+    uk.add(LessonBlock.heading("Практичне завдання"));
+    uk.add(LessonBlock.paragraph("Напишіть, який HTTP метод найкраще підходить для часткового оновлення ресурсу (наприклад, тільки email)."));
+    uk.add(LessonBlock.heading("Рішення"));
+    uk.add(LessonBlock.code("PATCH"));
     List<LessonBlock> en = new ArrayList<>();
     en.add(LessonBlock.heading("HTTP basics"));
     en.add(LessonBlock.paragraph(
@@ -104,6 +108,18 @@ private static Lesson materialUrl() {
     uk.add(LessonBlock.note(
             "На Android мережевий запит не можна виконувати в головному UI-потоці. "
             + "Додайте permission INTERNET і запускайте запит у фоновому потоці."));
+    uk.add(LessonBlock.heading("Практичне завдання"));
+    uk.add(LessonBlock.paragraph("Створіть об'єкт java.net.URL з рядка та виведіть його хост у консоль."));
+    uk.add(LessonBlock.heading("Рішення"));
+    uk.add(LessonBlock.code(
+        "import java.net.URL;\n"
+        + "\n"
+        + "public class Main {\n"
+        + "    public static void main(String[] args) throws Exception {\n"
+        + "        URL url = new URL(\"https://example.com/api\");\n"
+        + "        System.out.println(url.getHost()); // example.com\n"
+        + "    }\n"
+        + "}"));
     List<LessonBlock> en = new ArrayList<>();
     en.add(LessonBlock.heading("URL and URI"));
     en.add(LessonBlock.code(

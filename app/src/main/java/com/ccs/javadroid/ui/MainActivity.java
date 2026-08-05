@@ -1,4 +1,6 @@
 package com.ccs.javadroid.ui;
+
+import com.ccs.javadroid.util.Colors;
 import android.app.Activity;
 import com.ccs.javadroid.R;
 import com.ccs.javadroid.util.AppPreferences;
@@ -90,6 +92,9 @@ import android.widget.Toast;
 import com.ccs.javadroid.debug.BreakpointOverlay;
 import com.ccs.javadroid.debug.BookmarkOverlay;
 import com.ccs.javadroid.debug.BookmarkManager;
+import com.ccs.javadroid.ui.panels.BottomPanel;
+import com.ccs.javadroid.ui.tools.DeveloperToolDialogs;
+import com.ccs.javadroid.ui.panels.BottomPanelController;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AlertDialog;
@@ -186,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
     private int           bytecodeSelectedMethod = -1;
     private View          btnClearConsole;
     private View          btnCopyPanel;
-    private View          tabConsole;
+    private TextView      tabConsole;
     private View          tabsBar;
     private View          tabBorder;
     private View          bottomTabsBar;
@@ -197,18 +202,21 @@ public class MainActivity extends AppCompatActivity {
     private View          keyAccessoryBar;
     private LinearLayout  accessoryBarLayout;
 
-    private static final int PANEL_RUN       = 0;
-    private static final int PANEL_PROBLEMS  = 1;
-    private static final int PANEL_BYTECODE  = 2;
-    private static final int PANEL_DEBUG         = 3;
-    private static final int PANEL_DEBUG_CONSOLE = 4;
-    private static final int PANEL_CALL_GRAPH    = 5;
-    private static final int PANEL_BOOKMARKS     = 6;
-    private static final int PANEL_DEPS          = 7;
-    private static final int PANEL_PROFILER      = 8;
-    private static final int PANEL_TODO          = 9;
-    private static final int PANEL_CONSOLE       = 10;
+    // Panel identity lives in BottomPanel; these aliases keep the many existing
+    // switchBottomPanel(PANEL_X) call sites readable.
+    private static final int PANEL_RUN           = BottomPanel.RUN.mode;
+    private static final int PANEL_PROBLEMS      = BottomPanel.PROBLEMS.mode;
+    private static final int PANEL_BYTECODE      = BottomPanel.BYTECODE.mode;
+    private static final int PANEL_DEBUG         = BottomPanel.DEBUG.mode;
+    private static final int PANEL_DEBUG_CONSOLE = BottomPanel.DEBUG_CONSOLE.mode;
+    private static final int PANEL_CALL_GRAPH    = BottomPanel.CALL_GRAPH.mode;
+    private static final int PANEL_BOOKMARKS     = BottomPanel.BOOKMARKS.mode;
+    private static final int PANEL_DEPS          = BottomPanel.DEPS.mode;
+    private static final int PANEL_PROFILER      = BottomPanel.PROFILER.mode;
+    private static final int PANEL_TODO          = BottomPanel.TODO.mode;
+    private static final int PANEL_CONSOLE       = BottomPanel.CONSOLE.mode;
 
+    private BottomPanelController panelController;
     private int bottomPanelMode = PANEL_RUN;
     private volatile boolean bytecodeRefreshRunning;
 
@@ -784,7 +792,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Find & Replace bar theming
         if (findBar != null) {
-            findBar.setBackgroundColor(blend(theme.toolbar, theme.bg, 0.2f));
+            findBar.setBackgroundColor(Colors.blend(theme.toolbar, theme.bg, 0.2f));
         }
         if (etFind != null) {
             etFind.setBackgroundColor(theme.bg);
@@ -1028,153 +1036,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showRegexTesterDialog() {
-        LinearLayout layout = new LinearLayout(this);
-        layout.setOrientation(LinearLayout.VERTICAL);
-        int pad = dp(16);
-        layout.setPadding(pad, pad, pad, pad);
-
-        EditText etRegex = new EditText(this);
-        etRegex.setHint("Regular Expression (e.g., \\d+)");
-        etRegex.setTextColor(theme.text);
-        etRegex.setHintTextColor(theme.textDim);
-
-        EditText etText = new EditText(this);
-        etText.setHint("Test String");
-        etText.setTextColor(theme.text);
-        etText.setHintTextColor(theme.textDim);
-        etText.setMinLines(3);
-        etText.setGravity(Gravity.TOP | Gravity.START);
-
-        TextView tvResult = new TextView(this);
-        tvResult.setTextColor(theme.accent);
-        tvResult.setPadding(0, dp(8), 0, 0);
-
-        layout.addView(etRegex);
-        layout.addView(etText);
-        layout.addView(tvResult);
-
-        android.text.TextWatcher watcher = new android.text.TextWatcher() {
-            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String regex = etRegex.getText().toString();
-                String text = etText.getText().toString();
-                if (regex.isEmpty()) {
-                    tvResult.setText("");
-                    return;
-                }
-                try {
-                    java.util.regex.Pattern p = java.util.regex.Pattern.compile(regex);
-                    java.util.regex.Matcher m = p.matcher(text);
-                    StringBuilder sb = new StringBuilder();
-                    int matches = 0;
-                    while(m.find()) {
-                        matches++;
-                        sb.append("Match ").append(matches).append(": [").append(m.group()).append("]\n");
-                    }
-                    if (matches == 0) sb.append("No matches");
-                    tvResult.setText(sb.toString());
-                } catch (Exception e) {
-                    tvResult.setText("Invalid regex: " + e.getMessage());
-                }
-            }
-            @Override public void afterTextChanged(android.text.Editable s) {}
-        };
-        etRegex.addTextChangedListener(watcher);
-        etText.addTextChangedListener(watcher);
-
-        newRoundedDialog()
-                .setTitle("Regex Tester")
-                .setView(layout)
-                .setPositiveButton(android.R.string.ok, null)
-                .show();
+        DeveloperToolDialogs.showRegexTester(this, theme);
     }
 
     private void showBase64EncoderDialog() {
-        LinearLayout layout = new LinearLayout(this);
-        layout.setOrientation(LinearLayout.VERTICAL);
-        int pad = dp(16);
-        layout.setPadding(pad, pad, pad, pad);
-
-        EditText etInput = new EditText(this);
-        etInput.setHint("Input Text");
-        etInput.setTextColor(theme.text);
-        etInput.setHintTextColor(theme.textDim);
-        etInput.setMinLines(3);
-        etInput.setGravity(Gravity.TOP | Gravity.START);
-
-        TextView tvOutput = new TextView(this);
-        tvOutput.setTextColor(theme.accent);
-        tvOutput.setTextIsSelectable(true);
-        tvOutput.setPadding(0, dp(8), 0, dp(8));
-
-        android.widget.Button btnEncode = new android.widget.Button(this);
-        btnEncode.setText("Encode");
-        btnEncode.setOnClickListener(v -> {
-            try {
-                String in = etInput.getText().toString();
-                String out = android.util.Base64.encodeToString(in.getBytes(java.nio.charset.StandardCharsets.UTF_8), android.util.Base64.DEFAULT);
-                tvOutput.setText(out);
-            } catch (Exception e) {
-                tvOutput.setText("Error: " + e.getMessage());
-            }
-        });
-
-        android.widget.Button btnDecode = new android.widget.Button(this);
-        btnDecode.setText("Decode");
-        btnDecode.setOnClickListener(v -> {
-            try {
-                String in = etInput.getText().toString();
-                String out = new String(android.util.Base64.decode(in, android.util.Base64.DEFAULT), java.nio.charset.StandardCharsets.UTF_8);
-                tvOutput.setText(out);
-            } catch (Exception e) {
-                tvOutput.setText("Invalid Base64: " + e.getMessage());
-            }
-        });
-
-        android.widget.Button btnUrlEncode = new android.widget.Button(this);
-        btnUrlEncode.setText("URL Enc");
-        btnUrlEncode.setOnClickListener(v -> {
-            try {
-                String in = etInput.getText().toString();
-                String out = java.net.URLEncoder.encode(in, "UTF-8");
-                tvOutput.setText(out);
-            } catch (Exception e) {
-                tvOutput.setText("Error: " + e.getMessage());
-            }
-        });
-
-        android.widget.Button btnUrlDecode = new android.widget.Button(this);
-        btnUrlDecode.setText("URL Dec");
-        btnUrlDecode.setOnClickListener(v -> {
-            try {
-                String in = etInput.getText().toString();
-                String out = java.net.URLDecoder.decode(in, "UTF-8");
-                tvOutput.setText(out);
-            } catch (Exception e) {
-                tvOutput.setText("Error: " + e.getMessage());
-            }
-        });
-
-        LinearLayout btnLayout1 = new LinearLayout(this);
-        btnLayout1.setOrientation(LinearLayout.HORIZONTAL);
-        btnLayout1.addView(btnEncode);
-        btnLayout1.addView(btnDecode);
-
-        LinearLayout btnLayout2 = new LinearLayout(this);
-        btnLayout2.setOrientation(LinearLayout.HORIZONTAL);
-        btnLayout2.addView(btnUrlEncode);
-        btnLayout2.addView(btnUrlDecode);
-
-        layout.addView(etInput);
-        layout.addView(btnLayout1);
-        layout.addView(btnLayout2);
-        layout.addView(tvOutput);
-
-        newRoundedDialog()
-                .setTitle("Encoder/Decoder (Base64 & URL)")
-                .setView(layout)
-                .setPositiveButton(android.R.string.ok, null)
-                .show();
+        DeveloperToolDialogs.showEncoder(this, theme);
     }
 
     private void saveEditorToTab(CodeEditor ed, FileTab tab) {
@@ -1450,23 +1316,119 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Registers every bottom panel with {@link BottomPanelController}, which
+     * from then on owns tab clicks, colours, order and visibility.
+     */
     private void setupBottomTabs() {
-        tabRun.setOnClickListener(v -> switchBottomPanel(PANEL_RUN));
-        tabProblems.setOnClickListener(v -> switchBottomPanel(PANEL_PROBLEMS));
-        tabBytecode.setOnClickListener(v -> switchBottomPanel(PANEL_BYTECODE));
-        if (tabConsole != null) tabConsole.setOnClickListener(v -> switchBottomPanel(PANEL_CONSOLE));
-        if (tabDebug != null) tabDebug.setOnClickListener(v -> switchBottomPanel(PANEL_DEBUG));
-        if (tabDebugConsole != null) tabDebugConsole.setOnClickListener(v -> switchBottomPanel(PANEL_DEBUG_CONSOLE));
-        if (tabCallGraph != null) tabCallGraph.setOnClickListener(v -> switchBottomPanel(PANEL_CALL_GRAPH));
-        if (tabBookmarks != null) tabBookmarks.setOnClickListener(v -> switchBottomPanel(PANEL_BOOKMARKS));
-        if (depsManager != null && depsManager.getTab() != null)
-            depsManager.getTab().setOnClickListener(v -> switchBottomPanel(PANEL_DEPS));
-        if (profilerManager != null && profilerManager.getTab() != null)
-            profilerManager.getTab().setOnClickListener(v -> switchBottomPanel(PANEL_PROFILER));
-        if (todoManager != null && todoManager.getTab() != null)
-            todoManager.getTab().setOnClickListener(v -> switchBottomPanel(PANEL_TODO));
         if (profilerManager != null) profilerManager.bind();
-        switchBottomPanel(PANEL_RUN);
+
+        panelController = new BottomPanelController(theme, hiddenPanelsFromPrefs());
+
+        panelController.register(BottomPanel.RUN, tabRun,
+                visible -> consoleScroll.setVisibility(visible ? View.VISIBLE : View.GONE));
+        panelController.register(BottomPanel.PROBLEMS, tabProblems,
+                visible -> problemsRecycler.setVisibility(visible ? View.VISIBLE : View.GONE));
+        panelController.register(BottomPanel.BYTECODE, tabBytecode,
+                new BottomPanelController.Binding() {
+                    @Override public void setVisible(boolean visible) {
+                        bytecodeRoot.setVisibility(visible ? View.VISIBLE : View.GONE);
+                    }
+                    @Override public void onShown() { refreshBytecodePanel(); }
+                });
+        panelController.register(BottomPanel.DEBUG, tabDebug, visible -> {
+            if (debuggerSplitPanel != null) {
+                debuggerSplitPanel.setVisibility(visible ? View.VISIBLE : View.GONE);
+            }
+        });
+        panelController.register(BottomPanel.DEBUG_CONSOLE, tabDebugConsole, visible -> {
+            if (debugConsoleScroll != null) {
+                debugConsoleScroll.setVisibility(visible ? View.VISIBLE : View.GONE);
+            }
+        });
+        panelController.register(BottomPanel.CALL_GRAPH, tabCallGraph,
+                new BottomPanelController.Binding() {
+                    @Override public void setVisible(boolean visible) {
+                        if (callGraphManager != null) callGraphManager.setVisibility(visible);
+                    }
+                    @Override public void onShown() {
+                        if (callGraphManager != null) callGraphManager.refresh();
+                    }
+                });
+        panelController.register(BottomPanel.BOOKMARKS, tabBookmarks,
+                new BottomPanelController.Binding() {
+                    @Override public void setVisible(boolean visible) {
+                        if (bookmarkController != null) bookmarkController.setVisibility(visible);
+                    }
+                    @Override public void onShown() {
+                        if (bookmarkController != null) bookmarkController.refreshList();
+                    }
+                });
+        if (depsManager != null) {
+            panelController.register(BottomPanel.DEPS, depsManager.getTab(),
+                    new BottomPanelController.Binding() {
+                        @Override public void setVisible(boolean visible) {
+                            depsManager.setVisibility(visible);
+                        }
+                        @Override public void onShown() { depsManager.refresh(); }
+                        @Override public boolean styleTab(boolean active, AppTheme theme, int activeBg) {
+                            depsManager.updateTabStyle(active, theme, activeBg);
+                            return true;
+                        }
+                    });
+        }
+        if (profilerManager != null) {
+            panelController.register(BottomPanel.PROFILER, profilerManager.getTab(),
+                    new BottomPanelController.Binding() {
+                        @Override public void setVisible(boolean visible) {
+                            profilerManager.setVisibility(visible);
+                        }
+                        @Override public boolean styleTab(boolean active, AppTheme theme, int activeBg) {
+                            profilerManager.updateTabStyle(active, theme, activeBg);
+                            return true;
+                        }
+                    });
+        }
+        if (todoManager != null) {
+            panelController.register(BottomPanel.TODO, todoManager.getTab(),
+                    new BottomPanelController.Binding() {
+                        @Override public void setVisible(boolean visible) {
+                            todoManager.setVisibility(visible);
+                        }
+                        @Override public void onShown() { todoManager.refresh(); }
+                        @Override public boolean styleTab(boolean active, AppTheme theme, int activeBg) {
+                            todoManager.updateTabStyle(active, theme, activeBg);
+                            return true;
+                        }
+                    });
+        }
+        panelController.register(BottomPanel.CONSOLE, tabConsole, visible -> {
+            if (jshellManager != null) {
+                jshellManager.setVisibility(visible ? View.VISIBLE : View.GONE);
+            }
+        });
+
+        panelController.setOnPanelChanged(this::onBottomPanelChanged);
+        panelController.applyOrder(appPrefs.getPanelOrder());
+        panelController.select(BottomPanel.RUN);
+    }
+
+    /** Chrome that depends on which panel is showing. */
+    private void onBottomPanelChanged(BottomPanel panel) {
+        bottomPanelMode = panel.mode;
+
+        if (btnClearConsole != null) {
+            btnClearConsole.setVisibility(
+                    (panel == BottomPanel.RUN || panel == BottomPanel.CONSOLE)
+                            ? View.VISIBLE : View.GONE);
+            ((TextView) btnClearConsole).setTextColor(theme.textDim);
+        }
+        if (btnCopyPanel != null) {
+            boolean copyable = panel == BottomPanel.RUN || panel == BottomPanel.CONSOLE
+                    || panel == BottomPanel.TODO || panel == BottomPanel.PROBLEMS;
+            btnCopyPanel.setVisibility(copyable ? View.VISIBLE : View.GONE);
+            ((TextView) btnCopyPanel).setTextColor(theme.textDim);
+        }
     }
 
     private void setupConsoleDivider() {
@@ -1512,105 +1474,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void refreshBottomTabColors() {
-        int activeBg   = blend(theme.toolbar, theme.bg, 0.4f);
-        int inactiveBg = theme.toolbar;
-        tabRun.setBackgroundColor(bottomPanelMode == PANEL_RUN ? activeBg : inactiveBg);
-        tabProblems.setBackgroundColor(bottomPanelMode == PANEL_PROBLEMS ? activeBg : inactiveBg);
-        tabBytecode.setBackgroundColor(bottomPanelMode == PANEL_BYTECODE ? activeBg : inactiveBg);
-        if (tabDebug != null) tabDebug.setBackgroundColor(bottomPanelMode == PANEL_DEBUG ? activeBg : inactiveBg);
-        if (tabDebugConsole != null) tabDebugConsole.setBackgroundColor(bottomPanelMode == PANEL_DEBUG_CONSOLE ? activeBg : inactiveBg);
-        if (tabCallGraph != null) tabCallGraph.setBackgroundColor(bottomPanelMode == PANEL_CALL_GRAPH ? activeBg : inactiveBg);
-        if (tabBookmarks != null) tabBookmarks.setBackgroundColor(bottomPanelMode == PANEL_BOOKMARKS ? activeBg : inactiveBg);
-        if (profilerManager != null) profilerManager.updateTabStyle(bottomPanelMode == PANEL_PROFILER, theme, activeBg);
-        if (depsManager != null) depsManager.updateTabStyle(bottomPanelMode == PANEL_DEPS, theme, activeBg);
-        if (todoManager != null) todoManager.updateTabStyle(bottomPanelMode == PANEL_TODO, theme, activeBg);
-        if (tabConsole != null) tabConsole.setBackgroundColor(bottomPanelMode == PANEL_CONSOLE ? activeBg : inactiveBg);
+        if (panelController == null) return;
+        // applyTheme also runs on resume, when the user may have just changed
+        // the tab layout in settings — so re-read the order at the same time.
+        panelController.applyTheme(theme);
+        panelController.setHidden(hiddenPanelsFromPrefs());
+        panelController.applyOrder(appPrefs.getPanelOrder());
+        onBottomPanelChanged(panelController.active());
+    }
 
-        tabRun.setTextColor(bottomPanelMode == PANEL_RUN ? theme.successText : theme.textDim);
-        tabProblems.setTextColor(bottomPanelMode == PANEL_PROBLEMS ? theme.text : theme.textDim);
-        tabBytecode.setTextColor(bottomPanelMode == PANEL_BYTECODE ? theme.accent : theme.textDim);
-        if (tabDebug != null) tabDebug.setTextColor(bottomPanelMode == PANEL_DEBUG ? theme.accent : theme.textDim);
-        if (tabDebugConsole != null) tabDebugConsole.setTextColor(bottomPanelMode == PANEL_DEBUG_CONSOLE ? theme.accent : theme.textDim);
-        if (tabCallGraph != null) tabCallGraph.setTextColor(bottomPanelMode == PANEL_CALL_GRAPH ? theme.accent : theme.textDim);
-        if (tabBookmarks != null) tabBookmarks.setTextColor(bottomPanelMode == PANEL_BOOKMARKS ? 0xFFFFD700 : theme.textDim);
-        if (tabConsole != null) ((TextView) tabConsole).setTextColor(bottomPanelMode == PANEL_CONSOLE ? theme.accent : theme.textDim);
+    private java.util.Set<BottomPanel> hiddenPanelsFromPrefs() {
+        java.util.Set<BottomPanel> hidden = new java.util.HashSet<>();
+        for (String key : appPrefs.getHiddenPanels()) {
+            BottomPanel panel = BottomPanel.byKey(key);
+            if (panel != null) hidden.add(panel);
+        }
+        return hidden;
     }
 
     private void switchBottomPanel(int mode) {
-        bottomPanelMode = mode;
-        consoleScroll.setVisibility(mode == PANEL_RUN ? View.VISIBLE : View.GONE);
-        problemsRecycler.setVisibility(mode == PANEL_PROBLEMS ? View.VISIBLE : View.GONE);
-        bytecodeRoot.setVisibility(mode == PANEL_BYTECODE ? View.VISIBLE : View.GONE);
-
-        if (debuggerSplitPanel != null)
-            debuggerSplitPanel.setVisibility(mode == PANEL_DEBUG ? View.VISIBLE : View.GONE);
-        if (debugConsoleScroll != null)
-            debugConsoleScroll.setVisibility(mode == PANEL_DEBUG_CONSOLE ? View.VISIBLE : View.GONE);
-        if (callGraphManager != null) callGraphManager.setVisibility(mode == PANEL_CALL_GRAPH);
-        if (bookmarkController != null) bookmarkController.setVisibility(mode == PANEL_BOOKMARKS);
-        if (depsManager != null) depsManager.setVisibility(mode == PANEL_DEPS);
-        if (profilerManager != null) profilerManager.setVisibility(mode == PANEL_PROFILER);
-        if (todoManager != null)
-            todoManager.setVisibility(mode == PANEL_TODO);
-        if (jshellManager != null)
-            jshellManager.setVisibility(mode == PANEL_CONSOLE ? View.VISIBLE : View.GONE);
-
-        int activeBg   = blend(theme.toolbar, theme.bg, 0.4f);
-        int inactiveBg = theme.toolbar;
-        tabRun.setBackgroundColor(mode == PANEL_RUN ? activeBg : inactiveBg);
-        tabProblems.setBackgroundColor(mode == PANEL_PROBLEMS ? activeBg : inactiveBg);
-        tabBytecode.setBackgroundColor(mode == PANEL_BYTECODE ? activeBg : inactiveBg);
-        if (tabDebug != null) tabDebug.setBackgroundColor(mode == PANEL_DEBUG ? activeBg : inactiveBg);
-        if (tabDebugConsole != null) tabDebugConsole.setBackgroundColor(mode == PANEL_DEBUG_CONSOLE ? activeBg : inactiveBg);
-        if (tabCallGraph != null) tabCallGraph.setBackgroundColor(mode == PANEL_CALL_GRAPH ? activeBg : inactiveBg);
-        if (bookmarkController != null) bookmarkController.updateTabStyle(mode == PANEL_BOOKMARKS, theme, activeBg);
-        if (profilerManager != null) profilerManager.updateTabStyle(mode == PANEL_PROFILER, theme, activeBg);
-        if (depsManager != null) depsManager.updateTabStyle(mode == PANEL_DEPS, theme, activeBg);
-        if (todoManager != null) todoManager.updateTabStyle(mode == PANEL_TODO, theme, activeBg);
-        if (tabConsole != null) tabConsole.setBackgroundColor(mode == PANEL_CONSOLE ? activeBg : inactiveBg);
-
-        tabRun.setTextColor(mode == PANEL_RUN ? theme.successText : theme.textDim);
-        tabProblems.setTextColor(mode == PANEL_PROBLEMS ? theme.text : theme.textDim);
-        tabBytecode.setTextColor(mode == PANEL_BYTECODE ? theme.accent : theme.textDim);
-        if (tabDebug != null) tabDebug.setTextColor(mode == PANEL_DEBUG ? theme.accent : theme.textDim);
-        if (tabDebugConsole != null) tabDebugConsole.setTextColor(mode == PANEL_DEBUG_CONSOLE ? theme.accent : theme.textDim);
-        if (tabCallGraph != null) tabCallGraph.setTextColor(mode == PANEL_CALL_GRAPH ? theme.accent : theme.textDim);
-        if (tabBookmarks != null) tabBookmarks.setTextColor(mode == PANEL_BOOKMARKS ? theme.accent : theme.textDim);
-        if (tabConsole != null) ((TextView) tabConsole).setTextColor(mode == PANEL_CONSOLE ? theme.accent : theme.textDim);
-
-        if (btnClearConsole != null) {
-            btnClearConsole.setVisibility((mode == PANEL_RUN || mode == PANEL_CONSOLE) ? View.VISIBLE : View.GONE);
-            ((TextView) btnClearConsole).setTextColor(theme.textDim);
-        }
-        if (btnCopyPanel != null) {
-            btnCopyPanel.setVisibility((mode == PANEL_RUN || mode == PANEL_CONSOLE || mode == PANEL_TODO || mode == PANEL_PROBLEMS) ? View.VISIBLE : View.GONE);
-            ((TextView) btnCopyPanel).setTextColor(theme.textDim);
-        }
-        if (mode == PANEL_BYTECODE) {
-            refreshBytecodePanel();
-        }
-        if (mode == PANEL_CALL_GRAPH) {
-            if (callGraphManager != null) callGraphManager.refresh();
-        }
-        if (mode == PANEL_BOOKMARKS) {
-            if (bookmarkController != null) bookmarkController.refreshList();
-        }
-        if (mode == PANEL_DEPS) {
-            if (depsManager != null) depsManager.refresh();
-        }
-        if (mode == PANEL_TODO) {
-            if (todoManager != null) todoManager.refresh();
-        }
+        if (panelController != null) panelController.select(mode);
     }
 
-    private static int blend(int a, int b, float t) {
-        int ar = (a >> 16) & 0xFF, ag = (a >> 8) & 0xFF, ab = a & 0xFF;
-        int br = (b >> 16) & 0xFF, bg = (b >> 8) & 0xFF, bb = b & 0xFF;
-        int r = (int) (ar + (br - ar) * t);
-        int g = (int) (ag + (bg - ag) * t);
-        int bl = (int) (ab + (bb - ab) * t);
-        return 0xFF000000 | (r << 16) | (g << 8) | bl;
-    }
 
     // ══════════════════════════════════════════════════════════
     //  Debug
@@ -1766,8 +1651,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showDebugTabs(boolean show) {
-        if (tabDebug != null) tabDebug.setVisibility(show ? View.VISIBLE : View.GONE);
-        if (tabDebugConsole != null) tabDebugConsole.setVisibility(show ? View.VISIBLE : View.GONE);
+        if (panelController != null) panelController.setDebugSessionActive(show);
     }
 
     private void appendDebugConsole(String text, int color) {
@@ -2594,6 +2478,39 @@ public class MainActivity extends AppCompatActivity {
         }
         refreshProblemsMergedAsync();
         activeEditor.setEditorLanguage(new JavaDroidLanguage(this, projectManager.getProjectDir()));
+
+        // A file handed over from another app is opened last so it ends up as
+        // the active tab, on top of whatever the session restored.
+        openRequestedFile(getIntent());
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        openRequestedFile(intent);
+    }
+
+    /** Honours {@link FileOpenActivity#EXTRA_OPEN_FILE}, if present. */
+    private void openRequestedFile(Intent intent) {
+        if (intent == null) return;
+        String path = intent.getStringExtra(FileOpenActivity.EXTRA_OPEN_FILE);
+        if (path == null) return;
+        // Consume it, so a rotation or a return from Settings does not reopen.
+        intent.removeExtra(FileOpenActivity.EXTRA_OPEN_FILE);
+
+        File file = new File(path);
+        if (!file.isFile()) {
+            Toast.makeText(this, getString(R.string.open_with_failed, path), Toast.LENGTH_LONG).show();
+            return;
+        }
+        try {
+            refreshFileTree();
+            openFile(file);
+        } catch (Exception e) {
+            Toast.makeText(this, getString(R.string.open_with_failed,
+                    String.valueOf(e.getMessage())), Toast.LENGTH_LONG).show();
+        }
     }
 
     private void initLiveProblemsScheduler() {
@@ -4061,7 +3978,7 @@ public class MainActivity extends AppCompatActivity {
         e.setHint(hint);
         e.setHintTextColor(theme.textDim);
         e.setTextColor(theme.text);
-        e.setBackgroundColor(blend(theme.bg, theme.text, 0.05f));
+        e.setBackgroundColor(Colors.blend(theme.bg, theme.text, 0.05f));
         e.setPadding(32, 16, 32, 16);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -4727,8 +4644,9 @@ public class MainActivity extends AppCompatActivity {
         return (int) (value * getResources().getDisplayMetrics().density);
     }
 
+    /** @see Dialogs#rounded */
     private com.google.android.material.dialog.MaterialAlertDialogBuilder newRoundedDialog() {
-        return new com.google.android.material.dialog.MaterialAlertDialogBuilder(this);
+        return Dialogs.rounded(this);
     }
 
     // ══════════════════════════════════════════════════════════

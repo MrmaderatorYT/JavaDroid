@@ -136,8 +136,17 @@
     <string name="font_serif">З зарубками</string>
     <string name="font_default">Системний</string>
 
+    <string name="settings_section_panels">Нижні панелі</string>
+    <string name="settings_panels_hint">Порядок і видимість вкладок під редактором. «Запуск» і «Проблеми» лишаються завжди, а вкладки налагодження з’являються лише під час сеансу.</string>
+    <string name="settings_panels_reset">Відновити типовий порядок</string>
+    <string name="settings_panels_reset_done">Типовий порядок відновлено</string>
+    <string name="settings_panel_visible_a11y">Показувати вкладку %1$s</string>
+    <string name="settings_panel_move_up_a11y">Перемістити %1$s вище</string>
+    <string name="settings_panel_move_down_a11y">Перемістити %1$s нижче</string>
+
     <string name="settings_java_target">Цільова Java</string>
-    <string name="settings_java_hint">Впливає на компіляцію ECJ. Вищі версії можуть не запускатись через D8.</string>
+    <string name="settings_java_hint">Вбудований компілятор видає Java від %1$s до %2$s. Давніші випуски компілюються як %1$s, і мовні можливості все одно потребують підтримки з боку Android.</string>
+    <string name="settings_java_target_maps_to">%1$s — компілюється як %2$s</string>
 
     <string name="settings_reset_defaults">Скинути до типових</string>
     <string name="settings_reset_confirm">Усі налаштування інтерфейсу, шрифту та компілятора будуть скинуті. Файли проєкту збережуться.</string>
@@ -250,6 +259,14 @@
     <string name="menu_split_screen">Розділити екран</string>
     <string name="tab_debug">Потоки та змінні</string>
     <string name="tab_debug_console">Консоль</string>
+    <string name="tab_call_graph">Граф</string>
+    <string name="tab_bookmarks">★</string>
+    <string name="tab_bookmarks_name">Закладки</string>
+    <string name="tab_deps">Залежності</string>
+    <string name="tab_profiler">Профайл</string>
+    <string name="tab_todo">TODO</string>
+    <string name="tab_console">Консоль</string>
+    <string name="a11y_tab_console">Вкладка консолі JShell</string>
     <string name="console_debug_running">▶ Зневадження %1$s…</string>
     <string name="console_debug_hit_breakpoint">⏸ Зупинка на рядку %1$d</string>
     <string name="console_debug_ended">Сесію зневадження завершено.</string>
@@ -378,6 +395,91 @@
     <string name="welcome_delete_project_message">Ви впевнені, що хочете назавжди видалити %1$s та всі його файли? Цю дію не можна скасувати.</string>
     <string name="welcome_no_projects">Ще немає проєктів у Documents/JavaDroid.</string>
     <string name="welcome_open_folder_title">Відкрити папку проєкту</string>
+
+    <!-- Діалоги інструментів розробника -->
+    <string name="tool_regex_title">Тестер регулярних виразів</string>
+    <string name="tool_regex_hint">Регулярний вираз (напр. \\d+)</string>
+    <string name="tool_regex_text_hint">Текст для перевірки</string>
+    <string name="tool_regex_match">Збіг %1$d: [%2$s]</string>
+    <string name="tool_regex_no_match">Збігів немає</string>
+    <string name="tool_regex_invalid">Хибний вираз: %1$s</string>
+    <string name="tool_regex_truncated">… решту збігів не показано</string>
+    <string name="tool_encoder_title">Кодувальник / декодувальник (Base64 і URL)</string>
+    <string name="tool_encoder_input">Вхідний текст</string>
+    <string name="tool_encoder_encode">Закодувати</string>
+    <string name="tool_encoder_decode">Розкодувати</string>
+    <string name="tool_encoder_url_encode">URL код.</string>
+    <string name="tool_encoder_url_decode">URL розк.</string>
+    <string name="tool_encoder_invalid">Некоректні дані: %1$s</string>
+    <string name="tool_encoder_failed">Не вдалося: %1$s</string>
+
+    <!-- Подяки -->
+    <string name="welcome_sidebar_projects">Проєкти</string>
+    <string name="welcome_sidebar_materials">Матеріали</string>
+    <string name="welcome_sidebar_credits">Подяки</string>
+    <string name="a11y_welcome_credits_tab">Подяки та ліцензії</string>
+    <string name="credits_title">Подяки</string>
+    <string name="credits_version">Версія %1$s</string>
+    <string name="credits_section_java">Про Java в цьому застосунку</string>
+    <string name="credits_section_libraries">Бібліотеки з відкритим кодом</string>
+    <string name="credits_section_thanks">Дякуємо</string>
+    <string name="credits_libraries_intro">JavaDroid містить наведені нижче компоненти. Кожен використовується за власною ліцензією, вказаною точно так, як її декларує сам проєкт.</string>
+    <string name="credits_name_version">%1$s %2$s</string>
+    <string name="credits_license">Ліцензія: %1$s</string>
+    <string name="credits_no_browser">Немає застосунку, який відкриє це посилання.</string>
+    <string name="credits_thanks_body">Усім, хто підтримує наведені вище проєкти, і всім, хто надсилав звіти про помилки, переклади та просив можливості, що потрапили в цей випуск. Розробка відкрита — issues і pull requests вітаються.</string>
+
+    <string name="credits_group_compiler">Компіляція та запуск коду</string>
+    <string name="credits_group_editor">Редактор</string>
+    <string name="credits_group_network">Контроль версій і мережа</string>
+    <string name="credits_group_formats">Файли та формати</string>
+    <string name="credits_group_platform">Мовлення та платформа</string>
+
+    <string name="credits_use_ecj">Компілює вихідні коди Java просто на пристрої.</string>
+    <string name="credits_use_r8">Перетворює class-файли на DEX, щоб Android міг їх виконати.</string>
+    <string name="credits_use_kotlin">Компілює вихідні коди Kotlin.</string>
+    <string name="credits_use_desugar">Переносить новіші API JDK на давніші версії Android.</string>
+    <string name="credits_use_asm">Читає та записує байткод для дизасемблера.</string>
+    <string name="credits_use_sora">Власне редактор коду: підсвітка, автодоповнення, виділення.</string>
+    <string name="credits_use_jgit">Git clone, commit, diff та історія — без жодного нативного бінарника.</string>
+    <string name="credits_use_okhttp">Вбудований HTTP-клієнт.</string>
+    <string name="credits_use_slf4j">Фасад журналювання, потрібний JGit.</string>
+    <string name="credits_use_junrar">Читає архіви RAR4 під час імпорту. Ліцензія забороняє використовувати код для відтворення алгоритму стиснення RAR; JavaDroid лише читає архіви.</string>
+    <string name="credits_use_androidsvg">Показує попередній перегляд SVG.</string>
+    <string name="credits_use_json">Розбір JSON у HTTP-клієнті.</string>
+    <string name="credits_use_stax">Потоковий XML API, якого потребує компілятор Kotlin.</string>
+    <string name="credits_use_stax2">Розширення StAX2, що працюють поруч із попереднім.</string>
+    <string name="credits_use_vosk">Офлайнове розпізнавання мовлення для голосового введення.</string>
+    <string name="credits_use_androidx">AppCompat, ConstraintLayout, DocumentFile, Startup, ProfileInstaller та віджети Material.</string>
+    <string name="credits_use_android_jar">Входить до складу застосунку, щоб ваші проєкти могли компілюватися з Android API просто на пристрої.</string>
+
+    <string name="credits_java_trademark">Java™ та OpenJDK — торгові марки Oracle та/або її афілійованих осіб. JavaDroid — незалежний проєкт, не пов’язаний з Oracle і не схвалений нею.</string>
+    <string name="credits_java_no_jdk">Жодних JDK чи JVM тут немає. Код компілює Eclipse Compiler for Java, D8 перетворює його на DEX, а виконує власне середовище Android (ART) — тому дещо в стандартній бібліотеці поводиться інакше, ніж на настільній JVM.</string>
+    <string name="credits_java_android_libs">Вашому коду доступна бібліотека класів Android, а не Java SE. Пакетів на кшталт java.awt, javax.swing чи java.rmi в Android немає.</string>
+    <string name="credits_java_target_meaning">Налаштування цільової Java визначає рівень мови та class-файлів, який передається компілятору. Воно не додає підтримки з боку середовища виконання: можливість, якій потрібна новіша JVM, все одно її потребує.</string>
+    <string name="credits_java_build_files">Файли збірки Gradle і Maven читаються, а не виконуються. JavaDroid розбирає їх, щоб дізнатися залежності й структуру каталогів, і далі компілює власним конвеєром — жоден демон Gradle на пристрої не запускається.</string>
+
+    <!-- Відкриття файлів, переданих з інших застосунків -->
+    <string name="open_with_label">Відкрити в JavaDroid</string>
+    <string name="open_with_no_file">JavaDroid не отримав жодного файлу.</string>
+    <string name="open_with_failed">Не вдалося відкрити файл: %1$s</string>
+
+    <!-- Імпорт проєкту -->
+    <string name="welcome_import_entry">➕ Імпорт з архіву або папки</string>
+    <string name="import_title">Імпорт проєкту</string>
+    <string name="import_option_archive">Обрати архів (ZIP, TAR, TAR.GZ, RAR)</string>
+    <string name="import_option_folder">Обрати папку</string>
+    <string name="import_stage_reading">Читання архіву…</string>
+    <string name="import_stage_extracting">Розпакування %1$s…</string>
+    <string name="import_stage_entry">%1$s</string>
+    <string name="import_stage_copying">Копіювання папки…</string>
+    <string name="import_error_empty">Архів не містить жодного файлу.</string>
+    <string name="import_error_folder_unreadable">Цю папку не вдалося прочитати.</string>
+    <string name="import_error_unsupported">Архіви %1$s тут не відкриваються. Підтримуються: %2$s</string>
+    <string name="import_error_title">Імпорт не вдався</string>
+    <string name="import_done_title">Імпортовано</string>
+    <string name="import_done_summary">%1$d файлів, %2$d папок (%3$s).</string>
+    <string name="import_done_skipped">Пропущено записів: %1$d</string>
     <string name="welcome_clone_url_hint">URL репозиторію (https://…)</string>
     <string name="welcome_clone_name_hint">Назва папки проєкту</string>
     <string name="welcome_clone_user_hint">Ім\'я користувача (необов\'язково, для приватних репозиторіїв)</string>
@@ -438,7 +540,7 @@
     <string name="breakpoint_set_button">Встановити</string>
     <string name="breakpoint_remove_button">Видалити</string>
     <string name="breakpoint_unconditional">● Безумовний BP на рядку %1$d</string>
-    <string name="breakpoint_conditional">● Умовний BP на рядку %1$d: %1$s</string>
+    <string name="breakpoint_conditional">● Умовна точка на рядку %1$d: %2$s</string>
 
     <!-- Bookmarks -->
     <string name="bookmark_set">★ Закладка на рядку %1$d</string>

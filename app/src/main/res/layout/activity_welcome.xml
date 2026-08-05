@@ -61,7 +61,7 @@
             android:layout_height="36dp"
             android:gravity="center_vertical"
             android:paddingStart="12dp"
-            android:text="Projects"
+            android:text="@string/welcome_sidebar_projects"
             android:textSize="12sp"
             android:textStyle="bold"
             android:clickable="true"
@@ -75,12 +75,25 @@
             android:layout_height="36dp"
             android:gravity="center_vertical"
             android:paddingStart="12dp"
-            android:text="Матеріали"
+            android:text="@string/welcome_sidebar_materials"
             android:textSize="12sp"
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
             android:contentDescription="@string/a11y_welcome_materials_tab"
+            android:layout_marginBottom="4dp" />
+        <TextView
+            android:id="@+id/sidebarCredits"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:gravity="center_vertical"
+            android:paddingStart="12dp"
+            android:text="@string/welcome_sidebar_credits"
+            android:textSize="12sp"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:contentDescription="@string/a11y_welcome_credits_tab"
             android:layout_marginBottom="4dp" />
 
         <View

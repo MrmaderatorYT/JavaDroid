@@ -16,6 +16,7 @@ import com.ccs.javadroid.profiler.ProfilerBridge;
 import com.ccs.javadroid.profiler.ProfilerInstrumenter;
 import com.ccs.javadroid.tools.compilers.ProjectCompiler;
 import com.ccs.javadroid.util.AppPreferences;
+import com.ccs.javadroid.ui.panels.BottomPanel;
 import com.ccs.javadroid.util.AppTheme;
 import com.ccs.javadroid.util.PowerSavingManager;
 
@@ -39,7 +40,8 @@ public final class ProfilerPanelManager {
         AppPreferences getAppPrefs();
     }
 
-    private static final int PANEL_RUN = 0;
+    // Panel id comes from BottomPanel; it used to be copied here as 0.
+    private static final int PANEL_RUN = BottomPanel.RUN.mode;
 
     private final Activity activity;
     private final Callback callback;

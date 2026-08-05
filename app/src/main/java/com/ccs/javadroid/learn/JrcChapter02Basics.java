@@ -40,6 +40,14 @@ final class JrcChapter02Basics {
                 "Зсуви: << >> >>>", "Порівняння: < <= > >= instanceof", "Рівність: == !=",
                 "Побітове І: &", "Побітове XOR: ^", "Побітове АБО: |", "Логічне І: &&",
                 "Логічне АБО: ||", "Тернарний: ? :", "Найнижчий: = += -= ..."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Дано дві змінні: int a = 15; int b = 4;. Обчисліть та виведіть на екран остачу від ділення a на b, а також результат перевірки, чи a більше за b."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code(
+                "int a = 15;\n"
+                + "int b = 4;\n"
+                + "System.out.println(\"Остача: \" + (a % b));\n"
+                + "System.out.println(\"Чи a більше b: \" + (a > b));"));
 
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Operators"));
@@ -96,6 +104,18 @@ final class JrcChapter02Basics {
                 + "}"));
         uk.add(LessonBlock.warning(
                 "Забуття break у класичному switch призведе до «провалювання» (fall-through)."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Напишіть конструкцію if-else, яка перевіряє змінну int temperature. Якщо вона вище 25, виведіть «Спекотно», якщо від 15 до 25 (включно) — «Тепло», інакше — «Холодно»."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code(
+                "int temperature = 20;\n"
+                + "if (temperature > 25) {\n"
+                + "    System.out.println(\"Спекотно\");\n"
+                + "} else if (temperature >= 15) {\n"
+                + "    System.out.println(\"Тепло\");\n"
+                + "} else {\n"
+                + "    System.out.println(\"Холодно\");\n"
+                + "}"));
 
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Control flow: if / switch"));
@@ -145,6 +165,12 @@ final class JrcChapter02Basics {
                 + "for (int n : nums) { System.out.println(n); }"));
         uk.add(LessonBlock.note(
                 "java.util.Arrays надає утиліти: Arrays.sort(nums), Arrays.toString(nums)."));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Створіть масив типу String з трьома елементами: \"Яблуко\", \"Банан\", \"Апельсин\". Виведіть на екран другий елемент масиву (з індексом 1)."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code(
+                "String[] fruits = {\"Яблуко\", \"Банан\", \"Апельсин\"};\n"
+                + "System.out.println(fruits[1]);"));
 
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Arrays"));
@@ -180,6 +206,13 @@ final class JrcChapter02Basics {
         uk.add(LessonBlock.list(
                 "break — негайний вихід з циклу.", "continue — перехід до наступної ітерації.",
                 "break з міткою — вихід із вкладеного циклу: outer: for(...) for(...) break outer;"));
+        uk.add(LessonBlock.heading("Практичне завдання"));
+        uk.add(LessonBlock.paragraph("Використовуючи цикл for, виведіть на екран усі парні числа від 2 до 10 включно."));
+        uk.add(LessonBlock.heading("Рішення"));
+        uk.add(LessonBlock.code(
+                "for (int i = 2; i <= 10; i += 2) {\n"
+                + "    System.out.println(i);\n"
+                + "}"));
 
         List<LessonBlock> en = new ArrayList<>();
         en.add(LessonBlock.heading("Loops"));

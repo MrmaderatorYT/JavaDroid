@@ -1,4 +1,6 @@
 package com.ccs.javadroid.ui;
+
+import com.ccs.javadroid.util.Colors;
 import com.ccs.javadroid.R;
 import com.ccs.javadroid.util.AppPreferences;
 import com.ccs.javadroid.util.AppTheme;
@@ -149,7 +151,7 @@ public class ClassBrowserActivity extends AppCompatActivity {
         } catch (Exception ignored) {}
 
         GradientDrawable editBg = new GradientDrawable();
-        editBg.setColor(blend(theme.toolbar, theme.bg, 0.4f));
+        editBg.setColor(Colors.blend(theme.toolbar, theme.bg, 0.4f));
         editBg.setCornerRadius(dp(20));
         editBg.setStroke(dp(1), theme.separator);
         etSearch.setBackground(editBg);
@@ -490,14 +492,6 @@ public class ClassBrowserActivity extends AppCompatActivity {
         return desc.substring(idx);
     }
 
-    private static int blend(int a, int b, float t) {
-        int ar = (a >> 16) & 0xFF, ag = (a >> 8) & 0xFF, ab = a & 0xFF;
-        int br = (b >> 16) & 0xFF, bg = (b >> 8) & 0xFF, bb = b & 0xFF;
-        int r = (int) (ar + (br - ar) * t);
-        int g = (int) (ag + (bg - ag) * t);
-        int bl = (int) (ab + (bb - ab) * t);
-        return 0xFF000000 | (r << 16) | (g << 8) | bl;
-    }
 
     private int dp(int v) {
         return (int) (v * getResources().getDisplayMetrics().density);
@@ -554,7 +548,7 @@ public class ClassBrowserActivity extends AppCompatActivity {
             row.setLayoutParams(lp);
 
             GradientDrawable bg = new GradientDrawable();
-            bg.setColor(blend(theme.toolbar, theme.bg, 0.5f));
+            bg.setColor(Colors.blend(theme.toolbar, theme.bg, 0.5f));
             bg.setCornerRadius(dp(6));
             row.setBackground(bg);
 

@@ -41,13 +41,8 @@ public final class BookmarkUiController {
         if (recycler != null) recycler.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
-    public void updateTabStyle(boolean active, @NonNull AppTheme theme, int activeBg) {
-        TextView tab = activity.findViewById(R.id.tabBookmarks);
-        if (tab != null) {
-            tab.setBackgroundColor(active ? activeBg : theme.toolbar);
-            tab.setTextColor(active ? theme.accent : theme.textDim);
-        }
-    }
+    // Tab styling used to live here as well as in MainActivity, and the two
+    // disagreed on the active colour. BottomPanelController now owns it.
 
     public void refreshList() {
         if (recycler == null) return;
