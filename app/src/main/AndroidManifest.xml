@@ -84,6 +84,15 @@
                 <data android:mimeType="application/x-java-archive" />
                 <data android:mimeType="application/x-java-class" />
                 <data android:mimeType="application/x-jar" />
+                <data android:mimeType="application/zip" />
+                <data android:mimeType="application/x-zip-compressed" />
+                <data android:mimeType="application/x-tar" />
+                <data android:mimeType="application/gzip" />
+                <data android:mimeType="application/x-gzip" />
+                <data android:mimeType="application/x-rar-compressed" />
+                <data android:mimeType="application/vnd.rar" />
+                <data android:mimeType="application/octet-stream" />
+                <data android:mimeType="text/plain" />
             </intent-filter>
 
             <intent-filter android:label="@string/open_with_label">
@@ -110,6 +119,16 @@
                 <data android:pathPattern=".*\\..*\\.class" />
                 <data android:pathPattern=".*\\.gradle" />
                 <data android:pathPattern=".*\\..*\\.gradle" />
+                <data android:pathPattern=".*\\.tar" />
+                <data android:pathPattern=".*\\..*\\.tar" />
+                <data android:pathPattern=".*\\.tgz" />
+                <data android:pathPattern=".*\\..*\\.tgz" />
+                <data android:pathPattern=".*\\.gz" />
+                <data android:pathPattern=".*\\..*\\.gz" />
+                <data android:pathPattern=".*\\.rar" />
+                <data android:pathPattern=".*\\..*\\.rar" />
+                <data android:pathPattern=".*\\.zip" />
+                <data android:pathPattern=".*\\..*\\.zip" />
             </intent-filter>
 
             <intent-filter android:label="@string/open_with_label">

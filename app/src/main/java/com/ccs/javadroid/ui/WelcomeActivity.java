@@ -358,7 +358,7 @@ public class WelcomeActivity extends AppCompatActivity {
                             .show();
                 }
             }
-        } else if (requestCode == REQUEST_IMPORT_ZIP && resultCode == RESULT_OK && data != null) {
+        } else if (requestCode == REQUEST_IMPORT_ARCHIVE && resultCode == RESULT_OK && data != null) {
             runImport(data.getData(), true);
         } else if (requestCode == REQUEST_IMPORT_FOLDER && resultCode == RESULT_OK && data != null) {
             runImport(data.getData(), false);
@@ -541,7 +541,7 @@ public class WelcomeActivity extends AppCompatActivity {
                 .setTitle(R.string.import_title)
                 .setItems(options, (dialog, which) -> {
                     if (which == 0) {
-                        importZip();
+                        importArchive();
                     } else {
                         importFolder();
                     }
@@ -550,14 +550,12 @@ public class WelcomeActivity extends AppCompatActivity {
                 .show();
     }
 
-    private static final int REQUEST_IMPORT_ZIP = 2001;
+    private static final int REQUEST_IMPORT_ARCHIVE = 2001;
     private static final int REQUEST_IMPORT_FOLDER = 2002;
 
-    private void importZip() {
+    private void importArchive() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        // Providers disagree wildly on archive MIME types (tar in particular is
-        // often reported as octet-stream), so the filter stays wide and the
-        // format is decided from the file's own header after picking.
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("*/*");
         String[] mimeTypes = {
                 "application/zip", "application/x-zip-compressed", "application/java-archive",
@@ -567,7 +565,7 @@ public class WelcomeActivity extends AppCompatActivity {
                 "application/octet-stream"
         };
         intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
-        startActivityForResult(intent, REQUEST_IMPORT_ZIP);
+        startActivityForResult(intent, REQUEST_IMPORT_ARCHIVE);
     }
 
     private void importFolder() {
