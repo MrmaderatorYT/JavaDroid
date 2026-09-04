@@ -1,0 +1,56 @@
+{
+  "content": {
+    "uk": [
+      {
+        "type": "heading",
+        "text": "Javap drills: 40 bytecode задач"
+      },
+      {
+        "type": "paragraph",
+        "text": "Цей урок — тренажер. Для кожної задачі: напишіть маленький Java 8 метод, скомпілюйте, відкрийте javap -c -v, знайдіть потрібний bytecode-патерн і коротко поясніть stack/local state."
+      },
+      {
+        "type": "list",
+        "text": "1. int add(int a, int b): знайти iload/iadd/ireturn.\n2. long add(long a, long b): знайти lload/ladd/lreturn і local slots.\n3. double avg(int a, int b): знайти i2d/dadd/ddiv.\n4. int abs(int x): знайти conditional branch.\n5. int max(int a, int b): знайти if_icmp*.\n6. int sumTo(int n): знайти loop і goto назад.\n7. boolean isEven(int x): знайти irem.\n8. String concat(String a, String b): знайти StringBuilder.\n9. Object make(): знайти new/dup/invokespecial.\n10. int[] makeArray(int n): знайти newarray.\n11. String[] makeStrings(): знайти anewarray/aastore.\n12. int first(int[] a): знайти iaload.\n13. void set(int[] a, int v): знайти iastore.\n14. int len(Object[] a): знайти arraylength.\n15. void print(String s): знайти getstatic/invokevirtual.\n16. static call Math.max: знайти invokestatic.\n17. interface call List.size(): знайти invokeinterface.\n18. private method call: знайти invokespecial.\n19. constructor chaining: знайти this(...) або super(...).\n20. static initializer: знайти <clinit>.\n21. final static int constant: знайти ConstantValue.\n22. volatile field: знайти ACC_VOLATILE.\n23. transient field: знайти ACC_TRANSIENT.\n24. synchronized method: знайти ACC_SYNCHRONIZED.\n25. synchronized block: знайти monitorenter/monitorexit.\n26. try/catch: знайти Exception table.\n27. try/finally: знайти handler + athrow.\n28. try-with-resources: знайти close і suppressed.\n29. enhanced for List: знайти Iterator.\n30. enhanced for array: порівняти без Iterator.\n31. switch dense ints: знайти tableswitch.\n32. switch sparse ints: знайти lookupswitch.\n33. switch String: знайти hashCode/equals.\n34. lambda Runnable: знайти invokedynamic.\n35. method reference: знайти invokedynamic.\n36. generic get List<String>: знайти checkcast.\n37. generic override: знайти bridge method.\n38. inner class: знайти InnerClasses і this$0.\n39. enum: знайти values/valueOf і <clinit>.\n40. annotation runtime: знайти RuntimeVisibleAnnotations."
+      },
+      {
+        "type": "note",
+        "text": "Мета drills — не запам'ятати всі opcodes за вечір. Мета — навчитися дивитися на Java 8 source і прогнозувати, який bytecode приблизно згенерує javac."
+      },
+      {
+        "type": "heading",
+        "text": "Формат звіту"
+      },
+      {
+        "type": "list",
+        "text": "Java snippet.\nКоманда javac і javap.\n3-10 ключових рядків bytecode.\nПояснення stack/local state.\nОдин висновок: який Java 8 патерн я тепер бачу в bytecode."
+      }
+    ],
+    "en": [
+      {
+        "type": "heading",
+        "text": "Javap drills: 40 bytecode tasks"
+      },
+      {
+        "type": "paragraph",
+        "text": "This lesson is a trainer. For each task: write a tiny Java 8 method, compile, open javap -c -v, find the needed bytecode pattern, and briefly explain stack/local state."
+      },
+      {
+        "type": "list",
+        "text": "1. int add(int a, int b): find iload/iadd/ireturn.\n2. long add(long a, long b): find lload/ladd/lreturn and local slots.\n3. double avg(int a, int b): find i2d/dadd/ddiv.\n4. int abs(int x): find conditional branch.\n5. int max(int a, int b): find if_icmp*.\n6. int sumTo(int n): find loop and backward goto.\n7. boolean isEven(int x): find irem.\n8. String concat(String a, String b): find StringBuilder.\n9. Object make(): find new/dup/invokespecial.\n10. int[] makeArray(int n): find newarray.\n11. String[] makeStrings(): find anewarray/aastore.\n12. int first(int[] a): find iaload.\n13. void set(int[] a, int v): find iastore.\n14. int len(Object[] a): find arraylength.\n15. void print(String s): find getstatic/invokevirtual.\n16. static call Math.max: find invokestatic.\n17. interface call List.size(): find invokeinterface.\n18. private method call: find invokespecial.\n19. constructor chaining: find this(...) or super(...).\n20. static initializer: find <clinit>.\n21. final static int constant: find ConstantValue.\n22. volatile field: find ACC_VOLATILE.\n23. transient field: find ACC_TRANSIENT.\n24. synchronized method: find ACC_SYNCHRONIZED.\n25. synchronized block: find monitorenter/monitorexit.\n26. try/catch: find Exception table.\n27. try/finally: find handler + athrow.\n28. try-with-resources: find close and suppressed.\n29. enhanced for List: find Iterator.\n30. enhanced for array: compare without Iterator.\n31. switch dense ints: find tableswitch.\n32. switch sparse ints: find lookupswitch.\n33. switch String: find hashCode/equals.\n34. lambda Runnable: find invokedynamic.\n35. method reference: find invokedynamic.\n36. generic get List<String>: find checkcast.\n37. generic override: find bridge method.\n38. inner class: find InnerClasses and this$0.\n39. enum: find values/valueOf and <clinit>.\n40. runtime annotation: find RuntimeVisibleAnnotations."
+      },
+      {
+        "type": "note",
+        "text": "The goal of drills is not memorizing all opcodes in one evening. The goal is learning to look at Java 8 source and predict roughly which bytecode javac generates."
+      },
+      {
+        "type": "heading",
+        "text": "Report format"
+      },
+      {
+        "type": "list",
+        "text": "Java snippet.\njavac and javap command.\n3-10 key bytecode lines.\nExplanation of stack/local state.\nOne conclusion: which Java 8 pattern I now see in bytecode."
+      }
+    ]
+  }
+}

@@ -1,0 +1,772 @@
+plugins {
+    id 'com.android.application'
+}
+
+def keystorePropertiesFile = rootProject.file('keystore.properties')
+def keystoreProperties = new Properties()
+if (keystorePropertiesFile.exists()) {
+    keystorePropertiesFile.withInputStream { keystoreProperties.load(it) }
+}
+
+// The JVM languages whose runtimes ship inside the app rather than being
+// downloaded. Each is resolved from Maven at build time and copied into assets,
+// the same way kotlin-stdlib is, so a device that never sees a network can
+// still run them. The version named here is the one that ships; the settings
+// screen can point a project at another, which is then fetched on demand.
+ext.bundledScalaVersion = '3.3.4'
+ext.bundledGroovyVersion = '4.0.24'
+ext.bundledClojureVersion = '1.11.4'
+
+android {
+    namespace 'com.ccs.javadroid'
+    compileSdk 36
+
+    buildFeatures {
+        buildConfig = true
+    }
+
+    defaultConfig {
+        // Unique ID for Google Play (change if you use your own domain)
+        applicationId 'com.ccs.javadroid'
+        minSdk 26
+        targetSdk 36
+        // Read back by LanguageRuntimes so the app knows which version it
+        // carries without a second place to keep in step.
+        buildConfigField "String", "BUNDLED_SCALA_VERSION", "\"${bundledScalaVersion}\""
+        buildConfigField "String", "BUNDLED_GROOVY_VERSION", "\"${bundledGroovyVersion}\""
+        buildConfigField "String", "BUNDLED_CLOJURE_VERSION", "\"${bundledClojureVersion}\""
+
+        versionCode 27
+        versionName '1.12.0'
+
+        ndk {
+            abiFilters 'arm64-v8a', 'armeabi-v7a', 'x86_64', 'x86'
+        }
+
+        externalNativeBuild {
+            cmake {
+                arguments "-DCMAKE_SHARED_LINKER_FLAGS=-Wl,-z,max-page-size=16384",
+                          "-DCMAKE_EXE_LINKER_FLAGS=-Wl,-z,max-page-size=16384"
+            }
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path 'src/main/cpp/CMakeLists.txt'
+            version '3.22.1'
+        }
+    }
+
+    signingConfigs {
+        release {
+            if (keystorePropertiesFile.exists()) {
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+                storeFile rootProject.file(keystoreProperties['storeFile'])
+                storePassword keystoreProperties['storePassword']
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            // Off, and this is a deliberate resting state rather than a
+            // default nobody looked at.
+            //
+            // With it on, the rules in proguard-rules.pro obfuscate 97% of this
+            // app's own classes — far above Google Play's 25% threshold — and
+            // the resulting build compiles and runs Java correctly. But it
+            // breaks the bundled Kotlin compiler, measured on device:
+            //
+            //   KotlinCompiler: Failed to create KotlinCoreEnvironment
+            //   Caused by: AssertionError: ComponentManager.getService on a
+            //   null object reference
+            //     at ExtensionPointImpl.notifyListeners
+            //     at JavaCoreApplicationEnvironment.<init>
+            //
+            // Not shrinking and not optimization: the same failure appears with
+            // -dontshrink -dontoptimize, so renaming alone causes it. The
+            // likely mechanism is that IntelliJ's logger factory no longer
+            // registers, so DefaultLogger throws on a warning that is otherwise
+            // only logged. Until that is settled, shipping this would trade a
+            // Play warning for a broken feature.
+            minifyEnabled false
+            // Deliberately left off: the app looks resources up by name —
+            // getIdentifier("btnExitZenMode", …) and resStr(name, fallback) for
+            // menu labels — and the shrinker cannot see those references, so it
+            // would remove strings that are used.
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            if (keystorePropertiesFile.exists()) {
+                signingConfig signingConfigs.release
+            }
+        }
+    }
+    compileOptions {
+        coreLibraryDesugaringEnabled true
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    packaging {
+        jniLibs {
+            useLegacyPackaging true
+            keepDebugSymbols += ['**/libjavadroid_clang.so',
+                                 '**/libjavadroid_lld.so']
+        }
+        resources {
+            excludes += 'META-INF/versions/9/OSGI-INF/MANIFEST.MF'
+            excludes += '**/*.kotlin_builtins'
+            excludes += 'META-INF/*.kotlin_module'
+            excludes += 'META-INF/proguard/*'
+            excludes += 'META-INF/NOTICE'
+            excludes += 'META-INF/LICENSE'
+        }
+    }
+
+    // The Java SE payloads are already compressed. Storing them verbatim keeps
+    // the APK build fast and lets AssetManager stream each one without a second
+    // decompression layer.
+    androidResources {
+        // Already-compressed archives. Deflating them again gains nothing and
+        // makes every read on the device pay to inflate.
+        noCompress += ['xz', 'jar']
+    }
+
+    sourceSets {
+        main {
+            assets.srcDirs += "$buildDir/generated/assets/patched-android-jar"
+            assets.srcDirs += "$buildDir/generated/assets/javase"
+            assets.srcDirs += "$buildDir/generated/assets/kotlin-stdlib"
+            // The root, not the languages folder itself: assets keep their
+            // path below the source directory, so a jar copied into
+            // language-runtimes/languages/groovy is read as languages/groovy.
+            assets.srcDirs += "$buildDir/generated/assets/language-runtimes"
+        }
+    }
+}
+
+dependencies {
+    // Unit tests run on the JVM, not a device. The classes worth testing
+    // here — the lexer, the AST parser, the rule sets, the ECJ output parser —
+    // are pure text in, findings out, and they take a null Context because
+    // every string lookup in them is already guarded for it.
+    testImplementation 'junit:junit:4.13.2'
+    // org.xmlpull lives in android.jar, so on the JVM it is the stub that
+    // throws "not mocked". kXML is the real implementation Android itself
+    // uses; on the test classpath it stands in for it so the pom parser can
+    // be tested without a device.
+    testImplementation 'net.sf.kxml:kxml2:2.3.0'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    // Page-per-lesson swiping. Material pulls it in transitively, but a
+    // direct API use deserves a direct declaration.
+    implementation 'androidx.viewpager2:viewpager2:1.1.0'
+    implementation 'com.google.android.material:material:1.11.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+
+    implementation 'io.github.Rosemoe.sora-editor:editor:0.23.6'
+    implementation 'io.github.Rosemoe.sora-editor:language-java:0.23.6'
+
+    implementation files("$buildDir/intermediates/patched-ecj/ecj-patched.jar") {
+        builtBy 'patchEcjJar'
+    }
+    // D8 reads class files up to major 69 (Java 25) from 8.13 on; 8.7 stopped at 67.
+    implementation 'com.android.tools:r8:8.13.19'
+
+    implementation 'androidx.documentfile:documentfile:1.0.1'
+
+    // RAR reading for project import. Pure Java, RAR4 only — RAR5 is refused
+    // with an explanation rather than a stack trace (see RarSupport).
+    implementation 'com.github.junrar:junrar:7.5.5'
+
+    // Java SE runtime payloads are .tar.xz files inside the signed Pojav APK.
+    implementation 'org.apache.commons:commons-compress:1.27.1'
+    implementation 'org.tukaani:xz:1.10'
+
+    // JVM bytecode disassembly (javap-style text, like Recaf)
+    implementation 'org.ow2.asm:asm:9.6'
+    implementation 'org.ow2.asm:asm-util:9.6'
+
+    // JGit — pure Java git implementation (works on Android, no native binary, no root)
+    implementation('org.eclipse.jgit:org.eclipse.jgit:5.13.5.202508271544-r') {
+        // JGit's bundled HTTP/SSH transports we don't need; SLF4J pulled separately
+        exclude group: 'com.jcraft', module: 'jsch'
+    }
+    implementation 'org.slf4j:slf4j-nop:1.7.36'
+
+    // Kotlin Runtime Compiler support for on-device compilation
+    // Repacked without the IntelliJ Unsafe shim — see patchKotlinJar below and
+    // the replacement in src/main/java/org/jetbrains/kotlin/…/containers/Unsafe.java.
+    implementation files("$buildDir/intermediates/patched-kotlin/kotlin-compiler-patched.jar") {
+        builtBy 'patchKotlinJar'
+    }
+    // What kotlin-compiler-embeddable used to pull in transitively. Listed by
+    // hand because the patched jar arrives as a plain file and carries no
+    // metadata; dropping any of these breaks the compiler at runtime, not at
+    // build time.
+    implementation 'org.jetbrains.kotlin:kotlin-script-runtime:2.0.21'
+    implementation 'org.jetbrains.kotlin:kotlin-reflect:1.6.10'
+    implementation 'org.jetbrains.kotlin:kotlin-daemon-embeddable:2.0.21'
+    implementation 'org.jetbrains.intellij.deps:trove4j:1.0.20200330'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.6.4'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:2.0.21'
+    // kotlin-compiler-embeddable's XmlReader needs javax.xml.stream (StAX) — not in Android DEX
+    implementation 'javax.xml.stream:stax-api:1.0-2'
+    implementation 'org.codehaus.woodstox:stax2-api:4.2.2'
+
+    // SVG rendering
+    implementation 'com.caverock:androidsvg:1.4'
+
+    // HTTP client for built-in REST client
+    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
+
+    // Offline speech-to-text (Vosk)
+    implementation 'com.alphacephei:vosk-android:0.3.75'
+
+    // JSON parsing for HTTP client
+    implementation 'org.json:json:20231013'
+
+    // ── Remote database client ───────────────────────────────────────────────
+    // Both drivers dex cleanly under D8 --min-api 26. What android.jar does not
+    // provide is only reached on optional paths (JMX, JNDI DataSource lookup,
+    // Kerberos/GSSAPI, XA transactions), so a plain host/port/user connection
+    // works; DbDrivers documents which ones fail and why.
+    implementation('org.postgresql:postgresql:42.7.4') {
+        // Compile-time nullness annotations only — nothing to ship.
+        exclude group: 'org.checkerframework'
+    }
+    // MySQL wire-compatible. Chosen over mysql-connector-j, whose newer releases
+    // hard-require java.sql types Android does not have.
+    implementation('org.mariadb.jdbc:mariadb-java-client:3.4.1') {
+        // Windows integrated auth: 3.8 MB of JNA that can never run on Android.
+        exclude group: 'com.github.waffle'
+        exclude group: 'net.java.dev.jna'
+        // Keep the SLF4J 1.7 API already paired with our slf4j-nop binding;
+        // letting this pull 2.0 would leave the binding unmatched at runtime.
+        exclude group: 'org.slf4j'
+    }
+
+    // App Startup — optimize initialization
+    implementation 'androidx.startup:startup-runtime:1.1.1'
+
+    // Baseline Profiles — faster cold start
+    implementation 'androidx.profileinstaller:profileinstaller:1.3.1'
+}
+
+configurations.all {
+    // JGit transitively pulls Bouncycastle which clashes with Android's built-in;
+    // JGit core works without it for our HTTPS-only use case.
+    exclude group: 'org.bouncycastle'
+}
+
+android.applicationVariants.all { variant ->
+    variant.registerJavaGeneratingTask(patchEcjSource, file("$buildDir/generated/source/patched-ecj"))
+}
+
+// ── Bundled batch compiler ───────────────────────────────────────────────────
+// ECJ is shipped inside the APK and runs on the device, so it may only call
+// APIs that exist on minSdk. A handful of its sources use JDK 9+ methods that
+// Android gained much later (or never), and those are recompiled from patched
+// sources below. Two rules keep this honest:
+//   * every anchor is asserted — a silent no-op replacement would ship an APK
+//     that crashes on older devices instead of failing the build here;
+//   * the original .class files are excluded from the jar so the patched
+//     sources are what actually loads.
+// 3.46 raises the ceiling to -source 25 (3.38 stopped at 22) and drops
+// everything below 1.8, which JavaVersions.MIN_COMPILABLE mirrors.
+ext.ecjVersion = '3.46.0'
+
+// The embedded VM cannot use Android's DEX copy of ECJ. Build a regular JVM
+// fat JAR containing upstream ECJ plus the small compile/run bridge instead.
+def javaSeEcjConfiguration = configurations.detachedConfiguration(
+        dependencies.create("org.eclipse.jdt:ecj:${ecjVersion}"))
+
+task compileJavaSeBootstrap(type: JavaCompile) {
+    source = fileTree(dir: 'src/javaseBootstrap/java', include: '**/*.java')
+    destinationDirectory = file("$buildDir/intermediates/javase-bootstrap/classes")
+    classpath = javaSeEcjConfiguration
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+    options.encoding = 'UTF-8'
+}
+
+task prepareJavaSeBootstrap(type: Jar) {
+    dependsOn compileJavaSeBootstrap
+    from { javaSeEcjConfiguration.collect { zipTree(it) } }
+    from compileJavaSeBootstrap.destinationDirectory
+    exclude 'META-INF/*.SF', 'META-INF/*.RSA', 'META-INF/*.DSA'
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    destinationDirectory = file("$buildDir/generated/assets/javase")
+    archiveFileName = 'java-se-bootstrap.jar'
+}
+
+// path → [ [why, exact text to find, replacement], … ]
+ext.ecjPatches = [
+    'org/eclipse/jdt/internal/compiler/util/Util.java': [
+        [
+            'InputStream.readAllBytes() is API 33; minSdk is 26',
+            "public static byte[] getInputStreamAsByteArray(InputStream input) throws IOException {\n\t\treturn input.readAllBytes(); // will have even slighly better performance as of JDK17+ see JDK-8264777\n\t}",
+            """public static byte[] getInputStreamAsByteArray(InputStream input) throws IOException {
+		java.io.ByteArrayOutputStream buffer = new java.io.ByteArrayOutputStream();
+		int nRead;
+		byte[] data = new byte[4096];
+		while ((nRead = input.read(data, 0, data.length)) != -1) {
+			buffer.write(data, 0, nRead);
+		}
+		return buffer.toByteArray();
+	}"""
+        ],
+        [
+            'InputStream.readNBytes(int) is API 33; minSdk is 26',
+            "public static byte[] readNBytes(InputStream input, int byteLength) throws IOException {\n\t\treturn input.readNBytes(byteLength);\n\t}",
+            """public static byte[] readNBytes(InputStream input, int byteLength) throws IOException {
+		byte[] result = new byte[byteLength];
+		int bytesRead = 0;
+		while (bytesRead < byteLength) {
+			int read = input.read(result, bytesRead, byteLength - bytesRead);
+			if (read == -1) {
+				break;
+			}
+			bytesRead += read;
+		}
+		if (bytesRead < byteLength) {
+			return java.util.Arrays.copyOf(result, bytesRead);
+		}
+		return result;
+	}"""
+        ],
+        [
+            // Reached for every class read out of a dependency jar, so this one
+            // fires on any project that has libraries, not just exotic setups.
+            'readAllBytes() again, on the zip-entry path',
+            "\t\t\treturn inputStream.readAllBytes();\n",
+            "\t\t\treturn getInputStreamAsByteArray(inputStream);\n"
+        ]
+    ],
+    'org/eclipse/jdt/internal/compiler/parser/Parser.java': [
+        [
+            // Android has no java.lang.Runtime.Version at any API level. ECJ
+            // only uses it to warn that -source is newer than it understands,
+            // which its own option validation already rejects before parsing.
+            'java.lang.Runtime.Version does not exist on Android',
+            """		if (this.problemReporter != null && this.options != null && this.options.requestedSourceVersion != null && !this.options.requestedSourceVersion.isBlank()) {
+			try {
+				var requestedVersion = Version.parse(this.options.requestedSourceVersion);
+				var latestVersion = Version.parse(CompilerOptions.getLatestVersion());
+				if (requestedVersion.compareTo(latestVersion) > 0) {
+					this.problemReporter.tooRecentJavaVersion(requestedVersion.toString(), latestVersion.toString());
+				}
+			} catch (Exception ex) {
+				this.problemReporter.abortDueToInternalError(ex.getMessage());
+			}
+		}
+""",
+            "\t\t// PATCHED OUT: see ecjPatches in app/build.gradle.\n"
+        ],
+        [
+            'the import goes with it',
+            "import java.lang.Runtime.Version;\n",
+            ""
+        ],
+        [
+            // Three LinkedLists and one more below; String.replace takes every
+            // occurrence, so the repeated types line is covered once.
+            'Collection.toArray(IntFunction) is API 34; minSdk is 26',
+            "methods.toArray(AbstractMethodDeclaration[]::new);",
+            "methods.toArray(new AbstractMethodDeclaration[0]);"
+        ],
+        [
+            'Collection.toArray(IntFunction) is API 34; minSdk is 26',
+            "fields.toArray(FieldDeclaration[]::new);",
+            "fields.toArray(new FieldDeclaration[0]);"
+        ],
+        [
+            'Collection.toArray(IntFunction) is API 34; minSdk is 26',
+            "types.toArray(TypeDeclaration[]::new);",
+            "types.toArray(new TypeDeclaration[0]);"
+        ]
+    ],
+    'org/eclipse/jdt/internal/compiler/lookup/LookupEnvironment.java': [
+        [
+            // Collection.toArray(IntFunction) is Java 11. Android's
+            // java.util.Collection only gained it in API 34, so on anything
+            // older this throws NoSuchMethodError. This one is reached while
+            // reading generic signatures out of a jar, which means it fires on
+            // essentially every compilation — it is what crashed a project open
+            // on API 30. The toArray(new T[0]) form has the same result and has
+            // been there since Java 1.2.
+            'Collection.toArray(IntFunction) is API 34; minSdk is 26',
+            "return args.toArray(TypeBinding[]::new);",
+            "return args.toArray(new TypeBinding[0]);"
+        ]
+    ],
+    'org/eclipse/jdt/internal/compiler/lookup/BoundSet.java': [
+        [
+            'Collection.toArray(IntFunction) is API 34; minSdk is 26',
+            "collect(Collectors.toList()).toArray(TypeBinding[]::new);",
+            "collect(Collectors.toList()).toArray(new TypeBinding[0]);"
+        ]
+    ],
+    'org/eclipse/jdt/internal/compiler/lookup/ConstraintExceptionFormula.java': [
+        [
+            'Collection.toArray(IntFunction) is API 34; minSdk is 26',
+            "lambda.getThrownExceptions().toArray(TypeBinding[]::new);",
+            "lambda.getThrownExceptions().toArray(new TypeBinding[0]);"
+        ]
+    ],
+    'org/eclipse/jdt/internal/compiler/lookup/MethodVerifier.java': [
+        [
+            'Collection.toArray(IntFunction) is API 34; minSdk is 26',
+            "inheritedInterfaces.toArray(ReferenceBinding[]::new);",
+            "inheritedInterfaces.toArray(new ReferenceBinding[0]);"
+        ]
+    ],
+    'org/eclipse/jdt/internal/compiler/ast/LambdaExpression.java': [
+        [
+            'Collection.toArray(IntFunction) is API 34; minSdk is 26',
+            "markerBindings.toArray(TypeBinding[]::new);",
+            "markerBindings.toArray(new TypeBinding[0]);"
+        ]
+    ]
+]
+
+// ── Bundled Kotlin compiler ──────────────────────────────────────────────────
+// kotlin-compiler-embeddable vendors a copy of IntelliJ, including a
+// sun.misc.Unsafe shim that resolves ten MethodHandles in its static initialiser
+// and throws Error if any is missing. Android denies one of them —
+// getAndAddInt is marked max-target-r, so it is unreachable above targetSdk 30 —
+// which kills every attempt to create a KotlinCoreEnvironment.
+//
+// The class is dropped here and replaced by an Android-safe one compiled from
+// src/main/java. Same trick as the ECJ patch below: exactly one definition must
+// reach the dex, or D8 fails on a duplicate class.
+ext.kotlinCompilerVersion = '2.0.21'
+
+ext.kotlinPatchedClasses = [
+    'org/jetbrains/kotlin/com/intellij/util/containers/Unsafe.class'
+]
+
+task patchKotlinJar(type: Jar) {
+    // Non-transitive on purpose: only the compiler jar itself is repacked. Its
+    // dependencies are declared explicitly beside it, because taking them from
+    // here would silently drop them the moment this task changes.
+    def kotlinConfiguration = configurations.detachedConfiguration(
+        dependencies.create("org.jetbrains.kotlin:kotlin-compiler-embeddable:${kotlinCompilerVersion}")
+    )
+    kotlinConfiguration.transitive = false
+    dependsOn kotlinConfiguration
+
+    def sourceJar = kotlinConfiguration.singleFile
+    from zipTree(sourceJar)
+    kotlinPatchedClasses.each { exclude it }
+
+    destinationDirectory = file("$buildDir/intermediates/patched-kotlin")
+    archiveFileName = 'kotlin-compiler-patched.jar'
+
+    // A silently missing anchor would ship the unpatched class and reintroduce
+    // the crash, so the build fails instead if upstream moved or renamed it.
+    doFirst {
+        def present = zipTree(sourceJar).matching {
+            kotlinPatchedClasses.each { include it }
+        }.files
+        if (present.size() != kotlinPatchedClasses.size()) {
+            throw new GradleException(
+                "kotlin-compiler-embeddable ${kotlinCompilerVersion}: expected " +
+                "${kotlinPatchedClasses.size()} class(es) to patch out, found ${present.size()}. " +
+                "Upstream changed the IntelliJ Unsafe shim. Re-check it against " +
+                "src/main/java/org/jetbrains/kotlin/com/intellij/util/containers/Unsafe.java " +
+                "before releasing.")
+        }
+    }
+}
+
+task patchEcjJar(type: Jar) {
+    def ecjConfiguration = configurations.detachedConfiguration(
+        dependencies.create("org.eclipse.jdt:ecj:${ecjVersion}")
+    )
+    dependsOn ecjConfiguration
+
+    from zipTree(ecjConfiguration.singleFile)
+    // Drop exactly the types rebuilt from patched sources — ParserBasicInformation
+    // and friends live in the same packages and must survive.
+    exclude 'org/eclipse/jdt/internal/compiler/util/Util.class'
+    exclude 'org/eclipse/jdt/internal/compiler/util/Util$*.class'
+    exclude 'org/eclipse/jdt/internal/compiler/parser/Parser.class'
+    exclude 'org/eclipse/jdt/internal/compiler/parser/Parser$*.class'
+    exclude 'org/eclipse/jdt/internal/compiler/lookup/LookupEnvironment.class'
+    exclude 'org/eclipse/jdt/internal/compiler/lookup/LookupEnvironment$*.class'
+    exclude 'org/eclipse/jdt/internal/compiler/lookup/BoundSet.class'
+    exclude 'org/eclipse/jdt/internal/compiler/lookup/BoundSet$*.class'
+    exclude 'org/eclipse/jdt/internal/compiler/lookup/ConstraintExceptionFormula.class'
+    exclude 'org/eclipse/jdt/internal/compiler/lookup/ConstraintExceptionFormula$*.class'
+    exclude 'org/eclipse/jdt/internal/compiler/lookup/MethodVerifier.class'
+    exclude 'org/eclipse/jdt/internal/compiler/lookup/MethodVerifier$*.class'
+    exclude 'org/eclipse/jdt/internal/compiler/ast/LambdaExpression.class'
+    exclude 'org/eclipse/jdt/internal/compiler/ast/LambdaExpression$*.class'
+
+    destinationDirectory = file("$buildDir/intermediates/patched-ecj")
+    archiveFileName = 'ecj-patched.jar'
+}
+
+task patchEcjSource {
+    def ecjSourcesConfiguration = configurations.detachedConfiguration(
+        dependencies.create("org.eclipse.jdt:ecj:${ecjVersion}:sources")
+    )
+    inputs.files(ecjSourcesConfiguration)
+    inputs.property('patches', ecjPatches.toString())
+    def outputDir = file("$buildDir/generated/source/patched-ecj")
+    outputs.dir(outputDir)
+
+    doLast {
+        def sourcesJar = ecjSourcesConfiguration.singleFile
+        outputDir.mkdirs()
+
+        def patched = [] as Set
+        zipTree(sourcesJar).visit { FileVisitDetails details ->
+            def path = details.relativePath.pathString
+            def edits = ecjPatches[path]
+            if (edits == null) return
+
+            // Sources ship with CRLF; the anchors below are written with LF.
+            def content = details.file.getText('UTF-8').replace("\r\n", "\n")
+            edits.each { why, find, replace ->
+                if (!content.contains(find)) {
+                    throw new GradleException(
+                        "ECJ ${ecjVersion}: patch anchor not found in ${path} (${why}).\n" +
+                        "Upstream changed this code. Re-check the source and update " +
+                        "ext.ecjPatches in app/build.gradle before releasing — shipping " +
+                        "the unpatched class crashes on devices below API 33.")
+                }
+                content = content.replace(find, replace)
+            }
+
+            def outputFile = file("$outputDir/$path")
+            outputFile.parentFile.mkdirs()
+            outputFile.setText(content, 'UTF-8')
+            patched << path
+            println "Patched ECJ source: ${path} (${edits.size()} edits)"
+        }
+
+        def missing = ecjPatches.keySet() - patched
+        if (!missing.isEmpty()) {
+            throw new GradleException(
+                "ECJ ${ecjVersion}: sources jar has no ${missing.join(', ')}. " +
+                "Update ext.ecjPatches in app/build.gradle.")
+        }
+    }
+}
+
+task compileStubs(type: JavaCompile) {
+    source = fileTree(dir: 'src/main/stub')
+    destinationDirectory = file("$buildDir/stubs")
+    classpath = files()
+    options.compilerArgs = [
+        "--patch-module", "java.base=" + file("src/main/stub").absolutePath,
+        "-source", "8",
+        "-target", "8"
+    ]
+}
+
+task patchAndroidJar {
+    dependsOn compileStubs
+    
+    def originalJar = file("android-sdk-jar/android.jar")
+    def tempJar = file("$buildDir/patched-android.jar")
+    def patchedJar = file("$buildDir/generated/assets/patched-android-jar/android.jar")
+    def stubClassesDir = file("$buildDir/stubs")
+    
+    inputs.file(originalJar)
+    inputs.dir(stubClassesDir)
+    outputs.file(patchedJar)
+    
+    doLast {
+        if (!originalJar.exists()) {
+            throw new GradleException("Original android.jar not found at ${originalJar.absolutePath}")
+        }
+        
+        tempJar.parentFile.mkdirs()
+        patchedJar.parentFile.mkdirs()
+        
+        java.util.zip.ZipOutputStream zos = new java.util.zip.ZipOutputStream(new FileOutputStream(tempJar))
+        
+        // 1. Copy everything from original jar, EXCEPT existing java/lang/invoke/StringConcatFactory/Exception if any
+        java.util.zip.ZipFile zipFile = new java.util.zip.ZipFile(originalJar)
+        def entries = zipFile.entries()
+        byte[] buffer = new byte[4096]
+        while (entries.hasMoreElements()) {
+            def entry = entries.nextElement()
+            if (new File(stubClassesDir, entry.name).exists()) {
+                continue;
+            }
+            if (entry.name.startsWith("java/lang/invoke/StringConcatFactory") ||
+                entry.name.startsWith("java/lang/invoke/StringConcatException")) {
+                continue;
+            }
+            zos.putNextEntry(new java.util.zip.ZipEntry(entry.name))
+            def is = zipFile.getInputStream(entry)
+            int read
+            while ((read = is.read(buffer)) != -1) {
+                zos.write(buffer, 0, read)
+            }
+            zos.closeEntry()
+        }
+        zipFile.close()
+        
+        // 2. Add compiled stub class files
+        fileTree(stubClassesDir).visit { FileVisitDetails details ->
+            if (details.file.isFile()) {
+                def path = details.relativePath.pathString
+                zos.putNextEntry(new java.util.zip.ZipEntry(path))
+                details.file.withInputStream { is ->
+                    int read
+                    while ((read = is.read(buffer)) != -1) {
+                        zos.write(buffer, 0, read)
+                    }
+                }
+                zos.closeEntry()
+                println "Added stub to android.jar: " + path
+            }
+        }
+        
+        zos.close()
+        
+        // 3. Replace original jar safely
+        try {
+            java.nio.file.Files.move(
+                tempJar.toPath(), 
+                patchedJar.toPath(), 
+                java.nio.file.StandardCopyOption.REPLACE_EXISTING
+            )
+            println "android.jar successfully patched and written to generated assets!"
+        } catch (java.io.IOException e) {
+            throw new GradleException("Failed to move patched android.jar. This usually happens if the file is locked by a process. Error: " + e.getMessage(), e)
+        }
+    }
+}
+
+// Binary payloads live in source control, so a truncated or accidentally
+// replaced part must fail the build rather than produce an APK that only fails
+// on the user's first toolchain installation.
+ext.bundledToolchainHashes = [
+    'src/main/assets/toolchains/java-se/universal.tar.xz':
+        'fddfc0b8a8e8b56be8efbf3f413ac787a0d7b96d711cb5cb59573076d299a0c7',
+    'src/main/assets/toolchains/java-se/bin-arm.tar.xz':
+        'c18520eb81d78532f6af2158d3a574d0bb5923f9a46c3d51b2f1ff1c96bd1e5c',
+    'src/main/assets/toolchains/java-se/bin-arm64.tar.xz':
+        'fe948068b5fec393b2b081d2c550f15777ba2829f36ae9931e2b5fdda2ec087f',
+    'src/main/assets/toolchains/java-se/bin-x86.tar.xz':
+        'ddb77f5fb27ab62b8a6d316a74aa2752df7242992f86878d0a86c2d90ca4f288',
+    'src/main/assets/toolchains/java-se/bin-x86_64.tar.xz':
+        '77de3c0e8a4ab578c2ba177a52be83a3a2b1aa227cb2d88d90c32b94dd0c8865',
+    'src/main/jniLibs/arm64-v8a/libjavadroid_clang.so':
+        'bfe63185a80144d8d236d31462725807cba97fdc7e1d481fa511804a4f19f95a',
+    'src/main/jniLibs/arm64-v8a/libjavadroid_lld.so':
+        '5a7432c0537a9740e4bbab89c879f53b85cb2c1f8e412f86d9bb14878843add9'
+]
+// The NDK archive is no longer bundled — at 344 MiB of already-compressed payload
+// it took most of an App Bundle base module's 500 MB ceiling on its own, and only
+// C++ users ever need it. NdkManager fetches it from its upstream release instead.
+//
+// Nothing local is left to checksum, so the guard moves up a level: the pin that
+// NdkManager enforces at runtime must still match what README.txt documents. The
+// mistake this catches is a half-done version bump — a new URL with the old hash
+// would otherwise build cleanly and fail on every user's first C++ build.
+ext.ndkArchiveHash =
+        '02e10e4ddfe8deaeb0bd0cf29d04c981ed5bc8a5d6b560ebb9e7661f472d684b'
+ext.ndkArchiveBytes = 360_538_712L
+
+task verifyBundledToolchains {
+    inputs.files bundledToolchainHashes.keySet().collect { file(it) }
+    inputs.file file('src/main/java/com/ccs/javadroid/tools/compilers/NdkManager.java')
+    inputs.property 'ndkArchiveHash', ndkArchiveHash
+    inputs.property 'ndkArchiveBytes', ndkArchiveBytes
+    doLast {
+        bundledToolchainHashes.each { path, expected ->
+            def payload = file(path)
+            if (!payload.isFile()) {
+                throw new GradleException("Bundled toolchain payload is missing: ${path}")
+            }
+            def digest = java.security.MessageDigest.getInstance('SHA-256')
+            payload.withInputStream { input ->
+                byte[] buffer = new byte[64 * 1024]
+                int count
+                while ((count = input.read(buffer)) != -1) {
+                    digest.update(buffer, 0, count)
+                }
+            }
+            def actual = digest.digest().encodeHex().toString()
+            if (actual != expected) {
+                throw new GradleException(
+                    "Bundled toolchain checksum mismatch for ${path}: ${actual}")
+            }
+        }
+
+        def manager = file('src/main/java/com/ccs/javadroid/tools/compilers/NdkManager.java')
+        def managerText = manager.getText('UTF-8')
+        if (!managerText.contains(ndkArchiveHash)) {
+            throw new GradleException(
+                    "NdkManager.java no longer pins the documented NDK archive SHA-256 " +
+                    "(${ndkArchiveHash}). Update README.txt and ndkArchiveHash together, " +
+                    "or the app will reject every download.")
+        }
+        def digits = String.valueOf(ndkArchiveBytes)
+        if (!managerText.contains(digits) && !managerText.contains(
+                digits.replaceAll(/(?<=\d)(?=(\d{3})+$)/, '_'))) {
+            throw new GradleException(
+                    "NdkManager.java no longer pins the documented NDK archive length " +
+                    "(${ndkArchiveBytes} bytes). Update README.txt and ndkArchiveBytes " +
+                    "together with it.")
+        }
+    }
+}
+
+/**
+ * Copies a language runtime's jars into assets.
+ *
+ * Transitive, because these are not single jars: Clojure needs spec.alpha, and
+ * the Scala 3 compiler needs the 2.13 standard library alongside its own.
+ */
+task prepareScalaRuntime(type: Copy) {
+    def config = configurations.detachedConfiguration(
+        dependencies.create("org.scala-lang:scala3-compiler_3:${bundledScalaVersion}")
+    )
+    // JLine and JNA are the REPL's terminal handling. Nothing here starts a
+    // REPL, and JNA carries native code for desktop platforms that would never
+    // load on Android anyway.
+    config.exclude group: 'org.jline'
+    config.exclude group: 'net.java.dev.jna'
+    from config
+    into "$buildDir/generated/assets/language-runtimes/languages/scala"
+}
+
+task prepareGroovyRuntime(type: Copy) {
+    def config = configurations.detachedConfiguration(
+        dependencies.create("org.apache.groovy:groovy:${bundledGroovyVersion}")
+    )
+    config.transitive = false
+    from config
+    into "$buildDir/generated/assets/language-runtimes/languages/groovy"
+}
+
+task prepareClojureRuntime(type: Copy) {
+    def config = configurations.detachedConfiguration(
+        dependencies.create("org.clojure:clojure:${bundledClojureVersion}")
+    )
+    from config
+    into "$buildDir/generated/assets/language-runtimes/languages/clojure"
+}
+
+task prepareKotlinStdlib(type: Copy) {
+    def kotlinStdlibConfig = configurations.detachedConfiguration(
+        dependencies.create("org.jetbrains.kotlin:kotlin-stdlib:${kotlinCompilerVersion}")
+    )
+    kotlinStdlibConfig.transitive = false
+    from kotlinStdlibConfig
+    into "$buildDir/generated/assets/kotlin-stdlib"
+    rename { "kotlin-stdlib.jar" }
+}
+
+preBuild.dependsOn patchAndroidJar, prepareJavaSeBootstrap, verifyBundledToolchains,
+        prepareKotlinStdlib, prepareScalaRuntime, prepareGroovyRuntime, prepareClojureRuntime

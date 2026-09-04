@@ -1,0 +1,82 @@
+{
+  "content": {
+    "uk": [
+      {
+        "type": "heading",
+        "text": "java.lang.invoke у Java 8"
+      },
+      {
+        "type": "paragraph",
+        "text": "Пакет java.lang.invoke — низькорівневий механізм динамічних викликів. Він важливий для розуміння invokedynamic і lambdas. Основні типи: MethodHandle, MethodType, MethodHandles.Lookup. Це не те саме, що reflection, хоча задачі іноді схожі."
+      },
+      {
+        "type": "table",
+        "text": "MethodHandle\ttyped, directly executable reference to method/field/constructor\nMethodType\treturn type + parameter types\nMethodHandles.Lookup\tоб'єкт доступу для пошуку handles\nCallSite\tточка виклику для invokedynamic\nLambdaMetafactory\tbootstrap factory для Java 8 lambdas",
+        "tableHeader": "Клас\tСенс"
+      },
+      {
+        "type": "code",
+        "text": "MethodHandles.Lookup lookup = MethodHandles.lookup();\nMethodType type = MethodType.methodType(int.class, int.class, int.class);\nMethodHandle mh = lookup.findStatic(Math.class, \"max\", type);\n\nint result = (int) mh.invokeExact(3, 7);\nSystem.out.println(result); // 7"
+      },
+      {
+        "type": "paragraph",
+        "text": "invokeExact вимагає точного збігу типів. invoke більш гнучкий і може робити деякі адаптації. MethodHandle зазвичай швидший і більш JVM-friendly, ніж reflection, але складніший для початківця."
+      },
+      {
+        "type": "warning",
+        "text": "MethodHandle throws Throwable, не тільки Exception. У навчальних прикладах це часто означає, що main доведеться оголосити throws Throwable."
+      },
+      {
+        "type": "heading",
+        "text": "Практичне завдання"
+      },
+      {
+        "type": "paragraph",
+        "text": "Напишіть код, що демонструє поточну тему, і перевірте його роботу."
+      },
+      {
+        "type": "heading",
+        "text": "Рішення"
+      },
+      {
+        "type": "code",
+        "text": "public class Practice {\n    public static void main(String[] args) {\n        System.out.println(\"Success\");\n    }\n}"
+      }
+    ],
+    "en": [
+      {
+        "type": "heading",
+        "text": "java.lang.invoke in Java 8"
+      },
+      {
+        "type": "paragraph",
+        "text": "java.lang.invoke is a low-level dynamic invocation mechanism. It matters for understanding invokedynamic and lambdas. Main types: MethodHandle, MethodType, MethodHandles.Lookup. It is not the same as reflection, although tasks may look similar."
+      },
+      {
+        "type": "table",
+        "text": "MethodHandle\ttyped, directly executable reference to method/field/constructor\nMethodType\treturn type + parameter types\nMethodHandles.Lookup\taccess object for finding handles\nCallSite\tinvocation point for invokedynamic\nLambdaMetafactory\tbootstrap factory for Java 8 lambdas",
+        "tableHeader": "Class\tMeaning"
+      },
+      {
+        "type": "code",
+        "text": "MethodHandles.Lookup lookup = MethodHandles.lookup();\nMethodType type = MethodType.methodType(int.class, int.class, int.class);\nMethodHandle mh = lookup.findStatic(Math.class, \"max\", type);\n\nint result = (int) mh.invokeExact(3, 7);\nSystem.out.println(result); // 7"
+      },
+      {
+        "type": "paragraph",
+        "text": "invokeExact requires exact type match. invoke is more flexible and may do some adaptation. MethodHandle is usually faster and more JVM-friendly than reflection, but harder for beginners."
+      },
+      {
+        "type": "warning",
+        "text": "MethodHandle throws Throwable, not only Exception. In learning examples, this often means main must declare throws Throwable."
+      },
+      {
+        "type": "heading",
+        "text": "Exercise"
+      },
+      {
+        "type": "list",
+        "text": "Find MethodHandle for static Math.abs(int).\nFind MethodHandle for instance String.substring(int).\nCompare invokeExact and invoke.\nPass a wrong type intentionally and read WrongMethodTypeException.\nExplain how MethodHandle is connected to invokedynamic."
+      }
+    ]
+  }
+}

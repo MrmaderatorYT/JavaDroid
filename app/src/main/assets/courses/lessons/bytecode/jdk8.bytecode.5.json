@@ -1,0 +1,82 @@
+{
+  "content": {
+    "uk": [
+      {
+        "type": "heading",
+        "text": "Інструкції: arithmetic і control flow"
+      },
+      {
+        "type": "paragraph",
+        "text": "Bytecode має сімейства інструкцій за типами: i* для int, l* для long, f* для float, d* для double, a* для references. Control flow будується через labels і переходи: ifeq, ifne, if_icmpge, goto, tableswitch, lookupswitch."
+      },
+      {
+        "type": "table",
+        "text": "iconst_0..iconst_5\tpush маленького int\nbipush n\tpush byte-sized int\niload_n / istore_n\tчитати/писати int local\niadd, isub, imul, idiv\tарифметика int\nif_icmpge label\tпорівняти два int зі stack\nifeq label\tперейти, якщо int == 0\ngoto label\tбезумовний перехід\nireturn\tповернути int",
+        "tableHeader": "Інструкція\tЩо робить"
+      },
+      {
+        "type": "code",
+        "text": "public int max(int a, int b) {\n    return a >= b ? a : b;\n}\n\n# javap -c приблизно:\n0: iload_1\n1: iload_2\n2: if_icmplt 7\n5: iload_1\n6: ireturn\n7: iload_2\n8: ireturn"
+      },
+      {
+        "type": "code",
+        "text": "public int sumTo(int n) {\n    int sum = 0;\n    for (int i = 1; i <= n; i++) sum += i;\n    return sum;\n}\n\n# У bytecode цикл — це labels + if + goto."
+      },
+      {
+        "type": "warning",
+        "text": "У bytecode немає 'for' або 'while' як окремих високорівневих конструкцій. Є переходи. Тому нескінченний цикл — це просто goto назад без правильної умови виходу."
+      },
+      {
+        "type": "heading",
+        "text": "Практичне завдання"
+      },
+      {
+        "type": "paragraph",
+        "text": "Напишіть код, що демонструє поточну тему, і перевірте його роботу."
+      },
+      {
+        "type": "heading",
+        "text": "Рішення"
+      },
+      {
+        "type": "code",
+        "text": "public class Practice {\n    public static void main(String[] args) {\n        System.out.println(\"Success\");\n    }\n}"
+      }
+    ],
+    "en": [
+      {
+        "type": "heading",
+        "text": "Instructions: arithmetic and control flow"
+      },
+      {
+        "type": "paragraph",
+        "text": "Bytecode has instruction families by type: i* for int, l* for long, f* for float, d* for double, a* for references. Control flow is built through labels and jumps: ifeq, ifne, if_icmpge, goto, tableswitch, lookupswitch."
+      },
+      {
+        "type": "table",
+        "text": "iconst_0..iconst_5\tpush small int\nbipush n\tpush byte-sized int\niload_n / istore_n\tread/write int local\niadd, isub, imul, idiv\tint arithmetic\nif_icmpge label\tcompare two ints from stack\nifeq label\tjump if int == 0\ngoto label\tunconditional jump\nireturn\treturn int",
+        "tableHeader": "Instruction\tWhat it does"
+      },
+      {
+        "type": "code",
+        "text": "public int max(int a, int b) {\n    return a >= b ? a : b;\n}\n\n# javap -c roughly:\n0: iload_1\n1: iload_2\n2: if_icmplt 7\n5: iload_1\n6: ireturn\n7: iload_2\n8: ireturn"
+      },
+      {
+        "type": "code",
+        "text": "public int sumTo(int n) {\n    int sum = 0;\n    for (int i = 1; i <= n; i++) sum += i;\n    return sum;\n}\n\n# In bytecode a loop is labels + if + goto."
+      },
+      {
+        "type": "warning",
+        "text": "Bytecode has no 'for' or 'while' as high-level constructs. It has jumps. An infinite loop is just a goto back without a correct exit condition."
+      },
+      {
+        "type": "heading",
+        "text": "Exercise"
+      },
+      {
+        "type": "list",
+        "text": "Compile max(int,int) and find the if_icmp* instruction.\nCompile abs(int x) and write branches.\nCompile a for-loop and find backward goto.\nCompile switch over int and compare tableswitch/lookupswitch."
+      }
+    ]
+  }
+}

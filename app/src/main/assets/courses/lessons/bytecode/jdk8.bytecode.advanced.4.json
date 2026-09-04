@@ -1,0 +1,90 @@
+{
+  "content": {
+    "uk": [
+      {
+        "type": "heading",
+        "text": "StackMapTable: карта типів для verifier"
+      },
+      {
+        "type": "paragraph",
+        "text": "StackMapTable — атрибут, який допомагає verifier швидко перевіряти типи в точках control flow. У старіших class file verifier міг сам виводити типи, але з Java 7+ stack map frames стали важливою частиною коректного bytecode."
+      },
+      {
+        "type": "paragraph",
+        "text": "Коли є if/goto/try-catch, verifier має знати: які типи лежать у locals і operand stack у target-точці переходу. Якщо дві гілки приходять у той самий label з різними несумісними типами на stack, bytecode некоректний."
+      },
+      {
+        "type": "code",
+        "text": "public Object choose(boolean flag) {\n    if (flag) {\n        return \"text\";\n    }\n    return Integer.valueOf(10);\n}\n\n# Обидві гілки повертають reference, спільний тип для verifier — Object."
+      },
+      {
+        "type": "table",
+        "text": "same_frame\tlocals ті самі, stack empty\nsame_locals_1_stack_item_frame\tlocals ті самі, один item на stack\nappend_frame\tдодались locals\nchop_frame\tзникли locals\nfull_frame\tповний опис locals і stack",
+        "tableHeader": "Frame kind\tІдея"
+      },
+      {
+        "type": "note",
+        "text": "Якщо пишете bytecode через ASM, library може обчислити frames за вас (COMPUTE_FRAMES), але для навчання корисно розуміти, чому вони існують."
+      },
+      {
+        "type": "warning",
+        "text": "Неправильний StackMapTable часто дає VerifyError з повідомленнями про bad type on operand stack або inconsistent stackmap frames."
+      },
+      {
+        "type": "heading",
+        "text": "Практичне завдання"
+      },
+      {
+        "type": "paragraph",
+        "text": "Напишіть код, що демонструє поточну тему, і перевірте його роботу."
+      },
+      {
+        "type": "heading",
+        "text": "Рішення"
+      },
+      {
+        "type": "code",
+        "text": "public class Practice {\n    public static void main(String[] args) {\n        System.out.println(\"Success\");\n    }\n}"
+      }
+    ],
+    "en": [
+      {
+        "type": "heading",
+        "text": "StackMapTable: type map for verifier"
+      },
+      {
+        "type": "paragraph",
+        "text": "StackMapTable is an attribute that helps the verifier quickly check types at control-flow points. In older class files the verifier could infer types itself, but since Java 7+ stack map frames became an important part of correct bytecode."
+      },
+      {
+        "type": "paragraph",
+        "text": "When there is if/goto/try-catch, verifier must know which types are in locals and operand stack at the jump target. If two branches reach the same label with incompatible stack types, bytecode is invalid."
+      },
+      {
+        "type": "code",
+        "text": "public Object choose(boolean flag) {\n    if (flag) {\n        return \"text\";\n    }\n    return Integer.valueOf(10);\n}\n\n# Both branches return reference, common verifier type is Object."
+      },
+      {
+        "type": "table",
+        "text": "same_frame\tsame locals, empty stack\nsame_locals_1_stack_item_frame\tsame locals, one item on stack\nappend_frame\tlocals added\nchop_frame\tlocals removed\nfull_frame\tfull locals and stack description",
+        "tableHeader": "Frame kind\tIdea"
+      },
+      {
+        "type": "note",
+        "text": "If you generate bytecode with ASM, the library can compute frames for you (COMPUTE_FRAMES), but for learning it helps to understand why they exist."
+      },
+      {
+        "type": "warning",
+        "text": "Wrong StackMapTable often gives VerifyError with messages about bad type on operand stack or inconsistent stackmap frames."
+      },
+      {
+        "type": "heading",
+        "text": "Exercise"
+      },
+      {
+        "type": "list",
+        "text": "Compile method with if/else and open javap -v.\nFind StackMapTable in output.\nCompile try/catch and inspect frames for handler.\nExplain why verifier cannot allow int on one branch and String on another before ireturn.\nWrite locals/stack for target label in simple if."
+      }
+    ]
+  }
+}

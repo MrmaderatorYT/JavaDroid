@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="menubar_file">File</string>
+    <string name="menubar_edit">Edit</string>
+    <string name="menubar_view">View</string>
+    <string name="menubar_navigate">Navigate</string>
+    <string name="menubar_code">Code</string>
+    <string name="menubar_build">Build</string>
+    <string name="menubar_run">Run</string>
+    <string name="menubar_tools">Tools</string>
+    <string name="menubar_git">Git</string>
+    <string name="menubar_help">Help</string>
+    <string name="menubar_new_project">New project…</string>
+    <string name="menubar_save_as">Save as…</string>
+    <string name="menubar_panel_run">Run panel</string>
+    <string name="menubar_panel_problems">Problems</string>
+    <string name="menubar_panel_todo">TODO / FIXME</string>
+    <string name="menubar_panel_bytecode">Bytecode</string>
+    <string name="menubar_panel_call_graph">Call graph</string>
+    <string name="menubar_webview_preview">WebView preview</string>
+    <string name="menubar_class_browser">Class browser</string>
+    <string name="menubar_toggle_bookmark">Toggle bookmark</string>
+    <string name="menubar_show_bookmarks">Bookmarks</string>
+    <string name="menubar_command_palette">Find action…</string>
+    <string name="menu_new_file">New file…</string>
+    <string name="zen_mode_menu">Zen mode (fullscreen)</string>
+    <string name="deps_title">Dependencies</string>
+    <string name="menu_uml_diagram">UML class diagram</string>
+    <string name="run_config_title">Program arguments</string>
+    <string name="regex_tester_title">Regex tester</string>
+    <string name="base64_title">Base64 encoder</string>
+    <string name="local_history_title">Local history</string>
+    <string name="semantic_search_title">Semantic search (AI)</string>
+    <string name="a11y_action_voice">Voice input</string>
+    <string name="menubar_refactor">Refactor</string>
+</resources>

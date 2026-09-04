@@ -1,0 +1,82 @@
+{
+  "content": {
+    "uk": [
+      {
+        "type": "heading",
+        "text": "Inner classes, anonymous classes, enum bytecode"
+      },
+      {
+        "type": "paragraph",
+        "text": "Java source приховує багато деталей. Inner class отримує окремий .class файл. Non-static inner class має synthetic reference на outer instance. Anonymous class теж стає окремим .class. enum компілюється у final class, який extends java.lang.Enum."
+      },
+      {
+        "type": "table",
+        "text": "static nested class\tOuter$Nested.class без outer this\nnon-static inner class\tOuter$Inner.class + synthetic this$0\nanonymous class\tOuter$1.class, Outer$2.class...\nenum\tclass extends java/lang/Enum + values() + valueOf()\nprivate access між nested/outer\tможливі synthetic accessor methods",
+        "tableHeader": "Source construct\tBytecode/class files"
+      },
+      {
+        "type": "code",
+        "text": "class Outer {\n    private int x = 10;\n\n    class Inner {\n        int read() { return x; }\n    }\n}\n\n# javac створить Outer.class і Outer$Inner.class."
+      },
+      {
+        "type": "code",
+        "text": "enum Color { RED, GREEN }\n\n# Ідея після компіляції:\n# final class Color extends java.lang.Enum<Color>\n# static final Color RED;\n# static final Color GREEN;\n# static Color[] values();\n# static Color valueOf(String name);"
+      },
+      {
+        "type": "warning",
+        "text": "Не дивуйтеся файлам Outer$1.class або synthetic access$000 методам у старому Java 8 bytecode. Це normal compiler lowering для inner/anonymous доступу."
+      },
+      {
+        "type": "heading",
+        "text": "Практичне завдання"
+      },
+      {
+        "type": "paragraph",
+        "text": "Напишіть код, що демонструє поточну тему, і перевірте його роботу."
+      },
+      {
+        "type": "heading",
+        "text": "Рішення"
+      },
+      {
+        "type": "code",
+        "text": "public class Practice {\n    public static void main(String[] args) {\n        System.out.println(\"Success\");\n    }\n}"
+      }
+    ],
+    "en": [
+      {
+        "type": "heading",
+        "text": "Inner classes, anonymous classes, enum bytecode"
+      },
+      {
+        "type": "paragraph",
+        "text": "Java source hides many details. An inner class gets a separate .class file. A non-static inner class has a synthetic reference to outer instance. Anonymous class also becomes a separate .class. enum compiles into final class extending java.lang.Enum."
+      },
+      {
+        "type": "table",
+        "text": "static nested class\tOuter$Nested.class without outer this\nnon-static inner class\tOuter$Inner.class + synthetic this$0\nanonymous class\tOuter$1.class, Outer$2.class...\nenum\tclass extends java/lang/Enum + values() + valueOf()\nprivate access between nested/outer\tsynthetic accessor methods may appear",
+        "tableHeader": "Source construct\tBytecode/class files"
+      },
+      {
+        "type": "code",
+        "text": "class Outer {\n    private int x = 10;\n\n    class Inner {\n        int read() { return x; }\n    }\n}\n\n# javac creates Outer.class and Outer$Inner.class."
+      },
+      {
+        "type": "code",
+        "text": "enum Color { RED, GREEN }\n\n# Idea after compilation:\n# final class Color extends java.lang.Enum<Color>\n# static final Color RED;\n# static final Color GREEN;\n# static Color[] values();\n# static Color valueOf(String name);"
+      },
+      {
+        "type": "warning",
+        "text": "Do not be surprised by Outer$1.class files or synthetic access$000 methods in old Java 8 bytecode. This is normal compiler lowering for inner/anonymous access."
+      },
+      {
+        "type": "heading",
+        "text": "Exercise"
+      },
+      {
+        "type": "list",
+        "text": "Create static nested and non-static inner class, compare .class files.\nFind InnerClasses attribute through javap -v.\nCreate anonymous Runnable and find Outer$1.class.\nCompile enum and find values/valueOf.\nFind synthetic field this$0 in non-static inner class."
+      }
+    ]
+  }
+}

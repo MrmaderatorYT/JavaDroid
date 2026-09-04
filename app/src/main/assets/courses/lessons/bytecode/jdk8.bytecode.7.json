@@ -1,0 +1,90 @@
+{
+  "content": {
+    "uk": [
+      {
+        "type": "heading",
+        "text": "Arrays, exceptions, verifier"
+      },
+      {
+        "type": "paragraph",
+        "text": "Масиви мають окремі інструкції: newarray для primitive arrays, anewarray для reference arrays, iaload/aastore тощо для читання/запису. Винятки в bytecode описуються exception table у Code attribute: from, to, target, type."
+      },
+      {
+        "type": "table",
+        "text": "newarray int\tстворити int[]\nanewarray java/lang/String\tстворити String[]\narraylength\tдовжина масиву\niaload / iastore\tчитати/писати int[]\naaload / aastore\tчитати/писати reference[]\nathrow\tкинути exception object",
+        "tableHeader": "Інструкція\tЩо робить"
+      },
+      {
+        "type": "code",
+        "text": "public int first(int[] a) {\n    return a[0];\n}\n\n# javap -c приблизно:\n0: aload_1\n1: iconst_0\n2: iaload\n3: ireturn"
+      },
+      {
+        "type": "heading",
+        "text": "Verifier"
+      },
+      {
+        "type": "paragraph",
+        "text": "Перед виконанням JVM перевіряє bytecode: типи на stack мають збігатися, переходи мають вести в коректні місця, метод не може повернути не той тип, uninitialized object не можна використовувати як готовий об'єкт. У Java 7+ важливу роль має StackMapTable."
+      },
+      {
+        "type": "warning",
+        "text": "VerifyError означає: .class формально завантажився, але bytecode не пройшов перевірку. Часто причина — неправильний stack state на різних гілках control flow."
+      },
+      {
+        "type": "heading",
+        "text": "Практичне завдання"
+      },
+      {
+        "type": "paragraph",
+        "text": "Напишіть код, що демонструє поточну тему, і перевірте його роботу."
+      },
+      {
+        "type": "heading",
+        "text": "Рішення"
+      },
+      {
+        "type": "code",
+        "text": "public class Practice {\n    public static void main(String[] args) {\n        System.out.println(\"Success\");\n    }\n}"
+      }
+    ],
+    "en": [
+      {
+        "type": "heading",
+        "text": "Arrays, exceptions, verifier"
+      },
+      {
+        "type": "paragraph",
+        "text": "Arrays have separate instructions: newarray for primitive arrays, anewarray for reference arrays, iaload/aastore and similar for reading/writing. Exceptions in bytecode are described by exception table in Code attribute: from, to, target, type."
+      },
+      {
+        "type": "table",
+        "text": "newarray int\tcreate int[]\nanewarray java/lang/String\tcreate String[]\narraylength\tarray length\niaload / iastore\tread/write int[]\naaload / aastore\tread/write reference[]\nathrow\tthrow exception object",
+        "tableHeader": "Instruction\tWhat it does"
+      },
+      {
+        "type": "code",
+        "text": "public int first(int[] a) {\n    return a[0];\n}\n\n# javap -c roughly:\n0: aload_1\n1: iconst_0\n2: iaload\n3: ireturn"
+      },
+      {
+        "type": "heading",
+        "text": "Verifier"
+      },
+      {
+        "type": "paragraph",
+        "text": "Before execution, JVM verifies bytecode: stack types must match, jumps must go to valid places, a method cannot return the wrong type, and an uninitialized object cannot be used as a ready object. In Java 7+, StackMapTable is important."
+      },
+      {
+        "type": "warning",
+        "text": "VerifyError means the .class was loaded structurally, but bytecode failed verification. A common reason is wrong stack state across control-flow branches."
+      },
+      {
+        "type": "heading",
+        "text": "Exercise"
+      },
+      {
+        "type": "list",
+        "text": "Compile int[] create(int n) and find newarray.\nCompile String[] and find anewarray.\nCompile try/catch and inspect Exception table in javap -v.\nExplain why verifier must know stack types at every jump target."
+      }
+    ]
+  }
+}

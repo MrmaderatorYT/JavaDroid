@@ -1,0 +1,82 @@
+{
+  "content": {
+    "uk": [
+      {
+        "type": "heading",
+        "text": "Objects, fields, invoke*"
+      },
+      {
+        "type": "paragraph",
+        "text": "Створення об'єкта у bytecode — це не одна дія. Зазвичай йде new, dup, invokespecial <init>. Поля читаються getfield/getstatic, записуються putfield/putstatic. Методи викликаються різними invoke-інструкціями."
+      },
+      {
+        "type": "table",
+        "text": "new\tстворити uninitialized object\ndup\tскопіювати top stack value\ninvokespecial\tconstructor, private method, super call\ninvokevirtual\tзвичайний virtual instance method\ninvokestatic\tstatic method\ninvokeinterface\tметод через interface reference\ninvokedynamic\tdynamic call site; lambdas у Java 8\ngetfield / putfield\tinstance field\ngetstatic / putstatic\tstatic field",
+        "tableHeader": "Інструкція\tДля чого"
+      },
+      {
+        "type": "code",
+        "text": "StringBuilder sb = new StringBuilder();\nsb.append(\"A\");\nString s = sb.toString();\n\n# javap -c ідея:\nnew java/lang/StringBuilder\ndup\ninvokespecial java/lang/StringBuilder.<init>:()V\nastore_1\naload_1\nldc \"A\"\ninvokevirtual java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;\npop\naload_1\ninvokevirtual java/lang/StringBuilder.toString:()Ljava/lang/String;\nastore_2"
+      },
+      {
+        "type": "note",
+        "text": "dup потрібен перед constructor, бо invokespecial <init> споживає reference зі stack. Але reference ще потрібен, щоб зберегти створений об'єкт у local variable."
+      },
+      {
+        "type": "warning",
+        "text": "Найчастіші bytecode-помилки при викликах: неправильний descriptor, неправильний owner класу, забутий object reference на stack, або використання invokevirtual там, де треба invokestatic."
+      },
+      {
+        "type": "heading",
+        "text": "Практичне завдання"
+      },
+      {
+        "type": "paragraph",
+        "text": "Напишіть код, що демонструє поточну тему, і перевірте його роботу."
+      },
+      {
+        "type": "heading",
+        "text": "Рішення"
+      },
+      {
+        "type": "code",
+        "text": "public class Practice {\n    public static void main(String[] args) {\n        System.out.println(\"Success\");\n    }\n}"
+      }
+    ],
+    "en": [
+      {
+        "type": "heading",
+        "text": "Objects, fields, invoke*"
+      },
+      {
+        "type": "paragraph",
+        "text": "Object creation in bytecode is not one action. Usually it is new, dup, invokespecial <init>. Fields are read with getfield/getstatic and written with putfield/putstatic. Methods are called by different invoke instructions."
+      },
+      {
+        "type": "table",
+        "text": "new\tcreate uninitialized object\ndup\tcopy top stack value\ninvokespecial\tconstructor, private method, super call\ninvokevirtual\tnormal virtual instance method\ninvokestatic\tstatic method\ninvokeinterface\tmethod through interface reference\ninvokedynamic\tdynamic call site; lambdas in Java 8\ngetfield / putfield\tinstance field\ngetstatic / putstatic\tstatic field",
+        "tableHeader": "Instruction\tPurpose"
+      },
+      {
+        "type": "code",
+        "text": "StringBuilder sb = new StringBuilder();\nsb.append(\"A\");\nString s = sb.toString();\n\n# javap -c idea:\nnew java/lang/StringBuilder\ndup\ninvokespecial java/lang/StringBuilder.<init>:()V\nastore_1\naload_1\nldc \"A\"\ninvokevirtual java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;\npop\naload_1\ninvokevirtual java/lang/StringBuilder.toString:()Ljava/lang/String;\nastore_2"
+      },
+      {
+        "type": "note",
+        "text": "dup is needed before constructor because invokespecial <init> consumes the reference from stack. But the reference is still needed to store the created object in a local variable."
+      },
+      {
+        "type": "warning",
+        "text": "Common bytecode call mistakes: wrong descriptor, wrong owner class, missing object reference on stack, or using invokevirtual where invokestatic is required."
+      },
+      {
+        "type": "heading",
+        "text": "Exercise"
+      },
+      {
+        "type": "list",
+        "text": "Compile new ArrayList<String>() and find new/dup/invokespecial.\nCompile Math.max(a,b) and find invokestatic.\nCompile list.size() through List reference and find invokeinterface.\nCompile a private method and inspect invokespecial."
+      }
+    ]
+  }
+}

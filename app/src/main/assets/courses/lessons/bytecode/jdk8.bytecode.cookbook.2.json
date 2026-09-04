@@ -1,0 +1,82 @@
+{
+  "content": {
+    "uk": [
+      {
+        "type": "heading",
+        "text": "Numeric conversions і comparisons"
+      },
+      {
+        "type": "paragraph",
+        "text": "Bytecode має окремі інструкції для перетворення числових типів. Java source виглядає просто, але javac явно вставляє i2l, i2d, d2i тощо. Порівняння long, float, double також не завжди працює як int: використовуються lcmp, fcmpl/fcmpg, dcmpl/dcmpg."
+      },
+      {
+        "type": "table",
+        "text": "i2l\tint -> long\ni2f\tint -> float\ni2d\tint -> double\nl2i\tlong -> int\nf2i\tfloat -> int\nd2i\tdouble -> int\ni2b / i2c / i2s\tint -> byte/char/short\nlcmp\tпорівняти long, результат int -1/0/1\nfcmpl/fcmpg\tпорівняти float з різною поведінкою для NaN\ndcmpl/dcmpg\tпорівняти double з різною поведінкою для NaN",
+        "tableHeader": "Інструкція\tСенс"
+      },
+      {
+        "type": "code",
+        "text": "public long widen(int x) {\n    return x;\n}\n\n# javap -c:\n0: iload_1\n1: i2l\n2: lreturn"
+      },
+      {
+        "type": "code",
+        "text": "public boolean greater(long a, long b) {\n    return a > b;\n}\n\n# ідея:\nlload_1\nlload_3\nlcmp\nifle falseLabel"
+      },
+      {
+        "type": "warning",
+        "text": "byte, short і char в арифметиці зазвичай піднімаються до int. Тому bytecode часто працює з int навіть тоді, коли source має byte або short."
+      },
+      {
+        "type": "heading",
+        "text": "Практичне завдання"
+      },
+      {
+        "type": "paragraph",
+        "text": "Напишіть код, що демонструє поточну тему, і перевірте його роботу."
+      },
+      {
+        "type": "heading",
+        "text": "Рішення"
+      },
+      {
+        "type": "code",
+        "text": "public class Practice {\n    public static void main(String[] args) {\n        System.out.println(\"Success\");\n    }\n}"
+      }
+    ],
+    "en": [
+      {
+        "type": "heading",
+        "text": "Numeric conversions and comparisons"
+      },
+      {
+        "type": "paragraph",
+        "text": "Bytecode has separate instructions for numeric conversions. Java source looks simple, but javac explicitly inserts i2l, i2d, d2i, and similar. Comparing long, float, double is also not the same as int: lcmp, fcmpl/fcmpg, dcmpl/dcmpg are used."
+      },
+      {
+        "type": "table",
+        "text": "i2l\tint -> long\ni2f\tint -> float\ni2d\tint -> double\nl2i\tlong -> int\nf2i\tfloat -> int\nd2i\tdouble -> int\ni2b / i2c / i2s\tint -> byte/char/short\nlcmp\tcompare long, result int -1/0/1\nfcmpl/fcmpg\tcompare float with different NaN behavior\ndcmpl/dcmpg\tcompare double with different NaN behavior",
+        "tableHeader": "Instruction\tMeaning"
+      },
+      {
+        "type": "code",
+        "text": "public long widen(int x) {\n    return x;\n}\n\n# javap -c:\n0: iload_1\n1: i2l\n2: lreturn"
+      },
+      {
+        "type": "code",
+        "text": "public boolean greater(long a, long b) {\n    return a > b;\n}\n\n# idea:\nlload_1\nlload_3\nlcmp\nifle falseLabel"
+      },
+      {
+        "type": "warning",
+        "text": "byte, short, and char are usually promoted to int in arithmetic. Therefore bytecode often works with int even when source has byte or short."
+      },
+      {
+        "type": "heading",
+        "text": "Exercise"
+      },
+      {
+        "type": "list",
+        "text": "Compile int -> long, int -> double, double -> int and find conversion instructions.\nCompile long comparison and find lcmp.\nCompile double comparison and find dcmpg or dcmpl.\nCompile byte a=1,b=2; byte c=(byte)(a+b); and explain casts.\nExplain why there is no icmp instruction for int, but if_icmp* exists."
+      }
+    ]
+  }
+}

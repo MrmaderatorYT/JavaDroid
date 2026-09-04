@@ -1,0 +1,82 @@
+{
+  "content": {
+    "uk": [
+      {
+        "type": "heading",
+        "text": "Debug attributes: LineNumberTable, LocalVariableTable"
+      },
+      {
+        "type": "paragraph",
+        "text": "Stack trace показує файл і рядок не тому, що JVM магічно пам'ятає source. Це береться з debug attributes у class file: SourceFile, LineNumberTable, LocalVariableTable. Якщо компілювати без debug info, stack traces і debugger будуть менш інформативними."
+      },
+      {
+        "type": "table",
+        "text": "SourceFile\tназва .java файлу\nLineNumberTable\tзв'язок bytecode offset -> source line\nLocalVariableTable\tімена і scope локальних змінних\nLocalVariableTypeTable\tgeneric signatures локальних змінних\nDeprecated / RuntimeVisibleAnnotations\tметадані для tools/runtime",
+        "tableHeader": "Attribute\tЩо дає"
+      },
+      {
+        "type": "code",
+        "text": "# З debug info за замовчуванням:\njavac Demo.java\njavap -v Demo\n\n# Можна керувати debug info:\njavac -g Demo.java\njavac -g:none Demo.java"
+      },
+      {
+        "type": "paragraph",
+        "text": "LineNumberTable не впливає на логіку програми, але впливає на якість stack trace. LocalVariableTable не потрібна JVM для виконання, але потрібна debugger-у, щоб показувати назви локальних змінних."
+      },
+      {
+        "type": "warning",
+        "text": "Obfuscation може перейменувати класи, методи і поля, а також змінити debug attributes. Для Android це особливо актуально при ProGuard/R8: stack trace без mapping.txt важко читати."
+      },
+      {
+        "type": "heading",
+        "text": "Практичне завдання"
+      },
+      {
+        "type": "paragraph",
+        "text": "Напишіть код, що демонструє поточну тему, і перевірте його роботу."
+      },
+      {
+        "type": "heading",
+        "text": "Рішення"
+      },
+      {
+        "type": "code",
+        "text": "public class Practice {\n    public static void main(String[] args) {\n        System.out.println(\"Success\");\n    }\n}"
+      }
+    ],
+    "en": [
+      {
+        "type": "heading",
+        "text": "Debug attributes: LineNumberTable, LocalVariableTable"
+      },
+      {
+        "type": "paragraph",
+        "text": "Stack trace shows file and line not because JVM magically remembers source. It comes from debug attributes in class file: SourceFile, LineNumberTable, LocalVariableTable. If compiled without debug info, stack traces and debugger become less informative."
+      },
+      {
+        "type": "table",
+        "text": "SourceFile\t.java file name\nLineNumberTable\tbytecode offset -> source line mapping\nLocalVariableTable\tnames and scopes of local variables\nLocalVariableTypeTable\tgeneric signatures of local variables\nDeprecated / RuntimeVisibleAnnotations\tmetadata for tools/runtime",
+        "tableHeader": "Attribute\tWhat it provides"
+      },
+      {
+        "type": "code",
+        "text": "# With debug info by default:\njavac Demo.java\njavap -v Demo\n\n# You can control debug info:\njavac -g Demo.java\njavac -g:none Demo.java"
+      },
+      {
+        "type": "paragraph",
+        "text": "LineNumberTable does not affect program logic, but affects stack trace quality. LocalVariableTable is not needed by JVM for execution, but the debugger needs it to show local variable names."
+      },
+      {
+        "type": "warning",
+        "text": "Obfuscation may rename classes, methods, and fields, and change debug attributes. For Android this is especially relevant with ProGuard/R8: stack trace without mapping.txt is hard to read."
+      },
+      {
+        "type": "heading",
+        "text": "Exercise"
+      },
+      {
+        "type": "list",
+        "text": "Compile a class with -g and find LineNumberTable.\nCompile with -g:none and compare javap -v.\nThrow RuntimeException and check whether line number exists.\nFind LocalVariableTable for a method with several local variables.\nExplain why debug attributes do not change program result."
+      }
+    ]
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "content": {
+    "uk": [
+      {
+        "type": "heading",
+        "text": "try/finally і synchronized у bytecode"
+      },
+      {
+        "type": "paragraph",
+        "text": "finally — це гарантія виконати cleanup і на нормальному шляху, і на exceptional шляху. У сучасному bytecode javac зазвичай дублює finally-код у кількох місцях або використовує exception handler, який виконує cleanup і знову кидає exception."
+      },
+      {
+        "type": "code",
+        "text": "try {\n    work();\n} finally {\n    cleanup();\n}\n\n# Ідея bytecode:\ncall work\ncall cleanup\ngoto end\nhandler:\n  astore ex\n  call cleanup\n  aload ex\n  athrow\nend:"
+      },
+      {
+        "type": "paragraph",
+        "text": "synchronized block компілюється в monitorenter/monitorexit. JVM monitor належить об'єкту. Важливо: monitorexit має виконатись і при exception, тому javac генерує try/finally-подібний bytecode."
+      },
+      {
+        "type": "code",
+        "text": "synchronized (lock) {\n    work();\n}\n\n# Ідея bytecode:\naload lock\ndup\nastore monitorLocal\nmonitorenter\ncall work\naload monitorLocal\nmonitorexit\ngoto end\nhandler:\n  aload monitorLocal\n  monitorexit\n  athrow"
+      },
+      {
+        "type": "warning",
+        "text": "Непарний monitorenter/monitorexit або exception path без monitorexit може зламати коректність синхронізації. Javac генерує захисний handler саме тому."
+      },
+      {
+        "type": "heading",
+        "text": "Практичне завдання"
+      },
+      {
+        "type": "paragraph",
+        "text": "Напишіть код, що демонструє поточну тему, і перевірте його роботу."
+      },
+      {
+        "type": "heading",
+        "text": "Рішення"
+      },
+      {
+        "type": "code",
+        "text": "public class Practice {\n    public static void main(String[] args) {\n        System.out.println(\"Success\");\n    }\n}"
+      }
+    ],
+    "en": [
+      {
+        "type": "heading",
+        "text": "try/finally and synchronized in bytecode"
+      },
+      {
+        "type": "paragraph",
+        "text": "finally guarantees cleanup on both normal and exceptional paths. In modern bytecode, javac usually duplicates finally code in several places or uses an exception handler that runs cleanup and rethrows the exception."
+      },
+      {
+        "type": "code",
+        "text": "try {\n    work();\n} finally {\n    cleanup();\n}\n\n# Bytecode idea:\ncall work\ncall cleanup\ngoto end\nhandler:\n  astore ex\n  call cleanup\n  aload ex\n  athrow\nend:"
+      },
+      {
+        "type": "paragraph",
+        "text": "A synchronized block compiles to monitorenter/monitorexit. JVM monitor belongs to an object. Important: monitorexit must run even on exception, so javac generates try/finally-like bytecode."
+      },
+      {
+        "type": "code",
+        "text": "synchronized (lock) {\n    work();\n}\n\n# Bytecode idea:\naload lock\ndup\nastore monitorLocal\nmonitorenter\ncall work\naload monitorLocal\nmonitorexit\ngoto end\nhandler:\n  aload monitorLocal\n  monitorexit\n  athrow"
+      },
+      {
+        "type": "warning",
+        "text": "Unpaired monitorenter/monitorexit or exception path without monitorexit can break synchronization correctness. javac generates protective handler for this reason."
+      },
+      {
+        "type": "heading",
+        "text": "Exercise"
+      },
+      {
+        "type": "list",
+        "text": "Compile try/finally and find exception table.\nCompile synchronized block and find monitorenter/monitorexit.\nCompile synchronized method and compare: it has ACC_SYNCHRONIZED flag.\nExplain why synchronized block is more complex than synchronized method in bytecode.\nFind athrow in bytecode of finally scenario."
+      }
+    ]
+  }
+}

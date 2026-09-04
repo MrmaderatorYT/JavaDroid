@@ -1,0 +1,74 @@
+{
+  "content": {
+    "uk": [
+      {
+        "type": "heading",
+        "text": "Annotations як class file attributes"
+      },
+      {
+        "type": "paragraph",
+        "text": "Анотації у bytecode зберігаються як attributes. Retention визначає, де вони залишаються: SOURCE зникає, CLASS лишається у .class, RUNTIME доступна reflection. У javap -v шукайте RuntimeVisibleAnnotations, RuntimeInvisibleAnnotations, RuntimeVisibleParameterAnnotations."
+      },
+      {
+        "type": "table",
+        "text": "SOURCE\tнемає в .class\nCLASS\tє в .class як RuntimeInvisibleAnnotations\nRUNTIME\tє в .class і доступна reflection як RuntimeVisibleAnnotations\nPARAMETER\tможе бути parameter annotation attribute\nTYPE_USE\tможе з'являтися в type annotation attributes",
+        "tableHeader": "Java annotation retention\tClass file effect"
+      },
+      {
+        "type": "code",
+        "text": "@Retention(RetentionPolicy.RUNTIME)\n@interface Marker {\n    String value();\n}\n\n@Marker(\"demo\")\nclass Annotated { }\n\n# javap -v Annotated:\n# RuntimeVisibleAnnotations:\n#   0: #...(#...=s#...)"
+      },
+      {
+        "type": "warning",
+        "text": "Annotation default values зберігаються в annotation interface class file, а не дублюються всюди. Reflection підставляє default, якщо значення не задане."
+      },
+      {
+        "type": "heading",
+        "text": "Практичне завдання"
+      },
+      {
+        "type": "paragraph",
+        "text": "Напишіть код, що демонструє поточну тему, і перевірте його роботу."
+      },
+      {
+        "type": "heading",
+        "text": "Рішення"
+      },
+      {
+        "type": "code",
+        "text": "public class Practice {\n    public static void main(String[] args) {\n        System.out.println(\"Success\");\n    }\n}"
+      }
+    ],
+    "en": [
+      {
+        "type": "heading",
+        "text": "Annotations as class file attributes"
+      },
+      {
+        "type": "paragraph",
+        "text": "Annotations in bytecode are stored as attributes. Retention decides where they remain: SOURCE disappears, CLASS stays in .class, RUNTIME is available to reflection. In javap -v look for RuntimeVisibleAnnotations, RuntimeInvisibleAnnotations, RuntimeVisibleParameterAnnotations."
+      },
+      {
+        "type": "table",
+        "text": "SOURCE\tnot in .class\nCLASS\tin .class as RuntimeInvisibleAnnotations\nRUNTIME\tin .class and reflection-visible as RuntimeVisibleAnnotations\nPARAMETER\tmay be parameter annotation attribute\nTYPE_USE\tmay appear in type annotation attributes",
+        "tableHeader": "Java annotation retention\tClass file effect"
+      },
+      {
+        "type": "code",
+        "text": "@Retention(RetentionPolicy.RUNTIME)\n@interface Marker {\n    String value();\n}\n\n@Marker(\"demo\")\nclass Annotated { }\n\n# javap -v Annotated:\n# RuntimeVisibleAnnotations:\n#   0: #...(#...=s#...)"
+      },
+      {
+        "type": "warning",
+        "text": "Annotation default values are stored in the annotation interface class file, not duplicated everywhere. Reflection supplies default if value is not set."
+      },
+      {
+        "type": "heading",
+        "text": "Exercise"
+      },
+      {
+        "type": "list",
+        "text": "Create SOURCE, CLASS, and RUNTIME annotations and compare javap -v.\nAdd annotation field value() and default.\nAdd annotation on method parameter and find parameter annotations.\nRead only RUNTIME annotation through reflection.\nExplain visible vs invisible annotation attributes."
+      }
+    ]
+  }
+}

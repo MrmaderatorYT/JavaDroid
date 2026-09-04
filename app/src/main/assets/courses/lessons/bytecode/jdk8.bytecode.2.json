@@ -1,0 +1,82 @@
+{
+  "content": {
+    "uk": [
+      {
+        "type": "heading",
+        "text": ".class файл і constant pool"
+      },
+      {
+        "type": "paragraph",
+        "text": ".class файл починається з magic number 0xCAFEBABE. Далі йде версія class file, constant pool, flags класу, this_class, super_class, interfaces, fields, methods та attributes. Constant pool — таблиця констант і посилань: рядки, імена класів, імена методів, дескриптори, Methodref, Fieldref."
+      },
+      {
+        "type": "table",
+        "text": "magic\tперевірка, що це .class файл: CAFEBABE\nminor/major version\tверсія bytecode; Java 8 = major 52\nconstant_pool\tрядки, class refs, method refs, descriptors\naccess_flags\tpublic, final, interface, abstract\nthis_class / super_class\tпоточний клас і батьківський клас\nfields\tполя класу\nmethods\tметоди і їх Code attribute\nattributes\tSourceFile, LineNumberTable, StackMapTable тощо",
+        "tableHeader": "Частина class file\tДля чого"
+      },
+      {
+        "type": "code",
+        "text": "public class Tiny {\n    public int add(int a, int b) {\n        return a + b;\n    }\n}\n\n# javap -v Tiny покаже Constant pool:\n# #1 = Methodref java/lang/Object.\"<init>\":()V\n# #2 = Class     java/lang/Object\n# #3 = NameAndType \"<init>\":()V\n# #4 = Utf8      Tiny\n# #5 = Utf8      add\n# #6 = Utf8      (II)I"
+      },
+      {
+        "type": "paragraph",
+        "text": "Bytecode не зберігає повні Java-імена так, як ми їх пишемо. Наприклад, java.lang.String у class file виглядає як java/lang/String. Метод add(int,int) має descriptor (II)I: два int аргументи, int результат."
+      },
+      {
+        "type": "note",
+        "text": "Constant pool економить місце і робить bytecode посилальним: інструкція invokevirtual не містить повний текст методу, а посилається на індекс у constant pool."
+      },
+      {
+        "type": "heading",
+        "text": "Практичне завдання"
+      },
+      {
+        "type": "paragraph",
+        "text": "Напишіть код, що демонструє поточну тему, і перевірте його роботу."
+      },
+      {
+        "type": "heading",
+        "text": "Рішення"
+      },
+      {
+        "type": "code",
+        "text": "public class Practice {\n    public static void main(String[] args) {\n        System.out.println(\"Success\");\n    }\n}"
+      }
+    ],
+    "en": [
+      {
+        "type": "heading",
+        "text": ".class file and constant pool"
+      },
+      {
+        "type": "paragraph",
+        "text": "A .class file starts with magic number 0xCAFEBABE. Then come class file version, constant pool, class flags, this_class, super_class, interfaces, fields, methods, and attributes. Constant pool is a table of constants and references: strings, class names, method names, descriptors, Methodref, Fieldref."
+      },
+      {
+        "type": "table",
+        "text": "magic\tcheck that this is a .class file: CAFEBABE\nminor/major version\tbytecode version; Java 8 = major 52\nconstant_pool\tstrings, class refs, method refs, descriptors\naccess_flags\tpublic, final, interface, abstract\nthis_class / super_class\tcurrent class and parent class\nfields\tclass fields\nmethods\tmethods and their Code attribute\nattributes\tSourceFile, LineNumberTable, StackMapTable, etc.",
+        "tableHeader": "Class file part\tPurpose"
+      },
+      {
+        "type": "code",
+        "text": "public class Tiny {\n    public int add(int a, int b) {\n        return a + b;\n    }\n}\n\n# javap -v Tiny shows Constant pool:\n# #1 = Methodref java/lang/Object.\"<init>\":()V\n# #2 = Class     java/lang/Object\n# #3 = NameAndType \"<init>\":()V\n# #4 = Utf8      Tiny\n# #5 = Utf8      add\n# #6 = Utf8      (II)I"
+      },
+      {
+        "type": "paragraph",
+        "text": "Bytecode does not store full Java names exactly as we write them. For example, java.lang.String in a class file is java/lang/String. Method add(int,int) has descriptor (II)I: two int arguments, int result."
+      },
+      {
+        "type": "note",
+        "text": "Constant pool saves space and makes bytecode reference-based: invokevirtual does not contain full method text, but points to an index in constant pool."
+      },
+      {
+        "type": "heading",
+        "text": "Exercise"
+      },
+      {
+        "type": "list",
+        "text": "Compile Tiny.java and open javap -v Tiny.\nFind class name Tiny in constant pool.\nFind descriptor of method add.\nFind Methodref for java/lang/Object.<init>.\nExplain why constant pool is better than duplicating strings in each instruction."
+      }
+    ]
+  }
+}

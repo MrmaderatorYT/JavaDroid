@@ -1,0 +1,82 @@
+{
+  "content": {
+    "uk": [
+      {
+        "type": "heading",
+        "text": "invokedynamic і LambdaMetafactory"
+      },
+      {
+        "type": "paragraph",
+        "text": "invokedynamic з'явився в Java 7 для динамічних мов на JVM, а в Java 8 став основою lambdas. На відміну від invokevirtual, де owner/method відомі напряму, invokedynamic використовує bootstrap method. Для lambdas це зазвичай java/lang/invoke/LambdaMetafactory.metafactory."
+      },
+      {
+        "type": "code",
+        "text": "Runnable r = () -> System.out.println(\"run\");\nr.run();\n\n# javap -c може показати:\ninvokedynamic #2,  0 // InvokeDynamic #0:run:()Ljava/lang/Runnable;\n\n# javap -v покаже BootstrapMethods:\n# 0: invokestatic java/lang/invoke/LambdaMetafactory.metafactory ..."
+      },
+      {
+        "type": "table",
+        "text": "call site name\tнаприклад run, apply, test\ncall site descriptor\tякий functional interface створити\nbootstrap method\tкод, який створює call site\nmethod handle\tпосилання на реальну lambda body\ncaptured args\tзначення, захоплені lambda",
+        "tableHeader": "Частина invokedynamic\tСенс"
+      },
+      {
+        "type": "paragraph",
+        "text": "Non-capturing lambda може бути створена один раз і перевикористана. Capturing lambda захоплює значення з локального контексту, тому зазвичай потребує об'єкт із полями для цих captured values."
+      },
+      {
+        "type": "warning",
+        "text": "Lambda не обов'язково означає anonymous inner class. У Java 8 це зазвичай invokedynamic. Тому bytecode lambda дуже відрізняється від старого new Runnable(){...}."
+      },
+      {
+        "type": "heading",
+        "text": "Практичне завдання"
+      },
+      {
+        "type": "paragraph",
+        "text": "Напишіть код, що демонструє поточну тему, і перевірте його роботу."
+      },
+      {
+        "type": "heading",
+        "text": "Рішення"
+      },
+      {
+        "type": "code",
+        "text": "public class Practice {\n    public static void main(String[] args) {\n        System.out.println(\"Success\");\n    }\n}"
+      }
+    ],
+    "en": [
+      {
+        "type": "heading",
+        "text": "invokedynamic and LambdaMetafactory"
+      },
+      {
+        "type": "paragraph",
+        "text": "invokedynamic appeared in Java 7 for dynamic languages on JVM, and in Java 8 it became the foundation for lambdas. Unlike invokevirtual, where owner/method are known directly, invokedynamic uses a bootstrap method. For lambdas it is usually java/lang/invoke/LambdaMetafactory.metafactory."
+      },
+      {
+        "type": "code",
+        "text": "Runnable r = () -> System.out.println(\"run\");\nr.run();\n\n# javap -c may show:\ninvokedynamic #2,  0 // InvokeDynamic #0:run:()Ljava/lang/Runnable;\n\n# javap -v shows BootstrapMethods:\n# 0: invokestatic java/lang/invoke/LambdaMetafactory.metafactory ..."
+      },
+      {
+        "type": "table",
+        "text": "call site name\tfor example run, apply, test\ncall site descriptor\twhich functional interface to create\nbootstrap method\tcode that creates call site\nmethod handle\treference to real lambda body\ncaptured args\tvalues captured by lambda",
+        "tableHeader": "invokedynamic part\tMeaning"
+      },
+      {
+        "type": "paragraph",
+        "text": "A non-capturing lambda may be created once and reused. A capturing lambda captures values from local context, so it usually needs an object with fields for captured values."
+      },
+      {
+        "type": "warning",
+        "text": "Lambda does not necessarily mean anonymous inner class. In Java 8 it is usually invokedynamic. Therefore lambda bytecode is very different from old new Runnable(){...}."
+      },
+      {
+        "type": "heading",
+        "text": "Exercise"
+      },
+      {
+        "type": "list",
+        "text": "Compile non-capturing Runnable lambda and find BootstrapMethods.\nCompile capturing lambda using a local variable.\nCompare lambda bytecode and anonymous inner class.\nFind synthetic method lambda$... in javap -p.\nExplain what bootstrap method is."
+      }
+    ]
+  }
+}

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="menubar_file">Fayl</string>
+    <string name="menubar_edit">Redaktə</string>
+    <string name="menubar_view">Görünüş</string>
+    <string name="menubar_navigate">Naviqasiya</string>
+    <string name="menubar_code">Kod</string>
+    <string name="menubar_build">Yığ</string>
+    <string name="menubar_run">İşə sal</string>
+    <string name="menubar_tools">Alətlər</string>
+    <string name="menubar_git">Git</string>
+    <string name="menubar_help">Yardım</string>
+    <string name="menubar_new_project">Yeni layihə…</string>
+    <string name="menubar_save_as">Fərqli saxla…</string>
+    <string name="menubar_panel_run">İcra paneli</string>
+    <string name="menubar_panel_problems">Problemlər</string>
+    <string name="menubar_panel_todo">TODO / FIXME</string>
+    <string name="menubar_panel_bytecode">Baytkod</string>
+    <string name="menubar_panel_call_graph">Çağırış qrafiki</string>
+    <string name="menubar_webview_preview">WebView baxışı</string>
+    <string name="menubar_class_browser">Sinif brauzeri</string>
+    <string name="menubar_toggle_bookmark">Əlfəcini dəyiş</string>
+    <string name="menubar_show_bookmarks">Əlfəcinlər</string>
+    <string name="menubar_command_palette">Əməliyyat tap…</string>
+    <string name="menu_new_file">Yeni fayl…</string>
+    <string name="zen_mode_menu">Zen rejimi (tam ekran)</string>
+    <string name="deps_title">Asılılıqlar</string>
+    <string name="menu_uml_diagram">UML sinif diaqramı</string>
+    <string name="run_config_title">Proqram arqumentləri</string>
+    <string name="regex_tester_title">Regex yoxlayıcısı</string>
+    <string name="base64_title">Base64 kodlayıcı</string>
+    <string name="local_history_title">Yerli tarixçə</string>
+    <string name="semantic_search_title">Semantik axtarış (AI)</string>
+    <string name="a11y_action_voice">Səslə daxiletmə</string>
+    <string name="menubar_refactor">Refaktorinq</string>
+</resources>

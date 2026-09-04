@@ -1,0 +1,82 @@
+{
+  "content": {
+    "uk": [
+      {
+        "type": "heading",
+        "text": "Bridge і synthetic methods"
+      },
+      {
+        "type": "paragraph",
+        "text": "Generics erasure іноді змушує javac створювати додаткові методи. Bridge method зберігає поліморфізм після стирання типів. Synthetic означає, що елемент створений компілятором, а не написаний прямо у source."
+      },
+      {
+        "type": "code",
+        "text": "interface Box<T> {\n    T get();\n}\n\nclass StringBox implements Box<String> {\n    public String get() {\n        return \"value\";\n    }\n}\n\n# Після erasure Box.get має Object get().\n# Але StringBox написав String get().\n# javac додає bridge:\n# public Object get() { return get(); } // ідея, з cast/dispatch деталями"
+      },
+      {
+        "type": "table",
+        "text": "ACC_BRIDGE\tметод-мостик для erased signature\nACC_SYNTHETIC\tстворено компілятором\nSignature attribute\tзберігає generic-інформацію для tools/reflection\ndescriptor\tте, що реально використовує JVM для виклику",
+        "tableHeader": "Ознака\tЩо означає"
+      },
+      {
+        "type": "paragraph",
+        "text": "Bridge methods важливі для binary compatibility. Без bridge старий код, який викликає Box.get():Object, не зміг би коректно викликати StringBox.get():String після erasure."
+      },
+      {
+        "type": "warning",
+        "text": "Коли дивитеся javap, не панікуйте через методи, яких не писали. Якщо бачите ACC_BRIDGE або ACC_SYNTHETIC, це часто нормальна робота javac."
+      },
+      {
+        "type": "heading",
+        "text": "Практичне завдання"
+      },
+      {
+        "type": "paragraph",
+        "text": "Напишіть код, що демонструє поточну тему, і перевірте його роботу."
+      },
+      {
+        "type": "heading",
+        "text": "Рішення"
+      },
+      {
+        "type": "code",
+        "text": "public class Practice {\n    public static void main(String[] args) {\n        System.out.println(\"Success\");\n    }\n}"
+      }
+    ],
+    "en": [
+      {
+        "type": "heading",
+        "text": "Bridge and synthetic methods"
+      },
+      {
+        "type": "paragraph",
+        "text": "Generics erasure sometimes forces javac to create additional methods. A bridge method preserves polymorphism after type erasure. Synthetic means an element was created by the compiler, not written directly in source."
+      },
+      {
+        "type": "code",
+        "text": "interface Box<T> {\n    T get();\n}\n\nclass StringBox implements Box<String> {\n    public String get() {\n        return \"value\";\n    }\n}\n\n# After erasure Box.get has Object get().\n# But StringBox wrote String get().\n# javac adds bridge:\n# public Object get() { return get(); } // idea, with cast/dispatch details"
+      },
+      {
+        "type": "table",
+        "text": "ACC_BRIDGE\tbridge method for erased signature\nACC_SYNTHETIC\tcreated by compiler\nSignature attribute\tkeeps generic information for tools/reflection\ndescriptor\twhat JVM actually uses for invocation",
+        "tableHeader": "Marker\tMeaning"
+      },
+      {
+        "type": "paragraph",
+        "text": "Bridge methods matter for binary compatibility. Without bridge, old code calling Box.get():Object could not correctly call StringBox.get():String after erasure."
+      },
+      {
+        "type": "warning",
+        "text": "When reading javap, do not panic about methods you did not write. If you see ACC_BRIDGE or ACC_SYNTHETIC, it is often normal javac work."
+      },
+      {
+        "type": "heading",
+        "text": "Exercise"
+      },
+      {
+        "type": "list",
+        "text": "Create generic interface Box<T> and implementation Box<String>.\nRun javap -c -v StringBox and find ACC_BRIDGE.\nFind descriptor and Signature for get.\nCreate covariant return type example and see if bridge appears.\nExplain how bridge is connected to type erasure."
+      }
+    ]
+  }
+}

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="menubar_file">Fichier</string>
+    <string name="menubar_edit">Édition</string>
+    <string name="menubar_view">Affichage</string>
+    <string name="menubar_navigate">Naviguer</string>
+    <string name="menubar_code">Code</string>
+    <string name="menubar_build">Compiler</string>
+    <string name="menubar_run">Exécuter</string>
+    <string name="menubar_tools">Outils</string>
+    <string name="menubar_git">Git</string>
+    <string name="menubar_help">Aide</string>
+    <string name="menubar_new_project">Nouveau projet…</string>
+    <string name="menubar_save_as">Enregistrer sous…</string>
+    <string name="menubar_panel_run">Panneau d’exécution</string>
+    <string name="menubar_panel_problems">Problèmes</string>
+    <string name="menubar_panel_todo">TODO / FIXME</string>
+    <string name="menubar_panel_bytecode">Bytecode</string>
+    <string name="menubar_panel_call_graph">Graphe d’appels</string>
+    <string name="menubar_webview_preview">Aperçu WebView</string>
+    <string name="menubar_class_browser">Explorateur de classes</string>
+    <string name="menubar_toggle_bookmark">Basculer le signet</string>
+    <string name="menubar_show_bookmarks">Signets</string>
+    <string name="menubar_command_palette">Trouver une action…</string>
+    <string name="menu_new_file">Nouveau fichier…</string>
+    <string name="zen_mode_menu">Mode Zen (plein écran)</string>
+    <string name="deps_title">Dépendances</string>
+    <string name="menu_uml_diagram">Diagramme de classes UML</string>
+    <string name="run_config_title">Arguments du programme</string>
+    <string name="regex_tester_title">Testeur de regex</string>
+    <string name="base64_title">Encodeur Base64</string>
+    <string name="local_history_title">Historique local</string>
+    <string name="semantic_search_title">Recherche sémantique (IA)</string>
+    <string name="a11y_action_voice">Saisie vocale</string>
+    <string name="menubar_refactor">Refactoriser</string>
+</resources>

@@ -1,0 +1,224 @@
+{
+  "version": 1,
+  "courses": [
+    {
+      "id": "bytecode",
+      "title": {
+        "uk": "Bytecode",
+        "en": "Bytecode"
+      },
+      "description": {
+        "uk": "JVM bytecode: від основ class file до розширених тем — class loading, StackMapTable, invokedynamic, Jasmin та практичні drills.",
+        "en": "JVM bytecode: from class file basics to advanced topics — class loading, StackMapTable, invokedynamic, Jasmin, and practical drills."
+      },
+      "chapters": [
+        {
+          "title": {
+            "uk": "Розробка на чистому JVM bytecode",
+            "en": "Pure JVM bytecode development"
+          },
+          "lessons": [
+            {
+              "id": "jdk8.bytecode.1",
+              "title": {
+                "uk": "Bytecode mindset",
+                "en": "Bytecode mindset"
+              }
+            },
+            {
+              "id": "jdk8.bytecode.2",
+              "title": {
+                "uk": "Class file і constant pool",
+                "en": "Class file and constant pool"
+              }
+            },
+            {
+              "id": "jdk8.bytecode.3",
+              "title": {
+                "uk": "Descriptors і signatures",
+                "en": "Descriptors and signatures"
+              }
+            },
+            {
+              "id": "jdk8.bytecode.4",
+              "title": {
+                "uk": "Operand stack і locals",
+                "en": "Operand stack and locals"
+              }
+            },
+            {
+              "id": "jdk8.bytecode.5",
+              "title": {
+                "uk": "Instructions і control flow",
+                "en": "Instructions and control flow"
+              }
+            },
+            {
+              "id": "jdk8.bytecode.6",
+              "title": {
+                "uk": "Objects і invoke*",
+                "en": "Objects and invoke*"
+              }
+            },
+            {
+              "id": "jdk8.bytecode.7",
+              "title": {
+                "uk": "Arrays, exceptions, verifier",
+                "en": "Arrays, exceptions, verifier"
+              }
+            },
+            {
+              "id": "jdk8.bytecode.8",
+              "title": {
+                "uk": "Jasmin-style практика",
+                "en": "Jasmin-style practice"
+              }
+            },
+            {
+              "id": "jdk8.bytecode.9",
+              "title": {
+                "uk": "Java 8 bytecode patterns",
+                "en": "Java 8 bytecode patterns"
+              }
+            }
+          ]
+        },
+        {
+          "title": {
+            "uk": "JVM bytecode advanced: loading, verifier, compiler patterns",
+            "en": "JVM bytecode advanced: loading, verifier, compiler patterns"
+          },
+          "lessons": [
+            {
+              "id": "jdk8.bytecode.advanced.1",
+              "title": {
+                "uk": "Class loading/linking/init",
+                "en": "Class loading/linking/init"
+              }
+            },
+            {
+              "id": "jdk8.bytecode.advanced.2",
+              "title": {
+                "uk": "<init>, <clinit>, flags",
+                "en": "<init>, <clinit>, flags"
+              }
+            },
+            {
+              "id": "jdk8.bytecode.advanced.3",
+              "title": {
+                "uk": "Bridge і synthetic",
+                "en": "Bridge and synthetic"
+              }
+            },
+            {
+              "id": "jdk8.bytecode.advanced.4",
+              "title": {
+                "uk": "StackMapTable глибоко",
+                "en": "StackMapTable deep dive"
+              }
+            },
+            {
+              "id": "jdk8.bytecode.advanced.5",
+              "title": {
+                "uk": "try/finally і synchronized",
+                "en": "try/finally and synchronized"
+              }
+            },
+            {
+              "id": "jdk8.bytecode.advanced.6",
+              "title": {
+                "uk": "invokedynamic глибоко",
+                "en": "invokedynamic deep dive"
+              }
+            },
+            {
+              "id": "jdk8.bytecode.advanced.7",
+              "title": {
+                "uk": "Debug attributes",
+                "en": "Debug attributes"
+              }
+            },
+            {
+              "id": "jdk8.bytecode.advanced.8",
+              "title": {
+                "uk": "Bytecode capstone compiler",
+                "en": "Bytecode capstone compiler"
+              }
+            }
+          ]
+        },
+        {
+          "title": {
+            "uk": "JDK 8 bytecode cookbook: інструкції, lowering, drills",
+            "en": "JDK 8 bytecode cookbook: instructions, lowering, drills"
+          },
+          "lessons": [
+            {
+              "id": "jdk8.bytecode.cookbook.1",
+              "title": {
+                "uk": "Constants/load/store/stack",
+                "en": "Constants/load/store/stack"
+              }
+            },
+            {
+              "id": "jdk8.bytecode.cookbook.2",
+              "title": {
+                "uk": "Numeric conversions",
+                "en": "Numeric conversions"
+              }
+            },
+            {
+              "id": "jdk8.bytecode.cookbook.3",
+              "title": {
+                "uk": "Branches і switch",
+                "en": "Branches and switch"
+              }
+            },
+            {
+              "id": "jdk8.bytecode.cookbook.4",
+              "title": {
+                "uk": "Field flags",
+                "en": "Field flags"
+              }
+            },
+            {
+              "id": "jdk8.bytecode.cookbook.5",
+              "title": {
+                "uk": "Inner/anonymous/enum bytecode",
+                "en": "Inner/anonymous/enum bytecode"
+              }
+            },
+            {
+              "id": "jdk8.bytecode.cookbook.6",
+              "title": {
+                "uk": "java.lang.invoke",
+                "en": "java.lang.invoke"
+              }
+            },
+            {
+              "id": "jdk8.bytecode.cookbook.7",
+              "title": {
+                "uk": "Annotation attributes",
+                "en": "Annotation attributes"
+              }
+            },
+            {
+              "id": "jdk8.bytecode.cookbook.8",
+              "title": {
+                "uk": "Raw .class bytes",
+                "en": "Raw .class bytes"
+              }
+            },
+            {
+              "id": "jdk8.bytecode.cookbook.9",
+              "title": {
+                "uk": "Javap drills",
+                "en": "Javap drills"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

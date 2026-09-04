@@ -1,0 +1,98 @@
+{
+  "content": {
+    "uk": [
+      {
+        "type": "heading",
+        "text": "Capstone: маленький compiler у bytecode"
+      },
+      {
+        "type": "paragraph",
+        "text": "Щоб справді зрозуміти bytecode, корисно написати маленький compiler з простих виразів у stack-machine інструкції. Не обов'язково одразу генерувати .class. Спершу зробіть власний навчальний instruction list, який схожий на JVM: iconst, iload, istore, iadd, imul, ireturn."
+      },
+      {
+        "type": "code",
+        "text": "Вираз:\n  (a + 2) * b\n\nНавчальні інструкції:\n  iload a\n  iconst 2\n  iadd\n  iload b\n  imul\n  ireturn\n\nStack trace виконання:\n  [] -> [a] -> [a,2] -> [a+2] -> [a+2,b] -> [(a+2)*b]"
+      },
+      {
+        "type": "heading",
+        "text": "Етапи проєкту"
+      },
+      {
+        "type": "list",
+        "text": "1. Опишіть AST: NumberExpr, VarExpr, AddExpr, MulExpr.\n2. Напишіть compiler: Expr -> List<String> інструкцій.\n3. Напишіть interpreter для цих інструкцій зі stack.\n4. Додайте local variables map: a=3, b=4.\n5. Додайте if expression: cond ? left : right через labels.\n6. Порівняйте ваші інструкції з javap для аналогічного Java-коду.\n7. Опишіть maxStack для кожного виразу.\n8. Додайте помилки verifier-style: stack underflow, unknown local, wrong return type."
+      },
+      {
+        "type": "table",
+        "text": "AST\tмислення компілятора\nInstruction list\tзв'язок high-level -> bytecode\nStack interpreter\toperand stack\nLabels\tcontrol flow\nmaxStack\tліміти методу\nVerifier-style checks\tбезпека bytecode",
+        "tableHeader": "Компонент\tЩо тренує"
+      },
+      {
+        "type": "note",
+        "text": "Після такого навчального compiler легше переходити до справжніх інструментів на кшталт ASM: ви вже розумієте, які інструкції треба генерувати і чому verifier свариться."
+      },
+      {
+        "type": "warning",
+        "text": "Не починайте bytecode-розробку з генерації складних класів. Спершу навчіться генерувати і перевіряти маленькі методи: add, max, loop, array access, try/catch."
+      },
+      {
+        "type": "heading",
+        "text": "Практичне завдання"
+      },
+      {
+        "type": "paragraph",
+        "text": "Напишіть код, що демонструє поточну тему, і перевірте його роботу."
+      },
+      {
+        "type": "heading",
+        "text": "Рішення"
+      },
+      {
+        "type": "code",
+        "text": "public class Practice {\n    public static void main(String[] args) {\n        System.out.println(\"Success\");\n    }\n}"
+      }
+    ],
+    "en": [
+      {
+        "type": "heading",
+        "text": "Capstone: tiny compiler to bytecode"
+      },
+      {
+        "type": "paragraph",
+        "text": "To really understand bytecode, write a tiny compiler from simple expressions to stack-machine instructions. You do not need to generate .class immediately. First create your own educational instruction list resembling JVM: iconst, iload, istore, iadd, imul, ireturn."
+      },
+      {
+        "type": "code",
+        "text": "Expression:\n  (a + 2) * b\n\nEducational instructions:\n  iload a\n  iconst 2\n  iadd\n  iload b\n  imul\n  ireturn\n\nExecution stack trace:\n  [] -> [a] -> [a,2] -> [a+2] -> [a+2,b] -> [(a+2)*b]"
+      },
+      {
+        "type": "heading",
+        "text": "Project stages"
+      },
+      {
+        "type": "list",
+        "text": "1. Define AST: NumberExpr, VarExpr, AddExpr, MulExpr.\n2. Write compiler: Expr -> List<String> instructions.\n3. Write interpreter for these instructions with stack.\n4. Add local variables map: a=3, b=4.\n5. Add if expression: cond ? left : right through labels.\n6. Compare your instructions with javap for equivalent Java code.\n7. Describe maxStack for every expression.\n8. Add verifier-style errors: stack underflow, unknown local, wrong return type."
+      },
+      {
+        "type": "table",
+        "text": "AST\tcompiler thinking\nInstruction list\thigh-level -> bytecode connection\nStack interpreter\toperand stack\nLabels\tcontrol flow\nmaxStack\tmethod limits\nVerifier-style checks\tbytecode safety",
+        "tableHeader": "Component\tWhat it trains"
+      },
+      {
+        "type": "note",
+        "text": "After this educational compiler, moving to real tools such as ASM is easier: you already understand which instructions to generate and why verifier complains."
+      },
+      {
+        "type": "warning",
+        "text": "Do not start bytecode development by generating complex classes. First learn to generate and verify tiny methods: add, max, loop, array access, try/catch."
+      },
+      {
+        "type": "heading",
+        "text": "Exercise"
+      },
+      {
+        "type": "list",
+        "text": "Create AST for int arithmetic.\nGenerate instruction list for 5 different expressions.\nWrite interpreter and verify results.\nCalculate maxStack manually and automatically.\nAdd labels for if/else.\nCompare with javap of real Java method."
+      }
+    ]
+  }
+}

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="menubar_file">Plik</string>
+    <string name="menubar_edit">Edycja</string>
+    <string name="menubar_view">Widok</string>
+    <string name="menubar_navigate">Nawigacja</string>
+    <string name="menubar_code">Kod</string>
+    <string name="menubar_build">Kompilacja</string>
+    <string name="menubar_run">Uruchom</string>
+    <string name="menubar_tools">Narzędzia</string>
+    <string name="menubar_git">Git</string>
+    <string name="menubar_help">Pomoc</string>
+    <string name="menubar_new_project">Nowy projekt…</string>
+    <string name="menubar_save_as">Zapisz jako…</string>
+    <string name="menubar_panel_run">Panel uruchamiania</string>
+    <string name="menubar_panel_problems">Problemy</string>
+    <string name="menubar_panel_todo">TODO / FIXME</string>
+    <string name="menubar_panel_bytecode">Kod bajtowy</string>
+    <string name="menubar_panel_call_graph">Graf wywołań</string>
+    <string name="menubar_webview_preview">Podgląd WebView</string>
+    <string name="menubar_class_browser">Przeglądarka klas</string>
+    <string name="menubar_toggle_bookmark">Przełącz zakładkę</string>
+    <string name="menubar_show_bookmarks">Zakładki</string>
+    <string name="menubar_command_palette">Znajdź akcję…</string>
+    <string name="menu_new_file">Nowy plik…</string>
+    <string name="zen_mode_menu">Tryb Zen (pełny ekran)</string>
+    <string name="deps_title">Zależności</string>
+    <string name="menu_uml_diagram">Diagram klas UML</string>
+    <string name="run_config_title">Argumenty programu</string>
+    <string name="regex_tester_title">Tester wyrażeń regularnych</string>
+    <string name="base64_title">Koder Base64</string>
+    <string name="local_history_title">Historia lokalna</string>
+    <string name="semantic_search_title">Wyszukiwanie semantyczne (AI)</string>
+    <string name="a11y_action_voice">Wprowadzanie głosowe</string>
+    <string name="menubar_refactor">Refaktoryzacja</string>
+</resources>

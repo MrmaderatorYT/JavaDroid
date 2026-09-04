@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="menubar_file">Fáìlì</string>
+    <string name="menubar_edit">Ṣàtúnṣe</string>
+    <string name="menubar_view">Ìwò</string>
+    <string name="menubar_navigate">Ìtọ́nà</string>
+    <string name="menubar_code">Kóòdù</string>
+    <string name="menubar_build">Kọ́</string>
+    <string name="menubar_run">Ṣiṣẹ́</string>
+    <string name="menubar_tools">Àwọn irinṣẹ́</string>
+    <string name="menubar_git">Git</string>
+    <string name="menubar_help">Ìrànlọ́wọ́</string>
+    <string name="menubar_new_project">Iṣẹ́ àkànṣe tuntun…</string>
+    <string name="menubar_save_as">Fi pamọ́ bí…</string>
+    <string name="menubar_panel_run">Pánẹ́ẹ̀lì ṣiṣẹ́</string>
+    <string name="menubar_panel_problems">Àwọn ìṣòro</string>
+    <string name="menubar_panel_todo">TODO / FIXME</string>
+    <string name="menubar_panel_bytecode">Bytecode</string>
+    <string name="menubar_panel_call_graph">Àwòrán ìpè</string>
+    <string name="menubar_webview_preview">Àkọ́kọ́wò WebView</string>
+    <string name="menubar_class_browser">Aṣàwákiri kíláàsì</string>
+    <string name="menubar_toggle_bookmark">Yí àmì ìwé padà</string>
+    <string name="menubar_show_bookmarks">Àwọn àmì ìwé</string>
+    <string name="menubar_command_palette">Wá ìṣe…</string>
+    <string name="menu_new_file">Fáìlì tuntun…</string>
+    <string name="zen_mode_menu">Ipò Zen (kíkún ojú)</string>
+    <string name="deps_title">Àwọn ìgbẹ́kẹ̀lé</string>
+    <string name="menu_uml_diagram">Àwòrán kíláàsì UML</string>
+    <string name="run_config_title">Àwọn àríyànjiyàn ètò</string>
+    <string name="regex_tester_title">Aṣàyẹ̀wò regex</string>
+    <string name="base64_title">Aṣàmìsí Base64</string>
+    <string name="local_history_title">Ìtàn agbègbè</string>
+    <string name="semantic_search_title">Ìwáàrí ìtumọ̀ (AI)</string>
+    <string name="a11y_action_voice">Ìfilélẹ̀ ohùn</string>
+    <string name="menubar_refactor">Àtúnṣe</string>
+</resources>

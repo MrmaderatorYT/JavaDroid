@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="menubar_file">Faịlụ</string>
+    <string name="menubar_edit">Dezie</string>
+    <string name="menubar_view">Lelee</string>
+    <string name="menubar_navigate">Njem</string>
+    <string name="menubar_code">Koodu</string>
+    <string name="menubar_build">Wuo</string>
+    <string name="menubar_run">Gbaa</string>
+    <string name="menubar_tools">Ngwá ọrụ</string>
+    <string name="menubar_git">Git</string>
+    <string name="menubar_help">Enyemaka</string>
+    <string name="menubar_new_project">Ọrụ ọhụrụ…</string>
+    <string name="menubar_save_as">Chekwaa dị ka…</string>
+    <string name="menubar_panel_run">Ogbo ọgbọ</string>
+    <string name="menubar_panel_problems">Nsogbu</string>
+    <string name="menubar_panel_todo">TODO / FIXME</string>
+    <string name="menubar_panel_bytecode">Bytecode</string>
+    <string name="menubar_panel_call_graph">Eserese oku</string>
+    <string name="menubar_webview_preview">Nlele WebView</string>
+    <string name="menubar_class_browser">Ihe nchọgharị klaasị</string>
+    <string name="menubar_toggle_bookmark">Gbanwee akara ebe</string>
+    <string name="menubar_show_bookmarks">Akara ebe</string>
+    <string name="menubar_command_palette">Chọta omume…</string>
+    <string name="menu_new_file">Faịlụ ọhụrụ…</string>
+    <string name="zen_mode_menu">Ọnọdụ Zen (ihuenyo zuru ezu)</string>
+    <string name="deps_title">Ndabere</string>
+    <string name="menu_uml_diagram">Eserese klaasị UML</string>
+    <string name="run_config_title">Arụmụka mmemme</string>
+    <string name="regex_tester_title">Onye nnwale regex</string>
+    <string name="base64_title">Ihe nzuzo Base64</string>
+    <string name="local_history_title">Akụkọ ihe mere eme mpaghara</string>
+    <string name="semantic_search_title">Nchọta uche (AI)</string>
+    <string name="a11y_action_voice">Ntinye olu</string>
+    <string name="menubar_refactor">Hazigharịa</string>
+</resources>

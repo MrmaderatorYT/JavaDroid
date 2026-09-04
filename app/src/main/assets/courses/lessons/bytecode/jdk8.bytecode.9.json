@@ -1,0 +1,82 @@
+{
+  "content": {
+    "uk": [
+      {
+        "type": "heading",
+        "text": "Java 8 patterns у bytecode"
+      },
+      {
+        "type": "paragraph",
+        "text": "Java 8 має кілька особливих bytecode-патернів: lambdas часто компілюються через invokedynamic і LambdaMetafactory; generics стираються до raw descriptors; try-with-resources генерує код із suppressed exceptions; enhanced for над Iterable перетворюється на Iterator."
+      },
+      {
+        "type": "table",
+        "text": "lambda\tinvokedynamic + synthetic/static helper method або method handle\nmethod reference\tinvokedynamic call site\ngenerics\terased descriptors + Signature attribute\nenhanced for над Iterable\titerator(), hasNext(), next()\ntry-with-resources\ttry/finally + close + suppressed exceptions\nString concat у JDK 8\tStringBuilder chain\nswitch String\thashCode + equals + tableswitch/lookupswitch",
+        "tableHeader": "Java конструкція\tBytecode-патерн"
+      },
+      {
+        "type": "code",
+        "text": "Runnable r = () -> System.out.println(\"Hi\");\n\n# У Java 8 javap -c часто покаже:\ninvokedynamic #... // run:()Ljava/lang/Runnable;\n\n# А javap -v покаже BootstrapMethods з LambdaMetafactory."
+      },
+      {
+        "type": "code",
+        "text": "for (String s : list) {\n    System.out.println(s);\n}\n\n# Ідея bytecode:\naload list\ninvokeinterface java/util/List.iterator:()Ljava/util/Iterator;\nastore iterator\nloop:\n  aload iterator\n  invokeinterface java/util/Iterator.hasNext:()Z\n  ifeq end\n  aload iterator\n  invokeinterface java/util/Iterator.next:()Ljava/lang/Object;\n  checkcast java/lang/String"
+      },
+      {
+        "type": "note",
+        "text": "checkcast після Iterator.next з'являється через generics erasure: Iterator у runtime повертає Object, а компілятор вставляє cast до String."
+      },
+      {
+        "type": "heading",
+        "text": "Практичне завдання"
+      },
+      {
+        "type": "paragraph",
+        "text": "Напишіть код, що демонструє поточну тему, і перевірте його роботу."
+      },
+      {
+        "type": "heading",
+        "text": "Рішення"
+      },
+      {
+        "type": "code",
+        "text": "public class Practice {\n    public static void main(String[] args) {\n        System.out.println(\"Success\");\n    }\n}"
+      }
+    ],
+    "en": [
+      {
+        "type": "heading",
+        "text": "Java 8 patterns in bytecode"
+      },
+      {
+        "type": "paragraph",
+        "text": "Java 8 has several special bytecode patterns: lambdas often compile through invokedynamic and LambdaMetafactory; generics erase to raw descriptors; try-with-resources generates code with suppressed exceptions; enhanced for over Iterable becomes Iterator."
+      },
+      {
+        "type": "table",
+        "text": "lambda\tinvokedynamic + synthetic/static helper method or method handle\nmethod reference\tinvokedynamic call site\ngenerics\terased descriptors + Signature attribute\nenhanced for over Iterable\titerator(), hasNext(), next()\ntry-with-resources\ttry/finally + close + suppressed exceptions\nString concat in JDK 8\tStringBuilder chain\nswitch String\thashCode + equals + tableswitch/lookupswitch",
+        "tableHeader": "Java construct\tBytecode pattern"
+      },
+      {
+        "type": "code",
+        "text": "Runnable r = () -> System.out.println(\"Hi\");\n\n# In Java 8 javap -c often shows:\ninvokedynamic #... // run:()Ljava/lang/Runnable;\n\n# javap -v shows BootstrapMethods with LambdaMetafactory."
+      },
+      {
+        "type": "code",
+        "text": "for (String s : list) {\n    System.out.println(s);\n}\n\n# Bytecode idea:\naload list\ninvokeinterface java/util/List.iterator:()Ljava/util/Iterator;\nastore iterator\nloop:\n  aload iterator\n  invokeinterface java/util/Iterator.hasNext:()Z\n  ifeq end\n  aload iterator\n  invokeinterface java/util/Iterator.next:()Ljava/lang/Object;\n  checkcast java/lang/String"
+      },
+      {
+        "type": "note",
+        "text": "checkcast after Iterator.next appears because of generics erasure: Iterator at runtime returns Object, and the compiler inserts a cast to String."
+      },
+      {
+        "type": "heading",
+        "text": "Exercise"
+      },
+      {
+        "type": "list",
+        "text": "Compile lambda Runnable and find invokedynamic.\nCompile enhanced for over List<String> and find Iterator calls.\nCompile String concat in JDK 8 and find StringBuilder.\nCompile try-with-resources and find close and suppressed handling.\nCompile List<String>.get(0) and find checkcast."
+      }
+    ]
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "content": {
+    "uk": [
+      {
+        "type": "heading",
+        "text": "Class loading: loading, linking, initialization"
+      },
+      {
+        "type": "paragraph",
+        "text": "Коли JVM бачить клас, вона не просто одразу виконує байткод. Є фази: loading (знайти bytes класу), linking (verify, prepare, resolve) і initialization (виконати <clinit>, тобто static initialization). Розуміння цих фаз пояснює ClassNotFoundException, NoClassDefFoundError, ExceptionInInitializerError і дивні проблеми зі static."
+      },
+      {
+        "type": "table",
+        "text": "Loading\tClassLoader знаходить .class bytes\tClassNotFoundException\nVerification\tJVM перевіряє безпечність bytecode\tVerifyError\nPreparation\tвиділяється пам'ять для static fields\tрідко видно напряму\nResolution\tsymbolic refs -> direct refs\tNoSuchMethodError, NoSuchFieldError\nInitialization\tвиконується <clinit>\tExceptionInInitializerError",
+        "tableHeader": "Фаза\tЩо відбувається\tТипові помилки"
+      },
+      {
+        "type": "code",
+        "text": "class Config {\n    static final int PORT = 8080;\n    static String url = buildUrl();\n\n    static String buildUrl() {\n        return \"http://localhost:\" + PORT;\n    }\n}\n\n# javap -c Config покаже static initializer:\n# static {};\n#   invokestatic Config.buildUrl:()Ljava/lang/String;\n#   putstatic Config.url:Ljava/lang/String;"
+      },
+      {
+        "type": "note",
+        "text": "static final compile-time constants можуть бути inlined у класи-клієнти. Якщо змінити значення константи в бібліотеці, але не перекомпілювати клієнта, він може продовжити бачити старе значення."
+      },
+      {
+        "type": "warning",
+        "text": "ClassNotFoundException означає: клас не знайшли під час явного завантаження (наприклад Class.forName). NoClassDefFoundError часто означає: клас був під час компіляції, але відсутній або не ініціалізувався під час виконання."
+      },
+      {
+        "type": "heading",
+        "text": "Практичне завдання"
+      },
+      {
+        "type": "paragraph",
+        "text": "Напишіть код, що демонструє поточну тему, і перевірте його роботу."
+      },
+      {
+        "type": "heading",
+        "text": "Рішення"
+      },
+      {
+        "type": "code",
+        "text": "public class Practice {\n    public static void main(String[] args) {\n        System.out.println(\"Success\");\n    }\n}"
+      }
+    ],
+    "en": [
+      {
+        "type": "heading",
+        "text": "Class loading: loading, linking, initialization"
+      },
+      {
+        "type": "paragraph",
+        "text": "When JVM sees a class, it does not simply execute bytecode immediately. There are phases: loading (find class bytes), linking (verify, prepare, resolve), and initialization (execute <clinit>, static initialization). These phases explain ClassNotFoundException, NoClassDefFoundError, ExceptionInInitializerError, and strange static issues."
+      },
+      {
+        "type": "table",
+        "text": "Loading\tClassLoader finds .class bytes\tClassNotFoundException\nVerification\tJVM checks bytecode safety\tVerifyError\nPreparation\tmemory for static fields is allocated\trarely visible directly\nResolution\tsymbolic refs -> direct refs\tNoSuchMethodError, NoSuchFieldError\nInitialization\t<clinit> executes\tExceptionInInitializerError",
+        "tableHeader": "Phase\tWhat happens\tTypical errors"
+      },
+      {
+        "type": "code",
+        "text": "class Config {\n    static final int PORT = 8080;\n    static String url = buildUrl();\n\n    static String buildUrl() {\n        return \"http://localhost:\" + PORT;\n    }\n}\n\n# javap -c Config shows static initializer:\n# static {};\n#   invokestatic Config.buildUrl:()Ljava/lang/String;\n#   putstatic Config.url:Ljava/lang/String;"
+      },
+      {
+        "type": "note",
+        "text": "static final compile-time constants may be inlined into client classes. If you change a constant value in a library but do not recompile the client, it may keep seeing the old value."
+      },
+      {
+        "type": "warning",
+        "text": "ClassNotFoundException means the class was not found during explicit loading (for example Class.forName). NoClassDefFoundError often means the class existed during compilation but is missing or failed initialization at runtime."
+      },
+      {
+        "type": "heading",
+        "text": "Exercise"
+      },
+      {
+        "type": "list",
+        "text": "Create a class with static field calling static method.\nInspect <clinit> through javap -c -v.\nCreate a static block throwing RuntimeException and observe ExceptionInInitializerError.\nCreate public static final int CONST and check whether client inlines it.\nExplain loading vs initialization."
+      }
+    ]
+  }
+}

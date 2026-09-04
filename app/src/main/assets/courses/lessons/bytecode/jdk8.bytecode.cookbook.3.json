@@ -1,0 +1,82 @@
+{
+  "content": {
+    "uk": [
+      {
+        "type": "heading",
+        "text": "Branches, tableswitch, lookupswitch, String switch"
+      },
+      {
+        "type": "paragraph",
+        "text": "У JVM немає if/else/switch як source-конструкцій. Є conditional jumps і switch інструкції. javac обирає tableswitch, якщо int-ключі щільні, і lookupswitch, якщо ключі розріджені. String switch у Java 8 компілюється через hashCode + equals + switch."
+      },
+      {
+        "type": "table",
+        "text": "if (x == 0)\tiload x; ifne label\nif (a < b)\tiload a; iload b; if_icmpge label\nswitch 1,2,3\ttableswitch\nswitch 10,100,1000\tlookupswitch\nswitch String\thashCode switch + equals перевірки",
+        "tableHeader": "Source\tТиповий bytecode"
+      },
+      {
+        "type": "code",
+        "text": "switch (x) {\n    case 1: return \"one\";\n    case 2: return \"two\";\n    case 3: return \"three\";\n    default: return \"other\";\n}\n\n# щільні ключі -> tableswitch"
+      },
+      {
+        "type": "code",
+        "text": "switch (s) {\n    case \"A\": return 1;\n    case \"B\": return 2;\n    default: return 0;\n}\n\n# Java 8 ідея:\n# 1) s.hashCode()\n# 2) switch по hash\n# 3) equals для захисту від collisions\n# 4) switch/branch до результату"
+      },
+      {
+        "type": "warning",
+        "text": "String switch завжди має враховувати hash collisions. Тому javap-вивід може виглядати значно складніше, ніж source."
+      },
+      {
+        "type": "heading",
+        "text": "Практичне завдання"
+      },
+      {
+        "type": "paragraph",
+        "text": "Напишіть код, що демонструє поточну тему, і перевірте його роботу."
+      },
+      {
+        "type": "heading",
+        "text": "Рішення"
+      },
+      {
+        "type": "code",
+        "text": "public class Practice {\n    public static void main(String[] args) {\n        System.out.println(\"Success\");\n    }\n}"
+      }
+    ],
+    "en": [
+      {
+        "type": "heading",
+        "text": "Branches, tableswitch, lookupswitch, String switch"
+      },
+      {
+        "type": "paragraph",
+        "text": "JVM has no if/else/switch as source constructs. It has conditional jumps and switch instructions. javac chooses tableswitch when int keys are dense and lookupswitch when keys are sparse. String switch in Java 8 compiles through hashCode + equals + switch."
+      },
+      {
+        "type": "table",
+        "text": "if (x == 0)\tiload x; ifne label\nif (a < b)\tiload a; iload b; if_icmpge label\nswitch 1,2,3\ttableswitch\nswitch 10,100,1000\tlookupswitch\nswitch String\thashCode switch + equals checks",
+        "tableHeader": "Source\tTypical bytecode"
+      },
+      {
+        "type": "code",
+        "text": "switch (x) {\n    case 1: return \"one\";\n    case 2: return \"two\";\n    case 3: return \"three\";\n    default: return \"other\";\n}\n\n# dense keys -> tableswitch"
+      },
+      {
+        "type": "code",
+        "text": "switch (s) {\n    case \"A\": return 1;\n    case \"B\": return 2;\n    default: return 0;\n}\n\n# Java 8 idea:\n# 1) s.hashCode()\n# 2) switch by hash\n# 3) equals to protect from collisions\n# 4) switch/branch to result"
+      },
+      {
+        "type": "warning",
+        "text": "String switch must always account for hash collisions. Therefore javap output may look much more complex than source."
+      },
+      {
+        "type": "heading",
+        "text": "Exercise"
+      },
+      {
+        "type": "list",
+        "text": "Compile switch with case 1,2,3,4 and find tableswitch.\nCompile switch with case 1,100,1000 and find lookupswitch.\nCompile String switch and find hashCode and equals.\nCreate if/else chain and compare with switch.\nExplain why default is needed at bytecode level."
+      }
+    ]
+  }
+}

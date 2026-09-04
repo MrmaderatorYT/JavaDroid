@@ -1,0 +1,82 @@
+{
+  "content": {
+    "uk": [
+      {
+        "type": "heading",
+        "text": "<init>, <clinit>, access flags"
+      },
+      {
+        "type": "paragraph",
+        "text": "У bytecode constructor має спеціальне ім'я <init>, а static initializer — <clinit>. Це не звичайні Java-методи, їх не можна викликати як obj.<init>() у Java-коді. Кожен constructor має викликати інший constructor цього класу або super constructor."
+      },
+      {
+        "type": "code",
+        "text": "class Parent {\n    Parent() { }\n}\n\nclass Child extends Parent {\n    private final int x;\n\n    Child(int x) {\n        this.x = x;\n    }\n}\n\n# Child.<init>(I)V приблизно:\naload_0\ninvokespecial Parent.<init>:()V\naload_0\niload_1\nputfield Child.x:I\nreturn"
+      },
+      {
+        "type": "table",
+        "text": "ACC_PUBLIC\tclass/method/field\tpublic\nACC_PRIVATE\tmethod/field\tprivate\nACC_PROTECTED\tmethod/field\tprotected\nACC_STATIC\tmethod/field\tstatic\nACC_FINAL\tclass/method/field\tfinal\nACC_SUPER\tclass\tсучасна семантика invokespecial\nACC_INTERFACE\tclass\tце interface\nACC_ABSTRACT\tclass/method\tabstract\nACC_SYNTHETIC\tclass/method/field\tстворено компілятором\nACC_BRIDGE\tmethod\tbridge method для generics/covariant returns",
+        "tableHeader": "Access flag\tДе зустрічається\tСенс"
+      },
+      {
+        "type": "note",
+        "text": "Якщо в Java-класі немає constructor, javac створює default constructor, який просто викликає super.<init>(). У javap його видно як public ClassName();"
+      },
+      {
+        "type": "warning",
+        "text": "У bytecode не можна використовувати this як повністю ініціалізований об'єкт до успішного invokespecial <init>. Verifier стежить за uninitializedThis."
+      },
+      {
+        "type": "heading",
+        "text": "Практичне завдання"
+      },
+      {
+        "type": "paragraph",
+        "text": "Напишіть код, що демонструє поточну тему, і перевірте його роботу."
+      },
+      {
+        "type": "heading",
+        "text": "Рішення"
+      },
+      {
+        "type": "code",
+        "text": "public class Practice {\n    public static void main(String[] args) {\n        System.out.println(\"Success\");\n    }\n}"
+      }
+    ],
+    "en": [
+      {
+        "type": "heading",
+        "text": "<init>, <clinit>, access flags"
+      },
+      {
+        "type": "paragraph",
+        "text": "In bytecode, constructor has special name <init>, and static initializer is <clinit>. These are not normal Java methods; you cannot call obj.<init>() in Java code. Every constructor must call another constructor of this class or a super constructor."
+      },
+      {
+        "type": "code",
+        "text": "class Parent {\n    Parent() { }\n}\n\nclass Child extends Parent {\n    private final int x;\n\n    Child(int x) {\n        this.x = x;\n    }\n}\n\n# Child.<init>(I)V roughly:\naload_0\ninvokespecial Parent.<init>:()V\naload_0\niload_1\nputfield Child.x:I\nreturn"
+      },
+      {
+        "type": "table",
+        "text": "ACC_PUBLIC\tclass/method/field\tpublic\nACC_PRIVATE\tmethod/field\tprivate\nACC_PROTECTED\tmethod/field\tprotected\nACC_STATIC\tmethod/field\tstatic\nACC_FINAL\tclass/method/field\tfinal\nACC_SUPER\tclass\tmodern invokespecial semantics\nACC_INTERFACE\tclass\tthis is interface\nACC_ABSTRACT\tclass/method\tabstract\nACC_SYNTHETIC\tclass/method/field\tcreated by compiler\nACC_BRIDGE\tmethod\tbridge method for generics/covariant returns",
+        "tableHeader": "Access flag\tWhere it appears\tMeaning"
+      },
+      {
+        "type": "note",
+        "text": "If a Java class has no constructor, javac creates a default constructor that just calls super.<init>(). javap shows it as public ClassName();"
+      },
+      {
+        "type": "warning",
+        "text": "In bytecode you cannot use this as a fully initialized object before successful invokespecial <init>. Verifier tracks uninitializedThis."
+      },
+      {
+        "type": "heading",
+        "text": "Exercise"
+      },
+      {
+        "type": "list",
+        "text": "Compile a class without constructor and find default <init>.\nAdd static block and find <clinit>.\nUse javap -v to find class and method flags.\nCompare flags of normal class, abstract class, and interface.\nExplain why constructor has no return type in Java, but descriptor has V."
+      }
+    ]
+  }
+}

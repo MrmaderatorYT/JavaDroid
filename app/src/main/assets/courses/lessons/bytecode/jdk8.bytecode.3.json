@@ -1,0 +1,98 @@
+{
+  "content": {
+    "uk": [
+      {
+        "type": "heading",
+        "text": "Descriptors: мова типів bytecode"
+      },
+      {
+        "type": "paragraph",
+        "text": "Descriptor — компактний запис типу або сигнатури методу. JVM не пише int, boolean або java.lang.String словами. Вона використовує символи: I для int, Z для boolean, V для void, Ljava/lang/String; для String, [I для int[]."
+      },
+      {
+        "type": "table",
+        "text": "byte\tB\nchar\tC\ndouble\tD\nfloat\tF\nint\tI\nlong\tJ\nshort\tS\nboolean\tZ\nvoid\tV\njava.lang.String\tLjava/lang/String;\nint[]\t[I\nString[][]\t[[Ljava/lang/String;",
+        "tableHeader": "Java тип\tDescriptor"
+      },
+      {
+        "type": "code",
+        "text": "int add(int a, int b)        -> (II)I\nvoid print(String s)       -> (Ljava/lang/String;)V\nString[] split(String s)   -> (Ljava/lang/String;)[Ljava/lang/String;\nlong mix(int x, double d)  -> (ID)J"
+      },
+      {
+        "type": "heading",
+        "text": "Generic signature vs descriptor"
+      },
+      {
+        "type": "paragraph",
+        "text": "Через type erasure descriptor для List<String> і List<Integer> однаковий: Ljava/util/List;. Generic-інформація може бути збережена в атрибуті Signature, але JVM verifier працює з erased descriptor."
+      },
+      {
+        "type": "code",
+        "text": "List<String> names;\n\n# descriptor:\nLjava/util/List;\n\n# Signature attribute може містити:\nLjava/util/List<Ljava/lang/String;>;"
+      },
+      {
+        "type": "warning",
+        "text": "Помилка в descriptor майже завжди означає, що JVM не знайде метод: NoSuchMethodError або VerifyError. Для bytecode-розробки descriptors треба читати автоматично."
+      },
+      {
+        "type": "heading",
+        "text": "Практичне завдання"
+      },
+      {
+        "type": "paragraph",
+        "text": "Напишіть код, що демонструє поточну тему, і перевірте його роботу."
+      },
+      {
+        "type": "heading",
+        "text": "Рішення"
+      },
+      {
+        "type": "code",
+        "text": "public class Practice {\n    public static void main(String[] args) {\n        System.out.println(\"Success\");\n    }\n}"
+      }
+    ],
+    "en": [
+      {
+        "type": "heading",
+        "text": "Descriptors: bytecode type language"
+      },
+      {
+        "type": "paragraph",
+        "text": "A descriptor is a compact notation for a type or method signature. JVM does not write int, boolean, or java.lang.String as words. It uses symbols: I for int, Z for boolean, V for void, Ljava/lang/String; for String, [I for int[]."
+      },
+      {
+        "type": "table",
+        "text": "byte\tB\nchar\tC\ndouble\tD\nfloat\tF\nint\tI\nlong\tJ\nshort\tS\nboolean\tZ\nvoid\tV\njava.lang.String\tLjava/lang/String;\nint[]\t[I\nString[][]\t[[Ljava/lang/String;",
+        "tableHeader": "Java type\tDescriptor"
+      },
+      {
+        "type": "code",
+        "text": "int add(int a, int b)        -> (II)I\nvoid print(String s)       -> (Ljava/lang/String;)V\nString[] split(String s)   -> (Ljava/lang/String;)[Ljava/lang/String;\nlong mix(int x, double d)  -> (ID)J"
+      },
+      {
+        "type": "heading",
+        "text": "Generic signature vs descriptor"
+      },
+      {
+        "type": "paragraph",
+        "text": "Because of type erasure, descriptor for List<String> and List<Integer> is the same: Ljava/util/List;. Generic information may be stored in Signature attribute, but JVM verifier works with erased descriptor."
+      },
+      {
+        "type": "code",
+        "text": "List<String> names;\n\n# descriptor:\nLjava/util/List;\n\n# Signature attribute may contain:\nLjava/util/List<Ljava/lang/String;>;"
+      },
+      {
+        "type": "warning",
+        "text": "A wrong descriptor almost always means JVM cannot find a method: NoSuchMethodError or VerifyError. For bytecode development, descriptors must become automatic."
+      },
+      {
+        "type": "heading",
+        "text": "Exercise"
+      },
+      {
+        "type": "list",
+        "text": "Write descriptor for void main(String[] args).\nWrite descriptor for int[][] make(int size).\nWrite descriptor for boolean contains(String s, char c).\nUse javap -s to inspect descriptors in your own class.\nExplain why long uses J, not L."
+      }
+    ]
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "content": {
+    "uk": [
+      {
+        "type": "heading",
+        "text": "Що означає \"писати bytecode\""
+      },
+      {
+        "type": "paragraph",
+        "text": "JVM bytecode — це інструкції для Java Virtual Machine. Java-файл компілюється у .class, а .class містить constant pool, поля, методи, атрибути та байткод методів. Розробка на чистому bytecode означає, що ви думаєте не класами високого рівня, а стеком операндів, локальними змінними, дескрипторами і інструкціями на кшталт iload, iadd, invokevirtual."
+      },
+      {
+        "type": "note",
+        "text": "Для Android важливо: JVM .class bytecode потім перетворюється Android toolchain у DEX bytecode для ART/Dalvik. Але розуміння JVM bytecode все одно пояснює javac, generics erasure, lambdas, stack traces і багато помилок компіляції."
+      },
+      {
+        "type": "table",
+        "text": "Java source\tHello.java\tредактор, javac\nJVM bytecode\tHello.class\tjavap -c -v\nAndroid bytecode\tclasses.dex\tdex tools / Android build tools\nRuntime\tstack trace, VerifyError, ClassNotFoundException\tJVM/ART logs",
+        "tableHeader": "Рівень\tЩо бачите\tІнструмент"
+      },
+      {
+        "type": "code",
+        "text": "public class Hello {\n    public static void main(String[] args) {\n        System.out.println(\"Hi\");\n    }\n}\n\n# Компіляція JDK 8 стилем\njavac Hello.java\n\n# Дивимось bytecode\njavap -c -v Hello"
+      },
+      {
+        "type": "paragraph",
+        "text": "JVM — стекова машина. Більшість інструкцій бере значення зі stack, кладе результат назад на stack або читає/пише local variables. Наприклад, iadd знімає два int зі stack і кладе результат."
+      },
+      {
+        "type": "warning",
+        "text": "JDK сам по собі не має офіційного текстового assembler для .class. Для навчання часто використовують Jasmin-style синтаксис або бібліотеки на кшталт ASM. У цьому розділі приклади bytecode даються як навчальна assembly-форма і як javap-вивід."
+      },
+      {
+        "type": "heading",
+        "text": "Практичне завдання "
+      },
+      {
+        "type": "paragraph",
+        "text": "Напишіть код, що демонструє поточну тему, і перевірте його роботу."
+      },
+      {
+        "type": "heading",
+        "text": "Рішення"
+      },
+      {
+        "type": "code",
+        "text": "public class Practice {\n    public static void main(String[] args) {\n        System.out.println(\"Success\");\n    }\n}"
+      }
+    ],
+    "en": [
+      {
+        "type": "heading",
+        "text": "What \"writing bytecode\" means"
+      },
+      {
+        "type": "paragraph",
+        "text": "JVM bytecode is the instruction set for the Java Virtual Machine. A Java file is compiled into .class; a .class file contains constant pool, fields, methods, attributes, and method bytecode. Pure bytecode development means thinking not in high-level classes, but in operand stack, local variables, descriptors, and instructions such as iload, iadd, invokevirtual."
+      },
+      {
+        "type": "note",
+        "text": "For Android: JVM .class bytecode is later converted by the Android toolchain into DEX bytecode for ART/Dalvik. Still, JVM bytecode explains javac, generics erasure, lambdas, stack traces, and many compilation/runtime errors."
+      },
+      {
+        "type": "table",
+        "text": "Java source\tHello.java\teditor, javac\nJVM bytecode\tHello.class\tjavap -c -v\nAndroid bytecode\tclasses.dex\tdex tools / Android build tools\nRuntime\tstack trace, VerifyError, ClassNotFoundException\tJVM/ART logs",
+        "tableHeader": "Level\tWhat you see\tTool"
+      },
+      {
+        "type": "code",
+        "text": "public class Hello {\n    public static void main(String[] args) {\n        System.out.println(\"Hi\");\n    }\n}\n\n# Compile in JDK 8 style\njavac Hello.java\n\n# Inspect bytecode\njavap -c -v Hello"
+      },
+      {
+        "type": "paragraph",
+        "text": "The JVM is a stack machine. Most instructions take values from the operand stack, put results back on the stack, or read/write local variables. For example, iadd pops two int values and pushes the result."
+      },
+      {
+        "type": "warning",
+        "text": "The JDK itself has no official textual assembler for .class files. For learning, people often use Jasmin-style syntax or libraries such as ASM. In this section, bytecode examples are shown as educational assembly and javap output."
+      },
+      {
+        "type": "heading",
+        "text": "Exercise"
+      },
+      {
+        "type": "list",
+        "text": "Create Hello.java and compile it with javac.\nRun javap -c Hello and find getstatic, ldc, invokevirtual, return.\nRun javap -v Hello and find major version. For Java 8 it is 52.\nExplain why System.out.println in bytecode is not one instruction."
+      }
+    ]
+  }
+}

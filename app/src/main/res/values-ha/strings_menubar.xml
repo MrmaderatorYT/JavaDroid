@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="menubar_file">Fayil</string>
+    <string name="menubar_edit">Gyara</string>
+    <string name="menubar_view">Kallo</string>
+    <string name="menubar_navigate">Kewaya</string>
+    <string name="menubar_code">Lamba</string>
+    <string name="menubar_build">Ginawa</string>
+    <string name="menubar_run">Gudanar</string>
+    <string name="menubar_tools">Kayan aiki</string>
+    <string name="menubar_git">Git</string>
+    <string name="menubar_help">Taimako</string>
+    <string name="menubar_new_project">Sabon aiki…</string>
+    <string name="menubar_save_as">Ajiye a matsayin…</string>
+    <string name="menubar_panel_run">Fannin gudanarwa</string>
+    <string name="menubar_panel_problems">Matsaloli</string>
+    <string name="menubar_panel_todo">TODO / FIXME</string>
+    <string name="menubar_panel_bytecode">Bytecode</string>
+    <string name="menubar_panel_call_graph">Jadawalin kira</string>
+    <string name="menubar_webview_preview">Duban WebView</string>
+    <string name="menubar_class_browser">Mai binciken azuzuwa</string>
+    <string name="menubar_toggle_bookmark">Sauya alamar shafi</string>
+    <string name="menubar_show_bookmarks">Alamun shafi</string>
+    <string name="menubar_command_palette">Nemi aiki…</string>
+    <string name="menu_new_file">Sabon fayil…</string>
+    <string name="zen_mode_menu">Yanayin Zen (cikakken allo)</string>
+    <string name="deps_title">Dogaro</string>
+    <string name="menu_uml_diagram">Zanen azuzuwa na UML</string>
+    <string name="run_config_title">Gardamomin shirin</string>
+    <string name="regex_tester_title">Mai gwada regex</string>
+    <string name="base64_title">Mai sanya lambar Base64</string>
+    <string name="local_history_title">Tarihin gida</string>
+    <string name="semantic_search_title">Bincike na ma’ana (AI)</string>
+    <string name="a11y_action_voice">Shigar da murya</string>
+    <string name="menubar_refactor">Sake tsarawa</string>
+</resources>

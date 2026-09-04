@@ -1,0 +1,98 @@
+{
+  "content": {
+    "uk": [
+      {
+        "type": "heading",
+        "text": "Constants, loads, stores, stack manipulation"
+      },
+      {
+        "type": "paragraph",
+        "text": "Перший рівень чистого bytecode — автоматично читати, як значення потрапляють на operand stack і назад у local variables. У JVM майже все відбувається через push на stack, операцію, store або return."
+      },
+      {
+        "type": "table",
+        "text": "int constants\ticonst_m1..iconst_5, bipush, sipush, ldc\tпокласти int на stack\nlong/float/double constants\tlconst_0, fconst_1, dconst_0, ldc2_w\tпокласти wide/value constants\nreference constants\taconst_null, ldc \"text\"\tnull або String/Class constant\nloads\tiload, lload, fload, dload, aload\tlocal -> stack\nstores\tistore, lstore, fstore, dstore, astore\tstack -> local\nstack ops\tpop, pop2, dup, dup_x1, dup2, swap\tпереставити або дублювати stack values",
+        "tableHeader": "Група\tІнструкції\tЩо роблять"
+      },
+      {
+        "type": "code",
+        "text": "public int demo(int x) {\n    int y = 10;\n    return x + y;\n}\n\n# javap -c ідея:\n0: bipush 10     // push constant 10\n2: istore_2      // y = 10\n3: iload_1       // push x\n4: iload_2       // push y\n5: iadd          // x + y\n6: ireturn"
+      },
+      {
+        "type": "heading",
+        "text": "dup у реальному коді"
+      },
+      {
+        "type": "code",
+        "text": "Object o = new Object();\n\n# bytecode pattern:\nnew java/lang/Object\ndup\ninvokespecial java/lang/Object/<init>()V\nastore_1"
+      },
+      {
+        "type": "note",
+        "text": "dup копіює reference на top of stack. Один reference піде в constructor <init>, другий лишиться, щоб зберегти об'єкт у local variable."
+      },
+      {
+        "type": "warning",
+        "text": "Stack category matters: int/reference/float займають category 1, long/double — category 2. Тому pop2/dup2 існують не випадково."
+      },
+      {
+        "type": "heading",
+        "text": "Практичне завдання"
+      },
+      {
+        "type": "paragraph",
+        "text": "Напишіть код, що демонструє поточну тему, і перевірте його роботу."
+      },
+      {
+        "type": "heading",
+        "text": "Рішення"
+      },
+      {
+        "type": "code",
+        "text": "public class Practice {\n    public static void main(String[] args) {\n        System.out.println(\"Success\");\n    }\n}"
+      }
+    ],
+    "en": [
+      {
+        "type": "heading",
+        "text": "Constants, loads, stores, stack manipulation"
+      },
+      {
+        "type": "paragraph",
+        "text": "The first level of pure bytecode is reading how values move onto the operand stack and back into local variables. In JVM, almost everything happens through push to stack, operation, store, or return."
+      },
+      {
+        "type": "table",
+        "text": "int constants\ticonst_m1..iconst_5, bipush, sipush, ldc\tpush int to stack\nlong/float/double constants\tlconst_0, fconst_1, dconst_0, ldc2_w\tpush wide/value constants\nreference constants\taconst_null, ldc \"text\"\tnull or String/Class constant\nloads\tiload, lload, fload, dload, aload\tlocal -> stack\nstores\tistore, lstore, fstore, dstore, astore\tstack -> local\nstack ops\tpop, pop2, dup, dup_x1, dup2, swap\trearrange or duplicate stack values",
+        "tableHeader": "Group\tInstructions\tPurpose"
+      },
+      {
+        "type": "code",
+        "text": "public int demo(int x) {\n    int y = 10;\n    return x + y;\n}\n\n# javap -c idea:\n0: bipush 10     // push constant 10\n2: istore_2      // y = 10\n3: iload_1       // push x\n4: iload_2       // push y\n5: iadd          // x + y\n6: ireturn"
+      },
+      {
+        "type": "heading",
+        "text": "dup in real code"
+      },
+      {
+        "type": "code",
+        "text": "Object o = new Object();\n\n# bytecode pattern:\nnew java/lang/Object\ndup\ninvokespecial java/lang/Object/<init>()V\nastore_1"
+      },
+      {
+        "type": "note",
+        "text": "dup copies the reference on top of stack. One reference goes into constructor <init>, the other remains to store the object in local variable."
+      },
+      {
+        "type": "warning",
+        "text": "Stack category matters: int/reference/float are category 1, long/double are category 2. That is why pop2/dup2 exist."
+      },
+      {
+        "type": "heading",
+        "text": "Exercise"
+      },
+      {
+        "type": "list",
+        "text": "Compile int y = 5, 100, 1000 and compare iconst/bipush/sipush/ldc.\nCompile String s = \"abc\" and find ldc.\nCompile long x = 1L and find lconst_1 or ldc2_w.\nWrite stack state for new Object().\nExplain why long/double use two local slots."
+      }
+    ]
+  }
+}

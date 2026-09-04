@@ -1,0 +1,92 @@
+{
+  "content": {
+    "uk": [
+      {
+        "type": "heading",
+        "text": "Operand stack і local variables"
+      },
+      {
+        "type": "paragraph",
+        "text": "Кожен виклик методу має frame. Frame містить local variables array і operand stack. Local variables — слоти для this, параметрів і локальних змінних. Operand stack — робочий стек, через який інструкції передають значення одна одній."
+      },
+      {
+        "type": "table",
+        "text": "int, float, reference, returnAddress\t1 slot\nlong, double\t2 slots\nthis у non-static методі\tlocal 0\nперший параметр static методу\tlocal 0\nперший параметр instance методу\tlocal 1, бо local 0 = this",
+        "tableHeader": "Категорія\tСлоти"
+      },
+      {
+        "type": "code",
+        "text": "public int add(int a, int b) {\n    return a + b;\n}\n\n# javap -c приблизно:\n0: iload_1   // push local 1: a\n1: iload_2   // push local 2: b\n2: iadd      // pop a,b; push a+b\n3: ireturn   // return int from stack"
+      },
+      {
+        "type": "heading",
+        "text": "Стан stack покроково"
+      },
+      {
+        "type": "table",
+        "text": "start\t[]\niload_1\t[a]\niload_2\t[a, b]\niadd\t[a+b]\nireturn\t[] метод завершено",
+        "tableHeader": "Після інструкції\tOperand stack"
+      },
+      {
+        "type": "warning",
+        "text": "Тип return має відповідати значенню на stack. Якщо метод має descriptor ()I, перед ireturn на stack має лежати int. Для reference використовується areturn, для void — return без значення."
+      },
+      {
+        "type": "heading",
+        "text": "Практичне завдання"
+      },
+      {
+        "type": "paragraph",
+        "text": "Напишіть код, що демонструє поточну тему, і перевірте його роботу."
+      },
+      {
+        "type": "heading",
+        "text": "Рішення"
+      },
+      {
+        "type": "code",
+        "text": "public class Practice {\n    public static void main(String[] args) {\n        System.out.println(\"Success\");\n    }\n}"
+      }
+    ],
+    "en": [
+      {
+        "type": "heading",
+        "text": "Operand stack and local variables"
+      },
+      {
+        "type": "paragraph",
+        "text": "Every method invocation has a frame. The frame contains local variables array and operand stack. Local variables are slots for this, parameters, and locals. Operand stack is the working stack through which instructions pass values."
+      },
+      {
+        "type": "table",
+        "text": "int, float, reference, returnAddress\t1 slot\nlong, double\t2 slots\nthis in non-static method\tlocal 0\nfirst parameter of static method\tlocal 0\nfirst parameter of instance method\tlocal 1 because local 0 = this",
+        "tableHeader": "Category\tSlots"
+      },
+      {
+        "type": "code",
+        "text": "public int add(int a, int b) {\n    return a + b;\n}\n\n# javap -c roughly:\n0: iload_1   // push local 1: a\n1: iload_2   // push local 2: b\n2: iadd      // pop a,b; push a+b\n3: ireturn   // return int from stack"
+      },
+      {
+        "type": "heading",
+        "text": "Stack state step by step"
+      },
+      {
+        "type": "table",
+        "text": "start\t[]\niload_1\t[a]\niload_2\t[a, b]\niadd\t[a+b]\nireturn\t[] method finished",
+        "tableHeader": "After instruction\tOperand stack"
+      },
+      {
+        "type": "warning",
+        "text": "Return type must match the value on stack. If method descriptor is ()I, an int must be on stack before ireturn. For reference use areturn, for void use return with no value."
+      },
+      {
+        "type": "heading",
+        "text": "Exercise"
+      },
+      {
+        "type": "list",
+        "text": "Compile int square(int x) and write stack after every instruction.\nCompile static int add(int a, int b) and compare local indexes with instance method.\nCompile long sum(long a, long b) and inspect how long occupies slots.\nExplain iload_1 vs aload_1."
+      }
+    ]
+  }
+}

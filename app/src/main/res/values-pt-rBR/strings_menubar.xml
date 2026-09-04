@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="menubar_file">Arquivo</string>
+    <string name="menubar_edit">Editar</string>
+    <string name="menubar_view">Exibir</string>
+    <string name="menubar_navigate">Navegar</string>
+    <string name="menubar_code">Código</string>
+    <string name="menubar_build">Compilar</string>
+    <string name="menubar_run">Executar</string>
+    <string name="menubar_tools">Ferramentas</string>
+    <string name="menubar_git">Git</string>
+    <string name="menubar_help">Ajuda</string>
+    <string name="menubar_new_project">Novo projeto…</string>
+    <string name="menubar_save_as">Salvar como…</string>
+    <string name="menubar_panel_run">Painel de execução</string>
+    <string name="menubar_panel_problems">Problemas</string>
+    <string name="menubar_panel_todo">TODO / FIXME</string>
+    <string name="menubar_panel_bytecode">Bytecode</string>
+    <string name="menubar_panel_call_graph">Grafo de chamadas</string>
+    <string name="menubar_webview_preview">Prévia no WebView</string>
+    <string name="menubar_class_browser">Navegador de classes</string>
+    <string name="menubar_toggle_bookmark">Alternar marcador</string>
+    <string name="menubar_show_bookmarks">Marcadores</string>
+    <string name="menubar_command_palette">Localizar ação…</string>
+    <string name="menu_new_file">Novo arquivo…</string>
+    <string name="zen_mode_menu">Modo Zen (tela cheia)</string>
+    <string name="deps_title">Dependências</string>
+    <string name="menu_uml_diagram">Diagrama de classes UML</string>
+    <string name="run_config_title">Argumentos do programa</string>
+    <string name="regex_tester_title">Testador de regex</string>
+    <string name="base64_title">Codificador Base64</string>
+    <string name="local_history_title">Histórico local</string>
+    <string name="semantic_search_title">Busca semântica (IA)</string>
+    <string name="a11y_action_voice">Entrada por voz</string>
+    <string name="menubar_refactor">Refatorar</string>
+</resources>

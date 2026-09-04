@@ -1,0 +1,82 @@
+{
+  "content": {
+    "uk": [
+      {
+        "type": "heading",
+        "text": "Читання raw .class bytes"
+      },
+      {
+        "type": "paragraph",
+        "text": "Для глибокого bytecode корисно хоча б один раз прочитати .class як bytes. Не треба писати повний parser одразу. Почніть з magic, minor_version, major_version і constant_pool_count. Усі багатобайтові числа в class file — big-endian."
+      },
+      {
+        "type": "table",
+        "text": "0\tmagic 0xCAFEBABE\t4 bytes\n4\tminor_version\t2 bytes\n6\tmajor_version\t2 bytes\n8\tconstant_pool_count\t2 bytes\n10+\tconstant_pool entries\tvariable",
+        "tableHeader": "Offset\tПоле\tРозмір"
+      },
+      {
+        "type": "code",
+        "text": "static int u1(byte[] data, int off) {\n    return data[off] & 0xFF;\n}\n\nstatic int u2(byte[] data, int off) {\n    return ((data[off] & 0xFF) << 8)\n         |  (data[off + 1] & 0xFF);\n}\n\nstatic long u4(byte[] data, int off) {\n    return ((long) u2(data, off) << 16) | u2(data, off + 2);\n}"
+      },
+      {
+        "type": "code",
+        "text": "byte[] bytes = Files.readAllBytes(Paths.get(\"Hello.class\"));\nlong magic = u4(bytes, 0);\nint minor = u2(bytes, 4);\nint major = u2(bytes, 6);\nint cpCount = u2(bytes, 8);\n\nSystem.out.println(Long.toHexString(magic)); // cafebabe\nSystem.out.println(major); // Java 8 -> 52"
+      },
+      {
+        "type": "warning",
+        "text": "constant_pool індексується з 1, не з 0. Long і Double займають два entries. Це класична пастка при написанні власного class parser."
+      },
+      {
+        "type": "heading",
+        "text": "Практичне завдання"
+      },
+      {
+        "type": "paragraph",
+        "text": "Напишіть код, що демонструє поточну тему, і перевірте його роботу."
+      },
+      {
+        "type": "heading",
+        "text": "Рішення"
+      },
+      {
+        "type": "code",
+        "text": "public class Practice {\n    public static void main(String[] args) {\n        System.out.println(\"Success\");\n    }\n}"
+      }
+    ],
+    "en": [
+      {
+        "type": "heading",
+        "text": "Reading raw .class bytes"
+      },
+      {
+        "type": "paragraph",
+        "text": "For deep bytecode, it helps to read .class as bytes at least once. You do not need a full parser immediately. Start with magic, minor_version, major_version, and constant_pool_count. All multi-byte numbers in class file are big-endian."
+      },
+      {
+        "type": "table",
+        "text": "0\tmagic 0xCAFEBABE\t4 bytes\n4\tminor_version\t2 bytes\n6\tmajor_version\t2 bytes\n8\tconstant_pool_count\t2 bytes\n10+\tconstant_pool entries\tvariable",
+        "tableHeader": "Offset\tField\tSize"
+      },
+      {
+        "type": "code",
+        "text": "static int u1(byte[] data, int off) {\n    return data[off] & 0xFF;\n}\n\nstatic int u2(byte[] data, int off) {\n    return ((data[off] & 0xFF) << 8)\n         |  (data[off + 1] & 0xFF);\n}\n\nstatic long u4(byte[] data, int off) {\n    return ((long) u2(data, off) << 16) | u2(data, off + 2);\n}"
+      },
+      {
+        "type": "code",
+        "text": "byte[] bytes = Files.readAllBytes(Paths.get(\"Hello.class\"));\nlong magic = u4(bytes, 0);\nint minor = u2(bytes, 4);\nint major = u2(bytes, 6);\nint cpCount = u2(bytes, 8);\n\nSystem.out.println(Long.toHexString(magic)); // cafebabe\nSystem.out.println(major); // Java 8 -> 52"
+      },
+      {
+        "type": "warning",
+        "text": "constant_pool is indexed from 1, not 0. Long and Double occupy two entries. This is a classic trap when writing your own class parser."
+      },
+      {
+        "type": "heading",
+        "text": "Exercise"
+      },
+      {
+        "type": "list",
+        "text": "Read magic/major/minor from your own .class.\nVerify Java 8 class has major 52.\nRead constant_pool_count.\nAdd parsing for CONSTANT_Utf8 entries only.\nExplain why byte must be masked with & 0xFF."
+      }
+    ]
+  }
+}

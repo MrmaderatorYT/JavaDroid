@@ -1,0 +1,82 @@
+{
+  "content": {
+    "uk": [
+      {
+        "type": "heading",
+        "text": "Fields: static, final, volatile, transient"
+      },
+      {
+        "type": "paragraph",
+        "text": "Поля в class file мають descriptors, access flags і attributes. На bytecode-рівні читання/запис поля — це getfield/putfield або getstatic/putstatic. Модифікатори final, volatile, transient представлені flags."
+      },
+      {
+        "type": "table",
+        "text": "static\tACC_STATIC + getstatic/putstatic\nfinal\tACC_FINAL; для compile-time constants може бути ConstantValue\nvolatile\tACC_VOLATILE; JVM memory semantics\ntransient\tACC_TRANSIENT; serialization ігнорує поле\nprivate\tACC_PRIVATE; access перевіряється verifier/runtime",
+        "tableHeader": "Java field\tBytecode flag / pattern"
+      },
+      {
+        "type": "code",
+        "text": "class Flags {\n    static int counter;\n    final int id = 10;\n    volatile boolean running;\n    transient String cache;\n}\n\n# javap -v Flags покаже flags полів."
+      },
+      {
+        "type": "paragraph",
+        "text": "final instance field зазвичай записується у constructor через putfield. static final compile-time constant може мати ConstantValue attribute і бути inlined у клієнтів."
+      },
+      {
+        "type": "warning",
+        "text": "volatile не змінює opcode getfield/putfield на щось інше у javap-виводі. Семантика volatile закладена у field access rules JVM і memory model."
+      },
+      {
+        "type": "heading",
+        "text": "Практичне завдання"
+      },
+      {
+        "type": "paragraph",
+        "text": "Напишіть код, що демонструє поточну тему, і перевірте його роботу."
+      },
+      {
+        "type": "heading",
+        "text": "Рішення"
+      },
+      {
+        "type": "code",
+        "text": "public class Practice {\n    public static void main(String[] args) {\n        System.out.println(\"Success\");\n    }\n}"
+      }
+    ],
+    "en": [
+      {
+        "type": "heading",
+        "text": "Fields: static, final, volatile, transient"
+      },
+      {
+        "type": "paragraph",
+        "text": "Fields in class file have descriptors, access flags, and attributes. At bytecode level, field read/write is getfield/putfield or getstatic/putstatic. Modifiers final, volatile, transient are represented as flags."
+      },
+      {
+        "type": "table",
+        "text": "static\tACC_STATIC + getstatic/putstatic\nfinal\tACC_FINAL; compile-time constants may have ConstantValue\nvolatile\tACC_VOLATILE; JVM memory semantics\ntransient\tACC_TRANSIENT; serialization ignores field\nprivate\tACC_PRIVATE; access checked by verifier/runtime",
+        "tableHeader": "Java field\tBytecode flag / pattern"
+      },
+      {
+        "type": "code",
+        "text": "class Flags {\n    static int counter;\n    final int id = 10;\n    volatile boolean running;\n    transient String cache;\n}\n\n# javap -v Flags shows field flags."
+      },
+      {
+        "type": "paragraph",
+        "text": "A final instance field is usually written in constructor through putfield. A static final compile-time constant may have ConstantValue attribute and be inlined into clients."
+      },
+      {
+        "type": "warning",
+        "text": "volatile does not change getfield/putfield opcode into something else in javap output. Volatile semantics are in JVM field access rules and memory model."
+      },
+      {
+        "type": "heading",
+        "text": "Exercise"
+      },
+      {
+        "type": "list",
+        "text": "Create static/final/volatile/transient fields and open javap -v.\nFind ConstantValue for static final int.\nFind putfield of final field in constructor.\nExplain why transient is visible in class file, although it is about serialization.\nExplain why volatile matters even if opcode looks like normal getfield."
+      }
+    ]
+  }
+}

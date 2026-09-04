@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="menubar_file">फ़ाइल</string>
+    <string name="menubar_edit">संपादन</string>
+    <string name="menubar_view">दृश्य</string>
+    <string name="menubar_navigate">नेविगेट</string>
+    <string name="menubar_code">कोड</string>
+    <string name="menubar_build">बिल्ड</string>
+    <string name="menubar_run">रन</string>
+    <string name="menubar_tools">उपकरण</string>
+    <string name="menubar_git">Git</string>
+    <string name="menubar_help">मदद</string>
+    <string name="menubar_new_project">नया प्रोजेक्ट…</string>
+    <string name="menubar_save_as">इस रूप में सहेजें…</string>
+    <string name="menubar_panel_run">रन पैनल</string>
+    <string name="menubar_panel_problems">समस्याएँ</string>
+    <string name="menubar_panel_todo">TODO / FIXME</string>
+    <string name="menubar_panel_bytecode">बाइटकोड</string>
+    <string name="menubar_panel_call_graph">कॉल ग्राफ़</string>
+    <string name="menubar_webview_preview">WebView पूर्वावलोकन</string>
+    <string name="menubar_class_browser">क्लास ब्राउज़र</string>
+    <string name="menubar_toggle_bookmark">बुकमार्क टॉगल करें</string>
+    <string name="menubar_show_bookmarks">बुकमार्क</string>
+    <string name="menubar_command_palette">क्रिया खोजें…</string>
+    <string name="menu_new_file">नई फ़ाइल…</string>
+    <string name="zen_mode_menu">ज़ेन मोड (पूरी स्क्रीन)</string>
+    <string name="deps_title">निर्भरताएँ</string>
+    <string name="menu_uml_diagram">UML क्लास आरेख</string>
+    <string name="run_config_title">प्रोग्राम आर्ग्युमेंट</string>
+    <string name="regex_tester_title">रेगेक्स टेस्टर</string>
+    <string name="base64_title">Base64 एनकोडर</string>
+    <string name="local_history_title">स्थानीय इतिहास</string>
+    <string name="semantic_search_title">अर्थपूर्ण खोज (AI)</string>
+    <string name="a11y_action_voice">वॉइस इनपुट</string>
+    <string name="menubar_refactor">रीफ़ैक्टर</string>
+</resources>
