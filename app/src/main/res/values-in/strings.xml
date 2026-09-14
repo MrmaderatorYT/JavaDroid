@@ -36,7 +36,7 @@
     <string name="replace_hint">Ganti dengan…</string>
     <string name="replace">Ganti</string>
     <string name="replace_all">Semua</string>
-    <string name="tab_run">▶  Run</string>
+    <string name="tab_run">Run</string>
     <string name="tab_problems">Masalah</string>
     <string name="tab_bytecode">Bytecode</string>
     <string name="tab_debug">Threads &amp; Variables</string>

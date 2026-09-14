@@ -6,6 +6,7 @@ public class FileTab {
 
     public final File file;
     public boolean isModified;
+    public boolean isPinned;
     /** Байтки .class файлу (для байткод-в'ювера); null для текстових файлів. */
     public byte[] classBytes;
 
@@ -25,6 +26,7 @@ public class FileTab {
     public FileTab(File file) {
         this.file = file;
         this.isModified = false;
+        this.isPinned = false;
     }
 
     /** Чи є ця вкладка .class-файлом (бінарним). */
@@ -33,6 +35,7 @@ public class FileTab {
     }
 
     public String getDisplayName() {
-        return isModified ? file.getName() + " \u25cf" : file.getName();
+        String prefix = isPinned ? "\ud83d\udccc " : "";
+        return prefix + (isModified ? file.getName() + " \u25cf" : file.getName());
     }
 }

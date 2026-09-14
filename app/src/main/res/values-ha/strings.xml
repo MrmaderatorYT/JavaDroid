@@ -37,7 +37,7 @@
     <string name="replace_hint">Musanya da…</string>
     <string name="replace">Musanya</string>
     <string name="replace_all">Duka</string>
-    <string name="tab_run">▶ Gudu</string>
+    <string name="tab_run">Gudu</string>
     <string name="tab_problems">Batutuwa</string>
     <string name="tab_bytecode">Bytecode</string>
     <string name="tab_debug">▶ Debug</string>

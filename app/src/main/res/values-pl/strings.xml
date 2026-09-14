@@ -37,7 +37,7 @@ Następnie wklej go poniżej:</string>
     <string name="replace_hint">Zamień na…</string>
     <string name="replace">Zamień</string>
     <string name="replace_all">Wszystkie</string>
-    <string name="tab_run">▶  Uruchom</string>
+    <string name="tab_run">Uruchom</string>
     <string name="tab_problems">Problemy</string>
     <string name="tab_bytecode">Bytecode</string>
     <string name="tab_debug">Wątki i zmienne</string>

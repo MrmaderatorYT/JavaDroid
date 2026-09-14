@@ -8,6 +8,8 @@ import com.ccs.javadroid.util.AppTheme;
 import com.ccs.javadroid.util.FullScreenHelper;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
@@ -52,6 +54,7 @@ public class GitActivity extends AppCompatActivity {
     private static final int TAB_BRANCHES = 3;
     private static final int TAB_REMOTE   = 4;
     private static final int TAB_DIFF     = 5;
+    private static final int TAB_FORGE    = 6;
 
     private AppPreferences prefs;
     private AppTheme theme;
@@ -67,7 +70,7 @@ public class GitActivity extends AppCompatActivity {
     private TextView headerStats;
 
     // Tab bar
-    private TextView tStatus, tCommit, tLog, tBranches, tRemote, tDiff;
+    private TextView tStatus, tCommit, tLog, tBranches, tRemote, tDiff, tForge;
     private FrameLayout panel;
 
     private final ExecutorService io = Executors.newSingleThreadExecutor();
@@ -156,12 +159,14 @@ public class GitActivity extends AppCompatActivity {
         tBranches = makeTab(getString(R.string.git_tab_branches), TAB_BRANCHES);
         tRemote   = makeTab(getString(R.string.git_tab_remote),   TAB_REMOTE);
         tDiff     = makeTab(getString(R.string.git_tab_diff),     TAB_DIFF);
+        tForge    = makeTab(getString(R.string.git_tab_forge),    TAB_FORGE);
         tabs.addView(tStatus);
         tabs.addView(tCommit);
         tabs.addView(tLog);
         tabs.addView(tBranches);
         tabs.addView(tRemote);
         tabs.addView(tDiff);
+        tabs.addView(tForge);
         hs.addView(tabs);
         root.addView(hs);
 
@@ -200,6 +205,7 @@ public class GitActivity extends AppCompatActivity {
         tBranches.setBackgroundColor(id == TAB_BRANCHES ? active : inactive);
         tRemote.setBackgroundColor(id == TAB_REMOTE ? active : inactive);
         tDiff.setBackgroundColor(id == TAB_DIFF ? active : inactive);
+        tForge.setBackgroundColor(id == TAB_FORGE ? active : inactive);
 
         tStatus.setTextColor(id == TAB_STATUS ? theme.accent : theme.textDim);
         tCommit.setTextColor(id == TAB_COMMIT ? theme.accent : theme.textDim);
@@ -207,6 +213,7 @@ public class GitActivity extends AppCompatActivity {
         tBranches.setTextColor(id == TAB_BRANCHES ? theme.accent : theme.textDim);
         tRemote.setTextColor(id == TAB_REMOTE ? theme.accent : theme.textDim);
         tDiff.setTextColor(id == TAB_DIFF ? theme.accent : theme.textDim);
+        tForge.setTextColor(id == TAB_FORGE ? theme.accent : theme.textDim);
 
         panel.removeAllViews();
         switch (id) {
@@ -216,6 +223,7 @@ public class GitActivity extends AppCompatActivity {
             case TAB_BRANCHES: panel.addView(buildBranchesPanel()); break;
             case TAB_REMOTE:   panel.addView(buildRemotePanel());   break;
             case TAB_DIFF:     panel.addView(buildDiffPanel());     break;
+            case TAB_FORGE:    panel.addView(buildForgePanel());    break;
         }
     }
 
@@ -490,7 +498,28 @@ public class GitActivity extends AppCompatActivity {
                 addStatusGroup(box, getString(R.string.git_grp_untracked), s.untracked,
                         theme.textDim, false);
                 addStatusGroup(box, getString(R.string.git_grp_conflict), s.conflicting,
-                        theme.errorText, false);
+                        theme.errorText, false, true);
+
+                if (!s.conflicting.isEmpty() && GitManager.isRebasing(projectDir)) {
+                    box.addView(spacer(dp(8)));
+                    TextView continueRebase = secondaryButton(getString(R.string.git_rebase_continue));
+                    continueRebase.setOnClickListener(v -> doBackground(
+                            () -> GitManager.continueRebase(projectDir),
+                            output -> { showOutputDialog(getString(R.string.git_rebase), output);
+                                switchTab(TAB_STATUS); }, this::showError));
+                    box.addView(continueRebase);
+                    box.addView(spacer(dp(6)));
+                    TextView abortRebase = secondaryButton(getString(R.string.git_rebase_abort));
+                    abortRebase.setOnClickListener(v -> Dialogs.rounded(this)
+                            .setTitle(R.string.git_rebase_abort)
+                            .setMessage(R.string.git_rebase_abort_confirm)
+                            .setPositiveButton(R.string.git_rebase_abort, (d, w) -> doBackground(
+                                    () -> GitManager.abortRebase(projectDir),
+                                    output -> { showOutputDialog(getString(R.string.git_rebase), output);
+                                        switchTab(TAB_STATUS); }, this::showError))
+                            .setNegativeButton(R.string.dialog_cancel, null).show());
+                    box.addView(abortRebase);
+                }
 
                 box.addView(spacer(dp(12)));
 
@@ -507,6 +536,11 @@ public class GitActivity extends AppCompatActivity {
 
     private void addStatusGroup(LinearLayout box, String title, Set<String> files,
                                 int color, boolean staged) {
+        addStatusGroup(box, title, files, color, staged, false);
+    }
+
+    private void addStatusGroup(LinearLayout box, String title, Set<String> files,
+                                int color, boolean staged, boolean conflicts) {
         if (files == null || files.isEmpty()) return;
         TextView t = new TextView(this);
         t.setText(title + " (" + files.size() + ")");
@@ -534,18 +568,35 @@ public class GitActivity extends AppCompatActivity {
             LinearLayout.LayoutParams nlp = new LinearLayout.LayoutParams(0,
                     ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
             name.setLayoutParams(nlp);
+            if (conflicts) {
+                name.setTextColor(theme.errorText);
+                name.setOnClickListener(v -> {
+                    Intent intent = new Intent(this, GitConflictEditorActivity.class);
+                    intent.putExtra(GitConflictEditorActivity.EXTRA_PROJECT_DIR,
+                            projectDir.getAbsolutePath());
+                    intent.putExtra(GitConflictEditorActivity.EXTRA_PATH, f);
+                    startActivity(intent);
+                });
+            }
             row.addView(name);
 
             TextView act = new TextView(this);
-            act.setText(staged ? getString(R.string.git_unstage) : getString(R.string.git_stage));
+            act.setText(conflicts ? getString(R.string.git_conflict_result)
+                    : staged ? getString(R.string.git_unstage) : getString(R.string.git_stage));
             act.setTextColor(theme.accent);
             act.setTextSize(11);
             act.setPadding(dp(8), dp(4), dp(8), dp(4));
-            act.setOnClickListener(v -> doBackground(() -> {
-                if (staged) GitManager.unstagePath(projectDir, f);
-                else        GitManager.addPath(projectDir, f);
-                return null;
-            }, ok -> switchTab(TAB_STATUS), this::showError));
+            act.setOnClickListener(v -> {
+                if (conflicts) {
+                    name.performClick();
+                } else {
+                    doBackground(() -> {
+                        if (staged) GitManager.unstagePath(projectDir, f);
+                        else GitManager.addPath(projectDir, f);
+                        return null;
+                    }, ok -> switchTab(TAB_STATUS), this::showError);
+                }
+            });
             row.addView(act);
 
             box.addView(row);
@@ -731,6 +782,14 @@ public class GitActivity extends AppCompatActivity {
         doBackground(() -> GitManager.branches(projectDir), list -> {
             box.removeAllViews();
             box.addView(btnNew);
+            box.addView(operationButton(R.string.git_merge, () -> promptRevision(
+                    R.string.git_merge, value -> GitManager.merge(projectDir, value))));
+            box.addView(operationButton(R.string.git_rebase, () -> promptRevision(
+                    R.string.git_rebase, value -> GitManager.rebase(projectDir, value))));
+            box.addView(operationButton(R.string.git_cherry_pick, () -> promptRevision(
+                    R.string.git_cherry_pick, value -> GitManager.cherryPick(projectDir, value))));
+            box.addView(operationButton(R.string.git_stashes, this::showStashesDialog));
+            box.addView(operationButton(R.string.git_tags, this::showTagsDialog));
             box.addView(spacer(dp(12)));
 
             if (list.isEmpty()) {
@@ -807,6 +866,99 @@ public class GitActivity extends AppCompatActivity {
                 })
                 .setNegativeButton(R.string.dialog_cancel, null)
                 .show();
+    }
+
+    private interface RevisionOperation { String run(String revision) throws Exception; }
+
+    private TextView operationButton(int label, Runnable action) {
+        TextView button = secondaryButton(getString(label));
+        button.setOnClickListener(v -> action.run());
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, -2);
+        params.topMargin = dp(6);
+        button.setLayoutParams(params);
+        return button;
+    }
+
+    private void promptRevision(int title, RevisionOperation operation) {
+        EditText input = newEdit(getString(R.string.git_revision_hint));
+        Dialogs.rounded(this).setTitle(title).setView(input)
+                .setPositiveButton(title, (dialog, which) -> {
+                    String value = input.getText().toString().trim();
+                    if (value.isEmpty()) return;
+                    doBackground(() -> operation.run(value), output -> {
+                        showOutputDialog(getString(title), output);
+                        refreshHeader();
+                        switchTab(TAB_STATUS);
+                    }, this::showError);
+                })
+                .setNegativeButton(R.string.dialog_cancel, null).show();
+    }
+
+    private void showStashesDialog() {
+        doBackground(() -> GitManager.stashes(projectDir), stashes -> {
+            LinearLayout box = new LinearLayout(this);
+            box.setOrientation(LinearLayout.VERTICAL);
+            box.setPadding(dp(12), dp(8), dp(12), dp(8));
+            EditText message = newEdit(getString(R.string.git_stash_message_hint));
+            box.addView(message);
+            TextView create = primaryButton(getString(R.string.git_stash_create));
+            create.setOnClickListener(v -> doBackground(
+                    () -> GitManager.createStash(projectDir, message.getText().toString()),
+                    ignored -> showStashesDialog(), this::showError));
+            box.addView(create);
+            for (int i = 0; i < stashes.size(); i++) {
+                GitManager.StashInfo stash = stashes.get(i);
+                int index = i;
+                TextView row = secondaryButton("stash@{" + i + "}  " + stash.shortId + "  " + stash.message);
+                row.setOnClickListener(v -> Dialogs.rounded(this)
+                        .setTitle(stash.message)
+                        .setItems(new String[]{getString(R.string.git_stash_apply),
+                                        getString(R.string.git_stash_drop)},
+                                (d, selected) -> doBackground(() -> {
+                                    if (selected == 0) GitManager.applyStash(projectDir, stash.id);
+                                    else GitManager.dropStash(projectDir, index);
+                                    return null;
+                                }, ignored -> switchTab(TAB_STATUS), this::showError))
+                        .show());
+                box.addView(row);
+            }
+            new androidx.appcompat.app.AlertDialog.Builder(this)
+                    .setTitle(R.string.git_stashes).setView(box)
+                    .setNegativeButton(R.string.dialog_cancel, null).show();
+        }, this::showError);
+    }
+
+    private void showTagsDialog() {
+        doBackground(() -> GitManager.tags(projectDir), tags -> {
+            LinearLayout box = new LinearLayout(this);
+            box.setOrientation(LinearLayout.VERTICAL);
+            box.setPadding(dp(12), dp(8), dp(12), dp(8));
+            EditText name = newEdit(getString(R.string.git_tag_name_hint));
+            EditText message = newEdit(getString(R.string.git_tag_message_hint));
+            box.addView(name);
+            box.addView(message);
+            TextView create = primaryButton(getString(R.string.git_tag_create));
+            create.setOnClickListener(v -> doBackground(() -> {
+                GitManager.createTag(projectDir, name.getText().toString().trim(),
+                        message.getText().toString());
+                return null;
+            }, ignored -> showTagsDialog(), this::showError));
+            box.addView(create);
+            for (GitManager.TagInfo tag : tags) {
+                TextView row = secondaryButton(tag.name + "  " +
+                        (tag.objectId.length() > 7 ? tag.objectId.substring(0, 7) : tag.objectId));
+                row.setOnLongClickListener(v -> {
+                    doBackground(() -> { GitManager.deleteTag(projectDir, tag.name); return null; },
+                            ignored -> showTagsDialog(), this::showError);
+                    return true;
+                });
+                box.addView(row);
+            }
+            new androidx.appcompat.app.AlertDialog.Builder(this)
+                    .setTitle(R.string.git_tags).setView(box)
+                    .setMessage(R.string.git_tag_delete_hint)
+                    .setNegativeButton(R.string.dialog_cancel, null).show();
+        }, this::showError);
     }
 
     // ══════════════════════════════════════════════════════════
@@ -1016,6 +1168,202 @@ public class GitActivity extends AppCompatActivity {
         }, this::showError);
 
         return sv;
+    }
+
+    // ══════════════════════════════════════════════════════════
+    //  GitHub / GitLab forge
+    // ══════════════════════════════════════════════════════════
+
+    private View buildForgePanel() {
+        LinearLayout box = new LinearLayout(this);
+        box.setOrientation(LinearLayout.VERTICAL);
+        box.setPadding(dp(12), dp(10), dp(12), dp(10));
+        TextView description = new TextView(this);
+        description.setText(R.string.git_forge_description);
+        description.setTextColor(theme.textDim);
+        description.setTextSize(11);
+        box.addView(description);
+        box.addView(spacer(dp(10)));
+        TextView prs = primaryButton(getString(R.string.git_pull_requests));
+        prs.setOnClickListener(v -> loadForgeItems(true));
+        box.addView(prs);
+        box.addView(spacer(dp(7)));
+        TextView create = secondaryButton(getString(R.string.git_pr_create));
+        create.setOnClickListener(v -> showCreatePullRequestDialog());
+        box.addView(create);
+        box.addView(spacer(dp(7)));
+        TextView issues = secondaryButton(getString(R.string.git_issues));
+        issues.setOnClickListener(v -> loadForgeItems(false));
+        box.addView(issues);
+        box.addView(spacer(dp(7)));
+        TextView ci = secondaryButton(getString(R.string.git_ci_status));
+        ci.setOnClickListener(v -> loadPipelines());
+        box.addView(ci);
+        ScrollView scroll = new ScrollView(this);
+        scroll.addView(box);
+        return scroll;
+    }
+
+    private GitForgeClient forgeClient() throws Exception {
+        String origin = GitManager.remoteOriginUrl(projectDir);
+        return new GitForgeClient(origin, creds.token(origin));
+    }
+
+    private void loadForgeItems(boolean pullRequests) {
+        doBackground(() -> {
+            GitForgeClient client = forgeClient();
+            return new Object[]{client.provider(), pullRequests ? client.pullRequests() : client.issues()};
+        }, result -> {
+            @SuppressWarnings("unchecked")
+            List<GitForgeClient.Item> items = (List<GitForgeClient.Item>) result[1];
+            LinearLayout list = forgeListContainer();
+            if (items.isEmpty()) list.addView(emptyLabel(getString(R.string.git_forge_empty)));
+            for (GitForgeClient.Item item : items) list.addView(forgeItemRow(item, pullRequests));
+            panel.removeAllViews();
+            ScrollView scroll = new ScrollView(this);
+            scroll.addView(list);
+            panel.addView(scroll);
+        }, this::showError);
+    }
+
+    private LinearLayout forgeListContainer() {
+        LinearLayout list = new LinearLayout(this);
+        list.setOrientation(LinearLayout.VERTICAL);
+        list.setPadding(dp(12), dp(10), dp(12), dp(10));
+        TextView back = secondaryButton(getString(R.string.git_forge_back));
+        back.setOnClickListener(v -> switchTab(TAB_FORGE));
+        list.addView(back);
+        list.addView(spacer(dp(8)));
+        return list;
+    }
+
+    private TextView forgeItemRow(GitForgeClient.Item item, boolean reviewable) {
+        TextView row = secondaryButton("#" + item.number + "  " + item.title + "\n" +
+                item.state + " · " + item.author);
+        row.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
+        row.setOnClickListener(v -> showForgeItem(item, reviewable));
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, -2);
+        params.bottomMargin = dp(7);
+        row.setLayoutParams(params);
+        return row;
+    }
+
+    private TextView emptyLabel(String text) {
+        TextView view = new TextView(this);
+        view.setText(text);
+        view.setTextColor(theme.textDim);
+        view.setGravity(Gravity.CENTER);
+        view.setPadding(dp(8), dp(24), dp(8), dp(24));
+        return view;
+    }
+
+    private void showForgeItem(GitForgeClient.Item item, boolean reviewable) {
+        LinearLayout box = new LinearLayout(this);
+        box.setOrientation(LinearLayout.VERTICAL);
+        box.setPadding(dp(12), dp(8), dp(12), dp(8));
+        TextView body = new TextView(this);
+        body.setText(item.body == null || item.body.isEmpty() ? getString(R.string.git_no_description) : item.body);
+        body.setTextColor(theme.text);
+        body.setTextIsSelectable(true);
+        box.addView(body);
+        box.addView(spacer(dp(8)));
+        TextView open = secondaryButton(getString(R.string.git_open_browser));
+        open.setOnClickListener(v -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(item.url))));
+        box.addView(open);
+        if (reviewable) {
+            TextView diff = secondaryButton(getString(R.string.git_pr_view_diff));
+            diff.setOnClickListener(v -> doBackground(
+                    () -> forgeClient().pullRequestDiff(item.number),
+                    text -> GitDiffActivity.launchText(this, text,
+                            "#" + item.number + " " + item.title), this::showError));
+            box.addView(diff);
+            EditText comment = newEdit(getString(R.string.git_review_comment_hint));
+            comment.setSingleLine(false);
+            comment.setMinLines(3);
+            box.addView(comment);
+            TextView send = primaryButton(getString(R.string.git_review_send));
+            send.setOnClickListener(v -> doBackground(() -> {
+                forgeClient().addReviewComment(item.number, comment.getText().toString().trim());
+                return null;
+            }, ignored -> Toast.makeText(this, R.string.git_review_sent, Toast.LENGTH_SHORT).show(),
+                    this::showError));
+            box.addView(send);
+
+            TextView inlineTitle = new TextView(this);
+            inlineTitle.setText(R.string.git_inline_comment);
+            inlineTitle.setTextColor(theme.textDim);
+            inlineTitle.setPadding(0, dp(12), 0, 0);
+            box.addView(inlineTitle);
+            EditText path = newEdit(getString(R.string.git_inline_path_hint));
+            EditText line = newEdit(getString(R.string.git_inline_line_hint));
+            line.setInputType(InputType.TYPE_CLASS_NUMBER);
+            EditText commit = newEdit(getString(R.string.git_inline_commit_hint));
+            EditText inlineBody = newEdit(getString(R.string.git_review_comment_hint));
+            inlineBody.setSingleLine(false);
+            inlineBody.setMinLines(2);
+            box.addView(path); box.addView(line); box.addView(commit); box.addView(inlineBody);
+            TextView sendInline = secondaryButton(getString(R.string.git_inline_send));
+            sendInline.setOnClickListener(v -> {
+                int lineNumber;
+                try { lineNumber = Integer.parseInt(line.getText().toString()); }
+                catch (NumberFormatException e) { Toast.makeText(this,
+                        R.string.git_inline_invalid_line, Toast.LENGTH_SHORT).show(); return; }
+                int finalLine = lineNumber;
+                doBackground(() -> {
+                    forgeClient().addInlineComment(item.number, inlineBody.getText().toString().trim(),
+                            path.getText().toString().trim(), finalLine,
+                            commit.getText().toString().trim());
+                    return null;
+                }, ignored -> Toast.makeText(this, R.string.git_review_sent,
+                        Toast.LENGTH_SHORT).show(), this::showError);
+            });
+            box.addView(sendInline);
+        }
+        ScrollView scroll = new ScrollView(this);
+        scroll.addView(box);
+        Dialogs.rounded(this).setTitle("#" + item.number + " " + item.title)
+                .setView(scroll).setNegativeButton(R.string.dialog_cancel, null).show();
+    }
+
+    private void showCreatePullRequestDialog() {
+        LinearLayout box = new LinearLayout(this);
+        box.setOrientation(LinearLayout.VERTICAL);
+        box.setPadding(dp(12), dp(8), dp(12), dp(8));
+        EditText title = newEdit(getString(R.string.git_pr_title_hint));
+        EditText source = newEdit(getString(R.string.git_pr_source_hint));
+        try { source.setText(GitManager.currentBranch(projectDir)); } catch (Exception ignored) {}
+        EditText target = newEdit(getString(R.string.git_pr_target_hint));
+        target.setText("main");
+        EditText body = newEdit(getString(R.string.git_pr_body_hint));
+        body.setSingleLine(false);
+        body.setMinLines(3);
+        box.addView(title); box.addView(source); box.addView(target); box.addView(body);
+        Dialogs.rounded(this).setTitle(R.string.git_pr_create).setView(box)
+                .setPositiveButton(R.string.dialog_create, (d, w) -> doBackground(
+                        () -> forgeClient().createPullRequest(title.getText().toString().trim(),
+                                body.getText().toString(), source.getText().toString().trim(),
+                                target.getText().toString().trim()),
+                        item -> showForgeItem(item, true), this::showError))
+                .setNegativeButton(R.string.dialog_cancel, null).show();
+    }
+
+    private void loadPipelines() {
+        doBackground(() -> forgeClient().pipelines(), pipelines -> {
+            LinearLayout list = forgeListContainer();
+            if (pipelines.isEmpty()) list.addView(emptyLabel(getString(R.string.git_forge_empty)));
+            for (GitForgeClient.Pipeline pipeline : pipelines) {
+                TextView row = secondaryButton(pipeline.name + "\n" + pipeline.status + " · " + pipeline.branch);
+                row.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
+                row.setOnClickListener(v -> startActivity(
+                        new Intent(Intent.ACTION_VIEW, Uri.parse(pipeline.url))));
+                list.addView(row);
+                list.addView(spacer(dp(7)));
+            }
+            panel.removeAllViews();
+            ScrollView scroll = new ScrollView(this);
+            scroll.addView(list);
+            panel.addView(scroll);
+        }, this::showError);
     }
 
     // ══════════════════════════════════════════════════════════

@@ -36,7 +36,7 @@
     <string name="replace_hint">Înlocuiește cu…</string>
     <string name="replace">Înlocuiește</string>
     <string name="replace_all">Toate</string>
-    <string name="tab_run">▶ Rulează</string>
+    <string name="tab_run">Rulează</string>
     <string name="tab_problems">Probleme</string>
     <string name="tab_bytecode">Bytecode</string>
     <string name="tab_debug">Fire &amp; Variabile</string>

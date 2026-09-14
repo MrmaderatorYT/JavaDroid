@@ -40,7 +40,7 @@
     <string name="replace_hint">Replace with…</string>
     <string name="replace">Replace</string>
     <string name="replace_all">All</string>
-    <string name="tab_run">▶  Run</string>
+    <string name="tab_run">Run</string>
     <string name="tab_problems">Problems</string>
     <string name="tab_bytecode">Bytecode</string>
     <string name="tab_debug">Threads &amp; Variables</string>

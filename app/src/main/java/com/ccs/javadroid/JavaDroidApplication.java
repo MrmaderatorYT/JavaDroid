@@ -7,15 +7,28 @@ import androidx.core.os.LocaleListCompat;
 import com.ccs.javadroid.util.AppPreferences;
 
 public class JavaDroidApplication extends Application {
+    private com.ccs.javadroid.profiler.PerformanceMonitor performanceMonitor;
+
     @Override
     public void onCreate() {
         super.onCreate();
+        performanceMonitor = com.ccs.javadroid.profiler.PerformanceMonitor.init(this);
         String language = new AppPreferences(this).getAppLanguage();
         AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(language));
         // Apply Material You Dynamic Colors across the app on Android 12+
         DynamicColors.applyToActivitiesIfAvailable(this);
-        if (BuildConfig.DEBUG) {
-            com.ccs.javadroid.util.StartupTrace.install(this);
-        }
+        com.ccs.javadroid.util.StartupTrace.install(this);
+    }
+
+    @Override
+    public void onTrimMemory(int level) {
+        super.onTrimMemory(level);
+        if (performanceMonitor != null) performanceMonitor.onTrimMemory(level);
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        if (performanceMonitor != null) performanceMonitor.onLowMemory();
     }
 }

@@ -36,7 +36,7 @@
     <string name="replace_hint">Sostituisci con…</string>
     <string name="replace">Sostituisci</string>
     <string name="replace_all">Tutto</string>
-    <string name="tab_run">▶  Esegui</string>
+    <string name="tab_run">Esegui</string>
     <string name="tab_problems">Problemi</string>
     <string name="tab_bytecode">Bytecode</string>
     <string name="tab_debug">Thread e variabili</string>

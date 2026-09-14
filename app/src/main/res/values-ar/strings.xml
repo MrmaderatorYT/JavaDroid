@@ -36,7 +36,7 @@
     <string name="replace_hint">استبدال بـ…</string>
     <string name="replace">استبدال</string>
     <string name="replace_all">الكل</string>
-    <string name="tab_run">▶  Run</string>
+    <string name="tab_run">Run</string>
     <string name="tab_problems">المشكلات</string>
     <string name="tab_bytecode">بايت كود</string>
     <string name="tab_debug">Threads &amp; Variables</string>

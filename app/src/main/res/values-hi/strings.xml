@@ -37,7 +37,7 @@
     <string name="replace_hint">इससे बदलें…</string>
     <string name="replace">बदलें</string>
     <string name="replace_all">सभी</string>
-    <string name="tab_run">▶ चलाएँ</string>
+    <string name="tab_run">चलाएँ</string>
     <string name="tab_problems">समस्याएँ</string>
     <string name="tab_bytecode">बाइटकोड</string>
     <string name="tab_debug">▶ डीबग</string>

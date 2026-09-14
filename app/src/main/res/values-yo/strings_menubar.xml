@@ -33,4 +33,24 @@
     <string name="semantic_search_title">Ìwáàrí ìtumọ̀ (AI)</string>
     <string name="a11y_action_voice">Ìfilélẹ̀ ohùn</string>
     <string name="menubar_refactor">Àtúnṣe</string>
+    <string name="settings_bracket_highlight">Ṣàfihàn àwọn àkámọ́ tí ó bára mu</string>
+    <string name="settings_bracket_highlight_desc">Ó ń fa ìlà yí àkámọ́ tí ó bára mu pẹ̀lú èyí tí ó wà níbi ìtọ́ka.</string>
+    <string name="action_duplicate_line">Ṣe àdàkọ ìlà</string>
+    <string name="action_move_line_up">Gbé ìlà sókè</string>
+    <string name="action_move_line_down">Gbé ìlà sísàlẹ̀</string>
+    <string name="action_toggle_comment">Ṣe àlàyé / mú kúrò</string>
+    <string name="settings_contextual_symbols">Àwọn àmì tẹ̀lé èdè</string>
+    <string name="settings_contextual_symbols_desc">Fáìlì XML gba àkámọ́ igun, ti Java gba àmì-ìdúró. Pa á láti lo ìlà tìrẹ.</string>
+    <string name="a11y_error_stripe">Àwọn àmì ìṣòro</string>
+    <string name="editor_large_file_loading">Ń gbé %1$s wọlé…</string>
+    <string name="editor_large_file_plain">%1$s — a pa ìtànmọ́lẹ̀ kí fáìlì lè ṣí lẹ́sẹ̀kẹsẹ̀.</string>
+    <string name="editor_large_file_read_only">%1$s — a ṣí i fún kíkà nìkan. Fáìlì tó tóbi báyìí lọ́ra láti ṣàtúnṣe, ó sì léwu láti fi pamọ́.</string>
+    <string name="action_fold_toggle">Ká / ṣí àpótí náà</string>
+    <string name="action_fold_all">Ká gbogbo àwọn ọ̀nà</string>
+    <string name="action_unfold_all">Ṣí gbogbo rẹ̀</string>
+    <string name="editor_nothing_to_fold">Kò sí ohun tí a lè ká níbí</string>
+    <string name="severity_error">Àṣìṣe</string>
+    <string name="severity_warning">Ìkìlọ̀</string>
+    <string name="severity_info">Àkíyèsí</string>
+    <string name="quickfix_more_problems">%1$d síwájú sí i nínú fáìlì yìí</string>
 </resources>

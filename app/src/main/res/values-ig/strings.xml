@@ -37,7 +37,7 @@
     <string name="replace_hint">Mee ọhụrụ na…</string>
     <string name="replace">Mee ọhụrụ</string>
     <string name="replace_all">Niile</string>
-    <string name="tab_run">▶ Gbanyụọ</string>
+    <string name="tab_run">Gbanyụọ</string>
     <string name="tab_problems">Nsogbu</string>
     <string name="tab_bytecode">Bytecode</string>
     <string name="tab_debug">▶ Debug</string>

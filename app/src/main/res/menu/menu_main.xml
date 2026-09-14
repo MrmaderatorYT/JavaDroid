@@ -123,11 +123,14 @@
         app:showAsAction="never" />
 
 
+    <!-- On the bar rather than in the overflow: reindenting is a reflex, and
+         a reflex should not cost two taps. Hidden from Settings like the rest. -->
     <item
         android:id="@+id/action_format"
         android:title="@string/menu_format_code"
+        android:icon="@drawable/ic_format"
         android:contentDescription="@string/a11y_menu_format"
-        app:showAsAction="never" />
+        app:showAsAction="always" />
     <item
         android:id="@+id/action_auto_import"
         android:title="@string/menu_auto_import"

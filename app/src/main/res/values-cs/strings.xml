@@ -37,7 +37,7 @@ Następnie wklej go poniżej:</string>
     <string name="replace_hint">Nahradit za…</string>
     <string name="replace">Nahradit</string>
     <string name="replace_all">Vše</string>
-    <string name="tab_run">▶  Spustit</string>
+    <string name="tab_run">Spustit</string>
     <string name="tab_problems">Problémy</string>
     <string name="tab_bytecode">Bajt kód</string>
     <string name="tab_debug">Wątki i zmienne</string>

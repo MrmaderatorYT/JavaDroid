@@ -33,4 +33,24 @@
     <string name="semantic_search_title">अर्थपूर्ण खोज (AI)</string>
     <string name="a11y_action_voice">वॉइस इनपुट</string>
     <string name="menubar_refactor">रीफ़ैक्टर</string>
+    <string name="settings_bracket_highlight">मिलान वाले कोष्ठक हाइलाइट करें</string>
+    <string name="settings_bracket_highlight_desc">कर्सर वाले कोष्ठक से मेल खाने वाले कोष्ठक को रेखांकित करता है।</string>
+    <string name="action_duplicate_line">पंक्ति की नकल करें</string>
+    <string name="action_move_line_up">पंक्ति ऊपर ले जाएँ</string>
+    <string name="action_move_line_down">पंक्ति नीचे ले जाएँ</string>
+    <string name="action_toggle_comment">कमेंट करें / हटाएँ</string>
+    <string name="settings_contextual_symbols">प्रतीक भाषा के अनुसार</string>
+    <string name="settings_contextual_symbols_desc">XML फ़ाइल को कोण कोष्ठक, Java को अर्धविराम मिलता है। अपनी पंक्ति उपयोग करने के लिए बंद करें।</string>
+    <string name="a11y_error_stripe">समस्या चिह्न</string>
+    <string name="editor_large_file_loading">%1$s लोड हो रहा है…</string>
+    <string name="editor_large_file_plain">%1$s — फ़ाइल तुरंत खुले इसलिए हाइलाइटिंग बंद है।</string>
+    <string name="editor_large_file_read_only">%1$s — केवल पढ़ने के लिए खुला। इतने बड़े फ़ाइल को संपादित करना धीमा और सहेजना जोखिम भरा है।</string>
+    <string name="action_fold_toggle">ब्लॉक मोड़ें / खोलें</string>
+    <string name="action_fold_all">सभी मेथड मोड़ें</string>
+    <string name="action_unfold_all">सब खोलें</string>
+    <string name="editor_nothing_to_fold">यहाँ मोड़ने के लिए कुछ नहीं है</string>
+    <string name="severity_error">त्रुटि</string>
+    <string name="severity_warning">चेतावनी</string>
+    <string name="severity_info">टिप्पणी</string>
+    <string name="quickfix_more_problems">इस फ़ाइल में %1$d और</string>
 </resources>

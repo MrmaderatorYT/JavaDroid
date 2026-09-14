@@ -8,6 +8,8 @@ import org.eclipse.jgit.api.PullCommand;
 import org.eclipse.jgit.api.PullResult;
 import org.eclipse.jgit.api.PushCommand;
 import org.eclipse.jgit.api.Status;
+import org.eclipse.jgit.api.MergeResult;
+import org.eclipse.jgit.api.RebaseResult;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.diff.DiffFormatter;
 import org.eclipse.jgit.dircache.DirCacheIterator;
@@ -18,6 +20,7 @@ import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
+import org.eclipse.jgit.revwalk.RevObject;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 import org.eclipse.jgit.transport.PushResult;
 import org.eclipse.jgit.transport.RemoteRefUpdate;
@@ -32,6 +35,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Collections;
 
 /**
  * High-level обгортка над JGit для роботи з локальним репозиторієм.
@@ -85,6 +89,26 @@ public final class GitManager {
         }
     }
 
+    public static final class TagInfo {
+        public final String name;
+        public final String objectId;
+        public TagInfo(String name, String objectId) {
+            this.name = name;
+            this.objectId = objectId;
+        }
+    }
+
+    public static final class StashInfo {
+        public final String id;
+        public final String shortId;
+        public final String message;
+        public StashInfo(String id, String message) {
+            this.id = id;
+            this.shortId = id != null && id.length() > 7 ? id.substring(0, 7) : id;
+            this.message = message;
+        }
+    }
+
     private GitManager() {}
 
     // ── Repository state ──────────────────────────────────────
@@ -122,6 +146,14 @@ public final class GitManager {
     public static String currentBranch(File dir) throws Exception {
         try (Git g = Git.open(dir)) {
             return g.getRepository().getBranch();
+        }
+    }
+
+    public static boolean isRebasing(File dir) {
+        try (Git g = Git.open(dir)) {
+            return g.getRepository().getRepositoryState().name().startsWith("REBASING");
+        } catch (Exception ignored) {
+            return false;
         }
     }
 
@@ -218,6 +250,107 @@ public final class GitManager {
     public static void deleteBranch(File dir, String name) throws Exception {
         try (Git g = Git.open(dir)) {
             g.branchDelete().setBranchNames(name).setForce(true).call();
+        }
+    }
+
+    // ── Advanced history operations ─────────────────────────
+
+    public static String merge(File dir, String revision) throws Exception {
+        try (Git g = Git.open(dir)) {
+            org.eclipse.jgit.lib.ObjectId id = g.getRepository().resolve(revision);
+            if (id == null) throw new IllegalArgumentException("Unknown revision: " + revision);
+            MergeResult result = g.merge().include(id).call();
+            return String.valueOf(result.getMergeStatus());
+        }
+    }
+
+    public static String rebase(File dir, String upstream) throws Exception {
+        try (Git g = Git.open(dir)) {
+            RebaseResult result = g.rebase().setUpstream(upstream).call();
+            return String.valueOf(result.getStatus());
+        }
+    }
+
+    public static String continueRebase(File dir) throws Exception {
+        try (Git g = Git.open(dir)) {
+            return String.valueOf(g.rebase()
+                    .setOperation(org.eclipse.jgit.api.RebaseCommand.Operation.CONTINUE)
+                    .call().getStatus());
+        }
+    }
+
+    public static String abortRebase(File dir) throws Exception {
+        try (Git g = Git.open(dir)) {
+            return String.valueOf(g.rebase()
+                    .setOperation(org.eclipse.jgit.api.RebaseCommand.Operation.ABORT)
+                    .call().getStatus());
+        }
+    }
+
+    public static String cherryPick(File dir, String revision) throws Exception {
+        try (Git g = Git.open(dir)) {
+            org.eclipse.jgit.lib.ObjectId id = g.getRepository().resolve(revision);
+            if (id == null) throw new IllegalArgumentException("Unknown revision: " + revision);
+            return String.valueOf(g.cherryPick().include(id).call().getStatus());
+        }
+    }
+
+    public static StashInfo createStash(File dir, String message) throws Exception {
+        try (Git g = Git.open(dir)) {
+            RevCommit commit = g.stashCreate()
+                    .setWorkingDirectoryMessage(safe(message, "JavaDroid stash"))
+                    .setIncludeUntracked(true)
+                    .call();
+            return commit == null ? null : new StashInfo(commit.getName(), commit.getShortMessage());
+        }
+    }
+
+    public static List<StashInfo> stashes(File dir) throws Exception {
+        try (Git g = Git.open(dir)) {
+            List<StashInfo> result = new ArrayList<>();
+            for (RevCommit commit : g.stashList().call()) {
+                result.add(new StashInfo(commit.getName(), commit.getShortMessage()));
+            }
+            return result;
+        }
+    }
+
+    public static void applyStash(File dir, String stashId) throws Exception {
+        try (Git g = Git.open(dir)) {
+            g.stashApply().setStashRef(stashId).call();
+        }
+    }
+
+    public static void dropStash(File dir, int index) throws Exception {
+        try (Git g = Git.open(dir)) {
+            g.stashDrop().setStashRef(index).call();
+        }
+    }
+
+    public static List<TagInfo> tags(File dir) throws Exception {
+        try (Git g = Git.open(dir)) {
+            List<TagInfo> result = new ArrayList<>();
+            for (Ref ref : g.tagList().call()) {
+                result.add(new TagInfo(Repository.shortenRefName(ref.getName()),
+                        ref.getObjectId() == null ? "" : ref.getObjectId().name()));
+            }
+            return result;
+        }
+    }
+
+    public static void createTag(File dir, String name, String message) throws Exception {
+        try (Git g = Git.open(dir)) {
+            org.eclipse.jgit.api.TagCommand command = g.tag().setName(name);
+            if (message != null && !message.trim().isEmpty()) {
+                command.setAnnotated(true).setMessage(message.trim());
+            }
+            command.call();
+        }
+    }
+
+    public static void deleteTag(File dir, String name) throws Exception {
+        try (Git g = Git.open(dir)) {
+            g.tagDelete().setTags(name).call();
         }
     }
 

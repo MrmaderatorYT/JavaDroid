@@ -190,15 +190,14 @@
             android:paddingStart="4dp"
             android:paddingEnd="4dp">
 
-            <!-- 💡 IntelliJ Quick-Fix Lightbulb Button -->
-            <TextView
+            <!-- IntelliJ Quick-Fix Lightbulb Button -->
+            <ImageView
                 android:id="@+id/btnLightbulb"
                 android:layout_width="34dp"
                 android:layout_height="28dp"
-                android:gravity="center"
-                android:text="💡"
-                android:textSize="16sp"
-                android:textColor="#FFD54F"
+                android:scaleType="centerInside"
+                android:padding="4dp"
+                android:src="@drawable/ic_lightbulb"
                 android:layout_marginStart="2dp"
                 android:layout_marginEnd="2dp"
                 android:visibility="gone"
@@ -276,6 +275,20 @@
                     android:layout_height="match_parent"
                     android:contentDescription="@string/gutter_a11y_overlay" />
 
+
+                <!--
+                    Problems mapped onto the editor's height, so a file longer
+                    than the screen still shows where its errors are. Sits left
+                    of the minimap so the two do not overlap when both are on.
+                -->
+                <com.ccs.javadroid.ui.ErrorStripeOverlay
+                    android:id="@+id/errorStripe1"
+                    android:layout_width="8dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="end"
+                    android:layout_marginEnd="48dp"
+                    android:visibility="gone"
+                    android:contentDescription="@string/a11y_error_stripe" />
                 <com.ccs.javadroid.ui.MinimapView
                     android:id="@+id/minimapView1"
                     android:layout_width="48dp"
@@ -329,6 +342,20 @@
                     android:layout_height="match_parent"
                     android:contentDescription="@string/gutter_a11y_overlay" />
 
+
+                <!--
+                    Problems mapped onto the editor's height, so a file longer
+                    than the screen still shows where its errors are. Sits left
+                    of the minimap so the two do not overlap when both are on.
+                -->
+                <com.ccs.javadroid.ui.ErrorStripeOverlay
+                    android:id="@+id/errorStripe2"
+                    android:layout_width="8dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="end"
+                    android:layout_marginEnd="48dp"
+                    android:visibility="gone"
+                    android:contentDescription="@string/a11y_error_stripe" />
                 <com.ccs.javadroid.ui.MinimapView
                     android:id="@+id/minimapView2"
                     android:layout_width="48dp"
@@ -831,16 +858,14 @@
                 android:layout_height="0dp"
                 android:layout_weight="1" />
 
-            <TextView
+            <ImageView
                 android:id="@+id/statusReadOnly"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:text="@string/status_lock_open"
-                android:textColor="@color/idea_statusbar_text"
-                android:textSize="11sp"
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_lock_open"
                 android:clickable="true"
                 android:focusable="true"
                 android:background="?attr/selectableItemBackground"

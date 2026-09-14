@@ -101,6 +101,30 @@
             android:textSize="11sp"
             android:background="?attr/selectableItemBackground" />
 
+        <TextView
+            android:id="@+id/profilerMetrics"
+            android:layout_width="wrap_content"
+            android:layout_height="26dp"
+            android:gravity="center"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="Metrics"
+            android:textColor="@color/idea_text"
+            android:textSize="11sp"
+            android:background="?attr/selectableItemBackground" />
+
+        <TextView
+            android:id="@+id/profilerSnapshot"
+            android:layout_width="wrap_content"
+            android:layout_height="26dp"
+            android:gravity="center"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="Snapshot"
+            android:textColor="@color/idea_text"
+            android:textSize="11sp"
+            android:background="?attr/selectableItemBackground" />
+
         <View
             android:layout_width="0dp"
             android:layout_height="0dp"

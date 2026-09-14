@@ -157,6 +157,13 @@ public final class EditorMenuBar {
         menus.add(new Menu(R.string.menubar_code)
                 .add(R.string.menu_format_code, "format")
                 .add(R.string.menu_auto_import, "auto_import")
+                .group(R.string.action_duplicate_line, "duplicate_line")
+                .add(R.string.action_move_line_up, "move_line_up")
+                .add(R.string.action_move_line_down, "move_line_down")
+                .add(R.string.action_toggle_comment, "toggle_comment")
+                .group(R.string.action_fold_toggle, "fold_toggle")
+                .add(R.string.action_fold_all, "fold_all")
+                .add(R.string.action_unfold_all, "unfold_all")
                 .group(R.string.menu_uml_diagram, "uml_generator"));
 
         // Its own menu, as in the IDE this follows: renaming and moving are a

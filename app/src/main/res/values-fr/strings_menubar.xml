@@ -33,4 +33,24 @@
     <string name="semantic_search_title">Recherche sémantique (IA)</string>
     <string name="a11y_action_voice">Saisie vocale</string>
     <string name="menubar_refactor">Refactoriser</string>
+    <string name="settings_bracket_highlight">Surligner les paires de parenthèses</string>
+    <string name="settings_bracket_highlight_desc">Encadre la parenthèse correspondant à celle sous le curseur.</string>
+    <string name="action_duplicate_line">Dupliquer la ligne</string>
+    <string name="action_move_line_up">Monter la ligne</string>
+    <string name="action_move_line_down">Descendre la ligne</string>
+    <string name="action_toggle_comment">Commenter / décommenter</string>
+    <string name="settings_contextual_symbols">Symboles selon le langage</string>
+    <string name="settings_contextual_symbols_desc">Un fichier XML reçoit des chevrons, un fichier Java un point-virgule. Désactivez pour utiliser votre propre rangée.</string>
+    <string name="a11y_error_stripe">Marques de problèmes</string>
+    <string name="editor_large_file_loading">Chargement de %1$s…</string>
+    <string name="editor_large_file_plain">%1$s — coloration désactivée pour une ouverture immédiate.</string>
+    <string name="editor_large_file_read_only">%1$s — ouvert en lecture seule. Un fichier de cette taille est lent à modifier et risqué à enregistrer.</string>
+    <string name="action_fold_toggle">Replier / déplier le bloc</string>
+    <string name="action_fold_all">Replier toutes les méthodes</string>
+    <string name="action_unfold_all">Tout déplier</string>
+    <string name="editor_nothing_to_fold">Rien à replier ici</string>
+    <string name="severity_error">Erreur</string>
+    <string name="severity_warning">Avertissement</string>
+    <string name="severity_info">Remarque</string>
+    <string name="quickfix_more_problems">%1$d de plus dans ce fichier</string>
 </resources>

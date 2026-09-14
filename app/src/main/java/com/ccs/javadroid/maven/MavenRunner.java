@@ -249,6 +249,11 @@ public final class MavenRunner {
 
     public static void mavenCompileOnly(Context context, File projectRoot, PomModel pom,
                                          ProjectCompiler.Callback callback) throws Exception {
+        com.ccs.javadroid.profiler.PerformanceMonitor monitor =
+                com.ccs.javadroid.profiler.PerformanceMonitor.get();
+        com.ccs.javadroid.profiler.PerformanceMonitor.Timer timer = monitor == null
+                ? null : monitor.timer("compile.maven");
+        try {
         File androidJar = D8Dexer.ensureAndroidJar(context, new File(context.getCacheDir(), "compile_cache"));
         File outDir = MavenPaths.targetClassesDir(projectRoot);
         outDir.mkdirs();
@@ -280,6 +285,9 @@ public final class MavenRunner {
             String ecjErr = EcjCompiler.compileEcjMulti(androidJar, cp, outDir, javaTarget(context),
                     javaSources.toArray(new File[0]));
             if (ecjErr != null) throw new IllegalStateException(ecjErr);
+        }
+        } finally {
+            if (timer != null) timer.close();
         }
     }
 

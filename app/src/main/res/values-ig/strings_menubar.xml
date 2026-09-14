@@ -33,4 +33,24 @@
     <string name="semantic_search_title">Nchọta uche (AI)</string>
     <string name="a11y_action_voice">Ntinye olu</string>
     <string name="menubar_refactor">Hazigharịa</string>
+    <string name="settings_bracket_highlight">Mee ka nkwụsịtụ dabara adaba pụta ìhè</string>
+    <string name="settings_bracket_highlight_desc">Ọ na-akụ akara na nkwụsịtụ dabara na nke dị na kọsọ.</string>
+    <string name="action_duplicate_line">Detuo ahịrị</string>
+    <string name="action_move_line_up">Bugharịa ahịrị elu</string>
+    <string name="action_move_line_down">Bugharịa ahịrị ala</string>
+    <string name="action_toggle_comment">Tinye nkọwa / wepụ</string>
+    <string name="settings_contextual_symbols">Akara na-eso asụsụ</string>
+    <string name="settings_contextual_symbols_desc">Faịlụ XML na-enweta nkwụsịtụ akuku, nke Java rikoma. Gbanyụọ iji jiri ahịrị nke gị.</string>
+    <string name="a11y_error_stripe">Akara nsogbu</string>
+    <string name="editor_large_file_loading">Na-ebu %1$s…</string>
+    <string name="editor_large_file_plain">%1$s — agbanyụrụ nchazi ka faịlụ mepee ozugbo.</string>
+    <string name="editor_large_file_read_only">%1$s — emepere ya maka ọgụgụ naanị. Faịlụ nke ukwuu dị ka nke a na-adị ngwa ngwa dezie ma dị ize ndụ ichekwa.</string>
+    <string name="action_fold_toggle">Pịakọta / meghee ngọngọ</string>
+    <string name="action_fold_all">Pịakọta usoro niile</string>
+    <string name="action_unfold_all">Meghee ihe niile</string>
+    <string name="editor_nothing_to_fold">O nweghị ihe a ga-apịakọta ebe a</string>
+    <string name="severity_error">Njehie</string>
+    <string name="severity_warning">Ịdọ aka ná ntị</string>
+    <string name="severity_info">Ihe ncheta</string>
+    <string name="quickfix_more_problems">%1$d ọzọ na faịlụ a</string>
 </resources>

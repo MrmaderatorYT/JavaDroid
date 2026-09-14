@@ -33,4 +33,24 @@
     <string name="semantic_search_title">Bincike na ma’ana (AI)</string>
     <string name="a11y_action_voice">Shigar da murya</string>
     <string name="menubar_refactor">Sake tsarawa</string>
+    <string name="settings_bracket_highlight">Haskaka baka masu daidaita</string>
+    <string name="settings_bracket_highlight_desc">Yana zana baka da ya dace da wanda ke wurin siginan.</string>
+    <string name="action_duplicate_line">Kwafi layin</string>
+    <string name="action_move_line_up">Matsar layin sama</string>
+    <string name="action_move_line_down">Matsar layin ƙasa</string>
+    <string name="action_toggle_comment">Sanya sharhi / cire sharhi</string>
+    <string name="settings_contextual_symbols">Alamu bisa ga harshe</string>
+    <string name="settings_contextual_symbols_desc">Fayil ɗin XML yana samun baka masu kusurwa, na Java kuma waƙafi mai ɗigo. Kashe don amfani da jerinka.</string>
+    <string name="a11y_error_stripe">Alamun matsaloli</string>
+    <string name="editor_large_file_loading">Ana loda %1$s…</string>
+    <string name="editor_large_file_plain">%1$s — an kashe haskakawa domin fayil ɗin ya buɗe nan take.</string>
+    <string name="editor_large_file_read_only">%1$s — an buɗe don karatu kawai. Fayil mai wannan girman yana da jinkiri wajen gyarawa da haɗari wajen ajiyewa.</string>
+    <string name="action_fold_toggle">Nade / buɗe toshe</string>
+    <string name="action_fold_all">Nade duk hanyoyin</string>
+    <string name="action_unfold_all">Buɗe duka</string>
+    <string name="editor_nothing_to_fold">Babu abin da za a nade a nan</string>
+    <string name="severity_error">Kuskure</string>
+    <string name="severity_warning">Gargaɗi</string>
+    <string name="severity_info">Lura</string>
+    <string name="quickfix_more_problems">wasu %1$d a cikin wannan fayil</string>
 </resources>

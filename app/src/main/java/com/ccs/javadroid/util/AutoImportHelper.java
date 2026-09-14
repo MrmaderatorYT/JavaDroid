@@ -313,6 +313,16 @@ public final class AutoImportHelper {
         return 0;
     }
 
+    /**
+     * The simple-name to fully-qualified table this class resolves against.
+     *
+     * <p>Exposed so completion can offer the same classes it would later import,
+     * instead of keeping a second list that drifts from this one.</p>
+     */
+    public static Map<String, String> commonImports() {
+        return java.util.Collections.unmodifiableMap(COMMON_IMPORTS);
+    }
+
     private static String resolveClass(String className, List<String> imports, String pkg,
                                         ClassLoader cl, File projectRoot) {
         if (COMMON_IMPORTS.containsKey(className)) {

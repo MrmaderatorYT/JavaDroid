@@ -84,6 +84,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -150,6 +151,14 @@ public class MainActivity extends AppCompatActivity {
     private boolean       themeJustApplied;
 
     /** One problems pass at a time; see refreshProblemsMergedAsync. */
+    /** Reads big files off the main thread; one at a time is plenty. */
+    private final java.util.concurrent.ExecutorService fileReadWorker =
+            java.util.concurrent.Executors.newSingleThreadExecutor(r -> {
+                Thread t = new Thread(r, "file-read");
+                t.setDaemon(true);
+                return t;
+            });
+
     private final java.util.concurrent.ExecutorService problemsWorker =
             java.util.concurrent.Executors.newSingleThreadExecutor(r -> {
                 Thread t = new Thread(() -> {
@@ -193,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView      statusFileName;
     private TextView      statusEncoding;
     private TextView      statusLineSeparator;
-    private TextView      statusReadOnly;
+    private ImageView     statusReadOnly;
     private TextView      tvAppVersion;
     private TextView      toolbarTitle;
     /**
@@ -224,7 +233,7 @@ public class MainActivity extends AppCompatActivity {
     private View          statusBar;
     private View          keyAccessoryBar;
     private LinearLayout  accessoryBarLayout;
-    private TextView      btnLightbulb;
+    private ImageView btnLightbulb;
     private final List<ProblemItem> activeFileProblems = new ArrayList<>();
 
     // Panel identity lives in BottomPanel; these aliases keep the many existing
@@ -249,6 +258,8 @@ public class MainActivity extends AppCompatActivity {
     private FindReplaceController findReplaceController;
     private BytecodePanelManager bytecodeManager;
     private DebugUiCoordinator debugCoordinator;
+    private ErrorStripeOverlay errorStripe1;
+    private ErrorStripeOverlay errorStripe2;
     private SearchableMenuController searchableMenuController;
     private EditorMenuBar menuBar;
     private ProjectTransferController projectTransfer;
@@ -873,6 +884,13 @@ public class MainActivity extends AppCompatActivity {
         callGraphManager.bind();
 
         // Minimap
+        errorStripe1 = findViewById(R.id.errorStripe1);
+        errorStripe2 = findViewById(R.id.errorStripe2);
+        // Tapping a mark goes to its line, with the same flash as any other jump.
+        for (ErrorStripeOverlay stripe : new ErrorStripeOverlay[]{ errorStripe1, errorStripe2 }) {
+            if (stripe != null) stripe.setListener(this::jumpToEditorLine);
+        }
+
         ws.minimapView1 = findViewById(R.id.minimapView1);
         ws.minimapView2 = findViewById(R.id.minimapView2);
 
@@ -1116,8 +1134,30 @@ public class MainActivity extends AppCompatActivity {
         // where the finger is about to land.
         final String SUGGEST_UP = "▲";
         final String SUGGEST_DOWN = "▼";
-        final String[] symbols = { "{", "}", "(", ")", "[", "]", ";", ".", "=", "\"", "+", "-", "*", "/",
-                SUGGEST_UP, SUGGEST_DOWN, "Tab" };
+        final String CARET_LEFT = "◀";
+        final String CARET_RIGHT = "▶";
+        final String COMMENT = "//";
+
+        // Symbols worth a tap depend on the file: an XML file wants angle
+        // brackets, a Java one a semicolon, and the row is too small to carry
+        // both. A custom row switches that off — it is then exactly what was
+        // typed into the setting, navigation keys included.
+        java.util.List<String> tokens = new java.util.ArrayList<>();
+        if (appPrefs.isContextualSymbols()) {
+            FileTab activeTab = ws.tabs() == null ? null : ws.tabs().getActiveTab();
+            java.util.Collections.addAll(tokens,
+                    com.ccs.javadroid.editor.EditorTextActions.contextualSymbols(
+                            activeTab == null ? null : activeTab.file));
+            java.util.Collections.addAll(tokens,
+                    COMMENT, CARET_LEFT, CARET_RIGHT, SUGGEST_UP, SUGGEST_DOWN, "Tab");
+        } else {
+            String rawSymbols = appPrefs.getKeyBarSymbols();
+            if (rawSymbols == null || rawSymbols.trim().isEmpty()) {
+                rawSymbols = AppPreferences.DEFAULT_KEY_BAR_SYMBOLS;
+            }
+            java.util.Collections.addAll(tokens, rawSymbols.trim().split("\\s+"));
+        }
+        final String[] symbols = tokens.toArray(new String[0]);
 
         for (final String symbol : symbols) {
             TextView btn = new TextView(this);
@@ -1143,19 +1183,57 @@ public class MainActivity extends AppCompatActivity {
             btn.setFocusable(false);
             btn.setFocusableInTouchMode(false);
 
-            if (SUGGEST_UP.equals(symbol) || SUGGEST_DOWN.equals(symbol) || "Tab".equals(symbol)) {
+            if (COMMENT.equals(symbol)) {
+                btn.setOnClickListener(v -> executeMenuAction("toggle_comment"));
+                accessoryBarLayout.addView(btn);
+                continue;
+            }
+
+            if (CARET_LEFT.equals(symbol) || CARET_RIGHT.equals(symbol)) {
+                // Held down, it repeats: placing a caret precisely by tapping a
+                // glyph forty times is the part of touch editing that hurts most.
+                final boolean right = CARET_RIGHT.equals(symbol);
+                btn.setOnTouchListener(new View.OnTouchListener() {
+                    private final Runnable repeat = new Runnable() {
+                        @Override public void run() {
+                            moveCaretHorizontally(right);
+                            btn.postDelayed(this, 45);
+                        }
+                    };
+
+                    @Override
+                    public boolean onTouch(View v, android.view.MotionEvent event) {
+                        switch (event.getAction()) {
+                            case android.view.MotionEvent.ACTION_DOWN:
+                                moveCaretHorizontally(right);
+                                btn.postDelayed(repeat, 320);
+                                return true;
+                            case android.view.MotionEvent.ACTION_UP:
+                            case android.view.MotionEvent.ACTION_CANCEL:
+                                btn.removeCallbacks(repeat);
+                                return true;
+                            default:
+                                return false;
+                        }
+                    }
+                });
+                accessoryBarLayout.addView(btn);
+                continue;
+            }
+
+            if (SUGGEST_UP.equals(symbol) || SUGGEST_DOWN.equals(symbol) || "Tab".equalsIgnoreCase(symbol)) {
                 // Acted on touch-down, not on click. The popup hides itself the
                 // moment the editor loses focus, and a click is delivered after
                 // that has already happened — which made this work or not work
                 // depending on timing. Touch-down runs first, so the popup is
                 // still there to act on.
-                final boolean isTab = "Tab".equals(symbol);
+                final boolean isTab = "Tab".equalsIgnoreCase(symbol);
                 final boolean down = SUGGEST_DOWN.equals(symbol);
                 btn.setOnTouchListener((v, event) -> {
                     if (event.getAction() != android.view.MotionEvent.ACTION_DOWN) return false;
                     if (ws.activeEditor == null || !ws.activeEditor.isEditable()) return true;
                     if (!isTab) {
-                        moveThroughSuggestions(down);
+                        moveThroughSuggestionsOrCaret(down);
                         return true;
                     }
                     if (acceptSuggestion()) return true;
@@ -1208,15 +1286,30 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /** Steps through the open suggestion list; does nothing when it is closed. */
-    private void moveThroughSuggestions(boolean down) {
+    /** Steps through the open suggestion list, or moves the caret up/down if closed. */
+    private void moveThroughSuggestionsOrCaret(boolean down) {
         io.github.rosemoe.sora.widget.component.EditorAutoCompletion window = visibleSuggestions();
-        if (window == null) return;
-        if (down) {
-            window.moveDown();
-        } else {
-            window.moveUp();
+        if (window != null) {
+            if (down) {
+                window.moveDown();
+            } else {
+                window.moveUp();
+            }
+            return;
         }
+        if (ws.activeEditor != null) {
+            int keyCode = down ? KeyEvent.KEYCODE_DPAD_DOWN : KeyEvent.KEYCODE_DPAD_UP;
+            ws.activeEditor.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, keyCode));
+            ws.activeEditor.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, keyCode));
+        }
+    }
+
+    /** One character left or right, wrapping across line ends as the caret does. */
+    private void moveCaretHorizontally(boolean right) {
+        if (ws.activeEditor == null) return;
+        int keyCode = right ? KeyEvent.KEYCODE_DPAD_RIGHT : KeyEvent.KEYCODE_DPAD_LEFT;
+        ws.activeEditor.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, keyCode));
+        ws.activeEditor.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, keyCode));
     }
 
     private void setupToolbar() {
@@ -1352,7 +1445,11 @@ public class MainActivity extends AppCompatActivity {
             }
             @Override public void onTabLongPressed(int index) {
                 focusPane(pane);
-                showTabSplitDialog(index);
+                showTabContextMenu(index, null, 0, 0);
+            }
+            @Override public void onTabMenuRequested(int index, View anchor, float x, float y) {
+                focusPane(pane);
+                showTabContextMenu(index, anchor, x, y);
             }
         });
         strip.setLayoutManager(
@@ -1659,6 +1756,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Content change → mark tab as modified + auto-save (if enabled)
         ed.subscribeEvent(io.github.rosemoe.sora.event.ContentChangeEvent.class, (event, sub) -> {
+            final long editorEventStarted = android.os.SystemClock.elapsedRealtimeNanos();
             if (ws.isProgrammaticChange) return;
             // Recomputes are debounced and run on background worker threads; only the
             // buffer snapshot touches the main thread.
@@ -1688,6 +1786,12 @@ public class MainActivity extends AppCompatActivity {
             }
             if (powerSaving.shouldRunTodoScan() && bottomPanelMode == PANEL_TODO) {
                 if (todoManager != null) todoManager.scheduleAutoRefresh();
+            }
+            com.ccs.javadroid.profiler.PerformanceMonitor performance =
+                    com.ccs.javadroid.profiler.PerformanceMonitor.get();
+            if (performance != null) {
+                performance.recordDuration("editor.changeLatency",
+                        android.os.SystemClock.elapsedRealtimeNanos() - editorEventStarted);
             }
         });
 
@@ -1850,9 +1954,26 @@ public class MainActivity extends AppCompatActivity {
     private void jumpToEditorLine(int line0) {
         if (ws.activeEditor == null) return;
         try {
-            int max = Math.max(0, ws.activeEditor.getText().getLineCount() - 1);
-            ws.activeEditor.setSelection(Math.max(0, Math.min(line0, max)), 0);
-            ws.activeEditor.requestFocus();
+            final CodeEditor editor = ws.activeEditor;
+            int max = Math.max(0, editor.getText().getLineCount() - 1);
+            final int line = Math.max(0, Math.min(line0, max));
+
+            // Selected whole, then collapsed a moment later. Landing on a line
+            // after clicking an error in a log is disorienting when nothing
+            // moves visibly; half a second of the line standing out says where
+            // you arrived, and needs no drawing code of its own.
+            int length = editor.getText().getColumnCount(line);
+            editor.setSelectionRegion(line, 0, line, length);
+            editor.ensurePositionVisible(line, 0, true);
+            editor.requestFocus();
+            editor.postDelayed(() -> {
+                try {
+                    if (editor.getText() != null
+                            && editor.getText().getCursor().getLeftLine() == line) {
+                        editor.setSelection(line, 0);
+                    }
+                } catch (Exception ignored) {}
+            }, 600);
         } catch (Exception ignored) {}
     }
 
@@ -2578,6 +2699,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void applyEditorLanguage(File file, CodeEditor ed) {
         if (ed == null) return;
+        // Past a couple of megabytes the file is not source any more — a log, a
+        // dataset, something generated — and highlighting it costs a freeze for
+        // colour nobody reads. Plain text opens instantly at any size.
+        if (com.ccs.javadroid.editor.LargeFilePolicy.isPlain(file)) {
+            ed.setEditorLanguage(new io.github.rosemoe.sora.lang.EmptyLanguage());
+            return;
+        }
         if (file != null) {
             String name = file.getName().toLowerCase(java.util.Locale.ROOT);
             if (name.endsWith(".cpp") || name.endsWith(".c") || name.endsWith(".h") 
@@ -2908,6 +3036,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /** Draws the same active-file findings directly in the editor and drives the quick-fix lightbulb. */
+    /** Repaints the problem strip beside whichever editor is active. */
+    private void updateErrorStripe(CodeEditor editor) {
+        ErrorStripeOverlay stripe = editor == ws.editor ? errorStripe1 : errorStripe2;
+        if (stripe == null) return;
+        stripe.setColors(theme.errorText, 0xFFD8A02E, theme.accent);
+        stripe.setProblems(activeFileProblems, Math.max(1, editor.getLineCount()));
+    }
+
     private void applyInlineDiagnostics(List<ProblemItem> items) {
         if (ws == null || ws.activeEditor == null) return;
         CodeEditor editor = ws.activeEditor;
@@ -2924,6 +3060,10 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+
+        // The strip down the right edge shows the same problems, placed by
+        // proportion of the file rather than by what is currently on screen.
+        updateErrorStripe(editor);
 
         if (activeFile != null && !source.isEmpty() && !activeFileProblems.isEmpty()) {
             int lineCount = editor.getLineCount();
@@ -2974,16 +3114,15 @@ public class MainActivity extends AppCompatActivity {
 
         if (match != null) {
             btnLightbulb.setVisibility(View.VISIBLE);
+            btnLightbulb.setImageResource(R.drawable.ic_lightbulb);
             android.graphics.drawable.GradientDrawable bg = new android.graphics.drawable.GradientDrawable();
             bg.setCornerRadius(dp(6));
             if (match.severity == ProblemItem.Severity.ERROR) {
-                btnLightbulb.setText("💡");
-                btnLightbulb.setTextColor(0xFFFF5252);
+                btnLightbulb.setColorFilter(0xFFFF5252, PorterDuff.Mode.SRC_IN);
                 bg.setColor(theme != null && theme.dark ? 0x33FF5252 : 0x22FF5252);
                 bg.setStroke(dp(1), 0x66FF5252);
             } else {
-                btnLightbulb.setText("💡");
-                btnLightbulb.setTextColor(0xFFFFD54F);
+                btnLightbulb.setColorFilter(0xFFFFD54F, PorterDuff.Mode.SRC_IN);
                 bg.setColor(theme != null && theme.dark ? 0x33FFD54F : 0x22FFD54F);
                 bg.setStroke(dp(1), 0x66FFD54F);
             }
@@ -3012,27 +3151,23 @@ public class MainActivity extends AppCompatActivity {
         final ProblemItem problem = lineProblems.get(0);
         final File activeFile = ws.activeFile();
 
-        com.google.android.material.dialog.MaterialAlertDialogBuilder builder = Dialogs.rounded(this);
-        String severityPrefix = problem.severity == ProblemItem.Severity.ERROR ? "🔴 Error" : "⚠️ Warning";
-        String title = getString(R.string.quickfix_problem_at_line, problem.line, severityPrefix);
-        builder.setTitle(title);
-        builder.setMessage(problem.message);
-
-        List<String> options = new ArrayList<>();
-        List<Runnable> actions = new ArrayList<>();
+        // A popup at the lightbulb, not a dialog: the fix belongs next to the
+        // problem, and a full-screen sheet for five one-word actions hides the
+        // very line it is talking about.
+        AnchoredMenu menu = AnchoredMenu.with(this, theme).minWidth(240);
+        menu.custom(quickFixHeader(problem));
+        menu.separator();
 
         // 1. Auto-import (for Java files)
         if (activeFile != null && activeFile.getName().endsWith(".java")) {
-            options.add("⚡ " + getString(R.string.quickfix_auto_import));
-            actions.add(() -> {
+            menu.item("⚡", getString(R.string.quickfix_auto_import), () -> {
                 autoImportBeforeRun();
                 Toast.makeText(MainActivity.this, R.string.refactor_imports_organized, Toast.LENGTH_SHORT).show();
             });
         }
 
         // 2. Fix with AI
-        options.add("🤖 " + getString(R.string.quickfix_ai_fix));
-        actions.add(() -> {
+        menu.item("🤖", getString(R.string.quickfix_ai_fix), () -> {
             String code = editor.getText() != null ? editor.getText().toString() : "";
             String fname = activeFile != null ? activeFile.getName() : "";
             String root = projectManager != null && projectManager.getProjectDir() != null
@@ -3044,8 +3179,7 @@ public class MainActivity extends AppCompatActivity {
 
         // 3. Jump to next problem
         if (activeFileProblems.size() > 1) {
-            options.add("⏭ " + getString(R.string.quickfix_next_problem));
-            actions.add(() -> {
+            menu.item("⏭", getString(R.string.quickfix_next_problem), () -> {
                 ProblemItem next = null;
                 for (ProblemItem p : activeFileProblems) {
                     if (p != null && p.line > currentLine1) {
@@ -3065,12 +3199,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // 4. Show in Problems panel
-        options.add("📋 " + getString(R.string.quickfix_show_in_problems));
-        actions.add(() -> switchBottomPanel(PANEL_PROBLEMS));
+        menu.item("📋", getString(R.string.quickfix_show_in_problems),
+                () -> switchBottomPanel(PANEL_PROBLEMS));
 
         // 5. Copy error message
-        options.add("📄 " + getString(R.string.quickfix_copy_message));
-        actions.add(() -> {
+        menu.item("📄", getString(R.string.quickfix_copy_message), () -> {
             android.content.ClipboardManager cm = (android.content.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
             if (cm != null) {
                 cm.setPrimaryClip(android.content.ClipData.newPlainText("Problem", problem.message));
@@ -3078,14 +3211,69 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        builder.setItems(options.toArray(new CharSequence[0]), (dialog, which) -> {
-            if (which >= 0 && which < actions.size()) {
-                actions.get(which).run();
-            }
-        });
+        menu.showBelow(btnLightbulb);
+    }
 
-        builder.setNegativeButton(android.R.string.cancel, null);
-        builder.show();
+    /**
+     * The block at the top of the quick-fix popup: which problem this is about.
+     *
+     * <p>A menu title would not do — it is one ellipsized line, and a compiler
+     * message is rarely one line. This wraps to four and stops, wide enough to
+     * read and narrow enough that the popup stays a popup.</p>
+     */
+    private View quickFixHeader(ProblemItem problem) {
+        int dim = theme != null ? theme.textDim : 0xFF808080;
+        int text = theme != null ? theme.text : 0xFFDFE1E5;
+        int severityColor;
+        int severityLabel;
+        if (problem.severity == ProblemItem.Severity.ERROR
+                || problem.severity == ProblemItem.Severity.SECURITY) {
+            severityColor = 0xFFFF5252;
+            severityLabel = R.string.severity_error;
+        } else if (problem.severity == ProblemItem.Severity.WARNING) {
+            severityColor = 0xFFFFD54F;
+            severityLabel = R.string.severity_warning;
+        } else {
+            severityColor = 0xFF5C9BD6;
+            severityLabel = R.string.severity_info;
+        }
+
+        float density = getResources().getDisplayMetrics().density;
+        int pad = (int) (16 * density);
+        int maxWidth = Math.min((int) (300 * density),
+                getResources().getDisplayMetrics().widthPixels - (int) (48 * density));
+
+        LinearLayout box = new LinearLayout(this);
+        box.setOrientation(LinearLayout.VERTICAL);
+        box.setPadding(pad, (int) (10 * density), pad, (int) (10 * density));
+
+        TextView where = new TextView(this);
+        where.setText(getString(R.string.quickfix_problem_at_line,
+                problem.line, getString(severityLabel)));
+        where.setTextSize(11);
+        where.setTextColor(severityColor);
+        where.setSingleLine(true);
+        box.addView(where);
+
+        TextView message = new TextView(this);
+        message.setText(problem.message);
+        message.setTextSize(13);
+        message.setTextColor(text);
+        message.setMaxLines(4);
+        message.setEllipsize(android.text.TextUtils.TruncateAt.END);
+        message.setMaxWidth(maxWidth);
+        message.setPadding(0, (int) (3 * density), 0, 0);
+        box.addView(message);
+
+        if (activeFileProblems.size() > 1) {
+            TextView more = new TextView(this);
+            more.setText(getString(R.string.quickfix_more_problems, activeFileProblems.size() - 1));
+            more.setTextSize(11);
+            more.setTextColor(dim);
+            more.setPadding(0, (int) (4 * density), 0, 0);
+            box.addView(more);
+        }
+        return box;
     }
 
     private static int lineStart(String source, int line) {
@@ -3349,6 +3537,7 @@ public class MainActivity extends AppCompatActivity {
         hideIfOff(menu, R.id.action_redo,    appPrefs.isToolbarRedo());
         hideIfOff(menu, R.id.action_debug,   appPrefs.isToolbarDebug());
         hideIfOff(menu, R.id.action_find,    appPrefs.isToolbarFind());
+        hideIfOff(menu, R.id.action_format,  appPrefs.isToolbarFormat());
         hideIfOff(menu, R.id.action_ai_chat, appPrefs.isToolbarAiChat());
     }
 
@@ -3376,6 +3565,7 @@ public class MainActivity extends AppCompatActivity {
         else if (id == R.id.action_undo)          { ws.activeEditor.undo();          return true; }
         else if (id == R.id.action_redo)          { ws.activeEditor.redo();          return true; }
         else if (id == R.id.action_settings)         { openSettings();            return true; }
+        else if (id == R.id.action_format)           { formatCurrentFile(); return true; }
         else if (id == R.id.action_git)              { openGit(); return true; }
         else if (id == R.id.action_ai_chat)           { openAiChat(); return true; }
         else if (id == R.id.action_search_everywhere) { SearchEverywhereActivity.launch(this, projectManager.getProjectDir()); return true; }
@@ -3499,6 +3689,59 @@ public class MainActivity extends AppCompatActivity {
             case "line_separator": showLineSeparatorDialog(); break;
             case "encoding":      showEncodingSelectionDialog(); break;
             case "command_palette": showSearchableMenu(); break;
+            case "duplicate_line":
+                com.ccs.javadroid.editor.EditorTextActions.duplicateLines(ws.activeEditor);
+                break;
+            case "move_line_up":
+                com.ccs.javadroid.editor.EditorTextActions.moveLinesUp(ws.activeEditor);
+                break;
+            case "move_line_down":
+                com.ccs.javadroid.editor.EditorTextActions.moveLinesDown(ws.activeEditor);
+                break;
+            case "toggle_comment": {
+                FileTab commentTab = ws.tabs() == null ? null : ws.tabs().getActiveTab();
+                com.ccs.javadroid.editor.EditorTextActions.toggleLineComment(
+                        ws.activeEditor, commentTab == null ? null : commentTab.file);
+                break;
+            }
+            case "fold_toggle":
+            case "fold_all":
+            case "unfold_all":
+                runFoldAction(action);
+                break;
+        }
+    }
+
+    /**
+     * Folds and unfolds blocks in the active editor.
+     *
+     * <p>Which block "fold" means is decided by the caret: the one starting on
+     * its line, or failing that the innermost one around it. When there is no
+     * such block the user is told, rather than the command doing nothing and
+     * looking broken.</p>
+     */
+    private void runFoldAction(String action) {
+        if (!(ws.activeEditor instanceof JavaDroidCodeEditor)) return;
+        com.ccs.javadroid.editor.EditorFolding folding =
+                ((JavaDroidCodeEditor) ws.activeEditor).folding();
+        if (folding == null) return;
+
+        boolean changed;
+        switch (action) {
+            case "fold_all":
+                changed = folding.foldAll();
+                break;
+            case "unfold_all":
+                changed = folding.unfoldAll();
+                break;
+            default:
+                int line = ws.activeEditor.getCursor() == null
+                        ? 0 : ws.activeEditor.getCursor().getLeftLine();
+                changed = folding.toggleAt(line);
+                break;
+        }
+        if (!changed) {
+            Toast.makeText(this, R.string.editor_nothing_to_fold, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -3791,6 +4034,7 @@ public class MainActivity extends AppCompatActivity {
             ws.isProgrammaticChange = false;
             applyEditorLanguage(file, ws.activeEditor);
             ws.activeEditor.setEditable(!isFileReadOnly(file));
+            updateReadOnlyIndicator();
             activeStrip().scrollToPosition(idx);
             updateStatusFileName(file);
             fileTreeAdapter.setActiveFile(file);
@@ -4174,46 +4418,99 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * The menu behind a long press on a tab.
-     *
-     * <p>Split view had no discoverable gesture — it lived in a menu several
-     * levels deep. Holding the tab you want beside the current one is where a
-     * hand naturally goes, and it names the file so there is no doubt which tab
-     * is about to move.</p>
+     * The context menu for a tab (long press or right-click / context-click).
      */
-    private void showTabSplitDialog(int index) {
+    private void showTabContextMenu(int index, @androidx.annotation.Nullable View anchor, float x, float y) {
         java.util.List<FileTab> tabs = ws.tabs().getTabs();
         if (index < 0 || index >= tabs.size()) return;
         FileTab tab = tabs.get(index);
         String name = tab.file != null ? tab.file.getName() : getString(R.string.tab_untitled);
 
-        java.util.List<CharSequence> labels = new java.util.ArrayList<>();
-        java.util.List<Runnable> actions = new java.util.ArrayList<>();
+        AnchoredMenu menu = AnchoredMenu.with(this, theme)
+                .title(name);
 
+        // Pin / Unpin
+        if (tab.isPinned) {
+            menu.item(R.drawable.ic_pin, getString(R.string.tab_menu_unpin), () -> {
+                tab.isPinned = false;
+                ws.tabs().notifyDataSetChanged();
+            });
+        } else {
+            menu.item(R.drawable.ic_pin, getString(R.string.tab_menu_pin), () -> {
+                tab.isPinned = true;
+                ws.tabs().notifyDataSetChanged();
+            });
+        }
+
+        // Close tab
+        menu.item(getString(R.string.tab_menu_close), () -> closeTab(index));
+
+        // Close other tabs
+        if (tabs.size() > 1) {
+            menu.item(getString(R.string.tab_menu_close_others), () -> closeOtherTabs(tab));
+        }
+
+        // Close tabs to the right
+        if (index < tabs.size() - 1) {
+            menu.item(getString(R.string.tab_menu_close_right), () -> closeTabsToRight(index));
+        }
+
+        // Copy path
+        if (tab.file != null) {
+            menu.item(R.drawable.ic_copy, getString(R.string.tab_menu_copy_path), () -> {
+                android.content.ClipboardManager cm = (android.content.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                if (cm != null) {
+                    cm.setPrimaryClip(android.content.ClipData.newPlainText("File Path", tab.file.getAbsolutePath()));
+                    Toast.makeText(this, R.string.tab_path_copied, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        menu.separator();
+
+        // Split view actions
         boolean inRightStrip = ws.isSplitActive && ws.tabsRight.getTabs().contains(tab);
         if (!inRightStrip) {
-            labels.add(getString(R.string.tab_split_open_beside));
-            actions.add(() -> openInSplit(tab));
+            menu.item(getString(R.string.tab_split_open_beside), () -> openInSplit(tab));
         } else {
-            labels.add(getString(R.string.tab_split_move_back));
-            actions.add(() -> moveTabToPane(tab, ws.editor));
+            menu.item(getString(R.string.tab_split_move_back), () -> moveTabToPane(tab, ws.editor));
         }
         if (ws.isSplitActive) {
             if (ws.leftTab != null && ws.rightTab != null) {
-                labels.add(getString(R.string.tab_split_swap));
-                actions.add(this::swapSplitPanes);
+                menu.item(getString(R.string.tab_split_swap), this::swapSplitPanes);
             }
-            labels.add(getString(R.string.tab_split_close));
-            actions.add(() -> { if (ws.isSplitActive) toggleSplitScreen(); });
+            menu.item(getString(R.string.tab_split_close), () -> { if (ws.isSplitActive) toggleSplitScreen(); });
         }
-        if (labels.isEmpty()) return;
 
-        Dialogs.rounded(this)
-                .setTitle(name)
-                .setItems(labels.toArray(new CharSequence[0]),
-                        (d, w) -> actions.get(w).run())
-                .setNegativeButton(android.R.string.cancel, null)
-                .show();
+        if (anchor != null && (x > 0 || y > 0)) {
+            menu.showAt(anchor, x, y);
+        } else if (anchor != null) {
+            menu.showBelow(anchor);
+        } else {
+            View fallback = activeStrip();
+            if (fallback != null) menu.showBelow(fallback);
+        }
+    }
+
+    private void closeOtherTabs(FileTab keepTab) {
+        java.util.List<FileTab> tabs = new java.util.ArrayList<>(ws.tabs().getTabs());
+        for (FileTab t : tabs) {
+            if (t != keepTab && !t.isPinned) {
+                int idx = ws.tabs().getTabs().indexOf(t);
+                if (idx >= 0) closeTab(idx);
+            }
+        }
+    }
+
+    private void closeTabsToRight(int index) {
+        java.util.List<FileTab> tabs = new java.util.ArrayList<>(ws.tabs().getTabs());
+        for (int i = tabs.size() - 1; i > index; i--) {
+            FileTab t = tabs.get(i);
+            if (!t.isPinned) {
+                int idx = ws.tabs().getTabs().indexOf(t);
+                if (idx >= 0) closeTab(idx);
+            }
+        }
     }
 
     /** Shows a file in the second pane, turning the split on if it is off. */
@@ -4534,8 +4831,53 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void openEditableFile(File file) {
+        // Big files are read on a worker: readFile on the main thread is what
+        // makes opening one feel like the app has hung.
+        if (com.ccs.javadroid.editor.LargeFilePolicy.readsAsync(file)) {
+            openLargeFileAsync(file);
+            return;
+        }
+        openEditableFileNow(file, null);
+    }
+
+    /**
+     * Reads a large file in the background, then hands the text to the editor.
+     *
+     * <p>The tab is not created until the text is in hand: a tab that exists
+     * while its content is still loading is a tab that can be switched away
+     * from, closed, or saved over.</p>
+     */
+    private void openLargeFileAsync(File file) {
+        final long size = file.length();
+        Toast.makeText(this, getString(R.string.editor_large_file_loading,
+                com.ccs.javadroid.editor.LargeFilePolicy.describeSize(size)),
+                Toast.LENGTH_SHORT).show();
+        fileReadWorker.execute(() -> {
+            String content;
+            String failure = null;
+            try {
+                content = projectManager.readFile(file);
+            } catch (Exception e) {
+                content = null;
+                failure = e.getMessage();
+            }
+            final String loaded = content;
+            final String error = failure;
+            runOnUiThread(() -> {
+                if (isFinishing() || isDestroyed()) return;
+                if (loaded == null) {
+                    Toast.makeText(this, getString(R.string.error_cannot_open, error),
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                openEditableFileNow(file, loaded);
+            });
+        });
+    }
+
+    private void openEditableFileNow(File file, String preloaded) {
         try {
-            String content = projectManager.readFile(file);
+            String content = preloaded != null ? preloaded : projectManager.readFile(file);
             FileTab tab = new FileTab(file);
             ws.tabs().addTab(tab);
             int idx = ws.tabs().getTabs().size() - 1;
@@ -4544,7 +4886,22 @@ public class MainActivity extends AppCompatActivity {
             ws.activeEditor.setText(content);
             ws.isProgrammaticChange = false;
             applyEditorLanguage(file, ws.activeEditor);
-            ws.activeEditor.setEditable(true);
+
+            // Read-only above the top threshold, and said out loud: silently
+            // refusing keystrokes is the worst of the three options.
+            com.ccs.javadroid.editor.LargeFilePolicy.Mode mode =
+                    com.ccs.javadroid.editor.LargeFilePolicy.modeFor(file);
+            boolean editable = mode != com.ccs.javadroid.editor.LargeFilePolicy.Mode.READ_ONLY;
+            ws.activeEditor.setEditable(editable);
+            if (!editable) {
+                Toast.makeText(this, getString(R.string.editor_large_file_read_only,
+                        com.ccs.javadroid.editor.LargeFilePolicy.describeSize(file.length())),
+                        Toast.LENGTH_LONG).show();
+            } else if (mode == com.ccs.javadroid.editor.LargeFilePolicy.Mode.PLAIN) {
+                Toast.makeText(this, getString(R.string.editor_large_file_plain,
+                        com.ccs.javadroid.editor.LargeFilePolicy.describeSize(file.length())),
+                        Toast.LENGTH_SHORT).show();
+            }
             activeStrip().scrollToPosition(idx);
             updateStatusFileName(file);
             fileTreeAdapter.setActiveFile(file);
@@ -4751,7 +5108,8 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, R.string.toast_no_file_open, Toast.LENGTH_SHORT).show();
             return;
         }
-        com.ccs.javadroid.ui.LocalHistoryDialog.show(this, theme, activeTab.file, content -> {
+        com.ccs.javadroid.ui.LocalHistoryDialog.show(this, theme, activeTab.file,
+                ws.activeEditor == null ? "" : ws.activeEditor.getText().toString(), content -> {
             if (ws.activeEditor != null) {
                 ws.activeEditor.setText(content);
                 saveCurrentFile();
@@ -5726,16 +6084,16 @@ public class MainActivity extends AppCompatActivity {
         if (statusReadOnly == null) return;
         FileTab tab = ws.tabs() != null ? ws.tabs().getActiveTab() : null;
         if (tab == null || tab.file == null) {
-            statusReadOnly.setText(R.string.status_lock_open);
-            statusReadOnly.setTextColor(theme != null ? theme.textDim : 0xFF808080);
+            statusReadOnly.setImageResource(R.drawable.ic_lock_open);
+            statusReadOnly.setColorFilter(theme != null ? theme.textDim : 0xFF808080, PorterDuff.Mode.SRC_IN);
             statusReadOnly.setContentDescription(getString(R.string.a11y_status_read_only));
             return;
         }
         boolean locked = isFileReadOnly(tab.file);
-        statusReadOnly.setText(locked ? R.string.status_lock_closed : R.string.status_lock_open);
-        statusReadOnly.setTextColor(locked
+        statusReadOnly.setImageResource(locked ? R.drawable.ic_lock_closed : R.drawable.ic_lock_open);
+        statusReadOnly.setColorFilter(locked
                 ? (theme != null ? theme.errorText : 0xFFFF6B6B)
-                : (theme != null ? theme.textDim : 0xFF808080));
+                : (theme != null ? theme.textDim : 0xFF808080), PorterDuff.Mode.SRC_IN);
         statusReadOnly.setContentDescription(getString(locked
                 ? R.string.a11y_status_read_only_on : R.string.a11y_status_read_only_off));
     }
@@ -6204,10 +6562,10 @@ public class MainActivity extends AppCompatActivity {
                     }
                     break;
                 case KeyEvent.KEYCODE_DPAD_DOWN:
-                    moveThroughSuggestions(true);
+                    moveThroughSuggestionsOrCaret(true);
                     return true;
                 case KeyEvent.KEYCODE_DPAD_UP:
-                    moveThroughSuggestions(false);
+                    moveThroughSuggestionsOrCaret(false);
                     return true;
                 default:
                     break;
@@ -6221,12 +6579,73 @@ public class MainActivity extends AppCompatActivity {
             consumedSuggestionTab = false;
             return true;
         }
-        if (event.getAction() == KeyEvent.ACTION_DOWN && event.isCtrlPressed()) {
+        // Alt with the vertical arrows moves lines, the way it does in IntelliJ
+        // and VS Code. Checked before the Ctrl block because Alt is its own
+        // modifier and would otherwise fall through to the caret movement.
+        if (event.getAction() == KeyEvent.ACTION_DOWN && event.isAltPressed()
+                && !event.isCtrlPressed()) {
             switch (event.getKeyCode()) {
+                case KeyEvent.KEYCODE_DPAD_UP:
+                    executeMenuAction("move_line_up");
+                    return true;
+                case KeyEvent.KEYCODE_DPAD_DOWN:
+                    executeMenuAction("move_line_down");
+                    return true;
+                default:
+                    break;
+            }
+        }
+
+        if (event.getAction() == KeyEvent.ACTION_DOWN && event.isCtrlPressed()) {
+            AppPreferences shortcuts = new AppPreferences(this);
+            // User-defined bindings are checked before the legacy key switch,
+            // so a shortcut can be moved to any physical key, not only the
+            // defaults listed below.
+            if (shortcuts.matchesShortcut("duplicate_line", "Ctrl+D", event)) {
+                executeMenuAction("duplicate_line"); return true;
+            }
+            if (shortcuts.matchesShortcut("toggle_comment", "Ctrl+/", event)) {
+                executeMenuAction("toggle_comment"); return true;
+            }
+            if (shortcuts.matchesShortcut("save", "Ctrl+S", event)) {
+                saveCurrentFile(); return true;
+            }
+            if (shortcuts.matchesShortcut("find", "Ctrl+F", event)) {
+                if (findReplaceController != null) {
+                    if (!findReplaceController.isFindBarVisible()) findReplaceController.toggleFindBar();
+                    else findReplaceController.focusFind();
+                }
+                return true;
+            }
+            if (shortcuts.matchesShortcut("run", "Ctrl+R", event)) {
+                if (isRunning) stopRunning(); else runCurrentFile(); return true;
+            }
+            if (shortcuts.matchesShortcut("delete_line", "Ctrl+Y", event)) {
+                deleteCurrentLine(); return true;
+            }
+            switch (event.getKeyCode()) {
+                case KeyEvent.KEYCODE_D:
+                    if (!shortcuts.matchesShortcut("duplicate_line", "Ctrl+D", event)) break;
+                    executeMenuAction("duplicate_line");
+                    return true;
+                case KeyEvent.KEYCODE_SLASH:
+                    if (!shortcuts.matchesShortcut("toggle_comment", "Ctrl+/", event)) break;
+                    executeMenuAction("toggle_comment");
+                    return true;
+                // Ctrl+- / Ctrl+= fold and unfold, Shift widens both to the
+                // whole file — the IntelliJ bindings.
+                case KeyEvent.KEYCODE_MINUS:
+                    executeMenuAction(event.isShiftPressed() ? "fold_all" : "fold_toggle");
+                    return true;
+                case KeyEvent.KEYCODE_EQUALS:
+                    executeMenuAction(event.isShiftPressed() ? "unfold_all" : "fold_toggle");
+                    return true;
                 case KeyEvent.KEYCODE_S:
+                    if (!shortcuts.matchesShortcut("save", "Ctrl+S", event)) break;
                     saveCurrentFile();
                     return true;
                 case KeyEvent.KEYCODE_F:
+                    if (!shortcuts.matchesShortcut("find", "Ctrl+F", event)) break;
                     if (findReplaceController != null) {
                         if (!findReplaceController.isFindBarVisible()) {
                             findReplaceController.toggleFindBar();
@@ -6236,6 +6655,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     return true;
                 case KeyEvent.KEYCODE_R:
+                    if (!shortcuts.matchesShortcut("run", "Ctrl+R", event)) break;
                     if (isRunning) {
                         stopRunning();
                     } else {
@@ -6243,6 +6663,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     return true;
                 case KeyEvent.KEYCODE_Y:
+                    if (!shortcuts.matchesShortcut("delete_line", "Ctrl+Y", event)) break;
                     deleteCurrentLine();
                     return true;
                 default:

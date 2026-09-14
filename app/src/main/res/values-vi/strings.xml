@@ -36,7 +36,7 @@
     <string name="replace_hint">Thay thế bằng…</string>
     <string name="replace">Thay thế</string>
     <string name="replace_all">Tất cả</string>
-    <string name="tab_run">▶  Run</string>
+    <string name="tab_run">Run</string>
     <string name="tab_problems">Vấn đề</string>
     <string name="tab_bytecode">Mã bytecode</string>
     <string name="tab_debug">Threads &amp; Variables</string>

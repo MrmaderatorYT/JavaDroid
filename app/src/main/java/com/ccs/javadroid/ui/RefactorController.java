@@ -145,6 +145,7 @@ public final class RefactorController {
                     String finalPkg = currentPkg;
                     String newPkg = input.getText().toString().trim();
                     if (!newPkg.isEmpty()) {
+                        snapshotBeforeRefactor("Before rename package");
                         boolean ok = com.ccs.javadroid.util.PackageRenameHelper.renamePackage(pm.getProjectDir(), finalPkg, newPkg);
                         if (ok) {
                             Toast.makeText(activity,
@@ -199,6 +200,7 @@ public final class RefactorController {
                         return;
                     }
                     File projectRoot = callback.getProjectManager() != null ? callback.getProjectManager().getProjectDir() : null;
+                    snapshotBeforeRefactor("Before rename symbol");
                     RefactoringHelper.renameSymbolAsync(activity, projectRoot, currentName, newName, result -> {
                         Toast.makeText(activity, result.summary, Toast.LENGTH_LONG).show();
                         if (result.filesChanged > 0) {
@@ -243,6 +245,7 @@ public final class RefactorController {
                         return;
                     }
                     String source = ed.getText().toString();
+                    snapshotBeforeRefactor("Before extract method");
                     RefactoringHelper.extractMethodAsync(activity, source, selStartLine, selEndLine, methodName, result ->
                             Toast.makeText(activity, result.summary, Toast.LENGTH_SHORT).show());
                 })
@@ -298,6 +301,7 @@ public final class RefactorController {
                         return;
                     }
                     String source = ed.getText().toString();
+                    snapshotBeforeRefactor("Before extract variable");
                     RefactoringHelper.extractVariableAsync(source, cursor.getLeftLine(),
                             cursor.getLeftColumn(), cursor.getRightColumn(), varName,
                             result -> Toast.makeText(activity, result.summary, Toast.LENGTH_SHORT).show());
@@ -317,6 +321,7 @@ public final class RefactorController {
                 .setMessage("Inline method '" + methodName + "'?")
                 .setPositiveButton("Inline", (d, w) -> {
                     String source = ed.getText().toString();
+                    snapshotBeforeRefactor("Before inline method");
                     RefactoringHelper.inlineMethodAsync(activity, source, methodName,
                             result -> Toast.makeText(activity, result.summary, Toast.LENGTH_SHORT).show());
                 })
@@ -361,6 +366,7 @@ public final class RefactorController {
         String source = ed.getText().toString();
         String organized = com.ccs.javadroid.util.AutoImportHelper.organizeImports(source);
         if (!organized.equals(source)) {
+            snapshotBeforeRefactor("Before organize imports");
             ed.setText(organized);
             Toast.makeText(activity, R.string.refactor_imports_organized, Toast.LENGTH_SHORT).show();
         } else {
@@ -431,6 +437,7 @@ public final class RefactorController {
      */
     private void insertCodeIntoClass(CodeEditor ed, String codeToInsert) {
         String source = ed.getText().toString();
+        snapshotBeforeRefactor("Before generate code");
         int at = -1;
         try {
             com.ccs.javadroid.tools.refactor.ImplementMethodsHelper.TypeDecl decl =
@@ -444,6 +451,13 @@ public final class RefactorController {
         } else {
             ed.setText(source + "\n" + codeToInsert);
         }
+    }
+
+    private void snapshotBeforeRefactor(String label) {
+        FileTab tab = ws.tabs().getActiveTab();
+        if (tab == null || tab.file == null || ws.activeEditor == null) return;
+        com.ccs.javadroid.util.LocalHistoryManager.saveSnapshot(
+                activity, tab.file, ws.activeEditor.getText().toString(), label);
     }
 
     public void showGenerateDialog() {

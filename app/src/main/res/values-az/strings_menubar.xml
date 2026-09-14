@@ -33,4 +33,24 @@
     <string name="semantic_search_title">Semantik axtarış (AI)</string>
     <string name="a11y_action_voice">Səslə daxiletmə</string>
     <string name="menubar_refactor">Refaktorinq</string>
+    <string name="settings_bracket_highlight">Cüt mötərizələri vurğula</string>
+    <string name="settings_bracket_highlight_desc">Kursordakı mötərizənin cütünü çərçivəyə alır.</string>
+    <string name="action_duplicate_line">Sətri təkrarla</string>
+    <string name="action_move_line_up">Sətri yuxarı köçür</string>
+    <string name="action_move_line_down">Sətri aşağı köçür</string>
+    <string name="action_toggle_comment">Şərh et / şərhi aç</string>
+    <string name="settings_contextual_symbols">Simvollar dilə uyğun</string>
+    <string name="settings_contextual_symbols_desc">XML üçün bucaqlı mötərizələr, Java üçün nöqtəli vergül. Söndürün ki, aşağıdakı öz sıranız işləsin.</string>
+    <string name="a11y_error_stripe">Problem nişanları</string>
+    <string name="editor_large_file_loading">%1$s yüklənir…</string>
+    <string name="editor_large_file_plain">%1$s — fayl dərhal açılsın deyə vurğulama söndürülüb.</string>
+    <string name="editor_large_file_read_only">%1$s — yalnız oxumaq üçün açıldı. Bu ölçüdə faylı redaktə etmək yavaş, saxlamaq isə risklidir.</string>
+    <string name="action_fold_toggle">Bloku yığ / aç</string>
+    <string name="action_fold_all">Bütün metodları yığ</string>
+    <string name="action_unfold_all">Hamısını aç</string>
+    <string name="editor_nothing_to_fold">Burada yığılacaq bir şey yoxdur</string>
+    <string name="severity_error">Xəta</string>
+    <string name="severity_warning">Xəbərdarlıq</string>
+    <string name="severity_info">Qeyd</string>
+    <string name="quickfix_more_problems">bu faylda daha %1$d</string>
 </resources>

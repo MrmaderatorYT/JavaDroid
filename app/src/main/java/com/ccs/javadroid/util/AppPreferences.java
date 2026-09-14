@@ -3,6 +3,7 @@ package com.ccs.javadroid.util;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.view.KeyEvent;
 
 /**
  * Централізований доступ до користувацьких налаштувань JavaDroid.
@@ -44,6 +45,7 @@ import android.graphics.Typeface;
     private static final String K_TB_DEBUG         = "toolbar_debug";
     private static final String K_TB_FIND          = "toolbar_find";
     private static final String K_TB_AI            = "toolbar_ai_chat";
+    private static final String K_TB_FORMAT        = "tb_format";
     private static final String K_AST_HIGHLIGHT    = "ast_highlighting";
     private static final String K_LIVE_PROBLEMS    = "live_problems";
     private static final String K_DIAG_UNDERLINE   = "diag_underline";
@@ -68,6 +70,7 @@ import android.graphics.Typeface;
     private static final String K_PS_SEARCH        = "ps_auto_search";
     private static final String K_PS_VERBOSE       = "ps_verbose_logging";
     private static final String K_READ_ONLY_FILES  = "read_only_files";
+    private static final String K_SHORTCUT_PREFIX  = "shortcut_";
 
     // ── Bottom panel tabs ─────────────────────────────────────
     private static final String K_PANEL_ORDER      = "panel_order";
@@ -125,6 +128,11 @@ import android.graphics.Typeface;
     // ── v1.11.2 new settings ─────────────────────────────────
     private static final String K_AUTO_CLOSE_PAIRS     = "auto_close_pairs";
     private static final String K_HIGHLIGHT_LINE       = "highlight_current_line";
+    private static final String K_INDENT_GUIDES        = "indent_guides";
+    private static final String K_BRACKET_HIGHLIGHT    = "bracket_highlight";
+    private static final String K_KEY_BAR_SYMBOLS      = "key_bar_symbols";
+    private static final String K_CONTEXTUAL_SYMBOLS   = "contextual_symbols";
+    public static final String DEFAULT_KEY_BAR_SYMBOLS = "{ } ( ) [ ] ; . = \" + - * / ▲ ▼ Tab";
     private static final String K_CLEAR_CONSOLE_ON_RUN = "clear_console_on_run";
     private static final String K_COMPILER_WARNINGS    = "compiler_warnings"; // 0=none, 1=default, 2=deprecation, 3=all
     private static final String K_SHOW_DOTFILES        = "show_dotfiles";
@@ -162,6 +170,30 @@ import android.graphics.Typeface;
 
     public SharedPreferences raw() {
         return prefs;
+    }
+
+    public String getShortcut(String action, String defaultValue) {
+        return prefs.getString(K_SHORTCUT_PREFIX + action, defaultValue);
+    }
+    public void setShortcut(String action, String value) {
+        prefs.edit().putString(K_SHORTCUT_PREFIX + action, value).apply();
+    }
+    public void resetShortcuts() {
+        prefs.edit().remove(K_SHORTCUT_PREFIX + "duplicate_line")
+                .remove(K_SHORTCUT_PREFIX + "toggle_comment")
+                .remove(K_SHORTCUT_PREFIX + "save")
+                .remove(K_SHORTCUT_PREFIX + "find")
+                .remove(K_SHORTCUT_PREFIX + "run").remove(K_SHORTCUT_PREFIX + "delete_line").apply();
+    }
+
+    public boolean matchesShortcut(String action, String def, KeyEvent event) {
+        String shortcut = getShortcut(action, def);
+        StringBuilder s = new StringBuilder();
+        if (event.isCtrlPressed()) s.append("Ctrl+");
+        if (event.isAltPressed()) s.append("Alt+");
+        if (event.isShiftPressed()) s.append("Shift+");
+        s.append(KeyEvent.keyCodeToString(event.getKeyCode()).replace("KEYCODE_", ""));
+        return shortcut.equalsIgnoreCase(s.toString());
     }
 
     /** Empty means follow the device language automatically. */
@@ -221,6 +253,9 @@ import android.graphics.Typeface;
 
     public boolean isToolbarFind()        { return prefs.getBoolean(K_TB_FIND, true); }
     public void setToolbarFind(boolean v) { prefs.edit().putBoolean(K_TB_FIND, v).apply(); }
+
+    public boolean isToolbarFormat()      { return prefs.getBoolean(K_TB_FORMAT, true); }
+    public void setToolbarFormat(boolean v) { prefs.edit().putBoolean(K_TB_FORMAT, v).apply(); }
 
     public boolean isToolbarAiChat()        { return prefs.getBoolean(K_TB_AI, true); }
     public void setToolbarAiChat(boolean v) { prefs.edit().putBoolean(K_TB_AI, v).apply(); }
@@ -805,4 +840,21 @@ import android.graphics.Typeface;
             return Typeface.MONOSPACE;
         }
     }
+
+    public boolean isBracketHighlight() { return prefs.getBoolean(K_BRACKET_HIGHLIGHT, true); }
+    public void setBracketHighlight(boolean v) {
+        prefs.edit().putBoolean(K_BRACKET_HIGHLIGHT, v).apply();
+    }
+
+    public boolean isIndentGuides() { return prefs.getBoolean(K_INDENT_GUIDES, true); }
+    public void setIndentGuides(boolean v) { prefs.edit().putBoolean(K_INDENT_GUIDES, v).apply(); }
+
+    /** Symbol row follows the open file's language instead of one fixed list. */
+    public boolean isContextualSymbols() { return prefs.getBoolean(K_CONTEXTUAL_SYMBOLS, true); }
+    public void setContextualSymbols(boolean v) {
+        prefs.edit().putBoolean(K_CONTEXTUAL_SYMBOLS, v).apply();
+    }
+
+    public String getKeyBarSymbols() { return prefs.getString(K_KEY_BAR_SYMBOLS, DEFAULT_KEY_BAR_SYMBOLS); }
+    public void setKeyBarSymbols(String v) { prefs.edit().putString(K_KEY_BAR_SYMBOLS, v != null ? v : DEFAULT_KEY_BAR_SYMBOLS).apply(); }
 }

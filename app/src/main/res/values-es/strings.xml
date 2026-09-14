@@ -37,7 +37,7 @@ Luego péguela a continuación:</string>
     <string name="replace_hint">Reemplazar por…</string>
     <string name="replace">Reemplazar</string>
     <string name="replace_all">Todo</string>
-    <string name="tab_run">▶  Ejecutar</string>
+    <string name="tab_run">Ejecutar</string>
     <string name="tab_problems">Problemas</string>
     <string name="tab_bytecode">Bytecode</string>
     <string name="tab_debug">Hilos y variables</string>

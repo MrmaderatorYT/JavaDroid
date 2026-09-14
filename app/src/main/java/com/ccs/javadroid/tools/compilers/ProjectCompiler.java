@@ -244,7 +244,9 @@ public final class ProjectCompiler {
                     File srcFile = new File(cacheDir, className + ".kt");
                     EcjCompiler.writeUtf8(srcFile, sourceCode);
 
+                    long compileStarted = android.os.SystemClock.elapsedRealtimeNanos();
                     List<File> classFiles = KotlinCompiler.compile(srcFile, projectRoot, cacheDir, androidJar, className, callback, context);
+                    recordPerformanceDuration("compile.kotlin", compileStarted);
                     if (classFiles == null || classFiles.isEmpty()) {
                         return;
                     }
@@ -253,9 +255,13 @@ public final class ProjectCompiler {
                     if (stdlib != null && stdlib.exists()) {
                         List<File> allFiles = new ArrayList<>(classFiles);
                         allFiles.add(stdlib);
+                        long dexStarted = android.os.SystemClock.elapsedRealtimeNanos();
                         D8Dexer.runD8Dex(androidJar, dexDir, allFiles);
+                        recordPerformanceDuration("compile.d8", dexStarted);
                     } else {
+                        long dexStarted = android.os.SystemClock.elapsedRealtimeNanos();
                         D8Dexer.runD8Dex(androidJar, dexDir, classFiles);
+                        recordPerformanceDuration("compile.d8", dexStarted);
                     }
 
                     String runClassName = null;
@@ -299,7 +305,9 @@ public final class ProjectCompiler {
                     File srcFile = new File(cacheDir, className + ".java");
                     EcjCompiler.writeUtf8(srcFile, sourceCode);
 
+                    long compileStarted = android.os.SystemClock.elapsedRealtimeNanos();
                     String ecjErr = EcjCompiler.compileEcj(androidJar, null, cacheDir, javaTarget(context), srcFile);
+                    recordPerformanceDuration("compile.java", compileStarted);
                     if (ecjErr != null) {
                         postCompileFailure(callback, context, null, ecjErr, logicalSourceFile,
                                 "Compilation Error:\n" + ecjErr);
@@ -313,7 +321,9 @@ public final class ProjectCompiler {
                         return;
                     }
 
+                    long dexStarted = android.os.SystemClock.elapsedRealtimeNanos();
                     D8Dexer.runD8Dex(androidJar, dexDir, classFile);
+                    recordPerformanceDuration("compile.d8", dexStarted);
                     String fqName = classFile.getAbsolutePath()
                             .substring(cacheDir.getAbsolutePath().length() + 1)
                             .replace(".class", "")
@@ -538,6 +548,13 @@ public final class ProjectCompiler {
     public static void debugRunDex(Context context, String className, File dexDir,
                                    File debugCacheDir, File jniLibsDir, Callback callback) {
         DexRunner.debugRunDex(context, className, dexDir, debugCacheDir, jniLibsDir, callback);
+    }
+
+    private static void recordPerformanceDuration(String name, long startedNanos) {
+        com.ccs.javadroid.profiler.PerformanceMonitor monitor =
+                com.ccs.javadroid.profiler.PerformanceMonitor.get();
+        if (monitor != null) monitor.recordDuration(name,
+                android.os.SystemClock.elapsedRealtimeNanos() - startedNanos);
     }
 
     public static void mavenCompileAndRun(Context context, File projectRoot, PomModel pom, Callback callback) {

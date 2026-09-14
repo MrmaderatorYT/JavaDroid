@@ -14,6 +14,7 @@ import com.ccs.javadroid.R;
 import com.ccs.javadroid.analysis.ProblemItem;
 import com.ccs.javadroid.profiler.ProfilerBridge;
 import com.ccs.javadroid.profiler.ProfilerInstrumenter;
+import com.ccs.javadroid.profiler.PerformanceMonitor;
 import com.ccs.javadroid.tools.compilers.ProjectCompiler;
 import com.ccs.javadroid.util.AppPreferences;
 import com.ccs.javadroid.ui.panels.BottomPanel;
@@ -109,12 +110,23 @@ public final class ProfilerPanelManager {
         View profilerFit = activity.findViewById(R.id.profilerFit);
         View profilerRunBtn = activity.findViewById(R.id.profilerRunBtn);
         TextView profilerLiveToggle = activity.findViewById(R.id.profilerLiveToggle);
+        View profilerMetrics = activity.findViewById(R.id.profilerMetrics);
+        View profilerSnapshot = activity.findViewById(R.id.profilerSnapshot);
 
         if (profilerRefresh != null) profilerRefresh.setOnClickListener(v -> refreshResults());
         if (profilerZoomIn != null) profilerZoomIn.setOnClickListener(v -> flameChartView.zoomIn());
         if (profilerZoomOut != null) profilerZoomOut.setOnClickListener(v -> flameChartView.zoomOut());
         if (profilerFit != null) profilerFit.setOnClickListener(v -> flameChartView.fitToScreen());
         if (profilerRunBtn != null) profilerRunBtn.setOnClickListener(v -> runWithProfiler());
+        if (profilerMetrics != null) profilerMetrics.setOnClickListener(v -> showPerformanceMetrics());
+        if (profilerSnapshot != null) profilerSnapshot.setOnClickListener(v -> {
+            PerformanceMonitor monitor = PerformanceMonitor.get();
+            if (monitor != null) {
+                monitor.snapshot("manual");
+                Toast.makeText(activity, "Performance snapshot saved", Toast.LENGTH_SHORT).show();
+                showPerformanceMetrics();
+            }
+        });
 
         if (profilerLiveToggle != null) {
             updateLiveToggleUI(profilerLiveToggle);
@@ -170,6 +182,10 @@ public final class ProfilerPanelManager {
         if (profilerFit != null) ((TextView) profilerFit).setTextColor(theme.text);
         View profilerRunBtn = activity.findViewById(R.id.profilerRunBtn);
         if (profilerRunBtn != null) ((TextView) profilerRunBtn).setTextColor(theme.accent);
+        View profilerMetrics = activity.findViewById(R.id.profilerMetrics);
+        if (profilerMetrics != null) ((TextView) profilerMetrics).setTextColor(theme.text);
+        View profilerSnapshot = activity.findViewById(R.id.profilerSnapshot);
+        if (profilerSnapshot != null) ((TextView) profilerSnapshot).setTextColor(theme.text);
         if (detailScroll != null) detailScroll.setBackgroundColor(theme.consoleBg);
         if (detail != null) detail.setTextColor(theme.consoleText);
         if (flameChartView != null) {
@@ -225,6 +241,20 @@ public final class ProfilerPanelManager {
             toggle.setText("○ Paused");
             toggle.setTextColor(0xFF888888);
         }
+    }
+
+    private void showPerformanceMetrics() {
+        PerformanceMonitor monitor = PerformanceMonitor.get();
+        if (monitor == null || detailScroll == null || detail == null || flameChartView == null) return;
+        detail.setText(monitor.report());
+        detailScroll.setVisibility(View.VISIBLE);
+        flameChartView.setVisibility(View.GONE);
+        status.setText(monitor.isLowMemoryDevice()
+                ? "Low-memory mode active" : "Process performance metrics");
+        detailScroll.setOnClickListener(v -> {
+            detailScroll.setVisibility(View.GONE);
+            flameChartView.setVisibility(View.VISIBLE);
+        });
     }
 
     private void runWithProfiler() {

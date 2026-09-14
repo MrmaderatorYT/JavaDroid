@@ -37,7 +37,7 @@
     <string name="replace_hint">Bununla dəyişdir…</string>
     <string name="replace">Dəyişdir</string>
     <string name="replace_all">Hamısı</string>
-    <string name="tab_run">▶ İcra</string>
+    <string name="tab_run">İcra</string>
     <string name="tab_problems">Problemlər</string>
     <string name="tab_bytecode">Bayt kodu</string>
     <string name="tab_debug">▶ Sazlama</string>

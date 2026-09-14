@@ -33,4 +33,24 @@
     <string name="semantic_search_title">Căutare semantică (AI)</string>
     <string name="a11y_action_voice">Introducere vocală</string>
     <string name="menubar_refactor">Refactorizare</string>
+    <string name="settings_bracket_highlight">Evidențiază parantezele pereche</string>
+    <string name="settings_bracket_highlight_desc">Conturează paranteza pereche cu cea de la cursor.</string>
+    <string name="action_duplicate_line">Duplică linia</string>
+    <string name="action_move_line_up">Mută linia în sus</string>
+    <string name="action_move_line_down">Mută linia în jos</string>
+    <string name="action_toggle_comment">Comentează / decomentează</string>
+    <string name="settings_contextual_symbols">Simboluri după limbaj</string>
+    <string name="settings_contextual_symbols_desc">Un fișier XML primește paranteze unghiulare, unul Java punct și virgulă. Dezactivează pentru rândul tău.</string>
+    <string name="a11y_error_stripe">Marcaje de probleme</string>
+    <string name="editor_large_file_loading">Se încarcă %1$s…</string>
+    <string name="editor_large_file_plain">%1$s — evidențierea este oprită ca fișierul să se deschidă imediat.</string>
+    <string name="editor_large_file_read_only">%1$s — deschis doar pentru citire. Un fișier de această mărime se editează greu și se salvează riscant.</string>
+    <string name="action_fold_toggle">Restrânge / extinde blocul</string>
+    <string name="action_fold_all">Restrânge toate metodele</string>
+    <string name="action_unfold_all">Extinde tot</string>
+    <string name="editor_nothing_to_fold">Nu e nimic de restrâns aici</string>
+    <string name="severity_error">Eroare</string>
+    <string name="severity_warning">Avertisment</string>
+    <string name="severity_info">Notă</string>
+    <string name="quickfix_more_problems">încă %1$d în acest fișier</string>
 </resources>

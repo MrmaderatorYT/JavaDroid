@@ -33,4 +33,24 @@
     <string name="semantic_search_title">Semantische Suche (KI)</string>
     <string name="a11y_action_voice">Spracheingabe</string>
     <string name="menubar_refactor">Refactoring</string>
+    <string name="settings_bracket_highlight">Zusammengehörige Klammern hervorheben</string>
+    <string name="settings_bracket_highlight_desc">Hebt die Klammer hervor, die zu der am Cursor gehört.</string>
+    <string name="action_duplicate_line">Zeile duplizieren</string>
+    <string name="action_move_line_up">Zeile nach oben</string>
+    <string name="action_move_line_down">Zeile nach unten</string>
+    <string name="action_toggle_comment">Kommentieren / entkommentieren</string>
+    <string name="settings_contextual_symbols">Symbole folgen der Sprache</string>
+    <string name="settings_contextual_symbols_desc">XML bekommt spitze Klammern, Java ein Semikolon. Aus: Ihre eigene Reihe unten gilt.</string>
+    <string name="a11y_error_stripe">Problemmarkierungen</string>
+    <string name="editor_large_file_loading">%1$s werden geladen…</string>
+    <string name="editor_large_file_plain">%1$s — Hervorhebung aus, damit die Datei sofort öffnet.</string>
+    <string name="editor_large_file_read_only">%1$s — schreibgeschützt geöffnet. Eine Datei dieser Größe ist langsam zu bearbeiten und riskant zu speichern.</string>
+    <string name="action_fold_toggle">Block ein-/ausklappen</string>
+    <string name="action_fold_all">Alle Methoden einklappen</string>
+    <string name="action_unfold_all">Alle ausklappen</string>
+    <string name="editor_nothing_to_fold">Hier gibt es nichts zum Einklappen</string>
+    <string name="severity_error">Fehler</string>
+    <string name="severity_warning">Warnung</string>
+    <string name="severity_info">Hinweis</string>
+    <string name="quickfix_more_problems">%1$d weitere in dieser Datei</string>
 </resources>

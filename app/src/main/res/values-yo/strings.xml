@@ -37,7 +37,7 @@
     <string name="replace_hint">Yí padà pẹ̀lú…</string>
     <string name="replace">Yí padà</string>
     <string name="replace_all">Gbogbo</string>
-    <string name="tab_run">▶ Ṣàgbé</string>
+    <string name="tab_run">Ṣàgbé</string>
     <string name="tab_problems">Ìṣòro</string>
     <string name="tab_bytecode">Bytecode</string>
     <string name="tab_debug">▶ Debug</string>

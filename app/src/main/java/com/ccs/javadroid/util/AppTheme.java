@@ -130,6 +130,8 @@ public final class AppTheme {
         base.setColor(EditorColorScheme.ATTRIBUTE_NAME,          editorFunction);
         base.setColor(EditorColorScheme.ATTRIBUTE_VALUE,         editorType);
         base.setColor(EditorColorScheme.HTML_TAG,                editorKeyword);
+        base.setColor(EditorColorScheme.BLOCK_LINE,               withAlpha(textDim, 0x33));
+        base.setColor(EditorColorScheme.BLOCK_LINE_CURRENT,       withAlpha(accent, 0x99));
         return base;
     }
 

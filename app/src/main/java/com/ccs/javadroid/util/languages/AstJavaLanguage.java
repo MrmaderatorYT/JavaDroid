@@ -121,6 +121,15 @@ public class AstJavaLanguage implements Language {
         // valid at all, and being published first they were what Tab accepted.
         if (!JavaReflectionCompletion.isMemberAccess(content, position)) {
             autoComplete.requireAutoComplete(content, position, prefix, publisher, analyzer.getIdentifiers());
+            // Classes the file cannot name yet. Published last, so a name that
+            // is already in scope is still what Tab takes; picking one of these
+            // writes its import as part of the same edit.
+            try {
+                com.ccs.javadroid.editor.ImportingCompletion.contribute(
+                        content.getReference(), position, prefix, publisher);
+            } catch (Throwable ignored) {
+                // A missing suggestion must never break the ones that worked.
+            }
         }
     }
 

@@ -25,7 +25,12 @@ public final class EditorSettingsApplier {
         editor.setTabWidth(prefs.getTabSize());
         editor.setLineSpacing(0f, prefs.getLineSpacing());
         editor.setLineNumberMarginLeft(12 * editor.getContext().getResources().getDisplayMetrics().density);
-        editor.setHighlightBracketPair(true);
+        // Was hardcoded on, so there was no way to turn it off; it is a
+        // separate aid from the indent guides and gets its own switch.
+        editor.setHighlightBracketPair(prefs == null || prefs.isBracketHighlight());
+        boolean indentGuides = prefs != null && prefs.isIndentGuides();
+        editor.setBlockLineEnabled(indentGuides);
+        editor.setHighlightCurrentBlock(indentGuides);
         if (prefs != null && prefs.isFontLigaturesEnabled()) {
             editor.setFontFeatureSettings("\"liga\" 1, \"calt\" 1");
         }

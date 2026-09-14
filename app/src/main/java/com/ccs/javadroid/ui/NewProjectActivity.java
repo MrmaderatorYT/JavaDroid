@@ -15,6 +15,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -216,6 +217,32 @@ public class NewProjectActivity extends AppCompatActivity {
     private final Handler ui = new Handler(Looper.getMainLooper());
     private final Runnable nameCheck = this::runNameCheck;
     private volatile boolean finished;
+
+    /**
+     * Keep the wizard usable with a physical keyboard.  The form is built
+     * dynamically, so handling these at the Activity level also works when
+     * focus is inside one of the optional/advanced fields.
+     */
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            if (event.getKeyCode() == KeyEvent.KEYCODE_ESCAPE) {
+                finish();
+                return true;
+            }
+            if ((event.getKeyCode() == KeyEvent.KEYCODE_ENTER
+                    || event.getKeyCode() == KeyEvent.KEYCODE_NUMPAD_ENTER)
+                    && !event.isAltPressed()) {
+                // Ctrl+Enter is an explicit submit shortcut. Plain Enter is
+                // also submit because all wizard inputs are single-line.
+                if (createButton != null && createButton.isEnabled()) {
+                    startCreate();
+                    return true;
+                }
+            }
+        }
+        return super.dispatchKeyEvent(event);
+    }
 
     /** Opens the wizard; the result carries {@link #EXTRA_PROJECT_PATH}. */
     public static void launchForResult(Activity activity, int requestCode) {

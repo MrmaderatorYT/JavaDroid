@@ -24,7 +24,7 @@
     <string name="replace_hint">Remplacer par…</string>
     <string name="replace">Remplacer</string>
     <string name="replace_all">Tout</string>
-    <string name="tab_run">▶  Exécuter</string>
+    <string name="tab_run">Exécuter</string>
     <string name="tab_problems">Problèmes</string>
     <string name="tab_bytecode">Bytecode</string>
     <string name="status_line">Lig. %1$d, col. %2$d</string>

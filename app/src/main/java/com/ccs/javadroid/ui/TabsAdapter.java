@@ -29,6 +29,10 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.TabViewHolder>
          * editor uses it to offer the split view.</p>
          */
         default void onTabLongPressed(int index) { }
+
+        default void onTabMenuRequested(int index, View anchor, float x, float y) {
+            onTabLongPressed(index);
+        }
     }
 
     private final List<FileTab> tabs = new ArrayList<>();
@@ -126,6 +130,8 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.TabViewHolder>
             holder.tabClose.setTextColor(isActive ? 0xFF808080 : 0xFF606060);
         }
 
+        AnchoredMenu.TouchPoint touchPoint = AnchoredMenu.TouchPoint.track(holder.itemView);
+
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) listener.onTabSelected(holder.getAdapterPosition());
         });
@@ -134,7 +140,14 @@ public class TabsAdapter extends RecyclerView.Adapter<TabsAdapter.TabViewHolder>
             int pressed = holder.getAdapterPosition();
             if (pressed == RecyclerView.NO_POSITION) return false;
             v.performHapticFeedback(android.view.HapticFeedbackConstants.LONG_PRESS);
-            listener.onTabLongPressed(pressed);
+            listener.onTabMenuRequested(pressed, v, touchPoint.x, touchPoint.y);
+            return true;
+        });
+        holder.itemView.setOnContextClickListener(v -> {
+            if (listener == null) return false;
+            int pressed = holder.getAdapterPosition();
+            if (pressed == RecyclerView.NO_POSITION) return false;
+            listener.onTabMenuRequested(pressed, v, touchPoint.x, touchPoint.y);
             return true;
         });
         holder.tabClose.setOnClickListener(v -> {

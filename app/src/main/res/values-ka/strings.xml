@@ -36,7 +36,7 @@
     <string name="replace_hint">ჩანაცვლება…</string>
     <string name="replace">ჩანაცვლება</string>
     <string name="replace_all">ყველა</string>
-    <string name="tab_run">▶  Run</string>
+    <string name="tab_run">Run</string>
     <string name="tab_problems">პრობლემები</string>
     <string name="tab_bytecode">ბაიტკოდი</string>
     <string name="tab_debug">Threads &amp; Variables</string>

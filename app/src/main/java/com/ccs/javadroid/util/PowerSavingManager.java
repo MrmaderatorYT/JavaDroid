@@ -212,6 +212,9 @@ public final class PowerSavingManager {
     }
 
     public boolean isPowerSavingActive() {
+        com.ccs.javadroid.profiler.PerformanceMonitor monitor =
+                com.ccs.javadroid.profiler.PerformanceMonitor.get();
+        if (monitor != null && monitor.isLowMemoryDevice()) return true;
         int mode = getMode();
         switch (mode) {
             case MODE_DISABLED:

@@ -141,6 +141,8 @@ public final class RefactoringHelper {
                     String newContent = sb.toString();
                     changes.add(new FileChange(file, content, newContent, lineChanges));
                     totalReplacements += count;
+                    com.ccs.javadroid.util.LocalHistoryManager.saveSnapshot(
+                            context, file, content, "Before rename " + oldName);
                     Files.write(file.toPath(), newContent.getBytes(StandardCharsets.UTF_8));
                 }
             } catch (IOException ignored) {

@@ -35,6 +35,11 @@ public final class MavenDependencyResolver {
      * Resolve all compile-scoped dependencies (direct + transitive).
      */
     public static List<File> resolve(File projectRoot, PomModel pom, Log log) throws IOException {
+        com.ccs.javadroid.profiler.PerformanceMonitor monitor =
+                com.ccs.javadroid.profiler.PerformanceMonitor.get();
+        com.ccs.javadroid.profiler.PerformanceMonitor.Timer timer = monitor == null
+                ? null : monitor.timer("dependency.resolve.main");
+        try {
         File repo = MavenPaths.localRepoDir(projectRoot);
         repo.mkdirs();
 
@@ -60,12 +65,20 @@ public final class MavenDependencyResolver {
         }
         jars.addAll(local);
         return jars;
+        } finally {
+            if (timer != null) timer.close();
+        }
     }
 
     /**
      * Resolve only test-scoped dependencies (direct + transitive).
      */
     public static List<File> resolveTestScoped(File projectRoot, PomModel pom, Log log) throws IOException {
+        com.ccs.javadroid.profiler.PerformanceMonitor monitor =
+                com.ccs.javadroid.profiler.PerformanceMonitor.get();
+        com.ccs.javadroid.profiler.PerformanceMonitor.Timer timer = monitor == null
+                ? null : monitor.timer("dependency.resolve.test");
+        try {
         File repo = MavenPaths.localRepoDir(projectRoot);
         repo.mkdirs();
 
@@ -80,6 +93,9 @@ public final class MavenDependencyResolver {
         resolveRecursive(projectRoot, repo, pom, testDeps, all, visited, 0, MAX_DEPTH, log);
 
         return downloadAll(repo, pom.repositories, all, log);
+        } finally {
+            if (timer != null) timer.close();
+        }
     }
 
     // ─── Transitive resolution ──────────────────────────────────────────────
@@ -121,12 +137,32 @@ public final class MavenDependencyResolver {
             if (depPomFile != null && depPomFile.exists()) {
                 try {
                     PomModel depPom = PomParser.parse(depPomFile);
-                    // Merge parent POM properties for version resolution
-                    if (depPom.parentGroupId != null) {
+                    // Walk the whole parent chain, not one step of it: a version
+                    // like ${jackson.version.core} is declared in a BOM two or
+                    // three POMs up, and stopping at the immediate parent leaves
+                    // the placeholder in the download URL — which 404s.
+                    PomModel ancestor = depPom;
+                    for (int up = 0; up < MAX_PARENT_DEPTH && ancestor.parentGroupId != null; up++) {
                         PomModel parentPom = PomParser.parseRemoteParent(
-                                depPom.parentGroupId, depPom.parentArtifactId, depPom.parentVersion);
-                        if (parentPom != null) {
-                            depPom.mergeParentProperties(parentPom.properties);
+                                ancestor.parentGroupId, ancestor.parentArtifactId,
+                                ancestor.parentVersion);
+                        if (parentPom == null) break;
+                        depPom.mergeParentProperties(parentPom.properties);
+                        ancestor = parentPom;
+                    }
+                    // Parsing already substituted once, before any of those
+                    // properties existed, so the versions have to be resolved
+                    // again now that they do.
+                    depPom.applyProperties();
+                    if (log != null) {
+                        // Says which property could not be found, rather than
+                        // letting a literal ${...} reach a download URL and come
+                        // back as an unexplained 404.
+                        for (PomModel.MavenDependency t : depPom.compileDependencies()) {
+                            if (t.version != null && t.version.contains("${")) {
+                                log.onLine("Unresolved property in " + key + " → "
+                                        + t.groupId + ":" + t.artifactId + ":" + t.version);
+                            }
                         }
                     }
 
@@ -159,6 +195,9 @@ public final class MavenDependencyResolver {
     /**
      * Remove transitive dependencies that match any exclusion.
      */
+    /** Parent chains are short; this only stops a cycle from spinning. */
+    private static final int MAX_PARENT_DEPTH = 8;
+
     private static List<PomModel.MavenDependency> filterExclusions(
             List<PomModel.MavenDependency> deps, List<PomModel.MavenDependency> exclusions) {
         if (exclusions == null || exclusions.isEmpty()) return deps;

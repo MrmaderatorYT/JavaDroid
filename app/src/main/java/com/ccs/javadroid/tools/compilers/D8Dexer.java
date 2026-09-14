@@ -21,12 +21,26 @@ public final class D8Dexer {
 
     private D8Dexer() {}
 
+    /**
+     * The unpacked {@code android.jar}, the compiler's bootclasspath.
+     *
+     * <p>Re-unpacked whenever the app has been updated, not only when the cached
+     * copy is missing. The jar is patched at build time — stubs for
+     * {@code LambdaMetafactory} and {@code StringConcatFactory} live in it — so a
+     * copy left over from an older install silently keeps compiling against the
+     * old one, and a fix shipped in an update never arrives.</p>
+     */
     public static File ensureAndroidJar(Context context, File cacheDir) throws Exception {
         if (cacheDir != null && !cacheDir.exists() && !cacheDir.mkdirs()) {
             throw new IOException("Cannot create directory: " + cacheDir.getAbsolutePath());
         }
         File androidJar = new File(cacheDir, "android.jar");
-        if (!androidJar.exists() || androidJar.length() == 0L) {
+        File stamp = new File(cacheDir, "android.jar.build");
+        String build = appBuildId(context);
+        boolean stale = !androidJar.exists()
+                || androidJar.length() == 0L
+                || !build.equals(readText(stamp));
+        if (stale) {
             if (androidJar.exists() && !androidJar.delete()) {
                 throw new IOException("Cannot replace invalid android.jar");
             }
@@ -38,11 +52,49 @@ public final class D8Dexer {
                     fos.write(buf, 0, n);
                 }
             }
+            writeText(stamp, build);
         }
         if (!androidJar.isFile() || androidJar.length() == 0L) {
             throw new IOException("android.jar missing or empty: " + androidJar.getAbsolutePath());
         }
         return androidJar;
+    }
+
+    /**
+     * Identifies this build of the app.
+     *
+     * <p>The install time is part of it, so a debug build reinstalled without a
+     * version bump — the normal case while developing — still invalidates.</p>
+     */
+    private static String appBuildId(Context context) {
+        try {
+            android.content.pm.PackageInfo info = context.getPackageManager()
+                    .getPackageInfo(context.getPackageName(), 0);
+            return info.versionName + ":" + info.lastUpdateTime;
+        } catch (Exception e) {
+            return "unknown";
+        }
+    }
+
+    private static String readText(File file) {
+        if (file == null || !file.isFile()) return null;
+        try (InputStream in = new java.io.FileInputStream(file)) {
+            java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
+            byte[] buf = new byte[256];
+            int n;
+            while ((n = in.read(buf)) != -1) out.write(buf, 0, n);
+            return new String(out.toByteArray(), java.nio.charset.StandardCharsets.UTF_8).trim();
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
+    private static void writeText(File file, String text) {
+        try (FileOutputStream out = new FileOutputStream(file)) {
+            out.write(text.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+        } catch (IOException ignored) {
+            // A missing stamp only costs one extra unpack next time.
+        }
     }
 
     public static void runD8Dex(File androidJar, File dexDir, File classFile) throws Exception {

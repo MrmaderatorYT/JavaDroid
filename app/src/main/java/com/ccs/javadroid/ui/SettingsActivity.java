@@ -10,6 +10,7 @@ import com.ccs.javadroid.util.CustomFontManager;
 import com.ccs.javadroid.tools.compilers.JavaVersions;
 import com.ccs.javadroid.ui.panels.PanelLayoutEditor;
 import com.ccs.javadroid.tools.compilers.NdkManager;
+import com.ccs.javadroid.util.Colors;
 
 import android.app.Activity;
 import android.content.Context;
@@ -23,6 +24,7 @@ import android.os.Looper;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -43,6 +45,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.os.LocaleListCompat;
 import androidx.appcompat.widget.Toolbar;
+import android.text.Editable;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.TextWatcher;
+import android.text.style.BackgroundColorSpan;
 
 import java.util.List;
 import java.util.Locale;
@@ -87,8 +94,35 @@ public class SettingsActivity extends AppCompatActivity {
     private int initialPowerSavingMode, initialPowerThreshold, initialPowerInterval,
             initialAutoSaveDelay;
     private boolean initialPowerRespectSystem, initialPowerReduceAnimations;
+    private boolean initialIndentGuides;
+    private String initialKeyBarSymbols;
     private String initialCustomFontPath;
     private int initialCustomFontVersion;
+
+    // ── Search State ──────────────────────────────────────────
+    private static final class TextMatch {
+        final TextView view;
+        final CharSequence originalText;
+        final int start;
+        final int end;
+
+        TextMatch(TextView view, CharSequence originalText, int start, int end) {
+            this.view = view;
+            this.originalText = originalText;
+            this.start = start;
+            this.end = end;
+        }
+    }
+
+    private final java.util.List<TextMatch> searchMatches = new java.util.ArrayList<>();
+    private int currentMatchIndex = -1;
+    private ScrollView settingsScrollView;
+    private LinearLayout settingsContentLayout;
+    private LinearLayout searchBarLayout;
+    private EditText searchInputField;
+    private TextView searchCountView;
+    private boolean isSearchActive = false;
+    private final java.util.Map<TextView, CharSequence> originalTexts = new java.util.HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,12 +171,28 @@ public class SettingsActivity extends AppCompatActivity {
         initialPowerInterval = prefs.getPowerSavingScanIntervalSec();
         initialPowerRespectSystem = prefs.isPowerSavingRespectSystem();
         initialPowerReduceAnimations = prefs.isPowerSavingReduceAnimations();
+        initialIndentGuides = prefs.isIndentGuides();
+        initialKeyBarSymbols = prefs.getKeyBarSymbols();
         initialAutoSaveDelay = prefs.getAutoSaveDelayMs();
         initialCustomFontPath = prefs.getCustomFontPath();
         initialCustomFontVersion = prefs.getCustomFontVersion();
 
         super.onCreate(savedInstanceState);
         getWindow().setWindowAnimations(0);
+        getOnBackPressedDispatcher().addCallback(this,
+                new androidx.activity.OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        if (AnchoredMenu.dismissOpen()) return;
+                        if (isSearchActive) {
+                            closeSearch();
+                            return;
+                        }
+                        setEnabled(false);
+                        getOnBackPressedDispatcher().onBackPressed();
+                        setEnabled(true);
+                    }
+                });
         setContentView(buildRoot());
         FullScreenHelper.enable(this);
     }
@@ -220,6 +270,8 @@ public class SettingsActivity extends AppCompatActivity {
                 || initialPowerInterval != prefs.getPowerSavingScanIntervalSec()
                 || initialPowerRespectSystem != prefs.isPowerSavingRespectSystem()
                 || initialPowerReduceAnimations != prefs.isPowerSavingReduceAnimations()
+                || initialIndentGuides != prefs.isIndentGuides()
+                || !sameText(initialKeyBarSymbols, prefs.getKeyBarSymbols())
                 || initialAutoSaveDelay != prefs.getAutoSaveDelayMs()
                 || !sameText(initialCustomFontPath, prefs.getCustomFontPath())
                 || initialCustomFontVersion != prefs.getCustomFontVersion();
@@ -244,30 +296,52 @@ public class SettingsActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
         toolbar.setLayoutParams(new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, dp(48)));
+
+        // Search action in toolbar
+        android.widget.ImageView searchBtn = new android.widget.ImageView(this);
+        searchBtn.setImageResource(R.drawable.ic_search);
+        searchBtn.setColorFilter(theme.text, android.graphics.PorterDuff.Mode.SRC_IN);
+        searchBtn.setPadding(dp(12), dp(12), dp(12), dp(12));
+        searchBtn.setContentDescription(getString(R.string.settings_search_hint));
+        android.util.TypedValue tv = new android.util.TypedValue();
+        getTheme().resolveAttribute(android.R.attr.selectableItemBackgroundBorderless, tv, true);
+        if (tv.resourceId != 0) searchBtn.setBackgroundResource(tv.resourceId);
+        Toolbar.LayoutParams tlp = new Toolbar.LayoutParams(
+                dp(44), dp(44), Gravity.END | Gravity.CENTER_VERTICAL);
+        tlp.setMarginEnd(dp(4));
+        searchBtn.setLayoutParams(tlp);
+        searchBtn.setOnClickListener(v -> toggleSearch());
+        toolbar.addView(searchBtn);
+
         root.addView(toolbar);
 
-        ScrollView scroll = new ScrollView(this);
-        scroll.setLayoutParams(new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f));
-        root.addView(scroll);
+        // Word-like search / find bar
+        searchBarLayout = buildSearchBar();
+        searchBarLayout.setVisibility(View.GONE);
+        root.addView(searchBarLayout);
 
-        LinearLayout content = new LinearLayout(this);
-        content.setOrientation(LinearLayout.VERTICAL);
-        content.setPadding(dp(16), dp(8), dp(16), dp(24));
-        scroll.addView(content);
+        settingsScrollView = new ScrollView(this);
+        settingsScrollView.setLayoutParams(new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f));
+        root.addView(settingsScrollView);
+
+        settingsContentLayout = new LinearLayout(this);
+        settingsContentLayout.setOrientation(LinearLayout.VERTICAL);
+        settingsContentLayout.setPadding(dp(16), dp(8), dp(16), dp(24));
+        settingsScrollView.addView(settingsContentLayout);
 
         // Only the first section is on screen when Settings opens. The other
         // seven — about a hundred views between them — used to be built before
         // the first frame could draw, which is the whole reason this screen took
         // so long to appear on a 32-bit build. There they are attached a section
         // at a time instead; a 64-bit process builds the screen as it always did.
-        content.addView(buildAppearanceSection());
+        settingsContentLayout.addView(buildAppearanceSection());
         if (Abi.is32Bit()) {
-            attachRemainingSections(content);
+            attachRemainingSections(settingsContentLayout);
         } else {
             for (java.util.concurrent.Callable<View> section : remainingSections()) {
                 try {
-                    content.addView(section.call());
+                    settingsContentLayout.addView(section.call());
                 } catch (Exception e) {
                     android.util.Log.w("Settings", "section skipped", e);
                 }
@@ -309,16 +383,17 @@ public class SettingsActivity extends AppCompatActivity {
         return sections;
     }
 
+    private java.util.ArrayDeque<java.util.concurrent.Callable<View>> pendingSections;
+
     private void attachRemainingSections(final LinearLayout content) {
-        final java.util.ArrayDeque<java.util.concurrent.Callable<View>> pending =
-                new java.util.ArrayDeque<>(remainingSections());
+        pendingSections = new java.util.ArrayDeque<>(remainingSections());
 
         final Handler ui = new Handler(Looper.getMainLooper());
         ui.post(new Runnable() {
             @Override
             public void run() {
-                if (isFinishing() || isDestroyed()) return;
-                java.util.concurrent.Callable<View> next = pending.poll();
+                if (isFinishing() || isDestroyed() || pendingSections == null) return;
+                java.util.concurrent.Callable<View> next = pendingSections.poll();
                 if (next == null) return;
                 try {
                     content.addView(next.call());
@@ -327,9 +402,23 @@ public class SettingsActivity extends AppCompatActivity {
                     // the rest of the screen.
                     android.util.Log.w("Settings", "section skipped", e);
                 }
-                if (!pending.isEmpty()) ui.post(this);
+                if (!pendingSections.isEmpty()) ui.post(this);
             }
         });
+    }
+
+    private void ensureRemainingSectionsAttached() {
+        if (pendingSections == null || pendingSections.isEmpty() || settingsContentLayout == null) return;
+        while (!pendingSections.isEmpty()) {
+            java.util.concurrent.Callable<View> next = pendingSections.poll();
+            if (next != null) {
+                try {
+                    settingsContentLayout.addView(next.call());
+                } catch (Exception e) {
+                    android.util.Log.w("Settings", "section skipped in search", e);
+                }
+            }
+        }
     }
 
     // ── Appearance / Theme ────────────────────────────────────
@@ -415,6 +504,20 @@ public class SettingsActivity extends AppCompatActivity {
                 new LanguageAdapter.Item("cs", "Čeština", "cz"),
                 new LanguageAdapter.Item("sk", "Slovenčina", "sk"),
                 new LanguageAdapter.Item("nl", "Nederlands", "nl"),
+                new LanguageAdapter.Item("da", "Dansk", "dk"),
+                new LanguageAdapter.Item("sv", "Svenska", "se"),
+                new LanguageAdapter.Item("nb", "Norsk bokmål", "no"),
+                new LanguageAdapter.Item("fi", "Suomi", "fi"),
+                new LanguageAdapter.Item("is", "Íslenska", "is"),
+                new LanguageAdapter.Item("et", "Eesti", "ee"),
+                new LanguageAdapter.Item("lv", "Latviešu", "lv"),
+                new LanguageAdapter.Item("ga", "Gaeilge", "ie"),
+                // Both languages of Scotland fly the same flag, as the three
+                // Nigerian ones below share theirs.
+                new LanguageAdapter.Item("gd", "Gàidhlig", "sct"),
+                new LanguageAdapter.Item("sco", "Scots", "sct"),
+                new LanguageAdapter.Item("el", "Ελληνικά", "gr"),
+                new LanguageAdapter.Item("hy", "Հայերեն", "am"),
                 new LanguageAdapter.Item("tr", "Türkçe", "tr"),
                 new LanguageAdapter.Item("az", "Azərbaycanca", "az"),
                 new LanguageAdapter.Item("ka", "ქართული", "ge"),
@@ -424,6 +527,8 @@ public class SettingsActivity extends AppCompatActivity {
                 new LanguageAdapter.Item("ja", "日本語", "jp"),
                 new LanguageAdapter.Item("ko", "한국어", "kr"),
                 new LanguageAdapter.Item("vi", "Tiếng Việt", "vi"),
+                new LanguageAdapter.Item("ta", "தமிழ்", "in"),
+                new LanguageAdapter.Item("ms", "Bahasa Melayu", "my"),
                 new LanguageAdapter.Item("in", "Bahasa Indonesia", "id"),
                 new LanguageAdapter.Item("fil", "Filipino", "ph"),
                 new LanguageAdapter.Item("ha", "Hausa", "ng"),
@@ -431,30 +536,47 @@ public class SettingsActivity extends AppCompatActivity {
                 new LanguageAdapter.Item("yo", "Yoruba", "ng")
         };
         String[] tags = new String[items.length];
-        for (int i = 0; i < items.length; i++) tags[i] = items[i].tag;
-        Spinner spinner = new Spinner(this);
-        spinner.setAdapter(new LanguageAdapter(this, items, theme));
-        if (theme != null) {
-            GradientDrawable popupBg = new GradientDrawable();
-            popupBg.setColor(theme.toolbar);
-            popupBg.setStroke(dp(1), theme.separator);
-            popupBg.setCornerRadius(dp(8));
-            spinner.setPopupBackgroundDrawable(popupBg);
+        String[] labels = new String[items.length];
+        for (int i = 0; i < items.length; i++) {
+            tags[i] = items[i].tag;
+            labels[i] = items[i].label;
         }
+
         String current = prefs.getAppLanguage();
         int selected = 0;
-        for (int i = 0; i < tags.length; i++) if (tags[i].equalsIgnoreCase(current)) selected = i;
-        spinner.setSelection(selected);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onNothingSelected(AdapterView<?> parent) { }
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (!tags[position].equalsIgnoreCase(prefs.getAppLanguage())) {
-                    prefs.setAppLanguage(tags[position]);
-                    AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(tags[position]));
-                }
+        for (int i = 0; i < tags.length; i++) {
+            if (tags[i].equalsIgnoreCase(current)) selected = i;
+        }
+
+        final int[] sel = { selected };
+        final TextView dropdownBtn = newDropdownButton(labels, sel[0], anchor -> {
+            AnchoredMenu menu = AnchoredMenu.with(this, theme);
+            int ink = theme != null ? theme.text : 0xFF202020;
+            for (int i = 0; i < items.length; i++) {
+                final int idx = i;
+                // The flag, not just the name: it is what the eye finds in a
+                // list of twenty-seven languages, several written in scripts
+                // the reader may not know.
+                menu.checkable(LanguageAdapter.flag(items[idx].country, ink),
+                        labels[idx], idx == sel[0], () -> {
+                    sel[0] = idx;
+                    if (!tags[idx].equalsIgnoreCase(prefs.getAppLanguage())) {
+                        prefs.setAppLanguage(tags[idx]);
+                        AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(tags[idx]));
+                    }
+                });
             }
+            menu.showBelow(anchor);
         });
-        box.addView(spinner);
+        // The chosen flag on the closed button too, so the current language is
+        // readable at a glance without opening anything.
+        android.graphics.drawable.Drawable currentFlag =
+                LanguageAdapter.flag(items[selected].country,
+                        theme != null ? theme.text : 0xFF202020);
+        currentFlag.setBounds(0, 0, dp(24), dp(16));
+        dropdownBtn.setCompoundDrawables(currentFlag, null, null, null);
+        dropdownBtn.setCompoundDrawablePadding(dp(10));
+        box.addView(dropdownBtn);
         return box;
     }
 
@@ -830,20 +952,24 @@ public class SettingsActivity extends AppCompatActivity {
         String[] fontOptions = customFontActive
                 ? prependCustomFontOption(builtInFonts)
                 : builtInFonts;
-        Spinner fontSpinner = newSpinner(fontOptions);
-        fontSpinner.setContentDescription(getString(R.string.a11y_settings_font_family));
-        fontSpinner.setSelection(customFontActive ? 0 : prefs.getFontFamily());
-        fontSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (customFontActive && position == 0) return;
-                int family = customFontActive ? position - 1 : position;
-                prefs.setCustomFontPath(null);
-                prefs.setCustomFontUrl("");
-                prefs.setFontFamily(family);
+        int initialFontPos = customFontActive ? 0 : prefs.getFontFamily();
+        final int[] fontSel = { Math.max(0, initialFontPos) };
+        final TextView fontDropdown = newDropdownButton(fontOptions, fontSel[0], anchor -> {
+            AnchoredMenu menu = AnchoredMenu.with(this, theme);
+            for (int i = 0; i < fontOptions.length; i++) {
+                final int idx = i;
+                menu.checkable(fontOptions[idx], idx == fontSel[0], () -> {
+                    fontSel[0] = idx;
+                    if (customFontActive && idx == 0) return;
+                    int family = customFontActive ? idx - 1 : idx;
+                    prefs.setCustomFontPath(null);
+                    prefs.setCustomFontUrl("");
+                    prefs.setFontFamily(family);
+                });
             }
-            @Override public void onNothingSelected(AdapterView<?> parent) {}
+            menu.showBelow(anchor);
         });
-        section.addView(fontSpinner);
+        section.addView(fontDropdown);
         section.addView(buildCustomFontControls());
 
         // Font size
@@ -945,7 +1071,87 @@ public class SettingsActivity extends AppCompatActivity {
                 getString(R.string.settings_highlight_current_line_desc),
                 prefs.isHighlightCurrentLine(), prefs::setHighlightCurrentLine));
 
+        section.addView(buildSwitch(getString(R.string.settings_indent_guides),
+                getString(R.string.settings_indent_guides_desc),
+                prefs.isIndentGuides(), prefs::setIndentGuides));
+
+        section.addView(buildSwitch(getString(R.string.settings_bracket_highlight),
+                getString(R.string.settings_bracket_highlight_desc),
+                prefs.isBracketHighlight(), prefs::setBracketHighlight));
+
+        section.addView(buildSwitch(getString(R.string.settings_contextual_symbols),
+                getString(R.string.settings_contextual_symbols_desc),
+                prefs.isContextualSymbols(), prefs::setContextualSymbols));
+
+        section.addView(settingLabel(getString(R.string.settings_keyboard_shortcuts),
+                getString(R.string.settings_keyboard_shortcuts_desc)));
+        addShortcutEditor(section, getString(R.string.settings_shortcut_duplicate_line), "duplicate_line", "Ctrl+D");
+        addShortcutEditor(section, getString(R.string.settings_shortcut_toggle_comment), "toggle_comment", "Ctrl+/");
+        addShortcutEditor(section, getString(R.string.settings_shortcut_save), "save", "Ctrl+S");
+        addShortcutEditor(section, getString(R.string.settings_shortcut_find), "find", "Ctrl+F");
+        addShortcutEditor(section, getString(R.string.settings_shortcut_run), "run", "Ctrl+R");
+        addShortcutEditor(section, getString(R.string.settings_shortcut_delete_line), "delete_line", "Ctrl+Y");
+        TextView resetShortcuts = actionText(getString(R.string.settings_shortcut_reset), theme.accent);
+        resetShortcuts.setOnClickListener(v -> { prefs.resetShortcuts(); recreate(); });
+        section.addView(resetShortcuts);
+
+        // Key bar symbols
+        section.addView(settingLabel(getString(R.string.settings_key_bar_symbols),
+                getString(R.string.settings_key_bar_symbols_desc)));
+        TextView keySymbolsSummary = subtitle(prefs.getKeyBarSymbols());
+        section.addView(keySymbolsSummary);
+        TextView editKeySymbolsBtn = actionText(getString(R.string.ps_a11y_edit, getString(R.string.settings_key_bar_symbols)), theme.accent);
+        editKeySymbolsBtn.setOnClickListener(v -> {
+            EditText input = new EditText(this);
+            input.setText(prefs.getKeyBarSymbols());
+            input.setHint(R.string.settings_key_bar_symbols_hint);
+            input.setTextColor(theme.text);
+            input.setHintTextColor(theme.textDim);
+            int p = dp(16);
+            input.setPadding(p, p, p, p);
+            new androidx.appcompat.app.AlertDialog.Builder(this)
+                    .setTitle(R.string.settings_key_bar_symbols_dialog_title)
+                    .setView(input)
+                    .setPositiveButton(android.R.string.ok, (d, w) -> {
+                        String val = input.getText().toString().trim();
+                        if (val.isEmpty()) val = AppPreferences.DEFAULT_KEY_BAR_SYMBOLS;
+                        prefs.setKeyBarSymbols(val);
+                        keySymbolsSummary.setText(val);
+                    })
+                    .setNeutralButton(R.string.settings_compiler_warnings_default, (d, w) -> {
+                        prefs.setKeyBarSymbols(AppPreferences.DEFAULT_KEY_BAR_SYMBOLS);
+                        keySymbolsSummary.setText(AppPreferences.DEFAULT_KEY_BAR_SYMBOLS);
+                    })
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .show();
+        });
+        section.addView(editKeySymbolsBtn);
+
         return section;
+    }
+
+    private void addShortcutEditor(LinearLayout section, String title, String action, String def) {
+        TextView row = actionText(title + "  —  " + prefs.getShortcut(action, def), theme.text);
+        row.setOnClickListener(v -> {
+            final String[] value = { prefs.getShortcut(action, def) };
+            TextView capture = new TextView(this);
+            capture.setText("Press the new shortcut…"); capture.setTextColor(theme.text);
+            capture.setFocusableInTouchMode(true); capture.requestFocus();
+            capture.setOnKeyListener((view, code, event) -> {
+                if (event.getAction() != KeyEvent.ACTION_DOWN || code == KeyEvent.KEYCODE_UNKNOWN) return true;
+                StringBuilder s = new StringBuilder();
+                if (event.isCtrlPressed()) s.append("Ctrl+");
+                if (event.isAltPressed()) s.append("Alt+");
+                if (event.isShiftPressed()) s.append("Shift+");
+                String name = KeyEvent.keyCodeToString(code).replace("KEYCODE_", "");
+                value[0] = s.append(name).toString(); capture.setText(value[0]); return true;
+            });
+            new androidx.appcompat.app.AlertDialog.Builder(this).setTitle(title)
+                    .setView(capture).setPositiveButton(android.R.string.ok, (d,w) -> {
+                        if (value[0].contains("+")) prefs.setShortcut(action, value[0]);
+                    }).setNegativeButton(android.R.string.cancel, null).show();
+        });
+        section.addView(row);
     }
 
     private String[] prependCustomFontOption(String[] builtInFonts) {
@@ -1151,22 +1357,25 @@ public class SettingsActivity extends AppCompatActivity {
                     versions.get(i), getString(R.string.settings_kotlin_language_default));
         }
 
-        Spinner spinner = newSpinner(labels);
         String current = prefs.getKotlinLanguageVersion();
-        int selected = Math.max(0, versions.indexOf(current == null ? "" : current));
-        spinner.setSelection(selected);
-        final boolean[] ready = { false };
-        spinner.post(() -> ready[0] = true);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (!ready[0]) return;
-                prefs.setKotlinLanguageVersion(versions.get(position));
+        int selected = Math.max(0, versions.indexOf(current));
+        final int[] kotlinSel = { selected };
+        final TextView[] kotlinDropdownRef = new TextView[1];
+        kotlinDropdownRef[0] = newDropdownButton(labels, kotlinSel[0], anchor -> {
+            AnchoredMenu menu = AnchoredMenu.with(this, theme);
+            for (int i = 0; i < versions.size(); i++) {
+                final int idx = i;
+                menu.checkable(labels[idx], idx == kotlinSel[0], () -> {
+                    kotlinSel[0] = idx;
+                    prefs.setKotlinLanguageVersion(versions.get(idx));
+                    if (kotlinDropdownRef[0] != null) {
+                        kotlinDropdownRef[0].setText(labels[idx] + "  ▾");
+                    }
+                });
             }
-
-            @Override public void onNothingSelected(AdapterView<?> parent) { }
+            menu.showBelow(anchor);
         });
-        box.addView(spinner);
+        box.addView(kotlinDropdownRef[0]);
         return box;
     }
 
@@ -1198,23 +1407,25 @@ public class SettingsActivity extends AppCompatActivity {
                         : getString(R.string.settings_language_version_download, versions.get(i));
             }
 
-            Spinner spinner = newSpinner(labels);
-            String current =
-                    com.ccs.javadroid.langrt.LanguageRuntimes.selectedVersion(this, language);
-            spinner.setSelection(Math.max(0, versions.indexOf(current)));
-            final boolean[] ready = { false };
-            spinner.post(() -> ready[0] = true);
+            String current = prefs.getLanguageVersion(language.id);
+            final int[] langVerSel = { Math.max(0, versions.indexOf(current)) };
             final com.ccs.javadroid.langrt.JvmLanguage current_language = language;
-            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    if (!ready[0]) return;
-                    prefs.setLanguageVersion(current_language.id, versions.get(position));
+            final TextView[] langDropdownRef = new TextView[1];
+            langDropdownRef[0] = newDropdownButton(labels, langVerSel[0], anchor -> {
+                AnchoredMenu menu = AnchoredMenu.with(this, theme);
+                for (int i = 0; i < versions.size(); i++) {
+                    final int idx = i;
+                    menu.checkable(labels[idx], idx == langVerSel[0], () -> {
+                        langVerSel[0] = idx;
+                        prefs.setLanguageVersion(current_language.id, versions.get(idx));
+                        if (langDropdownRef[0] != null) {
+                            langDropdownRef[0].setText(labels[idx] + "  ▾");
+                        }
+                    });
                 }
-
-                @Override public void onNothingSelected(AdapterView<?> parent) { }
+                menu.showBelow(anchor);
             });
-            box.addView(spinner);
+            box.addView(langDropdownRef[0]);
         }
         return box;
     }
@@ -1239,6 +1450,8 @@ public class SettingsActivity extends AppCompatActivity {
                 prefs.isToolbarDebug(), prefs::setToolbarDebug));
         section.addView(buildSwitch(getString(R.string.menu_find_replace),
                 prefs.isToolbarFind(), prefs::setToolbarFind));
+        section.addView(buildSwitch(getString(R.string.menu_format_code),
+                prefs.isToolbarFormat(), prefs::setToolbarFormat));
         section.addView(buildSwitch(getString(R.string.menu_ai_chat),
                 prefs.isToolbarAiChat(), prefs::setToolbarAiChat));
 
@@ -1269,21 +1482,31 @@ public class SettingsActivity extends AppCompatActivity {
                                 r.label, actual == null ? JavaVersions.effective(r.code) : actual.label);
         }
 
-        Spinner sp = newSpinner(labels);
-        sp.setContentDescription(getString(R.string.a11y_settings_java_target));
-        String current = JavaVersions.normalize(prefs.getJavaTarget());
+        String currentTarget = prefs.getJavaTarget();
         int sel = 0;
         for (int i = 0; i < codes.length; i++) {
-            if (codes[i].equals(current)) { sel = i; break; }
-        }
-        sp.setSelection(sel);
-        sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                prefs.setJavaTarget(codes[position]);
+            if (codes[i].equals(currentTarget)) {
+                sel = i;
+                break;
             }
-            @Override public void onNothingSelected(AdapterView<?> parent) {}
+        }
+        final int[] javaSel = { sel };
+        final TextView[] javaDropdownRef = new TextView[1];
+        javaDropdownRef[0] = newDropdownButton(labels, javaSel[0], anchor -> {
+            AnchoredMenu menu = AnchoredMenu.with(this, theme);
+            for (int i = 0; i < codes.length; i++) {
+                final int idx = i;
+                menu.checkable(labels[idx], idx == javaSel[0], () -> {
+                    javaSel[0] = idx;
+                    prefs.setJavaTarget(codes[idx]);
+                    if (javaDropdownRef[0] != null) {
+                        javaDropdownRef[0].setText(labels[idx] + "  ▾");
+                    }
+                });
+            }
+            menu.showBelow(anchor);
         });
-        section.addView(sp);
+        section.addView(javaDropdownRef[0]);
 
         TextView hint = new TextView(this);
         hint.setText(getString(R.string.settings_java_hint,
@@ -1411,15 +1634,19 @@ public class SettingsActivity extends AppCompatActivity {
                 getString(R.string.settings_compiler_warnings_deprecation),
                 getString(R.string.settings_compiler_warnings_all)
         };
-        Spinner warnSp = newSpinner(warnLevels);
-        warnSp.setSelection(prefs.getCompilerWarnings());
-        warnSp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                prefs.setCompilerWarnings(position);
+        final int[] warnSel = { prefs.getCompilerWarnings() };
+        final TextView warnDropdown = newDropdownButton(warnLevels, warnSel[0], anchor -> {
+            AnchoredMenu menu = AnchoredMenu.with(this, theme);
+            for (int i = 0; i < warnLevels.length; i++) {
+                final int idx = i;
+                menu.checkable(warnLevels[idx], idx == warnSel[0], () -> {
+                    warnSel[0] = idx;
+                    prefs.setCompilerWarnings(idx);
+                });
             }
-            @Override public void onNothingSelected(AdapterView<?> parent) {}
+            menu.showBelow(anchor);
         });
-        section.addView(warnSp);
+        section.addView(warnDropdown);
 
         return section;
     }
@@ -2015,6 +2242,29 @@ public class SettingsActivity extends AppCompatActivity {
         return action;
     }
 
+    private TextView newDropdownButton(String[] items, int selected, java.util.function.Consumer<View> onOpen) {
+        TextView btn = new TextView(this);
+        String label = (selected >= 0 && selected < items.length) ? items[selected] : "";
+        btn.setText(label + "  ▾");
+        btn.setTextColor(theme.text);
+        btn.setTextSize(13);
+        btn.setGravity(Gravity.CENTER_VERTICAL | Gravity.START);
+        btn.setPadding(dp(12), dp(10), dp(12), dp(10));
+        btn.setClickable(true);
+        btn.setFocusable(true);
+        GradientDrawable bg = new GradientDrawable();
+        bg.setColor(Colors.blend(theme.bg, theme.text, 0.05f));
+        bg.setStroke(dp(1), theme.separator);
+        bg.setCornerRadius(dp(6));
+        btn.setBackground(bg);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        lp.topMargin = dp(4);
+        btn.setLayoutParams(lp);
+        btn.setOnClickListener(v -> onOpen.accept(btn));
+        return btn;
+    }
+
     private Spinner newSpinner(String[] items) {
         Spinner sp = new Spinner(this);
         ArrayAdapter<String> ad = new ArrayAdapter<String>(this,
@@ -2113,6 +2363,271 @@ public class SettingsActivity extends AppCompatActivity {
     /** @see Dialogs#rounded */
     private com.google.android.material.dialog.MaterialAlertDialogBuilder newRoundedDialog() {
         return Dialogs.rounded(this);
+    }
+
+    // ══════════════════════════════════════════════════════════
+    //  In-Settings Search (Word-like find with navigation & highlight)
+    // ══════════════════════════════════════════════════════════
+
+    private LinearLayout buildSearchBar() {
+        LinearLayout bar = new LinearLayout(this);
+        bar.setOrientation(LinearLayout.HORIZONTAL);
+        bar.setGravity(Gravity.CENTER_VERTICAL);
+        bar.setBackgroundColor(Colors.blend(theme.toolbar, theme.bg, 0.5f));
+        bar.setPadding(dp(12), dp(6), dp(12), dp(6));
+
+        // Search icon
+        android.widget.ImageView icon = new android.widget.ImageView(this);
+        icon.setImageResource(R.drawable.ic_search);
+        icon.setColorFilter(theme.textDim, android.graphics.PorterDuff.Mode.SRC_IN);
+        LinearLayout.LayoutParams icLp = new LinearLayout.LayoutParams(dp(18), dp(18));
+        icLp.setMarginEnd(dp(8));
+        bar.addView(icon, icLp);
+
+        // Edit text
+        searchInputField = new EditText(this);
+        searchInputField.setHint(R.string.settings_search_hint);
+        searchInputField.setHintTextColor(theme.textDim);
+        searchInputField.setTextColor(theme.text);
+        searchInputField.setTextSize(13);
+        searchInputField.setSingleLine(true);
+        searchInputField.setBackground(null);
+        searchInputField.setImeOptions(android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH);
+        searchInputField.setInputType(InputType.TYPE_CLASS_TEXT);
+        LinearLayout.LayoutParams editLp = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
+        bar.addView(searchInputField, editLp);
+
+        // Counter label e.g. "1 of 5"
+        searchCountView = new TextView(this);
+        searchCountView.setTextSize(11);
+        searchCountView.setTextColor(theme.textDim);
+        searchCountView.setPadding(dp(4), 0, dp(6), 0);
+        searchCountView.setText(R.string.settings_search_no_matches);
+        bar.addView(searchCountView);
+
+        // Up arrow (Previous)
+        android.widget.ImageView prevBtn = new android.widget.ImageView(this);
+        prevBtn.setImageResource(R.drawable.ic_arrow_up);
+        prevBtn.setColorFilter(theme.text, android.graphics.PorterDuff.Mode.SRC_IN);
+        prevBtn.setContentDescription(getString(R.string.settings_search_prev));
+        prevBtn.setPadding(dp(6), dp(6), dp(6), dp(6));
+        android.util.TypedValue tv = new android.util.TypedValue();
+        getTheme().resolveAttribute(android.R.attr.selectableItemBackgroundBorderless, tv, true);
+        if (tv.resourceId != 0) prevBtn.setBackgroundResource(tv.resourceId);
+        prevBtn.setOnClickListener(v -> navigateMatch(-1));
+        bar.addView(prevBtn, new LinearLayout.LayoutParams(dp(32), dp(32)));
+
+        // Down arrow (Next)
+        android.widget.ImageView nextBtn = new android.widget.ImageView(this);
+        nextBtn.setImageResource(R.drawable.ic_arrow_down);
+        nextBtn.setColorFilter(theme.text, android.graphics.PorterDuff.Mode.SRC_IN);
+        nextBtn.setContentDescription(getString(R.string.settings_search_next));
+        nextBtn.setPadding(dp(6), dp(6), dp(6), dp(6));
+        if (tv.resourceId != 0) nextBtn.setBackgroundResource(tv.resourceId);
+        nextBtn.setOnClickListener(v -> navigateMatch(1));
+        bar.addView(nextBtn, new LinearLayout.LayoutParams(dp(32), dp(32)));
+
+        // Close button
+        android.widget.ImageView closeBtn = new android.widget.ImageView(this);
+        closeBtn.setImageResource(R.drawable.ic_close);
+        closeBtn.setColorFilter(theme.textDim, android.graphics.PorterDuff.Mode.SRC_IN);
+        closeBtn.setContentDescription(getString(R.string.settings_search_close));
+        closeBtn.setPadding(dp(6), dp(6), dp(6), dp(6));
+        if (tv.resourceId != 0) closeBtn.setBackgroundResource(tv.resourceId);
+        closeBtn.setOnClickListener(v -> closeSearch());
+        bar.addView(closeBtn, new LinearLayout.LayoutParams(dp(32), dp(32)));
+
+        searchInputField.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override public void afterTextChanged(Editable s) {
+                executeSearch(s != null ? s.toString().trim() : "");
+            }
+        });
+
+        searchInputField.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH
+                    || (event != null && event.getKeyCode() == android.view.KeyEvent.KEYCODE_ENTER)) {
+                navigateMatch(1);
+                return true;
+            }
+            return false;
+        });
+
+        return bar;
+    }
+
+    private void toggleSearch() {
+        if (isSearchActive) {
+            closeSearch();
+        } else {
+            openSearch();
+        }
+    }
+
+    private void openSearch() {
+        isSearchActive = true;
+        ensureRemainingSectionsAttached();
+        if (searchBarLayout != null) {
+            searchBarLayout.setVisibility(View.VISIBLE);
+        }
+        if (searchInputField != null) {
+            searchInputField.requestFocus();
+            android.view.inputmethod.InputMethodManager imm =
+                    (android.view.inputmethod.InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            if (imm != null) imm.showSoftInput(searchInputField, android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT);
+            String current = searchInputField.getText().toString().trim();
+            if (!current.isEmpty()) {
+                executeSearch(current);
+            }
+        }
+    }
+
+    private void closeSearch() {
+        isSearchActive = false;
+        if (searchBarLayout != null) {
+            searchBarLayout.setVisibility(View.GONE);
+        }
+        if (searchInputField != null) {
+            android.view.inputmethod.InputMethodManager imm =
+                    (android.view.inputmethod.InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            if (imm != null) imm.hideSoftInputFromWindow(searchInputField.getWindowToken(), 0);
+        }
+        clearSearchHighlights();
+    }
+
+    private void clearSearchHighlights() {
+        searchMatches.clear();
+        currentMatchIndex = -1;
+        for (java.util.Map.Entry<TextView, CharSequence> entry : originalTexts.entrySet()) {
+            TextView tv = entry.getKey();
+            if (tv != null) {
+                tv.setText(entry.getValue());
+            }
+        }
+        originalTexts.clear();
+        if (searchCountView != null) {
+            searchCountView.setText(R.string.settings_search_no_matches);
+        }
+    }
+
+    private void executeSearch(String query) {
+        clearSearchHighlights();
+        if (query.isEmpty() || settingsContentLayout == null) return;
+
+        java.util.List<TextView> textViews = new java.util.ArrayList<>();
+        collectTextViews(settingsContentLayout, textViews);
+
+        String lowerQuery = query.toLowerCase(Locale.getDefault());
+
+        for (TextView tv : textViews) {
+            CharSequence cs = tv.getText();
+            if (cs == null || cs.length() == 0) continue;
+            String text = cs.toString();
+            String lowerText = text.toLowerCase(Locale.getDefault());
+
+            int index = 0;
+            boolean hasMatchInView = false;
+            while ((index = lowerText.indexOf(lowerQuery, index)) >= 0) {
+                if (!hasMatchInView) {
+                    originalTexts.put(tv, cs);
+                    hasMatchInView = true;
+                }
+                searchMatches.add(new TextMatch(tv, cs, index, index + lowerQuery.length()));
+                index += lowerQuery.length();
+            }
+        }
+
+        if (!searchMatches.isEmpty()) {
+            currentMatchIndex = 0;
+            updateHighlights();
+            scrollToMatch(searchMatches.get(0));
+        } else {
+            currentMatchIndex = -1;
+            if (searchCountView != null) {
+                searchCountView.setText(R.string.settings_search_no_matches);
+            }
+        }
+    }
+
+    private void navigateMatch(int delta) {
+        if (searchMatches.isEmpty()) return;
+        currentMatchIndex = (currentMatchIndex + delta + searchMatches.size()) % searchMatches.size();
+        updateHighlights();
+        scrollToMatch(searchMatches.get(currentMatchIndex));
+    }
+
+    private void updateHighlights() {
+        if (searchCountView != null) {
+            if (searchMatches.isEmpty()) {
+                searchCountView.setText(R.string.settings_search_no_matches);
+            } else {
+                searchCountView.setText(getString(R.string.settings_search_matches,
+                        currentMatchIndex + 1, searchMatches.size()));
+            }
+        }
+
+        // Distinct colors like in Word: Yellow for all other matches, Orange for the active match
+        final int COLOR_OTHER_MATCH = 0x88FDD835; // translucent yellow
+        final int COLOR_ACTIVE_MATCH = 0xCCFF6D00; // intense orange
+
+        // Group matches by TextView
+        java.util.Map<TextView, java.util.List<TextMatch>> byView = new java.util.HashMap<>();
+        for (TextMatch match : searchMatches) {
+            java.util.List<TextMatch> list = byView.computeIfAbsent(match.view, k -> new java.util.ArrayList<>());
+            list.add(match);
+        }
+
+        TextMatch activeMatch = (currentMatchIndex >= 0 && currentMatchIndex < searchMatches.size())
+                ? searchMatches.get(currentMatchIndex) : null;
+
+        for (java.util.Map.Entry<TextView, java.util.List<TextMatch>> entry : byView.entrySet()) {
+            TextView tv = entry.getKey();
+            CharSequence orig = originalTexts.get(tv);
+            if (orig == null) orig = tv.getText();
+            SpannableString spannable = new SpannableString(orig);
+
+            for (TextMatch m : entry.getValue()) {
+                boolean isActive = (m == activeMatch);
+                spannable.setSpan(
+                        new BackgroundColorSpan(isActive ? COLOR_ACTIVE_MATCH : COLOR_OTHER_MATCH),
+                        m.start,
+                        m.end,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+            tv.setText(spannable);
+        }
+    }
+
+    private void scrollToMatch(TextMatch match) {
+        if (match == null || match.view == null || settingsScrollView == null) return;
+        match.view.post(() -> {
+            int[] pos = new int[2];
+            int[] scrollPos = new int[2];
+            match.view.getLocationOnScreen(pos);
+            settingsScrollView.getLocationOnScreen(scrollPos);
+
+            int viewYInScroll = pos[1] - scrollPos[1] + settingsScrollView.getScrollY();
+            int targetY = Math.max(0, viewYInScroll - dp(80)); // keep some padding from top
+            settingsScrollView.smoothScrollTo(0, targetY);
+        });
+    }
+
+    private void collectTextViews(View root, java.util.List<TextView> out) {
+        if (root == null || root.getVisibility() != View.VISIBLE) return;
+        if (root == searchBarLayout) return; // skip search bar controls
+        if (root instanceof TextView) {
+            TextView tv = (TextView) root;
+            if (!(tv instanceof EditText) && tv.getText() != null && tv.getText().length() > 0) {
+                out.add(tv);
+            }
+        }
+        if (root instanceof ViewGroup) {
+            ViewGroup group = (ViewGroup) root;
+            for (int i = 0; i < group.getChildCount(); i++) {
+                collectTextViews(group.getChildAt(i), out);
+            }
+        }
     }
 
     public static void launch(Activity host, int requestCode) {

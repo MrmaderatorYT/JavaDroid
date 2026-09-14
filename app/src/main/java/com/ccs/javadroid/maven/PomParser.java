@@ -118,24 +118,34 @@ public final class PomParser {
                         break;
 
                     // ── Dependency fields ──
+                    // The three coordinate tags mean different things depending
+                    // on what encloses them. Inside <parent> they are the parent's,
+                    // and the text handler below routes them there — which it never
+                    // got to do while this skipped them, leaving parentGroupId null
+                    // and the parent pom unfetchable. A dependency whose version
+                    // lives in a parent property then kept the literal ${...} and
+                    // was downloaded from a URL that answered 404.
                     case "groupId":
                         if (inExclusions && curExcl != null) textTarget = "xg";
                         else if (inDependency && cur != null) textTarget = "dg";
                         else if (inRepository && curRepo != null) textTarget = "rg";
-                        else if (!inProperties && !inParent && !inDepMgmt && !inProfileProps && depth == 2) textTarget = "g";
+                        else if (inParent) textTarget = "g";
+                        else if (!inProperties && !inDepMgmt && !inProfileProps && depth == 2) textTarget = "g";
                         else textTarget = null;
                         break;
                     case "artifactId":
                         if (inExclusions && curExcl != null) textTarget = "xa";
                         else if (inDependency && cur != null) textTarget = "da";
-                        else if (!inProperties && !inParent && !inDepMgmt && !inProfileProps && depth == 2) textTarget = "a";
+                        else if (inParent) textTarget = "a";
+                        else if (!inProperties && !inDepMgmt && !inProfileProps && depth == 2) textTarget = "a";
                         else textTarget = null;
                         break;
                     case "version":
                         if (inExclusions && curExcl != null) { textTarget = null; break; }
                         if (inDependency && cur != null) textTarget = "dv";
                         else if (inRepository && curRepo != null) textTarget = null;
-                        else if (!inProperties && !inParent && !inDepMgmt && !inProfileProps && depth == 2) textTarget = "v";
+                        else if (inParent) textTarget = "v";
+                        else if (!inProperties && !inDepMgmt && !inProfileProps && depth == 2) textTarget = "v";
                         else textTarget = null;
                         break;
                     case "scope":

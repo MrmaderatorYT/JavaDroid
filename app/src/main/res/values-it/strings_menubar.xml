@@ -33,4 +33,24 @@
     <string name="semantic_search_title">Ricerca semantica (IA)</string>
     <string name="a11y_action_voice">Input vocale</string>
     <string name="menubar_refactor">Refactoring</string>
+    <string name="settings_bracket_highlight">Evidenzia le parentesi corrispondenti</string>
+    <string name="settings_bracket_highlight_desc">Contorna la parentesi che fa coppia con quella al cursore.</string>
+    <string name="action_duplicate_line">Duplica la riga</string>
+    <string name="action_move_line_up">Sposta la riga in su</string>
+    <string name="action_move_line_down">Sposta la riga in giù</string>
+    <string name="action_toggle_comment">Commenta / decommenta</string>
+    <string name="settings_contextual_symbols">Simboli in base al linguaggio</string>
+    <string name="settings_contextual_symbols_desc">Un file XML riceve le parentesi angolari, uno Java il punto e virgola. Disattiva per usare la tua riga.</string>
+    <string name="a11y_error_stripe">Segni dei problemi</string>
+    <string name="editor_large_file_loading">Caricamento di %1$s…</string>
+    <string name="editor_large_file_plain">%1$s — evidenziazione disattivata per aprire subito.</string>
+    <string name="editor_large_file_read_only">%1$s — aperto in sola lettura. Un file di queste dimensioni è lento da modificare e rischioso da salvare.</string>
+    <string name="action_fold_toggle">Comprimi / espandi blocco</string>
+    <string name="action_fold_all">Comprimi tutti i metodi</string>
+    <string name="action_unfold_all">Espandi tutto</string>
+    <string name="editor_nothing_to_fold">Qui non c\'è nulla da comprimere</string>
+    <string name="severity_error">Errore</string>
+    <string name="severity_warning">Avviso</string>
+    <string name="severity_info">Nota</string>
+    <string name="quickfix_more_problems">altri %1$d in questo file</string>
 </resources>

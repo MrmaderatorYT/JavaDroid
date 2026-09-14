@@ -41,7 +41,7 @@ Dann fügen Sie ihn hier ein:</string>
     <string name="replace_hint">Ersetzen durch…</string>
     <string name="replace">Ersetzen</string>
     <string name="replace_all">Alle</string>
-    <string name="tab_run">▶  Ausführen</string>
+    <string name="tab_run">Ausführen</string>
     <string name="tab_problems">Probleme</string>
     <string name="tab_bytecode">Bytecode</string>
     <string name="tab_debug">Threads &amp; Variablen</string>

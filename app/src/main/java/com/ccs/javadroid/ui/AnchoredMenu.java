@@ -48,9 +48,18 @@ import java.util.List;
  */
 public final class AnchoredMenu {
 
-    /** One row: a label, an optional leading glyph, and what it does. */
+    /** One row: a label, an optional leading glyph or icon, and what it does. */
     private static final class Entry {
         final String glyph;
+        final int iconRes;
+        /**
+         * An icon that is already a Drawable rather than a resource.
+         *
+         * <p>For pictures the app draws itself — the country flags in the
+         * language picker are painted on a canvas, not stored as files, and
+         * there is no resource id to give.</p>
+         */
+        final android.graphics.drawable.Drawable icon;
         final String label;
         final String hint;
         final Runnable action;
@@ -58,9 +67,11 @@ public final class AnchoredMenu {
         final boolean checked;
         final boolean enabled;
 
-        Entry(String glyph, String label, String hint, Runnable action,
-              boolean danger, boolean checked, boolean enabled) {
+        Entry(String glyph, int iconRes, android.graphics.drawable.Drawable icon, String label,
+              String hint, Runnable action, boolean danger, boolean checked, boolean enabled) {
             this.glyph = glyph;
+            this.iconRes = iconRes;
+            this.icon = icon;
             this.label = label;
             this.hint = hint;
             this.action = action;
@@ -93,35 +104,75 @@ public final class AnchoredMenu {
     }
 
     public AnchoredMenu item(String label, Runnable action) {
-        return item(null, label, action);
+        return item((String) null, label, action);
     }
 
     public AnchoredMenu item(String glyph, String label, Runnable action) {
-        rows.add(new Entry(glyph, label, null, action, false, false, true));
+        rows.add(new Entry(glyph, 0, null, label, null, action, false, false, true));
+        return this;
+    }
+
+    public AnchoredMenu item(int iconRes, String label, Runnable action) {
+        rows.add(new Entry(null, iconRes, null, label, null, action, false, false, true));
         return this;
     }
 
     /** With a right-aligned hint, for a shortcut or the current value. */
     public AnchoredMenu item(String glyph, String label, String hint, Runnable action) {
-        rows.add(new Entry(glyph, label, hint, action, false, false, true));
+        rows.add(new Entry(glyph, 0, null, label, hint, action, false, false, true));
+        return this;
+    }
+
+    public AnchoredMenu item(int iconRes, String label, String hint, Runnable action) {
+        rows.add(new Entry(null, iconRes, null, label, hint, action, false, false, true));
         return this;
     }
 
     /** Shown as selected, the way a radio group's current choice is. */
     public AnchoredMenu checkable(String label, boolean checked, Runnable action) {
-        rows.add(new Entry(null, label, null, action, false, checked, true));
+        return checkable((String) null, label, checked, action);
+    }
+
+    public AnchoredMenu checkable(String glyph, String label, boolean checked, Runnable action) {
+        return checkable(glyph, label, null, checked, action);
+    }
+
+    public AnchoredMenu checkable(String glyph, String label, String hint, boolean checked, Runnable action) {
+        rows.add(new Entry(glyph, 0, null, label, hint, action, false, checked, true));
+        return this;
+    }
+
+    /** Selected or not, with a picture the caller has drawn itself. */
+    public AnchoredMenu checkable(android.graphics.drawable.Drawable icon, String label,
+                                  boolean checked, Runnable action) {
+        rows.add(new Entry(null, 0, icon, label, null, action, false, checked, true));
+        return this;
+    }
+
+    public AnchoredMenu item(android.graphics.drawable.Drawable icon, String label, Runnable action) {
+        rows.add(new Entry(null, 0, icon, label, null, action, false, false, true));
         return this;
     }
 
     /** Drawn in the error colour: deleting, discarding, anything unrecoverable. */
     public AnchoredMenu danger(String glyph, String label, Runnable action) {
-        rows.add(new Entry(glyph, label, null, action, true, false, true));
+        rows.add(new Entry(glyph, 0, null, label, null, action, true, false, true));
+        return this;
+    }
+
+    public AnchoredMenu danger(int iconRes, String label, Runnable action) {
+        rows.add(new Entry(null, iconRes, null, label, null, action, true, false, true));
         return this;
     }
 
     /** Present but unavailable, so the menu keeps the same shape either way. */
     public AnchoredMenu disabled(String label) {
-        rows.add(new Entry(null, label, null, null, false, false, false));
+        rows.add(new Entry(null, 0, null, label, null, null, false, false, false));
+        return this;
+    }
+
+    public AnchoredMenu custom(View view) {
+        if (view != null) rows.add(view);
         return this;
     }
 
@@ -140,7 +191,7 @@ public final class AnchoredMenu {
     /** True when there is nothing to show, so a caller can skip opening it. */
     public boolean isEmpty() {
         for (Object row : rows) {
-            if (row instanceof Entry) return false;
+            if (row instanceof Entry || row instanceof View) return false;
         }
         return true;
     }
@@ -298,6 +349,10 @@ public final class AnchoredMenu {
                 box.addView(separatorView(separator));
                 continue;
             }
+            if (row instanceof View) {
+                box.addView((View) row);
+                continue;
+            }
             Entry entry = (Entry) row;
             box.addView(rowView(entry, text, dim, accent, error, surface));
         }
@@ -318,7 +373,23 @@ public final class AnchoredMenu {
         row.setGravity(Gravity.CENTER_VERTICAL);
         row.setPadding(dp(16), dp(11), dp(16), dp(11));
 
-        if (entry.glyph != null && !entry.glyph.isEmpty()) {
+        if (entry.icon != null) {
+            // Left in its own colours: a flag tinted grey is not a flag.
+            android.widget.ImageView icon = new android.widget.ImageView(activity);
+            icon.setImageDrawable(entry.icon);
+            icon.setScaleType(android.widget.ImageView.ScaleType.FIT_CENTER);
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(dp(26), dp(17));
+            lp.rightMargin = dp(10);
+            row.addView(icon, lp);
+        } else if (entry.iconRes != 0) {
+            android.widget.ImageView icon = new android.widget.ImageView(activity);
+            icon.setImageResource(entry.iconRes);
+            icon.setScaleType(android.widget.ImageView.ScaleType.CENTER_INSIDE);
+            icon.setColorFilter(entry.danger ? error : dim, android.graphics.PorterDuff.Mode.SRC_IN);
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(dp(18), dp(18));
+            lp.rightMargin = dp(8);
+            row.addView(icon, lp);
+        } else if (entry.glyph != null && !entry.glyph.isEmpty()) {
             TextView glyph = new TextView(activity);
             glyph.setText(entry.glyph);
             glyph.setTextSize(13);
@@ -332,7 +403,7 @@ public final class AnchoredMenu {
             tick.setTextColor(accent);
             tick.setWidth(dp(26));
             row.addView(tick);
-        } else if (hasGlyphsOrChecks()) {
+        } else if (hasGlyphsOrChecks() && !hasIcons()) {
             // Keeps the labels of a mixed menu on one vertical line.
             TextView spacer = new TextView(activity);
             spacer.setWidth(dp(26));
@@ -357,6 +428,17 @@ public final class AnchoredMenu {
             row.addView(hint);
         }
 
+        // The leading slot is taken by the icon, so the tick goes at the end —
+        // otherwise a selected row would look the same as an unselected one.
+        if (entry.checked && (entry.icon != null || entry.iconRes != 0)) {
+            TextView tick = new TextView(activity);
+            tick.setText("✓");
+            tick.setTextSize(13);
+            tick.setTextColor(accent);
+            tick.setPadding(dp(12), 0, 0, 0);
+            row.addView(tick);
+        }
+
         if (entry.enabled && entry.action != null) {
             row.setBackground(new RippleDrawable(
                     ColorStateList.valueOf(Colors.blend(surface, accent, 0.35f)),
@@ -371,11 +453,21 @@ public final class AnchoredMenu {
         return row;
     }
 
+    /** True when any row carries a picture, so the glyph column is not in use. */
+    private boolean hasIcons() {
+        for (Object row : rows) {
+            if (row instanceof Entry && (((Entry) row).icon != null || ((Entry) row).iconRes != 0)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private boolean hasGlyphsOrChecks() {
         for (Object row : rows) {
             if (!(row instanceof Entry)) continue;
             Entry entry = (Entry) row;
-            if ((entry.glyph != null && !entry.glyph.isEmpty()) || entry.checked) return true;
+            if (entry.iconRes != 0 || (entry.glyph != null && !entry.glyph.isEmpty()) || entry.checked) return true;
         }
         return false;
     }

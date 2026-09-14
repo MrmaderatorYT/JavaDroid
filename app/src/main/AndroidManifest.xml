@@ -242,6 +242,10 @@
             android:exported="false"
             android:label="@string/git_diff_activity_title"
             android:parentActivityName=".git.GitActivity" />
+        <activity
+            android:name=".git.GitConflictEditorActivity"
+            android:screenOrientation="unspecified"
+            android:parentActivityName=".git.GitActivity" />
 
         <activity
             android:name=".ui.LibraryManagerActivity"

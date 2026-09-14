@@ -78,13 +78,18 @@ public final class RunCancellation {
 
     /** As {@link #newWorker(Runnable)}, keeping a name worth reading in a stack dump. */
     public static Thread newWorker(Runnable body, String name) {
+        com.ccs.javadroid.profiler.PerformanceMonitor monitor =
+                com.ccs.javadroid.profiler.PerformanceMonitor.get();
+        if (monitor != null) monitor.taskQueued();
         Thread thread = new Thread(() -> {
             Thread self = Thread.currentThread();
             workers.add(self);
+            if (monitor != null) monitor.taskStarted();
             try {
                 body.run();
             } finally {
                 workers.remove(self);
+                if (monitor != null) monitor.taskFinished();
             }
         });
         if (name != null) thread.setName(name);

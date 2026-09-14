@@ -44,6 +44,15 @@ public class PomModel {
                     return groupId != null ? groupId : s;
                 case "project.artifactId":
                     return artifactId != null ? artifactId : s;
+                // A BOM refers to its own parent this way, and jackson-databind
+                // pins jackson-bom with it. Answerable now that the parent
+                // coordinates are actually read out of the pom.
+                case "project.parent.version":
+                    return parentVersion != null ? parentVersion : s;
+                case "project.parent.groupId":
+                    return parentGroupId != null ? parentGroupId : s;
+                case "project.parent.artifactId":
+                    return parentArtifactId != null ? parentArtifactId : s;
                 case "project.basedir":
                     return ".";
                 case "project.build.sourceEncoding":
@@ -81,6 +90,32 @@ public class PomModel {
         merged.putAll(properties);
         properties.clear();
         properties.putAll(merged);
+    }
+
+    /**
+     * Re-resolves {@code ${...}} in the dependency lists.
+     *
+     * <p>Parsing resolves them once, against whatever properties the POM itself
+     * declared. A dependency that takes its version from a parent — the usual
+     * shape of a BOM — has none of them at that moment, and its version is left
+     * as the literal text {@code ${jackson.version.core}}, which then goes into
+     * a download URL and comes back 404. Call this after merging a parent's
+     * properties in, and the versions resolve.</p>
+     *
+     * <p>Idempotent: anything already resolved has no placeholder left to
+     * substitute, and anything still unknown is left as it was.</p>
+     */
+    public void applyProperties() {
+        for (MavenDependency d : dependencies) {
+            d.groupId = resolveProperty(d.groupId);
+            d.artifactId = resolveProperty(d.artifactId);
+            d.version = resolveProperty(d.version);
+        }
+        for (MavenDependency d : dependencyManagement) {
+            d.groupId = resolveProperty(d.groupId);
+            d.artifactId = resolveProperty(d.artifactId);
+            d.version = resolveProperty(d.version);
+        }
     }
 
     /** Activate profiles based on JDK and activeByDefault flag. */

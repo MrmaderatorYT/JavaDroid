@@ -37,7 +37,7 @@ Dann fügen Sie ihn hier ein:</string>
     <string name="replace_hint">Vervangen door…</string>
     <string name="replace">Vervangen</string>
     <string name="replace_all">Alles</string>
-    <string name="tab_run">▶  Ausführen</string>
+    <string name="tab_run">Ausführen</string>
     <string name="tab_problems">Problemen</string>
     <string name="tab_bytecode">Bytecode</string>
     <string name="tab_debug">Threads &amp; Variablen</string>

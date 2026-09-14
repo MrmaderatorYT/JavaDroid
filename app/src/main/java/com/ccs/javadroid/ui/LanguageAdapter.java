@@ -107,6 +107,20 @@ final class LanguageAdapter extends BaseAdapter {
         return row;
     }
 
+    /**
+     * A country's flag, drawn rather than shipped.
+     *
+     * <p>Public because the language picker is a popup menu now, not a spinner
+     * backed by this adapter — the menu still wants the same flags, and they
+     * exist only as drawing code.</p>
+     *
+     * @param inkColor the row's text colour, used by the entries that are a
+     *                 glyph rather than a flag
+     */
+    static Drawable flag(String country, int inkColor) {
+        return new FlagDrawable(country, inkColor);
+    }
+
     private static final class FlagDrawable extends Drawable {
         private final String country;
         private final int inkColor;
@@ -545,6 +559,122 @@ final class LanguageAdapter extends BaseAdapter {
                     c.drawRect(w * 0.25f, h * 0.32f, w * 0.75f, h * 0.48f, p);
                     break;
                 }
+                case "dk": {
+                    // Denmark: white Nordic cross on red
+                    nordicCross(c, w, h, 0xFFC8102E, 0xFFFFFFFF, 0);
+                    break;
+                }
+                case "se": {
+                    // Sweden: yellow Nordic cross on blue
+                    nordicCross(c, w, h, 0xFF006AA7, 0xFFFECC00, 0);
+                    break;
+                }
+                case "fi": {
+                    // Finland: blue Nordic cross on white
+                    nordicCross(c, w, h, 0xFFFFFFFF, 0xFF003580, 0);
+                    break;
+                }
+                case "no": {
+                    // Norway: blue cross fimbriated white, on red
+                    nordicCross(c, w, h, 0xFFBA0C2F, 0xFFFFFFFF, 0xFF00205B);
+                    break;
+                }
+                case "is": {
+                    // Iceland: red cross fimbriated white, on blue
+                    nordicCross(c, w, h, 0xFF02529C, 0xFFFFFFFF, 0xFFDC1E35);
+                    break;
+                }
+                case "ee": {
+                    // Estonia: blue, black, white horizontal tricolor
+                    p.setColor(0xFF0072CE);
+                    c.drawRect(0, 0, w, h / 3f, p);
+                    p.setColor(0xFF000000);
+                    c.drawRect(0, h / 3f, w, (h * 2f) / 3f, p);
+                    p.setColor(0xFFFFFFFF);
+                    c.drawRect(0, (h * 2f) / 3f, w, h, p);
+                    break;
+                }
+                case "lv": {
+                    // Latvia: carmine with a narrow white band across the middle
+                    p.setColor(0xFF9E3039);
+                    c.drawRect(0, 0, w, h, p);
+                    p.setColor(0xFFFFFFFF);
+                    c.drawRect(0, h * 0.4f, w, h * 0.6f, p);
+                    break;
+                }
+                case "ie": {
+                    // Ireland: green, white, orange vertical tricolor
+                    p.setColor(0xFF169B62);
+                    c.drawRect(0, 0, w / 3f, h, p);
+                    p.setColor(0xFFFFFFFF);
+                    c.drawRect(w / 3f, 0, (w * 2f) / 3f, h, p);
+                    p.setColor(0xFFFF883E);
+                    c.drawRect((w * 2f) / 3f, 0, w, h, p);
+                    break;
+                }
+                case "am": {
+                    // Armenia: red, blue, apricot horizontal tricolor
+                    p.setColor(0xFFD90012);
+                    c.drawRect(0, 0, w, h / 3f, p);
+                    p.setColor(0xFF0033A0);
+                    c.drawRect(0, h / 3f, w, (h * 2f) / 3f, p);
+                    p.setColor(0xFFF2A800);
+                    c.drawRect(0, (h * 2f) / 3f, w, h, p);
+                    break;
+                }
+                case "sct": {
+                    // Scotland: the Saltire, a white diagonal cross on blue
+                    p.setColor(0xFF005EB8);
+                    c.drawRect(0, 0, w, h, p);
+                    p.setColor(0xFFFFFFFF);
+                    p.setStyle(Paint.Style.STROKE);
+                    p.setStrokeWidth(Math.max(2f, h * 0.2f));
+                    c.drawLine(0, 0, w, h, p);
+                    c.drawLine(w, 0, 0, h, p);
+                    p.setStyle(Paint.Style.FILL);
+                    break;
+                }
+                case "gr": {
+                    // Greece: nine stripes with a cross in the canton
+                    p.setColor(0xFFFFFFFF);
+                    c.drawRect(0, 0, w, h, p);
+                    p.setColor(0xFF0D5EAF);
+                    float stripe = h / 9f;
+                    for (int i = 0; i < 9; i += 2) {
+                        c.drawRect(0, i * stripe, w, (i + 1) * stripe, p);
+                    }
+                    // Canton: five stripes tall and as wide, so it is square.
+                    float canton = stripe * 5f;
+                    c.drawRect(0, 0, canton, canton, p);
+                    p.setColor(0xFFFFFFFF);
+                    c.drawRect(canton * 0.4f, 0, canton * 0.6f, canton, p);
+                    c.drawRect(0, canton * 0.4f, canton, canton * 0.6f, p);
+                    break;
+                }
+                case "my": {
+                    // Malaysia: red and white stripes, blue canton, crescent and star
+                    p.setColor(0xFFFFFFFF);
+                    c.drawRect(0, 0, w, h, p);
+                    p.setColor(0xFFCC0001);
+                    float band = h / 14f;
+                    for (int i = 0; i < 14; i += 2) {
+                        c.drawRect(0, i * band, w, (i + 1) * band, p);
+                    }
+                    p.setColor(0xFF010066);
+                    c.drawRect(0, 0, w * 0.5f, band * 8f, p);
+
+                    // The crescent is one disc with a second cut out of it, and
+                    // the cut is painted in the canton's own blue.
+                    float cy = band * 4f;
+                    float r = band * 2.6f;
+                    p.setColor(0xFFFFCC00);
+                    c.drawCircle(w * 0.2f, cy, r, p);
+                    p.setColor(0xFF010066);
+                    c.drawCircle(w * 0.26f, cy, r * 0.85f, p);
+                    p.setColor(0xFFFFCC00);
+                    c.drawCircle(w * 0.36f, cy, r * 0.42f, p);
+                    break;
+                }
                 default: {
                     // Generic fallback
                     p.setColor(0xFF4A86C8);
@@ -553,6 +683,33 @@ final class LanguageAdapter extends BaseAdapter {
                     c.drawCircle(w / 2f, h / 2f, Math.min(w, h) * 0.25f, p);
                     break;
                 }
+            }
+        }
+
+        /**
+         * The cross shared by every Nordic flag, off-centre toward the hoist.
+         *
+         * @param inner the colour of a cross drawn inside the first one, for the
+         *              two flags whose cross is edged in a second colour; 0 for
+         *              the plain ones
+         */
+        private void nordicCross(Canvas c, float w, float h, int field, int cross, int inner) {
+            p.setColor(field);
+            c.drawRect(0, 0, w, h, p);
+
+            float armY = h * 0.11f;
+            float armX = w * 0.11f;
+            float centreX = w * 0.36f;
+            float centreY = h * 0.5f;
+
+            p.setColor(cross);
+            c.drawRect(centreX - armX, 0, centreX + armX, h, p);
+            c.drawRect(0, centreY - armY, w, centreY + armY, p);
+
+            if (inner != 0) {
+                p.setColor(inner);
+                c.drawRect(centreX - armX * 0.45f, 0, centreX + armX * 0.45f, h, p);
+                c.drawRect(0, centreY - armY * 0.45f, w, centreY + armY * 0.45f, p);
             }
         }
 

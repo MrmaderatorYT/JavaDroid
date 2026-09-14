@@ -32,6 +32,7 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -75,6 +76,32 @@ public class WelcomeActivity extends AppCompatActivity {
 
     private final ExecutorService io = Executors.newSingleThreadExecutor();
     private final Handler ui = new Handler(Looper.getMainLooper());
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            if (event.getKeyCode() == KeyEvent.KEYCODE_ESCAPE) {
+                if (AnchoredMenu.dismissOpen()) return true;
+            }
+            if (event.isCtrlPressed() && !event.isAltPressed()) {
+                switch (event.getKeyCode()) {
+                    case KeyEvent.KEYCODE_N:
+                        NewProjectActivity.launchForResult(this, REQ_NEW_PROJECT);
+                        return true;
+                    case KeyEvent.KEYCODE_O:
+                        showOpenProjectMenu(btnOpenProject);
+                        return true;
+                    case KeyEvent.KEYCODE_L:
+                        etSearchProjects.requestFocus();
+                        etSearchProjects.selectAll();
+                        return true;
+                    default:
+                        break;
+                }
+            }
+        }
+        return super.dispatchKeyEvent(event);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -287,7 +314,7 @@ public class WelcomeActivity extends AppCompatActivity {
         }
 
         btnNewProject.setOnClickListener(v -> NewProjectActivity.launchForResult(this, REQ_NEW_PROJECT));
-        btnOpenProject.setOnClickListener(v -> showOpenFolderDialog());
+        btnOpenProject.setOnClickListener(v -> showOpenProjectMenu(btnOpenProject));
         btnCloneRepo.setOnClickListener(v -> showCloneRepoDialog());
 
         View sidebarCredits = findViewById(R.id.sidebarCredits);
@@ -564,16 +591,19 @@ public class WelcomeActivity extends AppCompatActivity {
      */
     private AnchoredMenu projectMenu(String path) {
         final File file = new File(path);
+        // Drawn icons rather than text glyphs and an emoji: the emoji came from
+        // the system font, so it sat at a different weight and colour from the
+        // rest of the row and ignored the theme entirely.
         return AnchoredMenu.with(this, theme)
                 .title(file.getName())
-                .item("▸", getString(R.string.welcome_project_options_open),
+                .item(R.drawable.ic_folder, getString(R.string.welcome_project_options_open),
                         () -> openProject(path))
-                .item("✕", getString(R.string.welcome_project_options_remove), () -> {
+                .item(R.drawable.ic_close, getString(R.string.welcome_project_options_remove), () -> {
                     appPrefs.removeRecentProject(path);
                     setupRecentProjects();
                 })
                 .separator()
-                .danger("🗑", getString(R.string.welcome_project_options_delete),
+                .danger(R.drawable.ic_trash, getString(R.string.welcome_project_options_delete),
                         () -> confirmDeleteProject(file, path));
     }
 
@@ -590,47 +620,11 @@ public class WelcomeActivity extends AppCompatActivity {
                 .show();
     }
 
-    private void showOpenFolderDialog() {
-        File base = MavenPaths.getJavaDroidBase(this);
-        final File[] dirs = base.listFiles(File::isDirectory);
-        
-        int dirCount = (dirs == null) ? 0 : dirs.length;
-        final String[] names = new String[dirCount + 1];
-        names[0] = getString(R.string.welcome_import_entry);
-        
-        for (int i = 0; i < dirCount; i++) {
-            names[i + 1] = dirs[i].getName();
-        }
-
-        newRoundedDialog()
-                .setTitle(R.string.welcome_open_folder_title)
-                .setItems(names, (dialog, which) -> {
-                    if (which == 0) {
-                        showImportTypeDialog();
-                    } else {
-                        openProject(dirs[which - 1].getAbsolutePath());
-                    }
-                })
-                .setNegativeButton(R.string.dialog_cancel, null)
-                .show();
-    }
-
-    private void showImportTypeDialog() {
-        String[] options = {
-                getString(R.string.import_option_archive),
-                getString(R.string.import_option_folder)
-        };
-        newRoundedDialog()
-                .setTitle(R.string.import_title)
-                .setItems(options, (dialog, which) -> {
-                    if (which == 0) {
-                        importArchive();
-                    } else {
-                        importFolder();
-                    }
-                })
-                .setNegativeButton(R.string.dialog_cancel, null)
-                .show();
+    private void showOpenProjectMenu(View anchor) {
+        AnchoredMenu.with(this, theme)
+                .item(R.drawable.ic_folder, getString(R.string.import_option_folder), this::importFolder)
+                .item(R.drawable.ic_archive, getString(R.string.import_option_archive), this::importArchive)
+                .showBelow(anchor);
     }
 
     private static final int REQUEST_IMPORT_ARCHIVE = 2001;

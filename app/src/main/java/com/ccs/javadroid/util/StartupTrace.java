@@ -20,9 +20,8 @@ import java.util.Map;
  * {@code onResume}, and prints one line per screen under the {@code Startup}
  * tag.
  *
- * <p>Debug builds only. It exists because "this screen feels slow" is not a
- * number, and guessing which of forty activities is the slow one wastes a build
- * cycle per guess. The pre/post callbacks are API 29+; below that the timings
+ * <p>Metrics are retained locally by {@code PerformanceMonitor}; logcat output
+ * is restricted to debug builds. The pre/post callbacks are API 29+; below that the timings
  * are simply not collected rather than being reported wrong.</p>
  */
 public final class StartupTrace {
@@ -142,11 +141,19 @@ public final class StartupTrace {
                 long[] m = marks.get(a);
                 if (m == null || m[0] == 0L) return;
                 long now = SystemClock.uptimeMillis();
-                Log.i(TAG, String.format(java.util.Locale.ROOT,
-                        "%-26s onCreate=%5dms onStart=%4dms onResume=%4dms other=%4dms total=%5dms",
-                        a.getClass().getSimpleName(),
-                        m[1] - m[0], m[3] - m[2], now - m[4],
-                        (m[2] - m[1]) + (m[4] - m[3]), now - m[0]));
+                if (BuildConfig.DEBUG) {
+                    Log.i(TAG, String.format(java.util.Locale.ROOT,
+                            "%-26s onCreate=%5dms onStart=%4dms onResume=%4dms other=%4dms total=%5dms",
+                            a.getClass().getSimpleName(),
+                            m[1] - m[0], m[3] - m[2], now - m[4],
+                            (m[2] - m[1]) + (m[4] - m[3]), now - m[0]));
+                }
+                com.ccs.javadroid.profiler.PerformanceMonitor monitor =
+                        com.ccs.javadroid.profiler.PerformanceMonitor.get();
+                if (monitor != null) {
+                    monitor.recordDuration("startup." + a.getClass().getSimpleName(),
+                            (now - m[0]) * 1_000_000L);
+                }
                 marks.remove(a);
             }
 

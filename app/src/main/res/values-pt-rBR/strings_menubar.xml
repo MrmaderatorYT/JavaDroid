@@ -33,4 +33,24 @@
     <string name="semantic_search_title">Busca semântica (IA)</string>
     <string name="a11y_action_voice">Entrada por voz</string>
     <string name="menubar_refactor">Refatorar</string>
+    <string name="settings_bracket_highlight">Destacar parênteses correspondentes</string>
+    <string name="settings_bracket_highlight_desc">Contorna o parêntese que forma par com o do cursor.</string>
+    <string name="action_duplicate_line">Duplicar a linha</string>
+    <string name="action_move_line_up">Mover a linha para cima</string>
+    <string name="action_move_line_down">Mover a linha para baixo</string>
+    <string name="action_toggle_comment">Comentar / descomentar</string>
+    <string name="settings_contextual_symbols">Símbolos conforme a linguagem</string>
+    <string name="settings_contextual_symbols_desc">Um arquivo XML recebe colchetes angulares; um Java, ponto e vírgula. Desligue para usar sua própria linha.</string>
+    <string name="a11y_error_stripe">Marcas de problemas</string>
+    <string name="editor_large_file_loading">Carregando %1$s…</string>
+    <string name="editor_large_file_plain">%1$s — realce desativado para abrir na hora.</string>
+    <string name="editor_large_file_read_only">%1$s — aberto somente para leitura. Um arquivo desse tamanho é lento de editar e arriscado de salvar.</string>
+    <string name="action_fold_toggle">Recolher / expandir bloco</string>
+    <string name="action_fold_all">Recolher todos os métodos</string>
+    <string name="action_unfold_all">Expandir tudo</string>
+    <string name="editor_nothing_to_fold">Não há nada para recolher aqui</string>
+    <string name="severity_error">Erro</string>
+    <string name="severity_warning">Aviso</string>
+    <string name="severity_info">Observação</string>
+    <string name="quickfix_more_problems">mais %1$d neste arquivo</string>
 </resources>

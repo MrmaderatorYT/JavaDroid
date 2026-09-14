@@ -36,7 +36,7 @@
     <string name="replace_hint">替换为…</string>
     <string name="replace">替换</string>
     <string name="replace_all">全部</string>
-    <string name="tab_run">▶  Run</string>
+    <string name="tab_run">Run</string>
     <string name="tab_problems">问题</string>
     <string name="tab_bytecode">字节码</string>
     <string name="tab_debug">Threads &amp; Variables</string>

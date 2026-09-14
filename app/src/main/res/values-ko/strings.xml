@@ -36,7 +36,7 @@
     <string name="replace_hint">바꿀 내용…</string>
     <string name="replace">바꾸기</string>
     <string name="replace_all">모두</string>
-    <string name="tab_run">▶  Run</string>
+    <string name="tab_run">Run</string>
     <string name="tab_problems">문제</string>
     <string name="tab_bytecode">바이트코드</string>
     <string name="tab_debug">Threads &amp; Variables</string>
