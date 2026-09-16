@@ -75,6 +75,7 @@ public class GeminiAgent {
     private String currentFileName = "";
     private String currentFilePath = "";
     private String configuredProjectRoot = "";
+    private String workingProjectRoot = "";
     private JSONArray conversationContents = new JSONArray();
 
     public GeminiAgent(Context context, AgentCallback callback) {
@@ -101,11 +102,16 @@ public class GeminiAgent {
             cancelled = false;
             token = ++turnId;
             iterationCount = 0;
-            currentCode = codeContext == null ? "" : codeContext;
             currentFileName = fileName == null ? "" : fileName;
             configuredProjectRoot = projectRoot == null ? "" : projectRoot;
+            String rootKey = canonicalProjectRoot();
+            if (!rootKey.equals(workingProjectRoot)) workingFiles.clear();
+            workingProjectRoot = rootKey;
             currentFilePath = canonicalCurrentPath(filePath);
-            workingFiles.clear();
+            String stagedCurrent = currentFilePath.isEmpty()
+                    ? null : workingFiles.get(currentFilePath);
+            currentCode = stagedCurrent != null ? stagedCurrent
+                    : (codeContext == null ? "" : codeContext);
             if (!currentFilePath.isEmpty()) workingFiles.put(currentFilePath, currentCode);
             conversationContents = buildInitialContents(userMessage, history);
         }
@@ -310,6 +316,7 @@ public class GeminiAgent {
                 if (args == null) args = new JSONObject();
                 postToolCall(name, args.toString());
                 String result = executeTool(name, args);
+                if (!isCurrent(token)) return;
                 postToolResult(name, result);
 
                 JSONObject functionResponse = new JSONObject();
@@ -407,6 +414,7 @@ public class GeminiAgent {
     private String executeListFiles(JSONObject args) throws Exception {
         File directory = resolveProjectFile(args.optString("path", "."), true);
         if (!directory.isDirectory()) return "Not a directory: " + relativePath(directory);
+        File root = projectRoot();
         File[] children = directory.listFiles();
         if (children == null || children.length == 0) return "Empty directory.";
         Arrays.sort(children, (a, b) -> {
@@ -416,7 +424,7 @@ public class GeminiAgent {
         StringBuilder out = new StringBuilder();
         int count = 0;
         for (File child : children) {
-            if (isSkipped(child)) continue;
+            if (isSkipped(child) || !isInsideProject(root, child)) continue;
             out.append(child.isDirectory() ? "[DIR] " : "[FILE] ")
                     .append(relativePath(child)).append('\n');
             if (++count >= 400) {
@@ -432,7 +440,7 @@ public class GeminiAgent {
             File root = projectRoot();
             StringBuilder out = new StringBuilder();
             int[] count = {0};
-            appendTree(root, out, 0, count);
+            appendTree(root, root, out, 0, count);
             if (count[0] >= MAX_TREE_ENTRIES) out.append("... tree truncated\n");
             return out.toString();
         } catch (Exception e) {
@@ -440,7 +448,8 @@ public class GeminiAgent {
         }
     }
 
-    private void appendTree(File directory, StringBuilder out, int depth, int[] count) {
+    private void appendTree(File root, File directory, StringBuilder out,
+                            int depth, int[] count) {
         if (depth > 6 || count[0] >= MAX_TREE_ENTRIES) return;
         File[] children = directory.listFiles();
         if (children == null) return;
@@ -450,11 +459,11 @@ public class GeminiAgent {
         });
         for (File child : children) {
             if (count[0] >= MAX_TREE_ENTRIES) return;
-            if (isSkipped(child)) continue;
+            if (isSkipped(child) || !isInsideProject(root, child)) continue;
             out.append("  ".repeat(depth)).append(child.isDirectory() ? "[D] " : "[F] ")
                     .append(child.getName()).append('\n');
             count[0]++;
-            if (child.isDirectory()) appendTree(child, out, depth + 1, count);
+            if (child.isDirectory()) appendTree(root, child, out, depth + 1, count);
         }
     }
 
@@ -463,6 +472,7 @@ public class GeminiAgent {
         if (query.isEmpty()) return "searchInProject requires a non-empty query.";
         int limit = Math.max(1, Math.min(100, args.optInt("maxResults", 30)));
         File start = resolveProjectFile(args.optString("path", "."), true);
+        File root = projectRoot();
         ArrayDeque<File> pending = new ArrayDeque<>();
         pending.add(start);
         StringBuilder matches = new StringBuilder();
@@ -471,12 +481,15 @@ public class GeminiAgent {
 
         while (!pending.isEmpty() && results < limit && scanned < MAX_SEARCH_FILES) {
             File item = pending.removeFirst();
+            if (!isInsideProject(root, item)) continue;
             if (item.isDirectory()) {
                 File[] children = item.listFiles();
                 if (children == null) continue;
                 List<File> ordered = new ArrayList<>(Arrays.asList(children));
                 ordered.sort((a, b) -> a.getName().compareToIgnoreCase(b.getName()));
-                for (File child : ordered) if (!isSkipped(child)) pending.addLast(child);
+                for (File child : ordered) {
+                    if (!isSkipped(child) && isInsideProject(root, child)) pending.addLast(child);
+                }
                 continue;
             }
             scanned++;
@@ -601,6 +614,14 @@ public class GeminiAgent {
         }
     }
 
+    private String canonicalProjectRoot() {
+        try {
+            return projectRoot().getCanonicalPath();
+        } catch (IOException ignored) {
+            return "";
+        }
+    }
+
     private String relativePath(File file) {
         try {
             File root = projectRoot();
@@ -617,6 +638,18 @@ public class GeminiAgent {
     private static boolean isSkipped(File file) {
         return file.isDirectory() && (file.getName().startsWith(".")
                 || SKIPPED_DIRECTORIES.contains(file.getName()));
+    }
+
+    /** Symlinks in a project must not turn read/search/tree into an escape hatch. */
+    private static boolean isInsideProject(File root, File candidate) {
+        try {
+            String rootPath = root.getCanonicalPath();
+            String candidatePath = candidate.getCanonicalPath();
+            return candidatePath.equals(rootPath)
+                    || candidatePath.startsWith(rootPath + File.separator);
+        } catch (IOException e) {
+            return false;
+        }
     }
 
     private static boolean isSearchable(File file) {
