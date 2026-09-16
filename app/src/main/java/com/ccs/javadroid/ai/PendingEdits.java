@@ -7,15 +7,16 @@ import java.util.Deque;
 import java.util.List;
 
 /**
- * Процес-локальний буфер коду, який AI хоче вставити у відкритий редактор.
+ * Process-local queue of manual chat insertions and file-targeted agent edits.
  *
  * AiChatActivity працює в окремому вікні поверх MainActivity (редактора), а Cursor
  * активного редактора живе саме в MainActivity. Тому перенесення згенерованого коду
  * з чату в редактор відбувається через цей статичний буфер: пишемо сюди під час сесії
  * чату, а MainActivity.onResume дренує чергу й застосовує її до activeEditor.
  *
- * Буфер зберігає порядок вставок і підтримує кілька операцій за сесію — як кнопку
- * "Вставити", так і інструмент insertCode агента.
+ * The queue preserves operation order. Manual "Insert" actions still target the
+ * active cursor, while agent patches carry a canonical path plus an exact fragment
+ * and therefore cannot drift to whichever editor happens to have focus later.
  */
 public final class PendingEdits {
 
@@ -40,15 +41,22 @@ public final class PendingEdits {
         public final String location;
         /** For {@link #LOCATION_PATCH}: the exact text to replace. */
         public final String find;
+        /** Canonical target path for agent patches; null for manual cursor inserts. */
+        public final String path;
 
         public Edit(String code, String location) {
-            this(code, location, null);
+            this(code, location, null, null);
         }
 
         public Edit(String code, String location, String find) {
+            this(code, location, find, null);
+        }
+
+        public Edit(String code, String location, String find, String path) {
             this.code = code == null ? "" : code;
             this.location = location == null ? LOCATION_CURSOR : location;
             this.find = find;
+            this.path = path;
         }
     }
 
@@ -71,9 +79,14 @@ public final class PendingEdits {
      * edit — so this does not share the guard above.</p>
      */
     public static void addPatch(String find, String code) {
+        addPatch(null, find, code);
+    }
+
+    /** Queues an exact replacement for one particular project file. */
+    public static void addPatch(String path, String find, String code) {
         if (find == null || find.isEmpty()) return;
         synchronized (queue) {
-            queue.add(new Edit(code, LOCATION_PATCH, find));
+            queue.add(new Edit(code, LOCATION_PATCH, find, path));
         }
     }
 

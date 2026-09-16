@@ -324,113 +324,119 @@ public final class GeminiService {
         void onError(String error);
     }
 
+    /** Raw generateContent response used by the agent's native function-call loop. */
+    public interface JsonResponseCallback {
+        void onSuccess(JSONObject response);
+        void onError(String error);
+    }
+
     /**
      * Надсилає повідомлення з контекстом коду (system prompt + chat history).
      */
     public static void chat(Context ctx, String systemPrompt, String userMessage,
                              java.util.List<ChatMessage> history, ResponseCallback callback) {
+        try {
+            JSONObject body = buildRequestBody(systemPrompt, userMessage, history);
+            generateContent(ctx, body, new JsonResponseCallback() {
+                @Override public void onSuccess(JSONObject response) {
+                    try {
+                        String text = parseResponse(response);
+                        if (text == null) callback.onError(ctx.getString(R.string.ai_err_empty));
+                        else callback.onSuccess(text);
+                    } catch (JSONException e) {
+                        callback.onError(ctx.getString(R.string.ai_err_empty));
+                    }
+                }
+
+                @Override public void onError(String error) {
+                    callback.onError(error);
+                }
+            });
+        } catch (JSONException e) {
+            mainHandler.post(() -> callback.onError(ctx.getString(R.string.ai_err_network,
+                    e.getClass().getSimpleName() + ": " + e.getMessage())));
+        }
+    }
+
+    /**
+     * Sends an already-built Gemini request body and returns the complete JSON.
+     * Keeping the model content intact is required for function calling: the next
+     * request must contain the exact model functionCall part and matching
+     * functionResponse, not a lossy text summary of the previous step.
+     */
+    public static void generateContent(Context ctx, JSONObject body,
+                                       JsonResponseCallback callback) {
         if (!hasApiKey(ctx)) {
             mainHandler.post(() -> callback.onError("No API key set. Go to Settings → AI."));
             return;
         }
 
-        String apiKey = getApiKey(ctx);
-        String model = getSelectedModel(ctx);
-
+        final Context app = ctx.getApplicationContext();
+        final String apiKey = getApiKey(ctx);
+        final String model = getSelectedModel(ctx);
         executor.execute(() -> {
+            HttpURLConnection conn = null;
             try {
-                JSONObject body = buildRequestBody(systemPrompt, userMessage, history);
-                String urlString = BASE_URL + model + ":generateContent";
-
-                // Deliberately no request body here. It carries the open file's
-                // source and the user's question, and logcat is readable by adb
-                // and by anything holding READ_LOGS — the one place this app's
-                // own secrets policy would never put them.
                 if (com.ccs.javadroid.BuildConfig.DEBUG) {
-                    android.util.Log.d("GeminiService", "POST " + model + " body=" + body.toString().length() + "B");
+                    android.util.Log.d("GeminiService", "POST " + model + " body="
+                            + body.toString().length() + "B");
                 }
-
-                URL url = new URL(urlString);
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                URL url = new URL(BASE_URL + model + ":generateContent");
+                conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("Content-Type", "application/json");
                 conn.setRequestProperty("x-goog-api-key", apiKey);
                 conn.setDoOutput(true);
-                conn.setConnectTimeout(30000);
-                conn.setReadTimeout(30000);
+                conn.setConnectTimeout(30_000);
+                conn.setReadTimeout(30_000);
 
                 byte[] bodyBytes = body.toString().getBytes(StandardCharsets.UTF_8);
-                OutputStream os = conn.getOutputStream();
-                os.write(bodyBytes);
-                os.flush();
-                os.close();
+                try (OutputStream os = conn.getOutputStream()) {
+                    os.write(bodyBytes);
+                }
 
                 int responseCode = conn.getResponseCode();
                 if (com.ccs.javadroid.BuildConfig.DEBUG) {
                     android.util.Log.d("GeminiService", "HTTP " + responseCode);
                 }
-
                 if (responseCode != 200) {
                     String errBody = readStream(conn.getErrorStream());
-                    if (com.ccs.javadroid.BuildConfig.DEBUG) {
-                        android.util.Log.e("GeminiService", "error body: " + errBody);
-                    }
-                    // Google's own sentence, not the raw envelope. The JSON used to
-                    // go to the user verbatim, which told them nothing they could
-                    // act on and buried the one line that did.
                     String detail = extractApiMessage(errBody);
+                    String lower = detail.toLowerCase(java.util.Locale.ROOT);
                     String hint;
-                    // Google names the model in its own message when that is the
-                    // problem; blaming the key there sent people to re-enter a key
-                    // that was never wrong.
-                    if (responseCode == 400 && detail.toLowerCase(java.util.Locale.ROOT)
-                            .contains("model")) {
-                        hint = ctx.getString(R.string.ai_err_hint_model);
+                    if (responseCode == 400 && lower.contains("model")) {
+                        hint = app.getString(R.string.ai_err_hint_model);
                     } else if (responseCode == 400) {
-                        hint = ctx.getString(R.string.ai_err_hint_key);
+                        hint = app.getString(R.string.ai_err_hint_key);
                     } else if (responseCode == 401 || responseCode == 403) {
-                        hint = ctx.getString(R.string.ai_err_hint_rejected);
+                        hint = app.getString(R.string.ai_err_hint_rejected);
                     } else if (responseCode == 404) {
-                        hint = ctx.getString(R.string.ai_err_hint_model);
+                        hint = app.getString(R.string.ai_err_hint_model);
                     } else if (responseCode == 429) {
-                        hint = ctx.getString(R.string.ai_err_hint_rate);
+                        hint = app.getString(R.string.ai_err_hint_rate);
                     } else if (responseCode >= 500) {
-                        hint = ctx.getString(R.string.ai_err_hint_google);
+                        hint = app.getString(R.string.ai_err_hint_google);
                     } else {
                         hint = "";
                     }
-                    final String errorMsg = (detail.isEmpty() ? "HTTP " + responseCode : detail)
+                    String error = (detail.isEmpty() ? "HTTP " + responseCode : detail)
                             + (hint.isEmpty() ? "" : "\n\n" + hint);
-                    mainHandler.post(() -> callback.onError(errorMsg));
+                    mainHandler.post(() -> callback.onError(error));
                     return;
                 }
 
                 String responseBody = readStream(conn.getInputStream());
-                if (com.ccs.javadroid.BuildConfig.DEBUG) {
-                    android.util.Log.d("GeminiService", "response " + responseBody.length() + "B");
-                }
-                String text = parseResponse(responseBody);
-                if (com.ccs.javadroid.BuildConfig.DEBUG) {
-                    android.util.Log.d("GeminiService", "parsed " + (text == null ? "null" : text.length() + "B"));
-                }
-                mainHandler.post(() -> {
-                    if (com.ccs.javadroid.BuildConfig.DEBUG) {
-                    android.util.Log.d("GeminiService", "delivering "
-                            + (text == null ? "null" : text.length() + "B"));
-                }
-                    if (text == null) {
-                        callback.onError(ctx.getString(R.string.ai_err_empty));
-                    } else {
-                        callback.onSuccess(text);
-                    }
-                });
-
+                JSONObject response = new JSONObject(responseBody);
+                mainHandler.post(() -> callback.onSuccess(response));
             } catch (Exception e) {
                 if (com.ccs.javadroid.BuildConfig.DEBUG) {
                     android.util.Log.e("GeminiService", "request failed", e);
                 }
-                mainHandler.post(() -> callback.onError(ctx.getString(R.string.ai_err_network,
-                        e.getClass().getSimpleName() + ": " + e.getMessage())));
+                String message = app.getString(R.string.ai_err_network,
+                        e.getClass().getSimpleName() + ": " + e.getMessage());
+                mainHandler.post(() -> callback.onError(message));
+            } finally {
+                if (conn != null) conn.disconnect();
             }
         });
     }
@@ -499,8 +505,7 @@ public final class GeminiService {
         return body;
     }
 
-    private static String parseResponse(String responseBody) throws JSONException {
-        JSONObject json = new JSONObject(responseBody);
+    private static String parseResponse(JSONObject json) throws JSONException {
         JSONArray candidates = json.optJSONArray("candidates");
         if (candidates == null || candidates.length() == 0) {
             return "No response from AI.";

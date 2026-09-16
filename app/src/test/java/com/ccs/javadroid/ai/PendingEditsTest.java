@@ -34,6 +34,29 @@ public class PendingEditsTest {
     }
 
     @Test
+    public void patchKeepsItsTargetFile() {
+        PendingEdits.addPatch("/project/src/Main.java", "old", "new");
+        List<PendingEdits.Edit> edits = PendingEdits.drain();
+
+        assertEquals(1, edits.size());
+        assertEquals("/project/src/Main.java", edits.get(0).path);
+        assertEquals("old", edits.get(0).find);
+        assertEquals("new", edits.get(0).code);
+    }
+
+    @Test
+    public void fileTargetedPatchesRemainOrdered() {
+        PendingEdits.addPatch("/project/A.java", "one", "ONE");
+        PendingEdits.addPatch("/project/A.java", "ONE two", "done");
+        List<PendingEdits.Edit> edits = PendingEdits.drain();
+
+        assertEquals(2, edits.size());
+        assertEquals("one", edits.get(0).find);
+        assertEquals("ONE two", edits.get(1).find);
+        assertEquals("/project/A.java", edits.get(1).path);
+    }
+
+    @Test
     public void patchMayDelete() {
         // Empty replacement is a real edit — removing a line — and must not be
         // dropped the way an empty *insert* is.

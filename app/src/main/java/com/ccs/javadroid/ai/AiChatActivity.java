@@ -29,7 +29,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.File;
-import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,6 +37,7 @@ public class AiChatActivity extends AppCompatActivity {
     private static final String TAG = "AiChat";
     private static final String EXTRA_CODE = "code";
     private static final String EXTRA_FILE_NAME = "file_name";
+    private static final String EXTRA_FILE_PATH = "file_path";
     private static final String EXTRA_PROJECT_ROOT = "project_root";
     private static final String EXTRA_INITIAL_PROMPT = "initial_prompt";
 
@@ -47,6 +47,7 @@ public class AiChatActivity extends AppCompatActivity {
     private TextView tvModelLabel;
     private String codeContext = "";
     private String fileName = "";
+    private String filePath = "";
     private String projectRoot = "";
     private boolean agentMode = false;
     private GeminiAgent agent;
@@ -92,13 +93,24 @@ public class AiChatActivity extends AppCompatActivity {
     private static final int COLOR_HEADER = 0xFF4A86C8;
 
     public static void launch(Context context, String code, String fileName, String projectRoot) {
-        launchWithPrompt(context, code, fileName, projectRoot, null);
+        launchWithPrompt(context, code, fileName, "", projectRoot, null);
     }
 
     public static void launchWithPrompt(Context context, String code, String fileName, String projectRoot, String prompt) {
+        launchWithPrompt(context, code, fileName, "", projectRoot, prompt);
+    }
+
+    public static void launch(Context context, String code, String fileName, String filePath,
+                              String projectRoot) {
+        launchWithPrompt(context, code, fileName, filePath, projectRoot, null);
+    }
+
+    public static void launchWithPrompt(Context context, String code, String fileName,
+                                        String filePath, String projectRoot, String prompt) {
         Intent i = new Intent(context, AiChatActivity.class);
         i.putExtra(EXTRA_CODE, code != null ? code : "");
         i.putExtra(EXTRA_FILE_NAME, fileName != null ? fileName : "");
+        i.putExtra(EXTRA_FILE_PATH, filePath != null ? filePath : "");
         i.putExtra(EXTRA_PROJECT_ROOT, projectRoot != null ? projectRoot : "");
         if (prompt != null) i.putExtra(EXTRA_INITIAL_PROMPT, prompt);
         context.startActivity(i);
@@ -118,6 +130,8 @@ public class AiChatActivity extends AppCompatActivity {
         if (codeContext == null) codeContext = "";
         fileName = getIntent().getStringExtra(EXTRA_FILE_NAME);
         if (fileName == null) fileName = "";
+        filePath = getIntent().getStringExtra(EXTRA_FILE_PATH);
+        if (filePath == null) filePath = "";
         projectRoot = getIntent().getStringExtra(EXTRA_PROJECT_ROOT);
         if (projectRoot == null) projectRoot = "";
 
@@ -337,7 +351,7 @@ public class AiChatActivity extends AppCompatActivity {
             messagesContainer.addView(tvBody);
 
             // Кнопка вставки для текстової відповіді AI (весь текст → на курсор)
-            if (isAI && !text.trim().isEmpty()) {
+            if (isAI && !agentMode && !text.trim().isEmpty()) {
                 addInsertButton(text, PendingEdits.LOCATION_CURSOR);
             }
         }
@@ -414,40 +428,14 @@ public class AiChatActivity extends AppCompatActivity {
         pendingPlaceholderAt = -1;
     }
 
-    /**
-     * Рендер виклику інструменту агентом.
-     * Для insertCode — витягує код з args, показує його як markdown-блок (з підсвіткою
-     * і кнопкою Insert), а сирий JSON не виводить (інакше код виглядає як
-     * "code":"public...\n" без форматування).
-     * Для решти інструментів — як і раніше, короткий рядок toolName(args).
-     */
+    /** Shows a concise native function call instead of dumping source-code JSON. */
     private void renderToolCall(String toolName, String args) {
-        if ("insertCode".equals(toolName) && args != null && !args.isEmpty()) {
+        if (("editFile".equals(toolName) || "createFile".equals(toolName))
+                && args != null && !args.isEmpty()) {
             try {
                 org.json.JSONObject obj = new org.json.JSONObject(args);
-                String code = obj.optString("code", "");
-                String location = obj.optString("location", PendingEdits.LOCATION_CURSOR);
-
-                // Лейбл з типом вставки
-                String locLabel;
-                if (PendingEdits.LOCATION_APPEND.equals(location)
-                        || "end".equalsIgnoreCase(location)) {
-                    locLabel = " (append)";
-                } else if (PendingEdits.LOCATION_REPLACE.equals(location)
-                        || "overwrite".equalsIgnoreCase(location)
-                        || "full".equalsIgnoreCase(location)) {
-                    locLabel = " (replace)";
-                } else {
-                    locLabel = " (at cursor)";
-                }
-                addText("🔧 Tool", "insertCode" + locLabel);
-
-                // Сам код — як markdown-блок з підсвіткою і кнопкою Insert
-                String lang = fileName.toLowerCase(Locale.ROOT).endsWith(".java") ? "java" : "";
-                String mdBlock = "```" + lang + "\n" + code + "\n```";
-                parseAndAddMarkdown(mdBlock);
+                addText("🔧 Tool", toolName + "(" + obj.optString("path", "") + ")");
             } catch (org.json.JSONException e) {
-                // Не вдалося розібрати — показуємо як було
                 addText("🔧 Tool", toolName + "(" + args + ")");
             }
             return;
@@ -491,7 +479,7 @@ public class AiChatActivity extends AppCompatActivity {
             messagesContainer.addView(codeView);
 
             // Кнопка вставки під кожен кодовий блок (на курсор)
-            if (code != null && !code.trim().isEmpty()) {
+            if (!agentMode && code != null && !code.trim().isEmpty()) {
                 addInsertButton(code, PendingEdits.LOCATION_CURSOR);
             }
 
@@ -585,6 +573,9 @@ public class AiChatActivity extends AppCompatActivity {
                 agent = new GeminiAgent(this, new GeminiAgent.AgentCallback() {
                     @Override
                     public void onToolCall(String toolName, String args) {
+                        // The first concrete agent step replaces the loading row;
+                        // subsequent tool calls/results stay visible in the log.
+                        removeLastLine();
                         renderToolCall(toolName, args);
                     }
 
@@ -627,7 +618,7 @@ public class AiChatActivity extends AppCompatActivity {
             // edits it already made in this conversation.
             pendingAgentPrompt = input;
             setAwaitingReply(true);
-            agent.send(input, codeContext, fileName, historyWindow());
+            agent.send(input, codeContext, fileName, filePath, projectRoot, historyWindow());
         } else {
             askModel(input);
         }
@@ -1026,6 +1017,7 @@ public class AiChatActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        if (agent != null) agent.cancel();
         // An opened-but-unused conversation should not clutter the saved list.
         if (historyStore != null && history.isEmpty()) {
             historyStore.discardIfEmpty(conversationId);

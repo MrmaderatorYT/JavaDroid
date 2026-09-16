@@ -17,6 +17,7 @@ import com.ccs.javadroid.analysis.ProblemsAdapter;
 import com.ccs.javadroid.analysis.LiveProblemsScheduler;
 import com.ccs.javadroid.project.ProjectScanner;
 import com.ccs.javadroid.ai.AiChatActivity;
+import com.ccs.javadroid.ai.ExactTextEdit;
 import com.ccs.javadroid.ai.PendingEdits;
 import com.ccs.javadroid.tools.bytecode.BytecodeEditorActivity;
 import com.ccs.javadroid.tools.bytecode.BytecodeEditor;
@@ -494,36 +495,36 @@ public class MainActivity extends AppCompatActivity {
         applyPendingAiEdits();
     }
 
-    /**
-     * Витягує всі відкладені вставки коду з PendingEdits і застосовує їх до activeEditor
-     * у порядку черги. Викликається з onResume після повернення з AI-чату.
-     */
+    /** Applies manual insertions to the active editor and agent patches to their named files. */
     private void applyPendingAiEdits() {
         if (!PendingEdits.hasPending()) return;
-        if (ws.activeEditor == null) {
-            android.widget.Toast.makeText(this,
-                    "No editor open — AI code insertions discarded",
-                    android.widget.Toast.LENGTH_LONG).show();
-            PendingEdits.clear();
-            return;
-        }
-
         java.util.List<PendingEdits.Edit> edits = PendingEdits.drain();
         if (edits.isEmpty()) return;
 
         int applied = 0;
+        int rejected = 0;
+        int manualActiveEdits = 0;
+        boolean wasProgrammatic = ws.isProgrammaticChange;
         ws.isProgrammaticChange = true;
         try {
-            int rejected = 0;
             for (PendingEdits.Edit e : edits) {
                 try {
                     if (PendingEdits.LOCATION_PATCH.equals(e.location)) {
-                        if (!applyPatch(e.find, e.code)) {
+                        boolean targeted = e.path != null && !e.path.isEmpty();
+                        boolean changed = targeted
+                                ? applyPatchToFile(e.path, e.find, e.code)
+                                : applyPatch(ws.activeEditor, e.find, e.code);
+                        if (!changed) {
                             rejected++;
                             continue;
                         }
+                        if (!targeted) manualActiveEdits++;
+                    } else if (ws.activeEditor == null) {
+                        rejected++;
+                        continue;
                     } else if (PendingEdits.LOCATION_REPLACE.equals(e.location)) {
                         ws.activeEditor.setText(e.code);
+                        manualActiveEdits++;
                     } else if (PendingEdits.LOCATION_APPEND.equals(e.location)) {
                         // Перейти в кінець документу й вставити
                         int lastLine = ws.activeEditor.getText().getLineCount() - 1;
@@ -532,30 +533,25 @@ public class MainActivity extends AppCompatActivity {
                         ws.activeEditor.setSelection(lastLine, lastCol);
                         String sep = needLeadingNewline() ? "\n" : "";
                         ws.activeEditor.insertText(sep + e.code, 0);
+                        manualActiveEdits++;
                     } else {
                         // cursor (за замовч.)
                         ws.activeEditor.insertText(e.code, 0);
+                        manualActiveEdits++;
                     }
                     applied++;
                 } catch (Exception ex) {
+                    rejected++;
                     android.util.Log.w("MainActivity", "AI insert failed: " + ex.getMessage());
                 }
             }
-            if (applied > 0 || rejected > 0) {
-                String message = applied + " AI edit(s) applied"
-                        + (rejected > 0 ? ", " + rejected + " skipped (text no longer matches)" : "");
-                android.widget.Toast.makeText(this, message,
-                        android.widget.Toast.LENGTH_SHORT).show();
-            }
         } finally {
-            ws.isProgrammaticChange = false;
+            ws.isProgrammaticChange = wasProgrammatic;
         }
 
-        // Applied under isProgrammaticChange, which is what stops the edit from
-        // being mistaken for typing — but that also skipped marking the tab dirty
-        // and scheduling the save. An AI edit could sit in the buffer unsaved and
-        // unmarked until the user happened to type, and be lost on close.
-        if (applied > 0) {
+        // Cursor/append buttons are still a manual chat feature. Agent changes
+        // are marked against their own file inside applyPatchToFile().
+        if (manualActiveEdits > 0 && ws.activeEditor != null) {
             FileTab tab = ws.activeTab();
             int index = tab == null || ws.tabs() == null
                     ? -1 : ws.tabs().getTabs().indexOf(tab);
@@ -564,38 +560,104 @@ public class MainActivity extends AppCompatActivity {
                 scheduleAutoSave(ws.activeEditor, tab, index);
             }
         }
+
+        if (applied > 0 || rejected > 0) {
+            String message = applied + " AI edit(s) applied"
+                    + (rejected > 0 ? ", " + rejected
+                    + " skipped (target or exact text no longer matches)" : "");
+            android.widget.Toast.makeText(this, message,
+                    android.widget.Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /** Applies one exact patch to an editor buffer and keeps the caret near it. */
+    private boolean applyPatch(CodeEditor editor, String find, String replacement) {
+        if (editor == null || editor.getText() == null) return false;
+        ExactTextEdit.Result result = ExactTextEdit.apply(
+                editor.getText().toString(), find, replacement);
+        if (!result.applied()) return false;
+        MainActivity.setEditorTextPreservingSelection(editor, result.text);
+        try {
+            int line = 0;
+            for (int i = 0; i < result.offset && i < result.text.length(); i++) {
+                if (result.text.charAt(i) == '\n') line++;
+            }
+            editor.setSelection(Math.min(line,
+                    Math.max(0, editor.getText().getLineCount() - 1)), 0);
+        } catch (Exception ignored) {}
+        return true;
     }
 
     /**
-     * Replaces one exact fragment of the open file.
-     *
-     * <p>Refuses rather than guesses. If the fragment is not there the file has
-     * moved on since the model read it, and if it is there more than once there
-     * is no way to know which one was meant — applying either would be an edit
-     * the user did not ask for, in a file they may not be looking at.</p>
-     *
-     * @return false when nothing was changed
+     * Applies an agent edit to the canonical file it named. Visible files are
+     * changed in their own pane; closed files are updated on disk. The path is
+     * revalidated here because it crossed an activity boundary in a static queue.
      */
-    private boolean applyPatch(String find, String replacement) {
-        if (find == null || find.isEmpty() || ws.activeEditor == null) return false;
-        String text = ws.activeEditor.getText().toString();
-        int at = text.indexOf(find);
-        if (at < 0) return false;
-        if (text.indexOf(find, at + 1) >= 0) return false;
-
-        // Caret kept where the edit happened, so the user lands on what changed
-        // rather than at the top of a file that silently moved under them.
-        String updated = text.substring(0, at) + replacement + text.substring(at + find.length());
-        MainActivity.setEditorTextPreservingSelection(ws.activeEditor, updated);
+    private boolean applyPatchToFile(String rawPath, String find, String replacement) {
         try {
-            int line = 0;
-            for (int i = 0; i < at && i < updated.length(); i++) {
-                if (updated.charAt(i) == '\n') line++;
+            File target = resolvePendingAiTarget(rawPath);
+            if (target == null || isFileReadOnly(target)) return false;
+
+            CodeEditor editor = null;
+            FileTab tab = null;
+            TabsAdapter tabs = null;
+            if (ws.leftTab != null && sameFile(ws.leftTab.file, target)) {
+                editor = ws.editor;
+                tab = ws.leftTab;
+                tabs = ws.tabsLeft;
+            } else if (ws.rightTab != null && sameFile(ws.rightTab.file, target)) {
+                editor = ws.editor2;
+                tab = ws.rightTab;
+                tabs = ws.tabsRight;
             }
-            ws.activeEditor.setSelection(Math.min(line,
-                    Math.max(0, ws.activeEditor.getText().getLineCount() - 1)), 0);
-        } catch (Exception ignored) {}
-        return true;
+
+            if (editor != null) {
+                String before = editor.getText().toString();
+                if (!applyPatch(editor, find, replacement)) return false;
+                com.ccs.javadroid.util.LocalHistoryManager.saveSnapshot(
+                        this, target, before, "Before AI edit");
+                int index = tabs == null || tab == null ? -1 : tabs.getTabs().indexOf(tab);
+                if (index >= 0) {
+                    tabs.markModified(index, true);
+                    if (editor == ws.activeEditor) scheduleAutoSave(editor, tab, index);
+                }
+            } else {
+                String before = projectManager.readFile(target);
+                ExactTextEdit.Result result = ExactTextEdit.apply(before, find, replacement);
+                if (!result.applied()) return false;
+                com.ccs.javadroid.util.LocalHistoryManager.saveSnapshot(
+                        this, target, before, "Before AI edit");
+                projectManager.writeFile(target, result.text);
+            }
+            if (gitGutter != null) gitGutter.refreshAll();
+            return true;
+        } catch (IOException e) {
+            android.util.Log.w("MainActivity", "AI target edit failed", e);
+            return false;
+        }
+    }
+
+    private File resolvePendingAiTarget(String rawPath) throws IOException {
+        if (projectManager == null || projectManager.getProjectDir() == null
+                || rawPath == null || rawPath.trim().isEmpty()) return null;
+        File root = projectManager.getProjectDir().getCanonicalFile();
+        File target = new File(rawPath.trim());
+        if (!target.isAbsolute()) target = new File(root, rawPath.trim());
+        target = target.getCanonicalFile();
+        String prefix = root.getPath() + File.separator;
+        if ((!target.equals(root) && !target.getPath().startsWith(prefix)) || !target.isFile()) {
+            return null;
+        }
+        return target;
+    }
+
+    private static boolean sameFile(File first, File second) {
+        if (first == null || second == null) return false;
+        try {
+            return first.getCanonicalFile().equals(second.getCanonicalFile());
+        } catch (IOException e) {
+            return first.equals(second);
+        }
     }
 
     /** Чи потрібен порожній рядок перед вставлянням append (файл не закінчується \n)? */
@@ -3170,11 +3232,12 @@ public class MainActivity extends AppCompatActivity {
         menu.item("🤖", getString(R.string.quickfix_ai_fix), () -> {
             String code = editor.getText() != null ? editor.getText().toString() : "";
             String fname = activeFile != null ? activeFile.getName() : "";
+            String filePath = activeFile != null ? activeFile.getAbsolutePath() : "";
             String root = projectManager != null && projectManager.getProjectDir() != null
                     ? projectManager.getProjectDir().getAbsolutePath() : "";
             String prompt = "Fix or explain this problem in " + fname + " at line " + problem.line + ":\n\n"
                     + problem.message;
-            AiChatActivity.launchWithPrompt(MainActivity.this, code, fname, root, prompt);
+            AiChatActivity.launchWithPrompt(MainActivity.this, code, fname, filePath, root, prompt);
         });
 
         // 3. Jump to next problem
@@ -6303,14 +6366,16 @@ public class MainActivity extends AppCompatActivity {
     private void openAiChat() {
         String code = "";
         String fileName = "";
+        String filePath = "";
         if (ws.activeEditor != null && ws.activeEditor.getText() != null) {
             code = ws.activeEditor.getText().toString();
         }
         FileTab tab = ws.tabs().getActiveTab();
         if (tab != null && tab.file != null) {
             fileName = tab.file.getName();
+            filePath = tab.file.getAbsolutePath();
         }
-        AiChatActivity.launch(this, code, fileName,
+        AiChatActivity.launch(this, code, fileName, filePath,
                 projectManager.getProjectDir() != null
                         ? projectManager.getProjectDir().getAbsolutePath() : "");
     }
