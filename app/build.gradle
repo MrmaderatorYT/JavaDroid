@@ -36,8 +36,8 @@ android {
         buildConfigField "String", "BUNDLED_GROOVY_VERSION", "\"${bundledGroovyVersion}\""
         buildConfigField "String", "BUNDLED_CLOJURE_VERSION", "\"${bundledClojureVersion}\""
 
-        versionCode 28
-        versionName '1.12.1'
+        versionCode 29
+        versionName '1.12.2'
 
         ndk {
             abiFilters 'arm64-v8a', 'armeabi-v7a', 'x86_64', 'x86'
@@ -71,27 +71,10 @@ android {
 
     buildTypes {
         release {
-            // Off, and this is a deliberate resting state rather than a
-            // default nobody looked at.
-            //
-            // With it on, the rules in proguard-rules.pro obfuscate 97% of this
-            // app's own classes — far above Google Play's 25% threshold — and
-            // the resulting build compiles and runs Java correctly. But it
-            // breaks the bundled Kotlin compiler, measured on device:
-            //
-            //   KotlinCompiler: Failed to create KotlinCoreEnvironment
-            //   Caused by: AssertionError: ComponentManager.getService on a
-            //   null object reference
-            //     at ExtensionPointImpl.notifyListeners
-            //     at JavaCoreApplicationEnvironment.<init>
-            //
-            // Not shrinking and not optimization: the same failure appears with
-            // -dontshrink -dontoptimize, so renaming alone causes it. The
-            // likely mechanism is that IntelliJ's logger factory no longer
-            // registers, so DefaultLogger throws on a warning that is otherwise
-            // only logged. Until that is settled, shipping this would trade a
-            // Play warning for a broken feature.
-            minifyEnabled false
+            // Run R8 for release. Bundled compiler reflection/resource contracts
+            // are protected in proguard-rules.pro; validate the whole DEX output,
+            // not just the percentage of renamed com.ccs.javadroid classes.
+            minifyEnabled true
             // Deliberately left off: the app looks resources up by name —
             // getIdentifier("btnExitZenMode", …) and resStr(name, fallback) for
             // menu labels — and the shrinker cannot see those references, so it

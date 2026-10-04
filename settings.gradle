@@ -5,7 +5,8 @@ pluginManagement {
             mavenCentral()
         }
         dependencies {
-            classpath("com.android.tools:r8:8.3.37")
+            // The editor resolves Kotlin 2.1; older R8 cannot preserve its metadata.
+            classpath("com.android.tools:r8:8.13.19")
         }
     }
     repositories {

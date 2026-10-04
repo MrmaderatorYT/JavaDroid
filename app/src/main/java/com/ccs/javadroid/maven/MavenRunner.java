@@ -34,6 +34,18 @@ public final class MavenRunner {
 
     private MavenRunner() {}
 
+    private static void addKotlinStdlib(Context context, List<File> dependencies) {
+        for (File jar : dependencies) {
+            if (!jar.isFile()) continue;
+            try (java.util.zip.ZipFile archive = new java.util.zip.ZipFile(jar)) {
+                if (archive.getEntry("kotlin/Unit.class") != null) return;
+            } catch (IOException ignored) {}
+        }
+        File stdlib = KotlinCompiler.ensureKotlinStdlib(context,
+                new File(context.getCacheDir(), "compile_cache"));
+        if (stdlib != null && !dependencies.contains(stdlib)) dependencies.add(stdlib);
+    }
+
     public static void mavenCompileAndRun(Context context, File projectRoot, PomModel pom,
                                           ProjectCompiler.Callback rawCallback) {
         final ProjectCompiler.Callback callback = wrapCallback(context, rawCallback);
@@ -62,10 +74,7 @@ public final class MavenRunner {
                 }
 
                 if (!ktSources.isEmpty()) {
-                    File stdlibJar = KotlinCompiler.ensureKotlinStdlib(context, new File(context.getCacheDir(), "compile_cache"));
-                    if (stdlibJar != null && !depJars.contains(stdlibJar)) {
-                        depJars.add(stdlibJar);
-                    }
+                    addKotlinStdlib(context, depJars);
                     boolean ktOk = KotlinCompiler.compileProject(context, projectRoot, ktSources, javaSources, depJars, androidJar, outDir, callback);
                     if (!ktOk) return;
                 }
@@ -220,10 +229,7 @@ public final class MavenRunner {
                 }
 
                 if (!testKt.isEmpty()) {
-                    File stdlibJar = KotlinCompiler.ensureKotlinStdlib(context, new File(context.getCacheDir(), "compile_cache"));
-                    if (stdlibJar != null && !deps.contains(stdlibJar)) {
-                        deps.add(stdlibJar);
-                    }
+                    addKotlinStdlib(context, deps);
                     List<File> allDeps = new ArrayList<>(deps);
                     allDeps.add(classesMain);
                     boolean ktOk = KotlinCompiler.compileProject(context, projectRoot, testKt, testJava, allDeps, androidJar, outDir, callback);
@@ -268,10 +274,7 @@ public final class MavenRunner {
         if (javaSources.isEmpty() && ktSources.isEmpty()) throw new IllegalStateException("no sources");
 
         if (!ktSources.isEmpty()) {
-            File stdlibJar = KotlinCompiler.ensureKotlinStdlib(context, new File(context.getCacheDir(), "compile_cache"));
-            if (stdlibJar != null && !depJars.contains(stdlibJar)) {
-                depJars.add(stdlibJar);
-            }
+            addKotlinStdlib(context, depJars);
             boolean ktOk = KotlinCompiler.compileProject(context, projectRoot, ktSources, javaSources, depJars, androidJar, outDir, callback);
             if (!ktOk) throw new IllegalStateException("Kotlin compilation failed");
         }
@@ -385,10 +388,7 @@ public final class MavenRunner {
 
                 ProjectCompiler.postProgress(callback, "Compiling test sources...");
                 if (!testKt.isEmpty()) {
-                    File stdlibJar = KotlinCompiler.ensureKotlinStdlib(context, new File(context.getCacheDir(), "compile_cache"));
-                    if (stdlibJar != null && !deps.contains(stdlibJar)) {
-                        deps.add(stdlibJar);
-                    }
+                    addKotlinStdlib(context, deps);
                     List<File> allDeps = new ArrayList<>(deps);
                     allDeps.add(classesMain);
                     boolean ktOk = KotlinCompiler.compileProject(context, projectRoot, testKt, testJava, allDeps, androidJar, outDir, callback);

@@ -245,7 +245,8 @@ public final class ProjectCompiler {
                     EcjCompiler.writeUtf8(srcFile, sourceCode);
 
                     long compileStarted = android.os.SystemClock.elapsedRealtimeNanos();
-                    List<File> classFiles = KotlinCompiler.compile(srcFile, projectRoot, cacheDir, androidJar, className, callback, context);
+                    List<File> classFiles = KotlinCompiler.compile(srcFile, logicalSourceFile, projectRoot,
+                            cacheDir, androidJar, className, callback, context);
                     recordPerformanceDuration("compile.kotlin", compileStarted);
                     if (classFiles == null || classFiles.isEmpty()) {
                         return;

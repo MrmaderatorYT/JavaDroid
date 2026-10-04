@@ -135,68 +135,11 @@ public final class DexRunner {
             final RunConfig runConfig = RunConfig.from(context);
             final boolean verbose = new AppPreferences(context).isVerboseLoggingEnabled();
             ByteArrayOutputStream execOut = new ByteArrayOutputStream();
-            OutputStream interceptor = new OutputStream() {
-                private StringBuilder line = new StringBuilder();
-                /**
-                 * Written but not yet handed to the console.
-                 *
-                 * <p>Sent on every newline, and on flush for a prompt printed
-                 * without one — {@code System.out.print("Name: ")} is exactly
-                 * the case that must reach the screen before the program blocks
-                 * waiting for the answer.</p>
-                 */
-                private final StringBuilder pending = new StringBuilder();
-
-                private void take(char c) {
-                    pending.append(c);
-                    if (c == '\n') emit();
-                }
-
-                private void emit() {
-                    if (pending.length() == 0) return;
-                    ProjectCompiler.postOutput(callback, pending.toString());
-                    pending.setLength(0);
-                }
-
-                @Override
-                public void write(int b) throws IOException {
-                    execOut.write(b);
-                    take((char) b);
-                    if (verbose) {
-                        if (b == '\n') {
-                            Log.d("JavaDroidProgram", line.toString());
-                            line.setLength(0);
-                        } else if (b != '\r') {
-                            line.append((char) b);
-                        }
-                    }
-                }
-                @Override
-                public void write(byte[] b, int off, int len) throws IOException {
-                    execOut.write(b, off, len);
-                    for (int i = off; i < off + len; i++) take((char) b[i]);
-                    if (verbose) {
-                        for (int i = off; i < off + len; i++) {
-                            if (b[i] == '\n') {
-                                Log.d("JavaDroidProgram", line.toString());
-                                line.setLength(0);
-                            } else if (b[i] != '\r') {
-                                line.append((char) b[i]);
-                            }
-                        }
-                    }
-                }
-                @Override
-                public void flush() throws IOException {
-                    execOut.flush();
-                    emit();
-                    if (verbose && line.length() > 0) {
-                        Log.d("JavaDroidProgram", line.toString());
-                        line.setLength(0);
-                    }
-                }
-            };
-            PrintStream ps = new PrintStream(interceptor, true);
+            OutputStream interceptor = new Utf8ConsoleOutputStream(execOut, chunk -> {
+                ProjectCompiler.postOutput(callback, chunk);
+                if (verbose) Log.d("JavaDroidProgram", chunk);
+            });
+            PrintStream ps = new PrintStream(interceptor, true, "UTF-8");
             if (!SYSTEM_STREAM_LOCK.tryLock(STREAM_LOCK_TIMEOUT_SECONDS, TimeUnit.SECONDS)) {
                 // A previous program is still on the console and did not answer
                 // Stop. Saying so beats hanging here with an empty panel.
@@ -350,7 +293,7 @@ public final class DexRunner {
                     }
                 }
             };
-            PrintStream ps = new PrintStream(interceptor, true);
+            PrintStream ps = new PrintStream(interceptor, true, "UTF-8");
             if (!SYSTEM_STREAM_LOCK.tryLock(STREAM_LOCK_TIMEOUT_SECONDS, TimeUnit.SECONDS)) {
                 ProjectCompiler.postResult(callback,
                         context.getString(com.ccs.javadroid.R.string.run_previous_still_running));

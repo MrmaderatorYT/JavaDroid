@@ -131,6 +131,11 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.VH> {
         return count;
     }
 
+    /** Snapshot of the currently visible rows, including any active text filter. */
+    public List<TodoItem> getVisibleItems() {
+        return new ArrayList<>(items);
+    }
+
     static class VH extends RecyclerView.ViewHolder {
         final TextView tag;
         final TextView location;

@@ -55,6 +55,11 @@ public final class BytecodeHighlighter {
 
     private BytecodeHighlighter() {}
 
+    /** Whether a word is one of the JVM bytecode mnemonics highlighted here. */
+    public static boolean isOpcode(String word) {
+        return word != null && OPCODES.contains(word.toLowerCase(Locale.US));
+    }
+
     public static SpannableString highlight(String text) {
         if (text == null) text = "";
         SpannableString ss = new SpannableString(text);

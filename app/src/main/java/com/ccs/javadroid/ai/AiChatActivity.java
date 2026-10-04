@@ -25,6 +25,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.CheckBox;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -50,7 +51,9 @@ public class AiChatActivity extends AppCompatActivity {
     private String filePath = "";
     private String projectRoot = "";
     private boolean agentMode = false;
+    private boolean planOnlyMode = false;
     private GeminiAgent agent;
+    private PendingEdits.AgentChangeSet pendingChangeSet;
     private TextView btnSendRef;
 
     /**
@@ -275,7 +278,10 @@ public class AiChatActivity extends AppCompatActivity {
             }
         }
 
-        btnSend.setOnClickListener(v -> sendMessage());
+        btnSend.setOnClickListener(v -> {
+            if (awaitingReply && agentMode && agent != null) stopAgentTurn();
+            else sendMessage();
+        });
 
         String initialPrompt = getIntent().getStringExtra(EXTRA_INITIAL_PROMPT);
         if (initialPrompt != null && !initialPrompt.isEmpty()) {
@@ -581,7 +587,7 @@ public class AiChatActivity extends AppCompatActivity {
 
                     @Override
                     public void onToolResult(String toolName, String result) {
-                        addText("✅ Result", result);
+                        addText("✅ " + toolName, compactToolResult(toolName, result));
                     }
 
                     @Override
@@ -598,6 +604,7 @@ public class AiChatActivity extends AppCompatActivity {
                         historyStore.addMessage(conversationId, true, pendingAgentPrompt);
                         historyStore.addMessage(conversationId, false, text);
                         trimHistory();
+                        showChangeSetReview();
                     }
 
                     @Override
@@ -611,6 +618,10 @@ public class AiChatActivity extends AppCompatActivity {
                     public void onDone() {
                         // Agent finished
                     }
+
+                    @Override public void onChangeSetReady(PendingEdits.AgentChangeSet changeSet) {
+                        pendingChangeSet = changeSet;
+                    }
                 });
             }
 
@@ -618,10 +629,111 @@ public class AiChatActivity extends AppCompatActivity {
             // edits it already made in this conversation.
             pendingAgentPrompt = input;
             setAwaitingReply(true);
+            agent.setPlanOnly(planOnlyMode);
             agent.send(input, codeContext, fileName, filePath, projectRoot, historyWindow());
         } else {
             askModel(input);
         }
+    }
+
+    private String compactToolResult(String toolName, String result) {
+        if (result == null) return "";
+        if ("readFile".equals(toolName) || "getCurrentFile".equals(toolName)) {
+            String[] lines = result.split("\\n", -1);
+            String heading = lines.length == 0 ? toolName : lines[0];
+            return heading + "\nFile contents are available to the agent; hidden here to keep the chat readable."
+                    + " (" + result.length() + " characters)";
+        }
+        return result.length() > 1200 ? result.substring(0, 1200) + "\n… (truncated)" : result;
+    }
+
+    private void showChangeSetReview() {
+        PendingEdits.AgentChangeSet changeSet = pendingChangeSet;
+        if (changeSet == null || changeSet.isEmpty() || isFinishing()) return;
+        String preview = buildChangePreview(changeSet);
+        TextView body = new TextView(this);
+        body.setText(preview);
+        body.setTextColor(textColor);
+        body.setTextSize(12);
+        body.setTypeface(Typeface.MONOSPACE);
+        body.setPadding(dp(16), dp(12), dp(16), dp(12));
+        LinearLayout reviewContent = new LinearLayout(this);
+        reviewContent.setOrientation(LinearLayout.VERTICAL);
+        CheckBox[] selected = new CheckBox[changeSet.changes.size()];
+        for (int i = 0; i < changeSet.changes.size(); i++) {
+            PendingEdits.FileChange change = changeSet.changes.get(i);
+            CheckBox checkBox = new CheckBox(this);
+            checkBox.setText((change.created ? "Create: " : change.deleted ? "Delete: " : "Edit: ")
+                    + change.path);
+            checkBox.setTextColor(textColor);
+            checkBox.setChecked(true);
+            selected[i] = checkBox;
+            reviewContent.addView(checkBox);
+        }
+        reviewContent.addView(body);
+        ScrollView scroll = new ScrollView(this);
+        scroll.setFillViewport(false);
+        scroll.addView(reviewContent);
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("Review " + changeSet.changes.size() + " file change(s)")
+                .setView(scroll)
+                .setPositiveButton("Apply selected", (dialog, which) -> {
+                    pendingChangeSet = null;
+                    java.util.ArrayList<PendingEdits.FileChange> chosen = new java.util.ArrayList<>();
+                    for (int i = 0; i < selected.length; i++) {
+                        if (selected[i].isChecked()) chosen.add(changeSet.changes.get(i));
+                    }
+                    if (chosen.isEmpty()) {
+                        Toast.makeText(this, "No files selected", Toast.LENGTH_SHORT).show();
+                    } else {
+                        PendingEdits.stageChangeSet(this,
+                                new PendingEdits.AgentChangeSet(changeSet.projectRoot, chosen));
+                        Toast.makeText(this, "Applying reviewed changes…", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+                })
+                .setNegativeButton("Reject", (dialog, which) -> {
+                    pendingChangeSet = null;
+                    PendingEdits.discardChangeSet(this);
+                })
+                .setNeutralButton("Keep chatting", null)
+                .show();
+    }
+
+    private String buildChangePreview(PendingEdits.AgentChangeSet changeSet) {
+        StringBuilder out = new StringBuilder();
+        for (PendingEdits.FileChange change : changeSet.changes) {
+            out.append(change.created ? "NEW " : change.deleted ? "DELETE " : "EDIT ")
+                    .append(change.path).append('\n');
+            String[] before = change.created ? new String[0] : change.base.split("\\n", -1);
+            String[] after = change.deleted ? new String[0] : change.content.split("\\n", -1);
+            int prefix = 0;
+            while (prefix < before.length && prefix < after.length
+                    && before[prefix].equals(after[prefix])) prefix++;
+            int suffix = 0;
+            while (suffix < before.length - prefix && suffix < after.length - prefix
+                    && before[before.length - 1 - suffix].equals(after[after.length - 1 - suffix])) suffix++;
+            int oldEnd = before.length - suffix;
+            int newEnd = after.length - suffix;
+            int from = Math.max(0, prefix - 2);
+            int oldTo = Math.min(before.length, oldEnd + 2);
+            int newTo = Math.min(after.length, newEnd + 2);
+            for (int i = from; i < prefix; i++) out.append("  ").append(before[i]).append('\n');
+            for (int i = prefix; i < oldEnd; i++) out.append("- ").append(before[i]).append('\n');
+            for (int i = prefix; i < newEnd; i++) out.append("+ ").append(after[i]).append('\n');
+            for (int i = oldEnd; i < oldTo; i++) out.append("  ").append(before[i]).append('\n');
+            if (oldTo == before.length && newTo < after.length) out.append("…\n");
+            out.append('\n');
+        }
+        return out.toString();
+    }
+
+    private void stopAgentTurn() {
+        if (agent != null) agent.cancel();
+        agent = null;
+        setAwaitingReply(false);
+        removeLastLine();
+        addText("System", "Agent stopped. No proposed changes were applied.");
     }
 
     /**
@@ -682,8 +794,10 @@ public class AiChatActivity extends AppCompatActivity {
     private void setAwaitingReply(boolean waiting) {
         awaitingReply = waiting;
         if (btnSendRef != null) {
-            btnSendRef.setEnabled(!waiting);
-            btnSendRef.setAlpha(waiting ? 0.4f : 1f);
+            btnSendRef.setText(waiting && agentMode ? "■" : "➤");
+            btnSendRef.setContentDescription(waiting && agentMode ? "Stop agent" : "Send message");
+            btnSendRef.setEnabled(true);
+            btnSendRef.setAlpha(1f);
         }
     }
 
@@ -741,6 +855,9 @@ public class AiChatActivity extends AppCompatActivity {
         int agentId = actions.length;
         menu.getMenu().add(0, agentId, agentId, getString(R.string.ai_action_agent))
                 .setCheckable(true).setChecked(agentMode);
+        int planId = agentId + 1;
+        menu.getMenu().add(0, planId, planId, "Plan only (read-only)")
+                .setCheckable(true).setChecked(planOnlyMode);
 
         menu.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == agentId) {
@@ -748,6 +865,14 @@ public class AiChatActivity extends AppCompatActivity {
                 Toast.makeText(this,
                         agentMode ? R.string.ai_agent_on : R.string.ai_agent_off,
                         Toast.LENGTH_SHORT).show();
+                return true;
+            }
+            if (item.getItemId() == planId) {
+                planOnlyMode = !planOnlyMode;
+                if (planOnlyMode) agentMode = true;
+                Toast.makeText(this, planOnlyMode
+                        ? "Plan only: the agent can inspect but not edit files"
+                        : "Plan only disabled", Toast.LENGTH_SHORT).show();
                 return true;
             }
             performQuickAction(actions[item.getItemId()]);

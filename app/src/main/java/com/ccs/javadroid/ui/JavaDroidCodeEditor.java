@@ -17,6 +17,8 @@ import io.github.rosemoe.sora.text.ContentLine;
 import io.github.rosemoe.sora.text.Cursor;
 import io.github.rosemoe.sora.widget.CodeEditor;
 import io.github.rosemoe.sora.widget.SymbolPairMatch;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The editor with typing over a closing bracket added.
@@ -45,6 +47,9 @@ public class JavaDroidCodeEditor extends CodeEditor {
     private final Paint foldPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final RectF foldRect = new RectF();
     private EditorFolding folding;
+    private final List<int[]> extraSelections = new ArrayList<>();
+    private int occurrenceSearchFrom = -1;
+    private int expandStage;
 
     public JavaDroidCodeEditor(Context context) {
         super(context);
@@ -90,6 +95,145 @@ public class JavaDroidCodeEditor extends CodeEditor {
         return folding;
     }
 
+    /** Start selecting identical occurrences of the current selection/word. */
+    public boolean selectNextOccurrence() {
+        String source = getText().toString();
+        int start = getCursor().getLeft(), end = getCursor().getRight();
+        if (start == end) {
+            io.github.rosemoe.sora.text.TextRange word = getWordRange(
+                    getCursor().getLeftLine(), getCursor().getLeftColumn());
+            if (word == null) return false;
+            start = word.getStart().index;
+            end = word.getEnd().index;
+            io.github.rosemoe.sora.text.CharPosition a = getText().getIndexer().getCharPosition(start);
+            io.github.rosemoe.sora.text.CharPosition b = getText().getIndexer().getCharPosition(end);
+            setSelectionRegion(a.line, a.column, b.line, b.column);
+        }
+        if (start < 0 || end <= start || end > source.length()) return false;
+        String needle = source.substring(start, end);
+        if (extraSelections.isEmpty()) occurrenceSearchFrom = end;
+        int found = source.indexOf(needle, Math.max(0, occurrenceSearchFrom));
+        while (found >= 0 && isAlreadySelected(found, found + needle.length(), start, end))
+            found = source.indexOf(needle, found + needle.length());
+        if (found < 0 && occurrenceSearchFrom > 0) {
+            found = source.indexOf(needle, 0);
+            if (found >= 0 && isAlreadySelected(found, found + needle.length(), start, end)) return false;
+        }
+        if (found < 0) return false;
+        extraSelections.add(new int[]{found, found + needle.length()});
+        occurrenceSearchFrom = found + needle.length();
+        invalidate();
+        return true;
+    }
+
+    /** Skip one candidate without selecting it. */
+    public boolean skipNextOccurrence() {
+        String source = getText().toString();
+        int start = getCursor().getLeft(), end = getCursor().getRight();
+        if (start == end) {
+            io.github.rosemoe.sora.text.TextRange word = getWordRange(
+                    getCursor().getLeftLine(), getCursor().getLeftColumn());
+            if (word == null) return false;
+            start = word.getStart().index; end = word.getEnd().index;
+        }
+        if (end <= start || end > source.length()) return false;
+        int found = source.indexOf(source.substring(start, end), Math.max(end, occurrenceSearchFrom));
+        if (found < 0) found = source.indexOf(source.substring(start, end), 0);
+        if (found < 0) return false;
+        occurrenceSearchFrom = found + (end - start);
+        return true;
+    }
+
+    public void selectAllOccurrences() {
+        while (selectNextOccurrence()) { /* collect every exact occurrence */ }
+    }
+
+    public void clearOccurrenceSelections() {
+        extraSelections.clear(); occurrenceSearchFrom = -1; invalidate();
+    }
+
+    public boolean hasOccurrenceSelections() { return !extraSelections.isEmpty(); }
+
+    /** Grow the current selection through word, expression, line and enclosing block. */
+    public boolean expandSelection() {
+        String source = getText().toString();
+        int start = getCursor().getLeft(), end = getCursor().getRight();
+        if (start == end) {
+            io.github.rosemoe.sora.text.TextRange word = getWordRange(
+                    getCursor().getLeftLine(), getCursor().getLeftColumn());
+            if (word == null) return false;
+            start = word.getStart().index; end = word.getEnd().index;
+        } else if (expandStage >= 2) {
+            int[] enclosing = enclosingBraceRange(source, start, end);
+            if (enclosing != null) { start = enclosing[0]; end = enclosing[1]; }
+        } else if (expandStage == 1) {
+            io.github.rosemoe.sora.text.CharPosition a = getText().getIndexer().getCharPosition(start);
+            io.github.rosemoe.sora.text.CharPosition b = getText().getIndexer().getCharPosition(end);
+            start = getText().getCharIndex(a.line, 0);
+            end = getText().getCharIndex(b.line, getText().getColumnCount(b.line));
+        } else {
+            int[] expression = expressionRange(source, start, end);
+            if (expression != null) { start = expression[0]; end = expression[1]; }
+        }
+        io.github.rosemoe.sora.text.CharPosition a = getText().getIndexer().getCharPosition(start);
+        io.github.rosemoe.sora.text.CharPosition b = getText().getIndexer().getCharPosition(end);
+        setSelectionRegion(a.line, a.column, b.line, b.column);
+        expandStage = Math.min(3, expandStage + 1);
+        return true;
+    }
+
+    private static boolean overlapsSelection(int a, int b, int x, int y) { return a < y && b > x; }
+
+    private boolean isAlreadySelected(int a, int b, int primaryStart, int primaryEnd) {
+        if (overlapsSelection(a, b, primaryStart, primaryEnd)) return true;
+        for (int[] selected : extraSelections) if (overlapsSelection(a, b, selected[0], selected[1])) return true;
+        return false;
+    }
+
+    private int[] expressionRange(String source, int start, int end) {
+        int a = start, b = end;
+        while (a > 0 && ";={}\n".indexOf(source.charAt(a - 1)) < 0) a--;
+        while (b < source.length() && ";={}\n".indexOf(source.charAt(b)) < 0) b++;
+        while (a < b && Character.isWhitespace(source.charAt(a))) a++;
+        while (b > a && Character.isWhitespace(source.charAt(b - 1))) b--;
+        return b > a && (a != start || b != end) ? new int[]{a, b} : null;
+    }
+
+    private int[] enclosingBraceRange(String source, int start, int end) {
+        for (int i = start - 1; i >= 0; i--) if (source.charAt(i) == '{') {
+            int depth = 1;
+            for (int j = i + 1; j < source.length(); j++) {
+                if (source.charAt(j) == '{') depth++;
+                else if (source.charAt(j) == '}' && --depth == 0 && j >= end) return new int[]{i, j + 1};
+            }
+        }
+        return null;
+    }
+
+    private List<int[]> editRanges() {
+        List<int[]> ranges = new ArrayList<>(extraSelections);
+        if (getCursor().isSelected()) ranges.add(new int[]{getCursor().getLeft(), getCursor().getRight()});
+        ranges.sort((a, b) -> Integer.compare(b[0], a[0]));
+        return ranges;
+    }
+
+    private void replaceAllSelections(CharSequence replacement) {
+        List<int[]> ranges = editRanges();
+        if (ranges.size() < 2) return;
+        getText().beginBatchEdit();
+        try {
+            for (int[] range : ranges) {
+                io.github.rosemoe.sora.text.CharPosition a = getText().getIndexer().getCharPosition(range[0]);
+                io.github.rosemoe.sora.text.CharPosition b = getText().getIndexer().getCharPosition(range[1]);
+                getText().replace(a.line, a.column, b.line, b.column, replacement);
+            }
+        } finally { getText().endBatchEdit(); }
+        int caret = ranges.get(ranges.size() - 1)[0] + replacement.length();
+        io.github.rosemoe.sora.text.CharPosition pos = getText().getIndexer().getCharPosition(caret);
+        clearOccurrenceSelections(); setSelection(pos.line, pos.column);
+    }
+
+
     /**
      * Keeps the folds across a layout rebuild.
      *
@@ -128,8 +272,23 @@ public class JavaDroidCodeEditor extends CodeEditor {
         try {
             drawColorSwatches(canvas);
             drawFoldChips(canvas);
+            drawOccurrenceSelections(canvas);
         } catch (Exception ignored) {
             // Never let a decoration take the editor down with it.
+        }
+    }
+
+    private void drawOccurrenceSelections(Canvas canvas) {
+        if (extraSelections.isEmpty()) return;
+        Paint p = swatchPaint;
+        p.setStyle(Paint.Style.FILL);
+        p.setColor(0x554C9AFF);
+        for (int[] range : extraSelections) {
+            io.github.rosemoe.sora.text.CharPosition a = getText().getIndexer().getCharPosition(range[0]);
+            io.github.rosemoe.sora.text.CharPosition b = getText().getIndexer().getCharPosition(range[1]);
+            float x1 = getCharOffsetX(a.line, a.column), x2 = getCharOffsetX(b.line, b.column);
+            float y1 = getCharOffsetY(a.line, a.column), y2 = getCharOffsetY(b.line, b.column);
+            canvas.drawRect(Math.min(x1, x2), y1 - getRowHeight(), Math.max(x1, x2), y1, p);
         }
     }
 
@@ -256,6 +415,7 @@ public class JavaDroidCodeEditor extends CodeEditor {
     /** Everything the IME commits arrives here, including single typed characters. */
     @Override
     public void commitText(CharSequence text, boolean applyAutoIndent, boolean simulateKeys) {
+        if (hasOccurrenceSelections()) { replaceAllSelections(text); return; }
         if (surrounded(text)) return;
         if (steppedOver(text)) return;
         super.commitText(text, applyAutoIndent, simulateKeys);
@@ -270,6 +430,7 @@ public class JavaDroidCodeEditor extends CodeEditor {
      */
     @Override
     public void deleteText() {
+        if (hasOccurrenceSelections()) { replaceAllSelections(""); return; }
         if (com.ccs.javadroid.editor.EditorTextActions.deleteEmptyPair(this)) return;
         super.deleteText();
     }
@@ -294,6 +455,7 @@ public class JavaDroidCodeEditor extends CodeEditor {
     /** The symbol bar's route in; it writes to the buffer without going through commitText. */
     @Override
     public void insertText(String text, int selectionOffset) {
+        if (hasOccurrenceSelections()) { replaceAllSelections(text); return; }
         if (steppedOver(text)) return;
         super.insertText(text, selectionOffset);
     }

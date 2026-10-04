@@ -1,11 +1,16 @@
 package com.ccs.javadroid.ai;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 
 import com.ccs.javadroid.project.ProjectManager;
+import com.ccs.javadroid.analysis.ProblemItem;
+import com.ccs.javadroid.analysis.StaticAnalyzer;
+import com.ccs.javadroid.util.languages.ast.JavaAstParser;
+import com.ccs.javadroid.util.languages.ast.JavaLexer;
+import com.ccs.javadroid.ui.MemberOutline;
+import com.ccs.javadroid.git.GitManager;
 import com.ccs.javadroid.util.AppPreferences;
 
 import org.json.JSONArray;
@@ -23,12 +28,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * A file-aware coding agent backed by Gemini's native function-calling protocol.
@@ -46,13 +48,13 @@ public class GeminiAgent {
         void onTextResponse(String text);
         void onError(String error);
         void onDone();
+        default void onChangeSetReady(PendingEdits.AgentChangeSet changeSet) {}
     }
 
     private static final int MAX_ITERATIONS = 14;
     private static final int MAX_FILE_CHARS = 600_000;
     private static final int MAX_TREE_ENTRIES = 600;
     private static final int MAX_SEARCH_FILES = 3_000;
-    private static final long CONFIRMATION_TIMEOUT_SECONDS = 120;
 
     private static final Set<String> SKIPPED_DIRECTORIES = new HashSet<>(Arrays.asList(
             ".git", ".gradle", ".idea", "build", "target", "out", "node_modules"));
@@ -61,14 +63,17 @@ public class GeminiAgent {
             "yaml", "yml", "toml", "html", "htm", "css", "js", "ts", "tsx", "jsx",
             "c", "cc", "cpp", "h", "hpp", "py", "sh", "sql", "gitignore"));
 
-    /** Activity context is intentional: confirmation dialogs need its window. */
     private final Context context;
     private final AgentCallback callback;
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
     private final ExecutorService agentExecutor = Executors.newSingleThreadExecutor();
     private final Map<String, String> workingFiles = new HashMap<>();
+    private final Map<String, String> baseFiles = new HashMap<>();
+    private final Set<String> createdFiles = new HashSet<>();
+    private final Set<String> deletedFiles = new HashSet<>();
 
     private volatile boolean cancelled;
+    private volatile boolean planOnly;
     private long turnId;
     private int iterationCount;
     private String currentCode = "";
@@ -82,6 +87,8 @@ public class GeminiAgent {
         this.context = context;
         this.callback = callback;
     }
+
+    public void setPlanOnly(boolean planOnly) { this.planOnly = planOnly; }
 
     /** Backwards-compatible entry point for callers that do not know the file path. */
     public void send(String userMessage, String codeContext, String fileName,
@@ -105,7 +112,12 @@ public class GeminiAgent {
             currentFileName = fileName == null ? "" : fileName;
             configuredProjectRoot = projectRoot == null ? "" : projectRoot;
             String rootKey = canonicalProjectRoot();
-            if (!rootKey.equals(workingProjectRoot)) workingFiles.clear();
+            if (!rootKey.equals(workingProjectRoot)) {
+                workingFiles.clear();
+                baseFiles.clear();
+                createdFiles.clear();
+                deletedFiles.clear();
+            }
             workingProjectRoot = rootKey;
             currentFilePath = canonicalCurrentPath(filePath);
             String stagedCurrent = currentFilePath.isEmpty()
@@ -113,6 +125,7 @@ public class GeminiAgent {
             currentCode = stagedCurrent != null ? stagedCurrent
                     : (codeContext == null ? "" : codeContext);
             if (!currentFilePath.isEmpty()) workingFiles.put(currentFilePath, currentCode);
+            if (!currentFilePath.isEmpty()) baseFiles.putIfAbsent(currentFilePath, currentCode);
             conversationContents = buildInitialContents(userMessage, history);
         }
         requestNext(token);
@@ -185,6 +198,8 @@ public class GeminiAgent {
                 ? (currentFileName.isEmpty() ? "none" : currentFileName)
                 : relativePath(new File(currentFilePath));
         return "You are a coding agent inside JavaDroid. The current file is " + visible + ".\n"
+                + (planOnly ? "PLAN ONLY: inspect and explain a concrete implementation plan. "
+                + "Do not propose edits, file creation, deletion, or rename.\n" : "")
                 + "Work like a careful IDE agent: inspect relevant files before changing them, "
                 + "follow references when needed, and use project-relative paths.\n"
                 + "For every change to an existing file call editFile(path, find, replace). `find` "
@@ -192,10 +207,15 @@ public class GeminiAgent {
                 + "Include enough surrounding lines to make it unique.\n"
                 + "To add an import, field, method, or block, replace a stable nearby anchor with "
                 + "that same anchor plus the new code in `replace`. Never use a cursor position. "
-                + "Never rewrite a whole file to make a local change.\n"
-                + "After editFile succeeds, its changed content becomes the latest version for later "
-                + "tool calls. If it reports not found or ambiguous, read the file and retry with a "
+                + "Never rewrite a whole file to make a local change. Before finishing, call "
+                + "getDiagnostics for changed Java files and fix relevant errors or new warnings.\n"
+                + "All editFile and createFile calls are staged in one proposed change set; nothing "
+                + "is written until the user reviews and applies that complete set. After editFile "
+                + "succeeds, its changed content becomes the latest version for later tool calls. "
+                + "If it reports not found or ambiguous, read the file and retry with a "
                 + "correct longer fragment. Use createFile only for a genuinely new file.\n"
+                + "Use renameFile or deleteFile only when explicitly requested. A file rename does "
+                + "not update source references automatically; explain that and stage related edits.\n"
                 + "Do not paste code in the final response when tools can apply it. At the end, give "
                 + "a concise summary of files changed and what was done.";
     }
@@ -211,7 +231,11 @@ public class GeminiAgent {
 
         JSONObject readProps = new JSONObject();
         readProps.put("path", stringProperty("Project-relative path of the file to read."));
-        declarations.put(declaration("readFile", "Read the latest contents of one project file.",
+        readProps.put("startLine", new JSONObject().put("type", "integer")
+                .put("description", "Optional first line to return, one-based."));
+        readProps.put("endLine", new JSONObject().put("type", "integer")
+                .put("description", "Optional last line to return, one-based."));
+        declarations.put(declaration("readFile", "Read the latest contents or a line range of one project file.",
                 readProps, new JSONArray().put("path")));
 
         JSONObject listProps = new JSONObject();
@@ -230,6 +254,32 @@ public class GeminiAgent {
                 "Search project text files and return path, line number, and matching line.",
                 searchProps, new JSONArray().put("query")));
 
+        JSONObject diagnosticProps = new JSONObject();
+        diagnosticProps.put("path", stringProperty(
+                "Optional project-relative Java file. Omit to check the current file."));
+        declarations.put(declaration("getDiagnostics",
+                "Run the project's static source analyzer on the latest staged Java contents.",
+                diagnosticProps, new JSONArray()));
+
+        JSONObject symbolsProps = new JSONObject();
+        symbolsProps.put("path", stringProperty("Project-relative Java or Kotlin source file."));
+        declarations.put(declaration("listSymbols",
+                "List declared types, fields, constructors, and methods with source lines.",
+                symbolsProps, new JSONArray().put("path")));
+
+        declarations.put(declaration("getGitDiff",
+                "Read the current working-tree diff so you can preserve the user's existing changes.",
+                new JSONObject(), new JSONArray()));
+
+        JSONObject refsProps = new JSONObject();
+        refsProps.put("symbol", stringProperty("Exact identifier text to find across project files."));
+        refsProps.put("path", stringProperty("Optional project-relative file or directory scope."));
+        refsProps.put("maxResults", new JSONObject().put("type", "integer")
+                .put("description", "Maximum matches, 1 to 100."));
+        declarations.put(declaration("findReferences",
+                "Find textual references to a symbol and return file paths and line numbers.",
+                refsProps, new JSONArray().put("symbol")));
+
         JSONObject editProps = new JSONObject();
         editProps.put("path", stringProperty("Project-relative path of the existing file to edit."));
         editProps.put("find", stringProperty(
@@ -246,7 +296,30 @@ public class GeminiAgent {
         declarations.put(declaration("createFile",
                 "Create a new project file. Refuses to overwrite an existing file.",
                 createProps, new JSONArray().put("path").put("content")));
-        return declarations;
+
+        JSONObject deleteProps = new JSONObject();
+        deleteProps.put("path", stringProperty("Project-relative path of the file to remove."));
+        declarations.put(declaration("deleteFile",
+                "Propose deleting an existing project file. The deletion waits for user review.",
+                deleteProps, new JSONArray().put("path")));
+
+        JSONObject renameProps = new JSONObject();
+        renameProps.put("oldPath", stringProperty("Current project-relative file path."));
+        renameProps.put("newPath", stringProperty("New project-relative file path."));
+        declarations.put(declaration("renameFile",
+                "Propose a file rename as a reviewed delete-and-create operation.",
+                renameProps, new JSONArray().put("oldPath").put("newPath")));
+        if (!planOnly) return declarations;
+        JSONArray readOnly = new JSONArray();
+        for (int i = 0; i < declarations.length(); i++) {
+            JSONObject declaration = declarations.optJSONObject(i);
+            String name = declaration == null ? "" : declaration.optString("name");
+            if (!"editFile".equals(name) && !"createFile".equals(name)
+                    && !"deleteFile".equals(name) && !"renameFile".equals(name)) {
+                readOnly.put(declaration);
+            }
+        }
+        return readOnly;
     }
 
     private static JSONObject declaration(String name, String description, JSONObject properties,
@@ -335,19 +408,21 @@ public class GeminiAgent {
 
     private String executeTool(String name, JSONObject args) {
         try {
-            if (("editFile".equals(name) || "createFile".equals(name))
-                    && !new AppPreferences(context).isInclusiveMode()
-                    && !confirmChange(name, args)) {
-                return "Denied by user.";
-            }
+            if (planOnly && isMutationTool(name)) return "Unavailable in plan-only mode.";
             switch (name) {
                 case "getCurrentFile": return executeGetCurrentFile();
                 case "getProjectStructure": return executeGetProjectStructure();
                 case "readFile": return executeReadFile(args);
                 case "listFiles": return executeListFiles(args);
                 case "searchInProject": return executeSearch(args);
+                case "getDiagnostics": return executeDiagnostics(args);
+                case "listSymbols": return executeListSymbols(args);
+                case "getGitDiff": return executeGitDiff();
+                case "findReferences": return executeFindReferences(args);
                 case "editFile": return executeEditFile(args);
                 case "createFile": return executeCreateFile(args);
+                case "deleteFile": return executeDeleteFile(args);
+                case "renameFile": return executeRenameFile(args);
                 default: return "Unknown or unavailable tool: " + name;
             }
         } catch (JSONException e) {
@@ -358,37 +433,26 @@ public class GeminiAgent {
         }
     }
 
-    private boolean confirmChange(String name, JSONObject args) {
-        if (!(context instanceof Activity)) return false;
-        Activity activity = (Activity) context;
-        if (activity.isFinishing() || activity.isDestroyed()) return false;
+    private static boolean isMutationTool(String name) {
+        return "editFile".equals(name) || "createFile".equals(name)
+                || "deleteFile".equals(name) || "renameFile".equals(name);
+    }
 
-        CountDownLatch answer = new CountDownLatch(1);
-        AtomicBoolean approved = new AtomicBoolean(false);
-        StringBuilder summary = new StringBuilder(args.optString("path", ""));
-        if ("editFile".equals(name)) {
-            summary.append("\n\nFind:\n").append(shorten(args.optString("find", ""), 450));
-            summary.append("\n\nReplace with:\n")
-                    .append(shorten(args.optString("replace", ""), 450));
-        } else {
-            summary.append("\n\n").append(shorten(args.optString("content", ""), 700));
-        }
-        mainHandler.post(() -> com.ccs.javadroid.ui.Dialogs.rounded(activity)
-                .setTitle("AI wants to " + name)
-                .setMessage(summary.toString())
-                .setPositiveButton("Allow", (dialog, which) -> {
-                    approved.set(true);
-                    answer.countDown();
-                })
-                .setNegativeButton("Deny", (dialog, which) -> answer.countDown())
-                .setOnCancelListener(dialog -> answer.countDown())
-                .show());
+    private String executeGitDiff() {
         try {
-            return answer.await(CONFIRMATION_TIMEOUT_SECONDS, TimeUnit.SECONDS) && approved.get();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return false;
+            String diff = GitManager.diffWorkingTree(projectRoot());
+            if (diff == null || diff.trim().isEmpty()) return "Working tree has no unstaged diff.";
+            return shorten(diff, 24_000);
+        } catch (Exception e) {
+            return "Git diff unavailable: " + e.getMessage();
         }
+    }
+
+    private String executeFindReferences(JSONObject args) throws Exception {
+        JSONObject search = new JSONObject().put("query", args.optString("symbol"))
+                .put("path", args.optString("path", "."))
+                .put("maxResults", args.optInt("maxResults", 50));
+        return executeSearch(search);
     }
 
     private String executeGetCurrentFile() {
@@ -402,13 +466,23 @@ public class GeminiAgent {
 
     private String executeReadFile(JSONObject args) throws Exception {
         File file = resolveProjectFile(args.getString("path"), true);
-        if (!file.isFile()) return "Not a file: " + relativePath(file);
+        if (!file.isFile() && !createdFiles.contains(file.getCanonicalPath())) {
+            return "Not a file: " + relativePath(file);
+        }
         String content = latestContents(file);
         if (content.length() > MAX_FILE_CHARS) {
             return "File is too large to return safely (" + content.length()
                     + " characters). Use searchInProject to narrow the location.";
         }
-        return "Path: " + relativePath(file) + "\n" + content;
+        String[] lines = content.split("\\n", -1);
+        int start = Math.max(1, args.optInt("startLine", 1));
+        int end = Math.min(lines.length, Math.max(start, args.optInt("endLine", lines.length)));
+        StringBuilder result = new StringBuilder("Path: ").append(relativePath(file))
+                .append("\nLines: ").append(start).append('-').append(end).append("\n");
+        for (int i = start - 1; i < end; i++) {
+            result.append(i + 1).append(": ").append(lines[i]).append('\n');
+        }
+        return result.toString();
     }
 
     private String executeListFiles(JSONObject args) throws Exception {
@@ -524,9 +598,55 @@ public class GeminiAgent {
         return matches.toString();
     }
 
+    private String executeDiagnostics(JSONObject args) throws Exception {
+        String requested = args.optString("path", "");
+        File file = requested.isEmpty() && !currentFilePath.isEmpty()
+                ? new File(currentFilePath) : resolveProjectFile(requested, true);
+        if ((!file.isFile() && !createdFiles.contains(file.getCanonicalPath()))
+                || !"java".equalsIgnoreCase(extension(file.getName()))) {
+            return "getDiagnostics supports Java source files only.";
+        }
+        List<ProblemItem> findings = StaticAnalyzer.analyzeSource(context, file, latestContents(file));
+        if (findings.isEmpty()) return "No static analysis findings for " + relativePath(file) + ".";
+        StringBuilder out = new StringBuilder("Diagnostics for ").append(relativePath(file)).append(":\n");
+        int count = 0;
+        for (ProblemItem finding : findings) {
+            out.append(finding.severity.name()).append(" line ").append(finding.line)
+                    .append(": ").append(finding.message).append('\n');
+            if (++count >= 80) { out.append("... findings truncated\n"); break; }
+        }
+        return out.toString();
+    }
+
+    private String executeListSymbols(JSONObject args) throws Exception {
+        File file = resolveProjectFile(args.getString("path"), true);
+        String lower = file.getName().toLowerCase(Locale.ROOT);
+        if (!MemberOutline.supports(lower)) return "listSymbols supports Java and Kotlin source files.";
+        String source = latestContents(file);
+        if (source.length() > MAX_FILE_CHARS) return "Source file is too large to outline safely.";
+        StringBuilder out = new StringBuilder(relativePath(file)).append(":\n");
+        if (lower.endsWith(".java")) {
+            JavaAstParser parser = new JavaAstParser(new JavaLexer(source).tokenize());
+            parser.parse();
+            for (String type : parser.declaredTypes) out.append("TYPE ").append(type).append('\n');
+        }
+        for (MemberOutline.Member member : MemberOutline.scan(source, lower)) {
+            out.append(member.kind.name()).append(" line ").append(member.line + 1)
+                    .append(": ").append(member.label).append('\n');
+        }
+        return out.toString();
+    }
+
+    private static String extension(String name) {
+        int dot = name.lastIndexOf('.');
+        return dot < 0 ? "" : name.substring(dot + 1);
+    }
+
     private String executeEditFile(JSONObject args) throws Exception {
         File file = resolveProjectFile(args.getString("path"), true);
-        if (!file.isFile()) return "editFile target is not a file: " + relativePath(file);
+        if (!file.isFile() && !createdFiles.contains(file.getCanonicalPath())) {
+            return "editFile target is not a file: " + relativePath(file);
+        }
         String find = ExactTextEdit.unwrapFence(args.getString("find"));
         String replacement = ExactTextEdit.unwrapFence(args.getString("replace"));
         ExactTextEdit.Result result = ExactTextEdit.apply(latestContents(file), find, replacement);
@@ -542,33 +662,71 @@ public class GeminiAgent {
             case APPLIED:
             default:
                 String canonical = file.getCanonicalPath();
+                baseFiles.putIfAbsent(canonical, latestContents(file));
                 workingFiles.put(canonical, result.text);
                 if (canonical.equals(currentFilePath)) currentCode = result.text;
-                PendingEdits.addPatch(canonical, find, replacement);
-                return "Queued exact edit in " + relativePath(file) + " at line "
+                return "Staged exact edit in " + relativePath(file) + " at line "
                         + lineAt(result.text, result.offset) + ". The rest of the file is unchanged.";
         }
     }
 
     private String executeCreateFile(JSONObject args) throws Exception {
         File file = resolveProjectFile(args.getString("path"), false);
-        if (file.exists()) return "createFile refused: file already exists: " + relativePath(file);
-        File parent = file.getParentFile();
-        if (parent == null || (!parent.isDirectory() && !parent.mkdirs())) {
-            return "createFile failed: parent directory is unavailable.";
+        String canonical = file.getCanonicalPath();
+        if (file.exists() || createdFiles.contains(canonical)) {
+            return "createFile refused: file already exists: " + relativePath(file);
         }
-        if (!file.createNewFile()) return "createFile failed: could not create the file.";
         String content = ExactTextEdit.unwrapFence(args.optString("content", ""));
-        projectManager().writeFile(file, content);
-        workingFiles.put(file.getCanonicalPath(), content);
-        return "Created " + relativePath(file) + ".";
+        createdFiles.add(canonical);
+        baseFiles.put(canonical, "");
+        workingFiles.put(canonical, content);
+        return "Staged new file " + relativePath(file) + ". It will only be written after review.";
+    }
+
+    private String executeDeleteFile(JSONObject args) throws Exception {
+        File file = resolveProjectFile(args.getString("path"), true);
+        if (!file.isFile()) return "deleteFile target is not a file.";
+        String canonical = file.getCanonicalPath();
+        if (createdFiles.remove(canonical)) {
+            workingFiles.remove(canonical);
+            baseFiles.remove(canonical);
+            return "Removed the newly proposed file from this change set.";
+        }
+        String current = latestContents(file);
+        baseFiles.putIfAbsent(canonical, current);
+        workingFiles.remove(canonical);
+        deletedFiles.add(canonical);
+        return "Staged deletion of " + relativePath(file) + ". It will only be deleted after review.";
+    }
+
+    private String executeRenameFile(JSONObject args) throws Exception {
+        File source = resolveProjectFile(args.getString("oldPath"), true);
+        File destination = resolveProjectFile(args.getString("newPath"), false);
+        String sourceKey = source.getCanonicalPath();
+        String destinationKey = destination.getCanonicalPath();
+        if (sourceKey.equals(destinationKey)) return "renameFile refused: source and destination are identical.";
+        if (destination.exists() || createdFiles.contains(destinationKey)) {
+            return "renameFile refused: destination already exists.";
+        }
+        String content = latestContents(source);
+        baseFiles.putIfAbsent(sourceKey, content);
+        if (createdFiles.remove(sourceKey)) baseFiles.remove(sourceKey);
+        else deletedFiles.add(sourceKey);
+        workingFiles.remove(sourceKey);
+        createdFiles.add(destinationKey);
+        baseFiles.put(destinationKey, "");
+        workingFiles.put(destinationKey, content);
+        return "Staged rename " + relativePath(source) + " → " + relativePath(destination)
+                + ". References inside source code are not changed automatically.";
     }
 
     private String latestContents(File file) throws IOException {
         String key = file.getCanonicalPath();
+        if (deletedFiles.contains(key)) throw new IOException("file is staged for deletion");
         String staged = workingFiles.get(key);
         if (staged != null) return staged;
         String content = projectManager().readFile(file);
+        baseFiles.putIfAbsent(key, content);
         workingFiles.put(key, content);
         return content;
     }
@@ -601,7 +759,10 @@ public class GeminiAgent {
         if (!candidate.equals(root) && !candidate.getPath().startsWith(prefix)) {
             throw new IOException("path is outside the active project");
         }
-        if (requireExisting && !candidate.exists()) throw new IOException("file does not exist");
+        if (requireExisting && !candidate.exists()
+                && !createdFiles.contains(candidate.getCanonicalPath())) {
+            throw new IOException("file does not exist");
+        }
         return candidate;
     }
 
@@ -691,6 +852,26 @@ public class GeminiAgent {
 
     private void finishText(long token, String text) {
         if (!isCurrent(token)) return;
+        List<PendingEdits.FileChange> changes = new ArrayList<>();
+        for (Map.Entry<String, String> entry : workingFiles.entrySet()) {
+            String path = entry.getKey();
+            String base = baseFiles.get(path);
+            if (base == null) continue;
+            String updated = entry.getValue();
+            boolean created = createdFiles.contains(path);
+            if (created || !base.equals(updated)) {
+                changes.add(new PendingEdits.FileChange(path, base, updated, created));
+            }
+        }
+        for (String path : deletedFiles) {
+            String base = baseFiles.get(path);
+            if (base != null) changes.add(new PendingEdits.FileChange(path, base, "", false, true));
+        }
+        if (!changes.isEmpty()) {
+            PendingEdits.AgentChangeSet changeSet = new PendingEdits.AgentChangeSet(
+                    workingProjectRoot, changes);
+            mainHandler.post(() -> { if (isCurrent(token)) callback.onChangeSetReady(changeSet); });
+        }
         mainHandler.post(() -> {
             if (!isCurrent(token)) return;
             callback.onTextResponse(text);

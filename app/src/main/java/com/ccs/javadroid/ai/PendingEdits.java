@@ -5,6 +5,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
+import java.util.UUID;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import android.content.Context;
+import android.content.SharedPreferences;
 
 /**
  * Process-local queue of manual chat insertions and file-targeted agent edits.
@@ -19,6 +25,115 @@ import java.util.List;
  * and therefore cannot drift to whichever editor happens to have focus later.
  */
 public final class PendingEdits {
+
+    private static final String PREFS = "pending_agent_change_set";
+    private static final String KEY = "change_set";
+    private static final String UNDO_KEY = "undo_change_set";
+
+    /** One reviewed agent transaction. New files have an empty base and created=true. */
+    public static final class FileChange {
+        public final String path;
+        public final String base;
+        public final String content;
+        public final boolean created;
+        public final boolean deleted;
+
+        public FileChange(String path, String base, String content, boolean created) {
+            this(path, base, content, created, false);
+        }
+
+        public FileChange(String path, String base, String content, boolean created, boolean deleted) {
+            this.path = path;
+            this.base = base == null ? "" : base;
+            this.content = content == null ? "" : content;
+            this.created = created;
+            this.deleted = deleted;
+        }
+    }
+
+    public static final class AgentChangeSet {
+        public final String id;
+        public final String projectRoot;
+        public final List<FileChange> changes;
+
+        public AgentChangeSet(String projectRoot, List<FileChange> changes) {
+            this(UUID.randomUUID().toString(), projectRoot, changes);
+        }
+
+        private AgentChangeSet(String id, String projectRoot, List<FileChange> changes) {
+            this.id = id;
+            this.projectRoot = projectRoot == null ? "" : projectRoot;
+            this.changes = Collections.unmodifiableList(new ArrayList<>(changes));
+        }
+
+        public boolean isEmpty() { return changes.isEmpty(); }
+
+        private JSONObject toJson() throws JSONException {
+            JSONArray files = new JSONArray();
+            for (FileChange change : changes) files.put(new JSONObject()
+                    .put("path", change.path).put("base", change.base)
+                    .put("content", change.content).put("created", change.created));
+            // The operation type is persisted so a later Undo can remove new files safely.
+            for (int i = 0; i < changes.size(); i++) {
+                files.getJSONObject(i).put("deleted", changes.get(i).deleted);
+            }
+            return new JSONObject().put("id", id).put("projectRoot", projectRoot)
+                    .put("changes", files);
+        }
+
+        private static AgentChangeSet fromJson(JSONObject json) throws JSONException {
+            JSONArray files = json.getJSONArray("changes");
+            List<FileChange> changes = new ArrayList<>();
+            for (int i = 0; i < files.length(); i++) {
+                JSONObject file = files.getJSONObject(i);
+                changes.add(new FileChange(file.getString("path"), file.optString("base"),
+                        file.optString("content"), file.optBoolean("created"),
+                        file.optBoolean("deleted")));
+            }
+            return new AgentChangeSet(json.optString("id"), json.optString("projectRoot"), changes);
+        }
+    }
+
+    private static AgentChangeSet stagedChangeSet;
+
+    public static synchronized void stageChangeSet(Context context, AgentChangeSet changeSet) {
+        stagedChangeSet = changeSet;
+        try {
+            context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
+                    .putString(KEY, changeSet.toJson().toString()).apply();
+        } catch (JSONException ignored) {}
+    }
+
+    public static synchronized AgentChangeSet peekChangeSet(Context context) {
+        AgentChangeSet result = stagedChangeSet;
+        if (result == null) {
+            String raw = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getString(KEY, null);
+            if (raw != null) try { result = AgentChangeSet.fromJson(new JSONObject(raw)); }
+            catch (JSONException ignored) {}
+        }
+        return result;
+    }
+
+    public static synchronized void discardChangeSet(Context context) {
+        stagedChangeSet = null;
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().remove(KEY).apply();
+    }
+
+    public static synchronized void saveUndoChangeSet(Context context, AgentChangeSet set) {
+        try {
+            context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
+                    .putString(UNDO_KEY, set.toJson().toString()).apply();
+        } catch (JSONException ignored) {}
+    }
+
+    public static synchronized AgentChangeSet takeUndoChangeSet(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+        String raw = prefs.getString(UNDO_KEY, null);
+        prefs.edit().remove(UNDO_KEY).apply();
+        if (raw == null) return null;
+        try { return AgentChangeSet.fromJson(new JSONObject(raw)); }
+        catch (JSONException ignored) { return null; }
+    }
 
     public static final String LOCATION_CURSOR    = "cursor";
     public static final String LOCATION_APPEND    = "append";

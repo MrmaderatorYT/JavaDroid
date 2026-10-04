@@ -43,7 +43,7 @@ static void error_callback(void *opaque, const char *msg)
 /* ── compileToSharedLib ────────────────────────────────────────── */
 
 JNIEXPORT jstring JNICALL
-Java_com_ccs_javadroid_NativeCompiler_compileToSharedLib(
+Java_com_ccs_javadroid_tools_compilers_NativeCompiler_compileToSharedLib(
         JNIEnv *env, jclass clazz,
         jstring jsource, jstring joutputPath, jstring jincludePath)
 {
@@ -125,7 +125,7 @@ Java_com_ccs_javadroid_NativeCompiler_compileToSharedLib(
 /* ── compileFile ───────────────────────────────────────────────── */
 
 JNIEXPORT jstring JNICALL
-Java_com_ccs_javadroid_NativeCompiler_compileFile(
+Java_com_ccs_javadroid_tools_compilers_NativeCompiler_compileFile(
         JNIEnv *env, jclass clazz,
         jstring jsourcePath, jstring joutputPath, jstring jincludePath)
 {
@@ -193,7 +193,7 @@ Java_com_ccs_javadroid_NativeCompiler_compileFile(
 /* ── isAvailable ───────────────────────────────────────────────── */
 
 JNIEXPORT jboolean JNICALL
-Java_com_ccs_javadroid_NativeCompiler_isAvailable(JNIEnv *env, jclass clazz)
+Java_com_ccs_javadroid_tools_compilers_NativeCompiler_isAvailable(JNIEnv *env, jclass clazz)
 {
     TCCState *s = tcc_new();
     if (!s) return JNI_FALSE;

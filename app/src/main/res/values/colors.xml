@@ -27,5 +27,5 @@
     <color name="idea_tab_border">#4A86C8</color>
 
     <!-- Launcher adaptive icon (фон як у логотипу) -->
-    <color name="ic_launcher_background">#FF000000</color>
+    <color name="ic_launcher_background">#FF242628</color>
 </resources>

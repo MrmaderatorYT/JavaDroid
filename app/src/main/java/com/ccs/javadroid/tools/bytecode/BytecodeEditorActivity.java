@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.HorizontalScrollView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -150,6 +151,27 @@ public class BytecodeEditorActivity extends AppCompatActivity {
         toolbar.addView(btnSave);
 
         root.addView(toolbar);
+
+        // JVM assembly building blocks: keep the class/method structure one tap
+        // away instead of making users remember the directive spelling.
+        HorizontalScrollView structureScroll = new HorizontalScrollView(this);
+        structureScroll.setHorizontalScrollBarEnabled(false);
+        structureScroll.setBackgroundColor(0xFF252526);
+        LinearLayout structureBar = new LinearLayout(this);
+        structureBar.setOrientation(LinearLayout.HORIZONTAL);
+        structureBar.setGravity(Gravity.CENTER_VERTICAL);
+        structureBar.setPadding(dp(6), dp(4), dp(6), dp(4));
+        structureScroll.addView(structureBar);
+        addStructureButton(structureBar, "Class", ".class public MyClass\n.super java/lang/Object\n");
+        addStructureButton(structureBar, "Field", ".field private value I\n");
+        addStructureButton(structureBar, "Method", ".method public static method()V\n    .limit stack 2\n    .limit locals 1\n    return\n.end method\n");
+        addStructureButton(structureBar, "Stack", ".limit stack 2\n");
+        addStructureButton(structureBar, "Locals", ".limit locals 1\n");
+        addStructureButton(structureBar, "Label", "L0:\n");
+        addStructureButton(structureBar, "Branch", "goto L0\n");
+        addStructureButton(structureBar, "Return", "return\n");
+        root.addView(structureScroll, new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, dp(42)));
 
         // ── Line numbers + Code editor ──
         LinearLayout editorRow = new LinearLayout(this);
@@ -347,39 +369,51 @@ public class BytecodeEditorActivity extends AppCompatActivity {
 
     private void validate() {
         String code = codeEditor.getText().toString();
-        int errors = 0;
-        int lines = code.split("\n").length;
-
-        // Перевірка базових ASM-інструкцій
-        String[] validOps = {"nop", "aconst_null", "iconst_m1", "iconst_0", "iconst_1",
-                "iload", "lload", "fload", "dload", "aload", "istore", "lstore", "fstore", "dstore", "astore",
-                "iadd", "ladd", "fadd", "dadd", "isub", "lsub", "fsub", "dsub",
-                "imul", "lmul", "fmul", "dmul", "idiv", "ldiv", "fdiv", "ddiv",
-                "ireturn", "lreturn", "freturn", "dreturn", "areturn", "return",
-                "getstatic", "putstatic", "getfield", "putfield",
-                "invokevirtual", "invokespecial", "invokestatic", "invokeinterface",
-                "new", "newarray", "anewarray", "arraylength", "athrow",
-                "checkcast", "instanceof", "goto", "if", "ifeq", "ifne", "iflt", "ifge",
-                "ifgt", "ifle", "if_icmpeq", "if_icmpne", "dup", "pop", "swap"};
-
+        String[] linesArr = code.split("\n", -1);
+        java.util.Set<String> labels = new java.util.HashSet<>();
+        java.util.List<String[]> jumps = new java.util.ArrayList<>();
         StringBuilder warnings = new StringBuilder();
-        String[] linesArr = code.split("\n");
+        int errors = 0, methods = 0;
+        boolean insideMethod = false, hasClass = false;
         for (int i = 0; i < linesArr.length; i++) {
             String line = linesArr[i].trim();
-            if (line.isEmpty() || line.startsWith("#") || line.startsWith("//") || line.startsWith(".method") || line.startsWith(".end method")) continue;
-
-            // Check if line looks like an instruction
+            if (line.isEmpty() || line.startsWith("#") || line.startsWith("//")) continue;
+            if (line.startsWith(".class ")) { hasClass = true; continue; }
+            if (line.startsWith(".super ") || line.startsWith(".source ") || line.startsWith(".implements ")) continue;
+            if (line.startsWith(".field ")) continue;
+            if (line.startsWith(".method ")) {
+                if (insideMethod) { errors += appendIssue(warnings, i + 1, "method started before previous .end method"); }
+                insideMethod = true; methods++; continue;
+            }
+            if (line.equals(".end method")) {
+                if (!insideMethod) errors += appendIssue(warnings, i + 1, ".end method without .method");
+                insideMethod = false; continue;
+            }
+            if (line.startsWith(".limit ") || line.startsWith(".throws ") || line.startsWith(".annotation")) continue;
+            if (line.endsWith(":")) {
+                String label = line.substring(0, line.length() - 1).trim();
+                if (!labels.add(label)) errors += appendIssue(warnings, i + 1, "duplicate label '" + label + "'");
+                continue;
+            }
+            if (!insideMethod) {
+                errors += appendIssue(warnings, i + 1, "instruction outside a method");
+                continue;
+            }
             String[] parts = line.split("\\s+", 2);
             String op = parts[0].toLowerCase(Locale.ROOT);
-            boolean found = false;
-            for (String v : validOps) {
-                if (op.equals(v)) { found = true; break; }
-            }
-            if (!found && !op.endsWith(":") && !op.startsWith(".") && !op.startsWith("//")) {
-                warnings.append("Line ").append(i + 1).append(": unknown instruction '").append(op).append("'\n");
-                errors++;
+            if (!BytecodeHighlighter.isOpcode(op)) {
+                errors += appendIssue(warnings, i + 1, "unknown JVM opcode '" + op + "'");
+            } else if ((op.startsWith("if") || op.startsWith("goto") || op.startsWith("jsr")) && parts.length > 1) {
+                String label = parts[1].trim().split("[,\\s]", 2)[0];
+                if (!label.isEmpty()) jumps.add(new String[]{String.valueOf(i + 1), label});
             }
         }
+        if (!hasClass) errors += appendIssue(warnings, 1, "missing .class declaration");
+        if (insideMethod) errors += appendIssue(warnings, linesArr.length, "missing .end method");
+        if (methods == 0) errors += appendIssue(warnings, 1, "no .method block found");
+        for (String[] jump : jumps) if (!labels.contains(jump[1]))
+            errors += appendIssue(warnings, Integer.parseInt(jump[0]), "undefined label '" + jump[1] + "'");
+        int lines = linesArr.length;
 
         if (errors == 0) {
             Toast.makeText(this, "✓ " + lines + " lines — no issues found", Toast.LENGTH_SHORT).show();
@@ -394,6 +428,34 @@ public class BytecodeEditorActivity extends AppCompatActivity {
                     .setPositiveButton("OK", null)
                     .show();
         }
+    }
+
+    private int appendIssue(StringBuilder out, int line, String message) {
+        out.append("Line ").append(line).append(": ").append(message).append('\n');
+        return 1;
+    }
+
+    private void addStructureButton(LinearLayout bar, String title, String snippet) {
+        TextView button = createToolButton(title);
+        button.setTextSize(11);
+        button.setPadding(dp(10), dp(5), dp(10), dp(5));
+        button.setBackgroundResource(android.R.drawable.list_selector_background);
+        button.setOnClickListener(v -> insertStructure(snippet));
+        bar.addView(button);
+    }
+
+    private void insertStructure(String snippet) {
+        if (codeEditor == null) return;
+        android.text.Editable editable = codeEditor.getText();
+        int start = Math.max(0, Math.min(codeEditor.getSelectionStart(), editable.length()));
+        int end = Math.max(start, Math.min(codeEditor.getSelectionEnd(), editable.length()));
+        String insertion = snippet;
+        if (start > 0 && editable.charAt(start - 1) != '\n' && !snippet.startsWith(" ")) insertion = "\n" + insertion;
+        if (end < editable.length() && editable.charAt(end) != '\n' && !insertion.endsWith("\n")) insertion += "\n";
+        editable.replace(start, end, insertion);
+        int caret = start + insertion.length();
+        codeEditor.setSelection(Math.max(start, caret - (insertion.endsWith("\n") ? 1 : 0)));
+        codeEditor.requestFocus();
     }
 
     private void undo() {

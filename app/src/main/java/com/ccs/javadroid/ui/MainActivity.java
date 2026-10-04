@@ -119,6 +119,10 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -497,6 +501,31 @@ public class MainActivity extends AppCompatActivity {
 
     /** Applies manual insertions to the active editor and agent patches to their named files. */
     private void applyPendingAiEdits() {
+        PendingEdits.AgentChangeSet changeSet = PendingEdits.peekChangeSet(this);
+        if (changeSet != null && !changeSet.isEmpty()) {
+            if (applyAgentChangeSet(changeSet, true)) {
+                PendingEdits.discardChangeSet(this);
+                new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                        .setTitle("Changes applied")
+                        .setMessage(changeSet.changes.size() + " file(s) updated.")
+                        .setPositiveButton("Undo all", (dialog, which) -> {
+                            PendingEdits.AgentChangeSet undo = PendingEdits.takeUndoChangeSet(this);
+                            if (undo == null || !applyAgentChangeSet(undo, false)) {
+                                if (undo != null) PendingEdits.saveUndoChangeSet(this, undo);
+                                Toast.makeText(this, "Could not safely undo: a file has changed",
+                                        Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(this, "All agent changes undone", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setNegativeButton("Done", null)
+                        .show();
+            } else {
+                android.widget.Toast.makeText(this,
+                        "Agent changes were not applied: a target changed or a write failed",
+                        android.widget.Toast.LENGTH_LONG).show();
+            }
+        }
         if (!PendingEdits.hasPending()) return;
         java.util.List<PendingEdits.Edit> edits = PendingEdits.drain();
         if (edits.isEmpty()) return;
@@ -568,6 +597,153 @@ public class MainActivity extends AppCompatActivity {
             android.widget.Toast.makeText(this, message,
                     android.widget.Toast.LENGTH_SHORT).show();
         }
+    }
+
+    /** Validate and apply a complete reviewed agent proposal as one recoverable transaction. */
+    private boolean applyAgentChangeSet(PendingEdits.AgentChangeSet set, boolean recordUndo) {
+        if (projectManager == null || projectManager.getProjectDir() == null) return false;
+        Map<File, String> before = new LinkedHashMap<>();
+        Map<File, String> after = new LinkedHashMap<>();
+        Set<File> created = new HashSet<>();
+        Map<File, CodeEditor> openEditors = new HashMap<>();
+        Map<File, FileTab> openTabs = new HashMap<>();
+        Map<File, TabsAdapter> openAdapters = new HashMap<>();
+        boolean oldProgrammatic = ws.isProgrammaticChange;
+        try {
+            File root = projectManager.getProjectDir().getCanonicalFile();
+            if (!root.getPath().equals(new File(set.projectRoot).getCanonicalPath())) return false;
+            String prefix = root.getPath() + File.separator;
+            for (PendingEdits.FileChange change : set.changes) {
+                File target = new File(change.path).getCanonicalFile();
+                if (!target.getPath().startsWith(prefix) || isFileReadOnly(target)) return false;
+                CodeEditor editor = null;
+                FileTab tab = null;
+                TabsAdapter adapter = null;
+                if (ws.leftTab != null && sameFile(ws.leftTab.file, target)) {
+                    editor = ws.editor; tab = ws.leftTab; adapter = ws.tabsLeft;
+                } else if (ws.rightTab != null && sameFile(ws.rightTab.file, target)) {
+                    editor = ws.editor2; tab = ws.rightTab; adapter = ws.tabsRight;
+                }
+                String current;
+                if (change.created) {
+                    if (target.exists() || !change.base.isEmpty()) return false;
+                    current = "";
+                    created.add(target);
+                } else {
+                    if (!target.isFile()) return false;
+                    current = editor != null ? editor.getText().toString() : projectManager.readFile(target);
+                    if (!current.equals(change.base)) return false;
+                }
+                // Keep a deleted file tab out of a dangling state. Ask the user to close it first.
+                if (change.deleted && editor != null) return false;
+                before.put(target, current);
+                after.put(target, change.content);
+                if (editor != null) {
+                    openEditors.put(target, editor);
+                    openTabs.put(target, tab);
+                    openAdapters.put(target, adapter);
+                }
+            }
+
+            // Write all closed/new files first; editor buffers are changed only after disk succeeds.
+            for (Map.Entry<File, String> entry : after.entrySet()) {
+                File target = entry.getKey();
+                if (created.contains(target)) {
+                    File parent = target.getParentFile();
+                    if (parent == null || (!parent.isDirectory() && !parent.mkdirs())
+                            || !target.createNewFile()) throw new IOException("cannot create " + target);
+                }
+                PendingEdits.FileChange fileChange = null;
+                for (PendingEdits.FileChange candidate : set.changes) {
+                    if (new File(candidate.path).getCanonicalFile().equals(target)) {
+                        fileChange = candidate; break;
+                    }
+                }
+                if (fileChange != null && fileChange.deleted) {
+                    java.nio.file.Files.delete(target.toPath());
+                } else {
+                    projectManager.writeFile(target, entry.getValue());
+                }
+            }
+            ws.isProgrammaticChange = true;
+            for (Map.Entry<File, CodeEditor> entry : openEditors.entrySet()) {
+                File target = entry.getKey();
+                CodeEditor editor = entry.getValue();
+                if (!created.contains(target)) {
+                    com.ccs.javadroid.util.LocalHistoryManager.saveSnapshot(
+                            this, target, before.get(target), "Before AI change set");
+                }
+                MainActivity.setEditorTextPreservingSelection(editor, after.get(target));
+                FileTab tab = openTabs.get(target);
+                TabsAdapter adapter = openAdapters.get(target);
+                int index = adapter == null || tab == null ? -1 : adapter.getTabs().indexOf(tab);
+                if (index >= 0) {
+                    adapter.markModified(index, true);
+                    if (editor == ws.activeEditor) scheduleAutoSave(editor, tab, index);
+                }
+            }
+            for (PendingEdits.FileChange change : set.changes) {
+                File target = new File(change.path).getCanonicalFile();
+                if (!openEditors.containsKey(target) && !created.contains(target)) {
+                    com.ccs.javadroid.util.LocalHistoryManager.saveSnapshot(
+                            this, target, before.get(target), "Before AI change set");
+                }
+            }
+            if (gitGutter != null) gitGutter.refreshAll();
+            if (recordUndo) {
+                List<PendingEdits.FileChange> inverses = new ArrayList<>();
+                for (PendingEdits.FileChange change : set.changes) {
+                    if (change.created) {
+                        inverses.add(new PendingEdits.FileChange(change.path, change.content,
+                                "", false, true));
+                    } else if (change.deleted) {
+                        inverses.add(new PendingEdits.FileChange(change.path, "", change.base, true));
+                    } else {
+                        inverses.add(new PendingEdits.FileChange(change.path, change.content,
+                                change.base, false));
+                    }
+                }
+                PendingEdits.saveUndoChangeSet(this,
+                        new PendingEdits.AgentChangeSet(set.projectRoot, inverses));
+            }
+            return true;
+        } catch (Exception failure) {
+            android.util.Log.w("MainActivity", "Agent change set failed; rolling back", failure);
+            // Restore every disk target that was touched, then restore editor buffers.
+            for (Map.Entry<File, String> entry : before.entrySet()) {
+                File target = entry.getKey();
+                try {
+                    if (created.contains(target)) {
+                        if (target.exists()) java.nio.file.Files.delete(target.toPath());
+                    } else if (isDeletedOperation(set, target)) {
+                        if (!target.exists()) {
+                            File parent = target.getParentFile();
+                            if (parent != null && !parent.isDirectory()) parent.mkdirs();
+                            if (target.createNewFile()) projectManager.writeFile(target, entry.getValue());
+                        }
+                    } else if (after.containsKey(target) && target.exists()) {
+                        projectManager.writeFile(target, entry.getValue());
+                    }
+                } catch (Exception rollbackFailure) {
+                    android.util.Log.e("MainActivity", "Agent rollback failed for " + target,
+                            rollbackFailure);
+                }
+                CodeEditor editor = openEditors.get(target);
+                if (editor != null) MainActivity.setEditorTextPreservingSelection(editor, entry.getValue());
+            }
+            return false;
+        } finally {
+            ws.isProgrammaticChange = oldProgrammatic;
+        }
+    }
+
+    private boolean isDeletedOperation(PendingEdits.AgentChangeSet set, File target) {
+        for (PendingEdits.FileChange change : set.changes) {
+            try {
+                if (change.deleted && new File(change.path).getCanonicalFile().equals(target)) return true;
+            } catch (IOException ignored) {}
+        }
+        return false;
     }
 
     /** Applies one exact patch to an editor buffer and keeps the caret near it. */
@@ -1199,6 +1375,7 @@ public class MainActivity extends AppCompatActivity {
         final String CARET_LEFT = "◀";
         final String CARET_RIGHT = "▶";
         final String COMMENT = "//";
+        final String[] editorActions = {"Next", "Skip", "All", "Expand", "Def"};
 
         // Symbols worth a tap depend on the file: an XML file wants angle
         // brackets, a Java one a semicolon, and the row is too small to carry
@@ -1220,6 +1397,32 @@ public class MainActivity extends AppCompatActivity {
             java.util.Collections.addAll(tokens, rawSymbols.trim().split("\\s+"));
         }
         final String[] symbols = tokens.toArray(new String[0]);
+
+        if (ws.activeEditor instanceof JavaDroidCodeEditor) {
+            for (String action : editorActions) {
+                TextView btn = new TextView(this);
+                btn.setText(action); btn.setTextColor(theme.text); btn.setTextSize(12);
+                btn.setGravity(Gravity.CENTER); btn.setPadding(dp(10), 0, dp(10), 0);
+                btn.setFocusable(false); btn.setClickable(true);
+                btn.setBackgroundResource(android.R.drawable.list_selector_background);
+                btn.setLayoutParams(new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                btn.setOnClickListener(v -> {
+                    JavaDroidCodeEditor editor = (JavaDroidCodeEditor) ws.activeEditor;
+                    switch (action) {
+                        case "Next":
+                            if (!editor.hasOccurrenceSelections()) editor.selectNextOccurrence();
+                            else editor.selectNextOccurrence();
+                            break;
+                        case "Skip": editor.skipNextOccurrence(); break;
+                        case "All": editor.selectAllOccurrences(); break;
+                        case "Expand": editor.expandSelection(); break;
+                        case "Def": goToDefinition(); break;
+                    }
+                });
+                accessoryBarLayout.addView(btn);
+            }
+        }
 
         for (final String symbol : symbols) {
             TextView btn = new TextView(this);
@@ -1419,7 +1622,7 @@ public class MainActivity extends AppCompatActivity {
                 } else if (bottomPanelMode == PANEL_CONSOLE && jshellManager != null) {
                     textToCopy = jshellManager.getConsoleOutput().getText().toString();
                 } else if (bottomPanelMode == PANEL_TODO && todoManager != null) {
-                    textToCopy = "TODO list copy not supported yet."; // or could gather TODOs
+                    textToCopy = todoManager.getCopyText();
                 } else if (bottomPanelMode == PANEL_PROBLEMS && problemsAdapter != null) {
                     StringBuilder sb = new StringBuilder();
                     for (ProblemItem p : problemsAdapter.getItems()) {
@@ -1657,14 +1860,6 @@ public class MainActivity extends AppCompatActivity {
             structureAdapter.setMembers(structureOptions != null
                     ? structureOptions.apply(members) : members);
         }
-    }
-
-    private void showDependenciesDialog() {
-        if (projectManager == null || projectManager.getProjectDir() == null) {
-            Toast.makeText(this, R.string.toast_no_project_open, Toast.LENGTH_SHORT).show();
-            return;
-        }
-        Toast.makeText(this, "Dependencies Manager not implemented", Toast.LENGTH_SHORT).show();
     }
 
     private void showRegexTesterDialog() {
@@ -3220,6 +3415,32 @@ public class MainActivity extends AppCompatActivity {
         menu.custom(quickFixHeader(problem));
         menu.separator();
 
+        String lineText = "";
+        if (editor.getText() != null && currentLine1 > 0
+                && currentLine1 <= editor.getText().getLineCount()) {
+            lineText = editor.getText().getLineString(currentLine1 - 1);
+        }
+        final String fixLine = lineText;
+        if (!fixLine.equals(fixLine.replaceFirst("\\s+$", ""))) {
+            menu.item("✂", "Прибрати пробіли в кінці рядка", () -> {
+                int line = Math.max(0, Math.min(currentLine1 - 1, editor.getText().getLineCount() - 1));
+                String current = editor.getText().getLineString(line);
+                int newLength = current.replaceFirst("\\s+$", "").length();
+                editor.getText().delete(line, newLength, line, current.length());
+                editor.setSelection(line, newLength);
+            });
+        }
+        String duplicateImportPrefix = getString(R.string.sa_duplicate_import, "").trim();
+        if (problem.message != null && problem.message.startsWith(duplicateImportPrefix)) {
+            menu.item("⊖", "Видалити дубльований import", () -> {
+                int line = Math.max(0, Math.min(currentLine1 - 1, editor.getText().getLineCount() - 1));
+                int lastLine = editor.getText().getLineCount() - 1;
+                if (line < lastLine) editor.getText().delete(line, 0, line + 1, 0);
+                else if (line > 0) editor.getText().delete(line - 1, editor.getText().getColumnCount(line - 1), line, editor.getText().getColumnCount(line));
+                else editor.getText().delete(line, 0, line, editor.getText().getColumnCount(line));
+            });
+        }
+
         // 1. Auto-import (for Java files)
         if (activeFile != null && activeFile.getName().endsWith(".java")) {
             menu.item("⚡", getString(R.string.quickfix_auto_import), () -> {
@@ -3275,6 +3496,59 @@ public class MainActivity extends AppCompatActivity {
         });
 
         menu.showBelow(btnLightbulb);
+    }
+
+    private void goToDefinition() {
+        if (ws == null || ws.activeEditor == null || ws.activeFile() == null
+                || !ws.activeFile().getName().endsWith(".java")) return;
+        String source = ws.activeEditor.getText().toString();
+        int caret = ws.activeEditor.getCursor().getLeft();
+        java.util.List<com.ccs.javadroid.util.languages.ast.JavaToken> tokens =
+                new com.ccs.javadroid.util.languages.ast.JavaLexer(source).tokenize();
+        new com.ccs.javadroid.util.languages.ast.JavaAstParser(tokens).parse();
+        com.ccs.javadroid.util.languages.ast.JavaToken target = null;
+        for (com.ccs.javadroid.util.languages.ast.JavaToken token : tokens) {
+            if (token.start <= caret && caret <= token.end && token.isIdentifier()) { target = token; break; }
+        }
+        if (target == null) return;
+        final String name = target.text;
+        File root = projectManager == null ? null : projectManager.getProjectDir();
+        java.util.List<File> candidates = new java.util.ArrayList<>();
+        collectJavaFiles(root, candidates, 4000);
+        candidates.sort((a, b) -> Boolean.compare(!a.equals(ws.activeFile()), !b.equals(ws.activeFile())));
+        for (File file : candidates) {
+            try {
+                String text = file.equals(ws.activeFile()) ? source : projectManager.readFile(file);
+                java.util.List<com.ccs.javadroid.util.languages.ast.JavaToken> ts =
+                        new com.ccs.javadroid.util.languages.ast.JavaLexer(text).tokenize();
+                new com.ccs.javadroid.util.languages.ast.JavaAstParser(ts).parse();
+                for (int i = 0; i < ts.size(); i++) {
+                    com.ccs.javadroid.util.languages.ast.JavaToken t = ts.get(i);
+                    if (!name.equals(t.text) || t.kind != com.ccs.javadroid.util.languages.ast.JavaToken.Kind.IDENTIFIER) continue;
+                    boolean declaration = t.role == com.ccs.javadroid.util.languages.ast.SemanticRole.TYPE
+                            || (i + 1 < ts.size() && ts.get(i + 1).is("(")
+                            && t.role == com.ccs.javadroid.util.languages.ast.SemanticRole.METHOD);
+                    if (!declaration || (file.equals(ws.activeFile()) && t.start == target.start)) continue;
+                    openFile(file);
+                    ws.activeEditor.setSelection(t.line, t.column);
+                    return;
+                }
+            } catch (Exception ignored) { }
+        }
+        Toast.makeText(this, "Визначення не знайдено", Toast.LENGTH_SHORT).show();
+    }
+
+    private void collectJavaFiles(File dir, java.util.List<File> out, int limit) {
+        if (dir == null || !dir.isDirectory() || out.size() >= limit) return;
+        File[] children = dir.listFiles();
+        if (children == null) return;
+        for (File child : children) {
+            if (out.size() >= limit) return;
+            if (child.isDirectory()) {
+                if (!child.getName().equals(".git") && !child.getName().equals("build")
+                        && !child.getName().equals(".gradle")) collectJavaFiles(child, out, limit);
+            } else if (child.getName().endsWith(".java")) out.add(child);
+        }
     }
 
     /**
@@ -5242,7 +5516,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Kotlin files — run via Kotlin compiler
-        if (fileName.endsWith(".kt")) {
+        if (fileName.endsWith(".kt")
+                && (com.ccs.javadroid.scratch.ScratchManager.isScratchFile(this, activeTab.file)
+                    || !com.ccs.javadroid.project.BuildSystem.isBuildable(projectManager.getProjectDir()))) {
             runKotlinFile(activeTab.file);
             return;
         }
@@ -5326,6 +5602,9 @@ public class MainActivity extends AppCompatActivity {
                                     testPanelManager.displayRawOutput(output);
                                 }
                                 boolean err = output.startsWith("Compilation Error")
+                                        || output.startsWith("Kotlin Compilation Error:")
+                                        || output.startsWith("Kotlin Error:")
+                                        || output.startsWith("Kotlin System Error:")
                                         || output.startsWith("Execution Exception")
                                         || output.startsWith("System Error")
                                         || output.startsWith("Error:")
@@ -5425,6 +5704,9 @@ public class MainActivity extends AppCompatActivity {
                             testPanelManager.displayRawOutput(output);
                         }
                         boolean isError = output.startsWith("Compilation Error")
+                                || output.startsWith("Kotlin Compilation Error:")
+                                || output.startsWith("Kotlin Error:")
+                                || output.startsWith("Kotlin System Error:")
                                 || output.startsWith("Execution Exception")
                                 || output.startsWith("System Error")
                                 || output.startsWith("Error:")
@@ -6590,6 +6872,9 @@ public class MainActivity extends AppCompatActivity {
                             testPanelManager.displayRawOutput(output);
                         }
                         boolean isError = output.startsWith("Compilation Error")
+                                || output.startsWith("Kotlin Compilation Error:")
+                                || output.startsWith("Kotlin Error:")
+                                || output.startsWith("Kotlin System Error:")
                                 || output.startsWith("Execution Exception")
                                 || output.startsWith("System Error")
                                 || output.startsWith("Error:");

@@ -1,43 +1,19 @@
-# ── Obfuscation only, deliberately ───────────────────────────────────────────
+# ── Release obfuscation ───────────────────────────────────────────────────────
 #
-# R8 does three separate jobs: shrinking, optimization and obfuscation. Google
-# Play's metric is about the third. The first two were measured on this app at
-# close to an hour of build time, because R8 has to analyse the whole bundled
-# toolchain — ECJ, the Kotlin compiler, R8 itself — and they buy little here:
-# nearly all of that code is kept anyway, so there is nothing to remove.
-#
-# They also carry the risk that matters in an app that runs compilers: code
-# reached only by reflection or ServiceLoader looks unused, and an optimizer
-# that inlines or merges classes breaks the assumptions such code makes.
-# Neither shrinking nor optimization, only obfuscation — which is the one of
-# R8's three jobs the Play metric is about. Shrinking is under suspicion for
-# breaking the bundled Kotlin compiler: its IntelliJ core registers extension
-# points by reflection and reads listeners from resources R8 cannot see, so a
-# class that looks unused is not.
+# Play measures the complete DEX, including bundled libraries. Enable renaming
+# for statically linked tools while protecting reflection, JNI and resources.
+# Shrinking and optimization need separate compiler validation before enabling
+# them to address the other Play thresholds.
 -dontshrink
 -dontoptimize
 
 # ── What R8 must not rename ──────────────────────────────────────────────────
 #
-# minifyEnabled is on for release, so everything below is load-bearing rather
-# than precautionary. Google Play measures how much of the app's own code is
-# obfuscated; the bundled third-party toolchain is kept wholesale because it is
-# what would break, and it is not what the measurement is about.
+# minifyEnabled is on for release. Keep reflection and resource lookup names,
+# while allowing statically linked bytecode tools to be renamed.
 
-# Stack traces stay readable: line numbers are kept and the source file name is
-# replaced by a placeholder rather than removed, so a crash report still maps
-# back through the mapping file.
-# Attributes, not just classes and members. R8 strips every attribute that is
-# not listed here, and the bundled Kotlin compiler carries IntelliJ's component
-# machinery, which registers extension points by reading annotations at run
-# time. With the annotations gone, registration ran against a null component
-# manager and the compiler environment failed to initialise at all:
-#
-#   AssertionError: Attempt to invoke ComponentManager.getService on a null
-#   object reference — at ExtensionPointImpl.registerExtension
-#
-# Signature and InnerClasses matter for the same reason: reflection over
-# generic types and nested classes is how these libraries find things.
+# Keep metadata used by compiler reflection, including annotations, generic
+# signatures and nested classes. Preserve line numbers for retraced crashes.
 -keepattributes Signature,InnerClasses,EnclosingMethod,Exceptions,
                 *Annotation*,RuntimeVisible*,RuntimeInvisible*,
                 AnnotationDefault,MethodParameters,
@@ -52,7 +28,7 @@
 -keepclasseswithmembernames,includedescriptorclasses class * {
     native <methods>;
 }
--keep class com.ccs.javadroid.NativeCompiler { *; }
+-keep class com.ccs.javadroid.tools.compilers.NativeCompiler { *; }
 -keep class com.ccs.javadroid.javase.JavaSeNativeLauncher { *; }
 
 # ── Names the app looks up as strings ────────────────────────────────────────
@@ -62,33 +38,47 @@
 
 # ── Bundled compilers and tools ──────────────────────────────────────────────
 #
-# These are compilers running inside the app. They load classes by name, use
-# ServiceLoader, and reflect over their own internals; renaming any of it fails
-# at runtime, in the middle of a user's build.
+# Kotlin uses reflection and ServiceLoader. ECJ and D8 are called directly, so
+# their internals can be renamed as long as resource lookup names survive.
 
 # Eclipse JDT (ECJ) — the Java compiler
--keep class org.eclipse.jdt.** { *; }
+-keep,allowobfuscation class org.eclipse.jdt.** { *; }
+# These classes read parser tables/messages relative to their class package.
+-keepnames class org.eclipse.jdt.internal.compiler.parser.Parser
+-keepnames class org.eclipse.jdt.internal.compiler.batch.Main
+-keepnames class org.eclipse.jdt.internal.compiler.util.Messages
+-keepclassmembers class org.eclipse.jdt.internal.compiler.util.Messages {
+    static java.lang.String *;
+}
 -dontwarn org.eclipse.jdt.**
 
 # Kotlin compiler (embeddable) and its runtime
 -keep class org.jetbrains.kotlin.** { *; }
 -keep class org.jetbrains.kotlinx.** { *; }
+-keep class org.jetbrains.org.** { *; }
 -keep class kotlin.** { *; }
 -keep class kotlinx.** { *; }
 -keep class org.jetbrains.annotations.** { *; }
 -keep class gnu.trove.** { *; }
 -keep class com.intellij.** { *; }
+# SLF4J resolves its StaticLoggerBinder by name.
+-keep class org.slf4j.** { *; }
 -dontwarn org.jetbrains.kotlin.**
 -dontwarn kotlin.**
 -dontwarn kotlinx.**
 -dontwarn com.intellij.**
 
 # R8 / D8 — the dexer the app runs on user code
--keep class com.android.tools.** { *; }
+-keep,allowobfuscation class com.android.tools.** { *; }
+# D8 selects these providers with Class.forName using a configurable name.
+-keep class com.android.tools.r8.threading.providers.** { *; }
 -dontwarn com.android.tools.**
 
 # ASM — bytecode viewer and class decompiler
--keep class org.objectweb.asm.** { *; }
+# ASM's experimental API whitelist checks these class names. Renaming them
+# makes it try to read a .class resource, which does not exist in an APK.
+-keepnames class org.objectweb.asm.util.Trace**Visitor*
+-keepnames class org.objectweb.asm.util.Check**Adapter*
 -dontwarn org.objectweb.asm.**
 
 # JGit — pure-Java git, heavy on ServiceLoader
@@ -99,9 +89,10 @@
 -dontwarn org.apache.http.**
 
 # Archive readers
--keep class org.apache.commons.compress.** { *; }
--keep class org.tukaani.xz.** { *; }
--keep class com.github.junrar.** { *; }
+-keepnames interface org.apache.commons.compress.archivers.ArchiveStreamProvider
+-keepnames class * implements org.apache.commons.compress.archivers.ArchiveStreamProvider
+-keepnames interface org.apache.commons.compress.compressors.CompressorStreamProvider
+-keepnames class * implements org.apache.commons.compress.compressors.CompressorStreamProvider
 -dontwarn org.apache.commons.compress.**
 -dontwarn org.tukaani.xz.**
 -dontwarn com.github.junrar.**
@@ -111,10 +102,18 @@
 -keep class org.kxml2.** { *; }
 -dontwarn org.xmlpull.**
 
-# The editor: its language and colour-scheme classes are named in
-# configuration and looked up reflectively by the widget.
--keep class io.github.rosemoe.sora.** { *; }
+# The editor's languages and colour schemes are referenced directly by the app.
 -dontwarn io.github.rosemoe.sora.**
+
+# Vosk/JNA call interface methods by name through native dispatch.
+-keep class org.vosk.** { *; }
+-keep class com.sun.jna.** { *; }
+
+# JDBC drivers and StAX factories are instantiated via names/resources.
+-keep class org.postgresql.** { *; }
+-keep class org.mariadb.jdbc.** { *; }
+-keep class javax.xml.stream.** { *; }
+-keep class org.codehaus.stax2.** { *; }
 
 # ── Service registrations ────────────────────────────────────────────────────
 #

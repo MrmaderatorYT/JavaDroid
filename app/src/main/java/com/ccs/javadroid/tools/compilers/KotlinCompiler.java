@@ -24,8 +24,37 @@ public final class KotlinCompiler {
 
     private KotlinCompiler() {}
 
+    private static ClassLoader compilerClassLoader(Context context, File stdlibJar) {
+        String dexPath = context.getApplicationInfo().sourceDir + ":" + stdlibJar.getAbsolutePath();
+        return new dalvik.system.PathClassLoader(dexPath, null, context.getClassLoader()) {
+            @Override
+            protected synchronized Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+                Class<?> type = findLoadedClass(name);
+                if (type != null) return type;
+                // R8 can move Kotlin's generated helpers outside its package.
+                // Load all APK classes here so helpers share the compiler's
+                // IntelliJ application state. The stdlib JAR supplies builtins
+                // resources; platform classes fall back to the parent loader.
+                try {
+                    type = findClass(name);
+                    if (resolve) resolveClass(type);
+                    return type;
+                } catch (ClassNotFoundException ignored) {
+                    return super.loadClass(name, resolve);
+                }
+            }
+        };
+    }
+
     @SuppressWarnings({"unchecked", "rawtypes"})
     public static List<File> compile(File srcFile, File projectRoot, File cacheDir,
+                                     File androidJar, String className,
+                                     ProjectCompiler.Callback callback, Context context) {
+        return compile(srcFile, srcFile, projectRoot, cacheDir, androidJar, className, callback, context);
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public static List<File> compile(File srcFile, File logicalSourceFile, File projectRoot, File cacheDir,
                                      File androidJar, String className,
                                      ProjectCompiler.Callback callback, Context context) {
         try {
@@ -40,26 +69,7 @@ public final class KotlinCompiler {
 
             File pluginRoot = ensureKotlinPluginRoot(cacheDir);
 
-            File apkFile = new File(context.getApplicationInfo().sourceDir);
-            String combinedDexPath = apkFile.getAbsolutePath() + ":" + stdlibJar.getAbsolutePath();
-            ClassLoader appCl = context.getClassLoader();
-            dalvik.system.PathClassLoader kotlinCl = new dalvik.system.PathClassLoader(
-                    combinedDexPath, null, appCl) {
-                @Override
-                protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
-                    Class<?> c = findLoadedClass(name);
-                    if (c != null) return c;
-                    boolean isKotlin = name.startsWith("org.jetbrains.kotlin.") || name.startsWith("kotlin.");
-                    if (isKotlin) {
-                        try {
-                            c = findClass(name);
-                            if (resolve) resolveClass(c);
-                            return c;
-                        } catch (ClassNotFoundException ignored) {}
-                    }
-                    return super.loadClass(name, resolve);
-                }
-            };
+            ClassLoader kotlinCl = compilerClassLoader(context, stdlibJar);
 
             Class<?> cfgClass = Class.forName("org.jetbrains.kotlin.config.CompilerConfiguration", true, kotlinCl);
             Object config = cfgClass.getDeclaredConstructor().newInstance();
@@ -156,10 +166,13 @@ public final class KotlinCompiler {
             if (projectRoot != null && projectRoot.exists()) {
                 Class<?> javaSourceRootClass = Class.forName(
                         "org.jetbrains.kotlin.cli.jvm.config.JavaSourceRoot", true, kotlinCl);
-                List<File> allSources = new ArrayList<>();
-                collectSources(projectRoot, allSources);
+                List<File> allSources = new ArrayList<>(
+                        com.ccs.javadroid.project.ProjectScanner.listKotlinSources(projectRoot));
+                allSources.addAll(com.ccs.javadroid.project.ProjectScanner.listJavaSources(projectRoot));
                 for (File f : allSources) {
-                    if (f.getAbsolutePath().equals(srcFile.getAbsolutePath())) continue;
+                    if (f.getCanonicalFile().equals(srcFile.getCanonicalFile())
+                            || (logicalSourceFile != null
+                                && f.getCanonicalFile().equals(logicalSourceFile.getCanonicalFile()))) continue;
                     Object extRoot;
                     if (f.getName().endsWith(".kt")) {
                         extRoot = kotlinSourceRootClass.getDeclaredConstructor(
@@ -208,7 +221,7 @@ public final class KotlinCompiler {
 
             List<File> classFiles = findAllClassFiles(cacheDir);
 
-            if (!success && classFiles.isEmpty()) {
+            if (!success || hadError[0]) {
                 String errDetail = compilerMessages.toString();
                 if (errDetail.isEmpty()) errDetail = "compileBunchOfSources returned false with no output files.";
                 ProjectCompiler.postResult(callback, "Kotlin Compilation Error:\n" + errDetail);
@@ -216,10 +229,6 @@ public final class KotlinCompiler {
             }
 
             Log.d(TAG, "Generated " + classFiles.size() + " class files");
-            if (hadError[0] && classFiles.isEmpty()) {
-                ProjectCompiler.postResult(callback, "Kotlin Compilation Error:\n" + compilerMessages);
-                return null;
-            }
             return classFiles.isEmpty() ? null : classFiles;
 
         } catch (ClassNotFoundException e) {
@@ -256,26 +265,7 @@ public final class KotlinCompiler {
 
             File pluginRoot = ensureKotlinPluginRoot(cacheDir);
 
-            File apkFile = new File(context.getApplicationInfo().sourceDir);
-            String combinedDexPath = apkFile.getAbsolutePath() + ":" + stdlibJar.getAbsolutePath();
-            ClassLoader appCl = context.getClassLoader();
-            dalvik.system.PathClassLoader kotlinCl = new dalvik.system.PathClassLoader(
-                    combinedDexPath, null, appCl) {
-                @Override
-                protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
-                    Class<?> c = findLoadedClass(name);
-                    if (c != null) return c;
-                    boolean isKotlin = name.startsWith("org.jetbrains.kotlin.") || name.startsWith("kotlin.");
-                    if (isKotlin) {
-                        try {
-                            c = findClass(name);
-                            if (resolve) resolveClass(c);
-                            return c;
-                        } catch (ClassNotFoundException ignored) {}
-                    }
-                    return super.loadClass(name, resolve);
-                }
-            };
+            ClassLoader kotlinCl = compilerClassLoader(context, stdlibJar);
 
             Class<?> cfgClass = Class.forName("org.jetbrains.kotlin.config.CompilerConfiguration", true, kotlinCl);
             Object config = cfgClass.getDeclaredConstructor().newInstance();
@@ -410,15 +400,10 @@ public final class KotlinCompiler {
             Method compileMethod = compilerClass.getMethod("compileBunchOfSources", kotlinCoreEnvClass);
             boolean success = (Boolean) compileMethod.invoke(compilerInstance, environment);
 
-            List<File> classFiles = findAllClassFiles(outDir);
-            if (!success && classFiles.isEmpty()) {
+            if (!success || hadError[0]) {
                 String errDetail = compilerMessages.toString();
                 if (errDetail.isEmpty()) errDetail = "Kotlin compilation failed with no output files.";
                 ProjectCompiler.postResult(callback, "Kotlin Compilation Error:\n" + errDetail);
-                return false;
-            }
-            if (hadError[0] && classFiles.isEmpty()) {
-                ProjectCompiler.postResult(callback, "Kotlin Compilation Error:\n" + compilerMessages);
                 return false;
             }
             return true;
@@ -536,22 +521,6 @@ public final class KotlinCompiler {
             fw.close();
         } catch (IOException ignored) {}
         return pluginRoot;
-    }
-
-    private static void collectSources(File dir, List<File> out) {
-        File[] files = dir.listFiles();
-        if (files == null) return;
-        for (File f : files) {
-            if (f.isDirectory()) {
-                String name = f.getName();
-                if (!name.equals("build") && !name.equals("target") && !name.equals(".idea")
-                        && !name.equals(".git") && !name.equals(".javadroid")) {
-                    collectSources(f, out);
-                }
-            } else if (f.getName().endsWith(".java") || f.getName().endsWith(".kt")) {
-                out.add(f);
-            }
-        }
     }
 
     private static List<File> findAllClassFiles(File dir) {

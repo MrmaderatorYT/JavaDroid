@@ -271,6 +271,27 @@ public final class TodoPanelManager {
         });
     }
 
+    /** Text representation of the currently visible TODO/FIXME rows for clipboard export. */
+    public String getCopyText() {
+        StringBuilder out = new StringBuilder();
+        File root = callback.getProjectManager() == null
+                ? null : callback.getProjectManager().getProjectDir();
+        for (TodoAdapter.TodoItem item : adapter.getVisibleItems()) {
+            String path = item.file == null ? "?" : item.file.getPath();
+            if (root != null && item.file != null) {
+                String rootPath = root.getAbsolutePath();
+                String fullPath = item.file.getAbsolutePath();
+                if (fullPath.startsWith(rootPath + File.separator)) {
+                    path = fullPath.substring(rootPath.length() + 1);
+                }
+            }
+            out.append(item.tag).append(' ').append(path);
+            if (item.line > 0) out.append(':').append(item.line);
+            out.append(" — ").append(item.text == null ? "" : item.text).append('\n');
+        }
+        return out.toString().trim();
+    }
+
     /**
      * Rescans when the tab changed and the list is showing one file.
      *
